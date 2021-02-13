@@ -1,25 +1,64 @@
-import logo from './logo.svg';
+import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import CssBaseline from '@material-ui/core/CssBaseline';
+
 import './App.css';
+import Sidebar from "./components/Sidebar";
+import Home from "./pages/Home";
+import Claim from "./pages/Claim";
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: '#004BFF',
+        },
+        secondary: {
+            main: '#ccc',
+        },
+    },
+});
+
+const useStyles = makeStyles((theme) => ({
+    Main: {
+        display: 'flex'
+    },
+    Main__Content: {
+        'padding': '24px',
+        flexGrow: 1,
+    }
+}));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const classes = useStyles();
+
+    return (
+        <div>
+            <CssBaseline />
+            <ThemeProvider theme={theme}>
+                <Router>
+                    <div className={classes.Main}>
+                        <Sidebar></Sidebar>
+                        <div className={classes.Main__Content}>
+                            <Switch>
+                                <Route path="/claim">
+                                    <Claim/>
+                                </Route>
+                                <Route path="/">
+                                    <Home></Home>
+                                </Route>
+                            </Switch>
+                        </div>
+                    </div>
+                </Router>
+            </ThemeProvider>
+        </div>
+
+    );
 }
 
 export default App;
