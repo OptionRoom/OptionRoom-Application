@@ -139,7 +139,7 @@ function Sidebar() {
                         },
                         {
                             title: 'Liquidity Pool',
-                            link: '/liquidity-pool',
+                            link: '/liquidity-mining',
                         },
                         {
                             title: 'Claim',

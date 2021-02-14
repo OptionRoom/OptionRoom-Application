@@ -11,6 +11,7 @@ import './App.css';
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Claim from "./pages/Claim";
+import LiquidityMining from "./pages/LiquidityMining";
 
 const theme = createMuiTheme({
     palette: {
@@ -38,7 +39,7 @@ function App() {
 
     return (
         <div>
-            <CssBaseline />
+            <CssBaseline/>
             <ThemeProvider theme={theme}>
                 <Router>
                     <div className={classes.Main}>
@@ -47,6 +48,9 @@ function App() {
                             <Switch>
                                 <Route path="/claim">
                                     <Claim/>
+                                </Route>
+                                <Route path="/liquidity-mining">
+                                    <LiquidityMining/>
                                 </Route>
                                 <Route path="/">
                                     <Home></Home>
