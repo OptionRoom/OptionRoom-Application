@@ -2,16 +2,18 @@ import React from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
+
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+
+import ClaimIcon from '../../assets/icons/Claim.svg';
+import DocsIcon from '../../assets/icons/Docs.svg';
+import GovernanceIcon from '../../assets/icons/Governance.svg';
+import LiquidityIcon from '../../assets/icons/Liquidity.svg';
+import MarketsIcon from '../../assets/icons/Markets.svg';
+import OracleIcon from '../../assets/icons/Oracle.svg';
+
 import {
     NavLink,
 } from "react-router-dom";
@@ -72,7 +74,8 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '14px',
         marginBottom: '8px',
         padding: '8px',
-        '&.Active': {
+        transition: '0.2s all',
+        '&:hover, &.Active': {
             borderRadius: '8px',
             background: '#004BFF',
             color: '#fff'
@@ -89,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
         }),
     },
     NavLink__Title__Open: {
-
         opacity: 1,
         transition: theme.transitions.create('opacity', {
             easing: theme.transitions.easing.sharp,
@@ -128,36 +130,52 @@ function Sidebar() {
             </div>
             <div className={classes.NavLinks}>
                 {
+                    /*
+                    import ClaimIcon from '../../assets/icons/Claim.svg';
+import DocsIcon from '../../assets/icons/Docs.svg';
+import GovernanceIcon from '../../assets/icons/Governance.svg';
+import LiquidityIcon from '../../assets/icons/Liquidity.svg';
+import MarketsIcon from '../../assets/icons/Markets.svg';
+import OracleIcon from '../../assets/icons/Oracle.svg';
+                     */
                     [
                         {
                             title: 'Markets',
                             link: '/markets',
+                            icon: MarketsIcon
                         },
                         {
                             title: 'Governance',
                             link: '/governance',
+                            icon: GovernanceIcon
                         },
                         {
                             title: 'Liquidity Pool',
                             link: '/liquidity-mining',
+                            icon: LiquidityIcon
                         },
                         {
                             title: 'Claim',
                             link: '/claim',
+                            icon: ClaimIcon
                         },
                         {
                             title: 'Oracle',
                             link: '/oracle',
+                            icon: OracleIcon
                         },
                         {
                             title: 'Docs',
                             link: '/docs',
+                            icon: DocsIcon
                         },
                     ].map((item, index) => (
                         <NavLink to={item.link}
                                  activeClassName={'Active'}
+                                 key={`menut-item${index}`}
                                  className={classes.NavLink}>
-                            <InboxIcon className={classes.NavLink__Icon}/>
+                            <img src={item.icon}
+                                 className={classes.NavLink__Icon}/>
                             <span className={
                                 clsx(classes.NavLink__Title, {
                                     [classes.NavLink__Title__Open]: open,

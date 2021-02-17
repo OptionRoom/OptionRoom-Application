@@ -12,6 +12,7 @@ import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Claim from "./pages/Claim";
 import LiquidityMining from "./pages/LiquidityMining";
+import ConnectionTest from "./pages/ConnectionTest";
 
 const theme = createMuiTheme({
     palette: {
@@ -21,6 +22,12 @@ const theme = createMuiTheme({
         secondary: {
             main: '#ccc',
         },
+    },
+    typography: {
+        fontFamily: [
+            'Poppins',
+            'sans-serif',
+        ].join(','),
     },
 });
 
@@ -51,6 +58,9 @@ function App() {
                                 </Route>
                                 <Route path="/liquidity-mining">
                                     <LiquidityMining/>
+                                </Route>
+                                <Route path="/connection-test">
+                                    <ConnectionTest/>
                                 </Route>
                                 <Route path="/">
                                     <Home></Home>
