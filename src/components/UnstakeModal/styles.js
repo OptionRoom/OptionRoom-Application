@@ -30,14 +30,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     MuiDialogActions__ConfirmBtn: {
     },
-    MuiDialogActions__ConfirmBtn__Inner: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    MuiDialogActions__ConfirmBtn__CircularProgress: {
-        marginRight: '5px',
-        color: 'rgba(0, 0, 0, 0.26)'
-    },
     Modal__Text: {
         color: '#6D8096',
         fontSize: '16px',
@@ -69,7 +61,7 @@ export const useStyles = makeStyles((theme) => ({
         cursor: 'pointer',
         textDecoration: 'underline',
         fontWeight: 700,
-        letterSpacing: '1px',
+        letterSpacing: '1px'
     },
     Modal__TokensInput: {
         border: '1px solid #D2D9E1',
@@ -81,6 +73,10 @@ export const useStyles = makeStyles((theme) => ({
         display: 'block',
         width: '100%',
         outline: 'none',
+    },
+    ClaimWrap: {
+        display: 'flex',
+        alignItems: 'center'
     },
     Modal__TokensInput__HasError: {
         border: '1px solid red',

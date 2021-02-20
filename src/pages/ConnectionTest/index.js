@@ -23,7 +23,6 @@ function ConnectionTest() {
     const handleGetMyNum = async () => {
         try {
             const dai = getDaiContract(1, accountContext.web3Instance);
-            console.log("accountContext.account", accountContext.account);
 
             const result = await dai.methods
                 .getNum()
@@ -31,7 +30,6 @@ function ConnectionTest() {
                     from: accountContext.account
                 });
 
-            console.log("handleGetMyNum", result);
         } catch (e) {
             console.log("error", e);
         }
@@ -45,7 +43,6 @@ function ConnectionTest() {
                 .send({
                     from: accountContext.account
                 });
-            console.log("handleSetMyNum", result);
         } catch (e) {
             console.log("error", e);
         }
@@ -59,7 +56,6 @@ function ConnectionTest() {
                 .call({
                     from: accountContext.account
                 });
-            console.log("handleGetAccountNum", result);
         } catch (e) {
             console.log("error", e);
         }

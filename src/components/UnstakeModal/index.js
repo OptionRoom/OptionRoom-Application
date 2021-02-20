@@ -1,5 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import clsx from 'clsx';
+import {withStyles} from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Button from '../Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,23 +11,23 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { CircularProgress } from '@material-ui/core';
-
 import {useStyles} from './styles'
 import {AccountContext} from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from '../../shared/contracts/RoomLPFarmingAPIs';
 import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper';
 
-function DepositModal(props) {
+function UnstakeModal(props) {
     const {
-        userRoomLPTokens
+        stakedTokensBalance
     } = props;
 
     const accountContext = useContext(AccountContext);
+
     const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
-    const [tokensCount, setTokensCount] = useState(0);
+    const [amountToUnstake, setAmountToUnstake] = useState(0);
+    const [claim, setClaim] = useState(true);
     const [isInvalidAmountError, setIsInvalidAmountError] = useState(false);
-    const [isConfirmProcessing, setIsConfirmProcessing] = useState(false);
+    const [isUnstakeProcessing, setIsUnstakeProcessing] = useState(false);
 
     const classes = useStyles();
 
@@ -38,23 +40,23 @@ function DepositModal(props) {
             return;
         }
 
-        setIsConfirmProcessing(true);
+        setIsUnstakeProcessing(true);
 
         try {
-            const tokensAmount = convertTokensToAmount(tokensCount);
-            await roomLPFarmingAPIs.stackRoomLPTokens(accountContext.account, tokensAmount);
-            setIsConfirmProcessing(false);
-            props.onStake();
+            const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
+            await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
+            setIsUnstakeProcessing(false);
+            props.onUnStake();
             props.onClose();
         } catch (e) {
-            setIsConfirmProcessing(false);
+            setIsUnstakeProcessing(false);
         }
     };
 
     const checkValidAmount = () => {
-        const availableTokens = convertAmountToTokens(userRoomLPTokens);
+        const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
 
-        if (tokensCount == 0 || tokensCount > availableTokens) {
+        if (amountToUnstakeResult === 0 || amountToUnstakeResult > stakedTokensBalance) {
             setIsInvalidAmountError(true);
             return false;
         }
@@ -62,34 +64,38 @@ function DepositModal(props) {
         setIsInvalidAmountError(false);
 
         return true;
-    };
+    }
 
     const handleSetMax = () => {
-        const availableTokens = convertAmountToTokens(userRoomLPTokens);
-        setTokensCount(availableTokens);
+        const availableTokens = convertAmountToTokens(stakedTokensBalance);
+        setAmountToUnstake(availableTokens);
+    };
+
+    const handleClaimChange = (event) => {
+        setClaim(event.target.checked);
     };
 
     return (
         <Dialog classes={{
-            paper: classes.paper, // class name, e.g. `classes-nesting-root-x`
+            paper: classes.paper,
         }}
                 onClose={handleClose}
-                aria-labelledby="DepositModal-dialog-title"
+                aria-labelledby="UnstakeModal-dialog-title"
                 open={props.open}
                 disableBackdropClick={true}>
-            <MuiDialogTitle id="DepositModal-dialog-title"
+            <MuiDialogTitle id="UnstakeModal-dialog-title"
                             disableTypography
                             className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle}
                             variant="h6">
-                    Deposit Tokens
+                    Unstake Tokens
                 </Typography>
                 {
                     handleClose && (
                         <IconButton aria-label="close"
                                     className={classes.closeButton}
-                                    disabled={isConfirmProcessing}
+                                    disabled={isUnstakeProcessing}
                                     onClick={handleClose}>
                             <CloseIcon/>
                         </IconButton>
@@ -102,13 +108,13 @@ function DepositModal(props) {
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available <span
-                    className={classes.Modal__TokensLabel_Balance}>{convertAmountToTokens(userRoomLPTokens)}</span>
+                    className={classes.Modal__TokensLabel_Balance}>{convertAmountToTokens(stakedTokensBalance)}</span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>
                     <input
-                        value={tokensCount}
+                        value={amountToUnstake}
                         onChange={(e) => {
-                            setTokensCount(e.target.value);
+                            setAmountToUnstake(e.target.value);
                             checkValidAmount();
                         }}
                         className={clsx(classes.Modal__TokensInput, {
@@ -122,24 +128,36 @@ function DepositModal(props) {
                 {
                     isInvalidAmountError && (
                         <div className={classes.Modal__TokensErrorHelp}>
-                            Invalid amount, it must be between 1 and {convertAmountToTokens(userRoomLPTokens)}
+                            Invalid amount, it must be between 1 and {convertAmountToTokens(stakedTokensBalance)}
                         </div>
                     )
                 }
+                <div className={classes.ClaimWrap}>
+                    <Checkbox
+                        checked={claim}
+                        onChange={handleClaimChange}
+                        color="primary"
+                        inputProps={{'aria-label': 'claim rewards'}}
+                    />
+                    <span className={classes.ClaimLabel}>Claim rewards?</span>
+                </div>
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button className={classes.MuiDialogActions__CancelBtn}
-                        isDisabled={isConfirmProcessing}
+                        isDisabled={isUnstakeProcessing}
                         color={'gray'}
                         onClick={handleClose}
-                        size={'small'}>
+                        size={'small'}
+                >
                     Cancel
                 </Button>
-                <Button onClick={handleConfirm}
+                <Button autoFocus
+                        onClick={handleConfirm}
                         className={classes.MuiDialogActions__ConfirmBtn}
-                        isProcessing={isConfirmProcessing}
+                        isProcessing={isUnstakeProcessing}
                         color={'primary'}
-                        size={'small'}>
+                        size={'small'}
+                >
                     Confirm
                 </Button>
             </MuiDialogActions>
@@ -147,4 +165,4 @@ function DepositModal(props) {
     );
 }
 
-export default DepositModal;
+export default UnstakeModal;

@@ -8,7 +8,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     Title: {
         marginRight: 'auto',
-        maxWidth: '400px'
+        maxWidth: '500px'
     },
     Title__Head: {
         fontSize: '28px',

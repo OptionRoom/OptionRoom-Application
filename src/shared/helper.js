@@ -1,6 +1,20 @@
 import * as blockies from "blockies-ts";
+import {formatFixed, parseFixed} from "@ethersproject/bignumber";
 
 import {supportedChains} from './chains';
+
+function toFixed(num, fixed) {
+    const re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    return num.toString().match(re)[0];
+}
+
+export const convertAmountToTokens = (amount) => {
+    return toFixed(formatFixed(`${amount}`, 18), 2);
+};
+
+export const convertTokensToAmount = (amount) => {
+    return parseFixed(`${amount}`, 18);
+};
 
 export const ellipseAddress = (address, width = 10) => {
     return `${address.slice(0, width)}...${address.slice(-width)}`;

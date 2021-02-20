@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Claim from "./pages/Claim";
 import LiquidityMining from "./pages/LiquidityMining";
 import ConnectionTest from "./pages/ConnectionTest";
+import Nft from "./pages/Nft";
 
 const theme = createMuiTheme({
     palette: {
@@ -61,6 +62,9 @@ function App() {
                                 </Route>
                                 <Route path="/connection-test">
                                     <ConnectionTest/>
+                                </Route>
+                                <Route path="/nft">
+                                    <Nft/>
                                 </Route>
                                 <Route path="/">
                                     <Home></Home>

@@ -35,15 +35,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '40px',
     },
     Pool__Action: {},
-    Pool__Action__Btn: {
-        width: '100%',
-        borderRadius: '12px',
-        fontSize: '20px',
-        fontWeight: 600,
-        letterSpacing: 0,
-        lineHeight: '24px',
-        height: '56px'
-    },
+    Pool__Action__Btn: {},
     ///
     EarnCard: {
         borderRadius: '16px',
@@ -88,34 +80,15 @@ export const useStyles = makeStyles((theme) => ({
             marginRight: '8px'
         }
     },
-    EarnCard__Action__Btn: {
-        width: '100%',
-        borderRadius: '12px',
-        fontSize: '20px',
-        fontWeight: 600,
-        letterSpacing: 0,
-        lineHeight: '24px',
-        height: '56px',
-    },
-    EarnCard__Action__Btn__Disabled: {
-        backgroundColor: '#D2D9E1 !important',
-        color: '#FFFFFF !important'
-    },
     EarnCard__Action__Btn_Add__Icon: {
         width: '29px',
         height: '29px'
     },
     EarnCard__Action__Btn_Add: {
-        borderRadius: '12px',
-        fontSize: '20px',
-        height: '56px',
-        backgroundColor: '#000',
-        color: '#FFFFFF !important',
-        boxShadow: 'none',
         width: '56px',
-        '&:hover': {
-            backgroundColor: '#000',
-            color: '#FFFFFF !important',
-        }
+    },
+    ConnectWrap: {
+        textAlign: 'center',
+        padding: '100px 0'
     }
 }));
