@@ -55,13 +55,13 @@ function RoomLpStake(props) {
     };
 
     const handleOnUnStake = async () => {
-        swal({
+/*        swal({
             title: "Good job!",
             text: "You clicked the button!",
             icon: "success",
             button: "Aww yiss!",
             timer: 1000,
-        });
+        });*/
         initRoomLPPoolData();
     };
 
