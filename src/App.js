@@ -16,6 +16,7 @@ import ConnectionTest from "./pages/ConnectionTest";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import NftBlue from "./assets/nftbgs/blue.svg";
+import GoldSvg from "./assets/nftbgs/gold.svg";
 import React, {useContext} from "react";
 import {AccountContext} from "./shared/AccountContextProvider";
 import clsx from "clsx";
@@ -49,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     },
     Main__Content___Black: {
         backgroundImage: `url(${NftBlue})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+    },
+    Main__Content___Golden: {
+        backgroundImage: `url(${GoldSvg})`
     }
 }));
 
@@ -65,6 +71,7 @@ function App() {
                         <Sidebar></Sidebar>
                         <div className={clsx(classes.Main__Content, {
                             [classes.Main__Content___Black]: accountContext.theme === 'black',
+                            [classes.Main__Content___Golden]: accountContext.background === 'golden',
                         })}>
                             <Switch>
                                 <Route path="/claim">

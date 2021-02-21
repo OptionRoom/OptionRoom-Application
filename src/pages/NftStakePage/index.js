@@ -10,11 +10,11 @@ function NftStakePage() {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
     accountContext.changeTheme('black');
+
     return (
         <>
-            <Navbar title={'NFT'}
-                    details={'Earn ROOM by staking you NFT and ROOM tokens together.\n'}/>
-
+            <Navbar title={'NFT Staking'}
+                    details={'Earn ROOM by staking you NFT and ROOM tokens together.'}/>
             <div className={classes.NftStakePage}>
                 <NftStake/>
             </div>

@@ -17,6 +17,8 @@ import {AccountContext} from "../../shared/AccountContextProvider";
 import {nftTires, nftImages} from '../../shared/constants';
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ConnectButton from "../ConnectButton";
+import RoomIcon from "../../assets/room-icon.png";
+import Room2Icon from "../../assets/room2.png";
 
 function NftStake(props) {
     const accountContext = useContext(AccountContext);
@@ -254,9 +256,7 @@ function NftStake(props) {
                                             <div
                                                 className={classes.buyNftWrap}>
                                                 <Link to="/nft"
-                                                      className={classes.buyNft}>
-                                                    Buy some Nfts
-                                                </Link>
+                                                      className={classes.buyNft}>Get NFTs to stake</Link>
                                             </div>
                                         )
                                     }
@@ -269,7 +269,10 @@ function NftStake(props) {
                                                 <div className={classes.StakeCards}>
                                                     <div className={classes.EarnCard}
                                                          key={'ROOM-Earned'}>
-                                                        <div className={classes.EarnCard__Icon}></div>
+                                                        <div className={classes.EarnCard__Icon}>
+                                                            <img src={RoomIcon}
+                                                                 width={'100%'}/>
+                                                        </div>
                                                         <div className={classes.EarnCard__Title}>
                                                             {convertAmountToTokens(farmedRoomTokens)}
                                                         </div>
@@ -288,7 +291,10 @@ function NftStake(props) {
                                                     </div>
                                                     <div className={classes.EarnCard}
                                                          key={'Staked-RoomLP'}>
-                                                        <div className={classes.EarnCard__Icon}></div>
+                                                        <div className={classes.EarnCard__Icon}>
+                                                            <img src={Room2Icon}
+                                                                 width={'100%'}/>
+                                                        </div>
                                                         <div className={classes.EarnCard__Title}>
                                                             {convertAmountToTokens(stackedRoomTokensWithNftStakeContract)}
                                                         </div>

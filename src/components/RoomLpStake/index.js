@@ -141,7 +141,7 @@ function RoomLpStake(props) {
                 <div className={classes.EarnCard__Title}>
                     {convertAmountToTokens(stackedRoomLPTokens)}
                 </div>
-                <div className={classes.EarnCard__SubTitle}>Staking ROOM-EHT LP</div>
+                <div className={classes.EarnCard__SubTitle}>Stake ROOM/ETH LP</div>
                 <div
                     className={clsx(classes.EarnCard__Action, {
                         [classes.EarnCard__Action_Two]: userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0
