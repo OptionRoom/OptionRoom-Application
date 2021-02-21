@@ -182,15 +182,19 @@ function UnstakeModal(props) {
                     />
                     <span className={classes.ClaimLabel}>Claim rewards?</span>
                 </div>
-                <div className={classes.ClaimWrap}>
-                    <Checkbox
-                        checked={exit}
-                        onChange={handleExitChange}
-                        color="primary"
-                        inputProps={{'aria-label': 'claim rewards'}}
-                    />
-                    <span className={classes.ClaimLabel}>Exit pool and withdraw NFT?</span>
-                </div>
+                {
+                    type === 'nftStake' && (
+                        <div className={classes.ClaimWrap}>
+                            <Checkbox
+                                checked={exit}
+                                onChange={handleExitChange}
+                                color="primary"
+                                inputProps={{'aria-label': 'claim rewards'}}
+                            />
+                            <span className={classes.ClaimLabel}>Exit pool and withdraw NFT?</span>
+                        </div>
+                    )
+                }
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button className={classes.MuiDialogActions__CancelBtn}

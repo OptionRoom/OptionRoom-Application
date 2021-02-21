@@ -1,7 +1,7 @@
 export const getNftStakeContract = (chainId, web3) => {
 
     const ropstenContract = {
-        address: "0x45c3F9d0E0E46C8AdCDDBA76bEb4228E6788ff2B",
+        address: "0xe657802e8ff23aa2007ab817c3c1485a3cffa9ef",
         abi: [{"inputs": [], "stateMutability": "nonpayable", "type": "constructor"}, {
             "anonymous": false,
             "inputs": [{
