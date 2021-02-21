@@ -1,6 +1,11 @@
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
+    IsInitingWrap: {
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '100px 0'
+    },
     StakeCards: {
         display: 'flex',
         alignItems: 'center',
@@ -9,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
     ///
     EarnCard: {
         borderRadius: '16px',
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#000',
         boxShadow: '0 0 20px 0 #E6EDFF',
         padding: '40px 16px 24px',
         marginRight: '48px',
@@ -26,7 +31,7 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 auto 40px'
     },
     EarnCard__Title: {
-        color: '#000000',
+        color: '#fff',
         fontWeight: 600,
         fontSize: '36px',
         letterSpacing: 0,
@@ -40,7 +45,6 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         lineHeight: '56px',
         textAlign: 'center',
-        marginBottom: '40px',
     },
     EarnCard__Action: {},
     EarnCard__Action_Two: {
@@ -56,6 +60,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     EarnCard__Action__Btn_Add: {
         width: '56px',
+        backgroundColor: '#fff !important',
+        color: "#000"
     },
     NftImgWrap: {
         marginBottom: '45px',
@@ -67,6 +73,32 @@ export const useStyles = makeStyles((theme) => ({
             display: 'block',
             overflow: 'hidden',
             margin: '0 auto'
+        }
+    },
+    ConnectWrap: {
+        textAlign: 'center',
+        padding: '100px 0'
+    },
+    buyNftWrap: {
+        textAlign: 'center',
+        padding: '50px 0'
+    },
+    buyNft: {
+        textDecoration: 'none',
+        padding: '20px 30px',
+        display: 'inline-block',
+        borderRadius: '12px',
+        fontSize: '16px',
+        fontWeight: 600,
+        border: 'none',
+        outline: 'none',
+        cursor: 'pointer',
+        textTransform: 'none',
+        backgroundColor: '#004BFF',
+        color: '#FFFFFF',
+        '&:hover': {
+            backgroundColor: '#004BFF',
+            color: '#FFFFFF',
         }
     }
 }));

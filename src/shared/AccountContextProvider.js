@@ -25,9 +25,12 @@ export const AccountContext = React.createContext({
     account: null,
     chainId: null,
     networkId: null,
+    theme: 'primary',
     connect: () => {
     },
     disconnect: () => {
+    },
+    changeTheme: () => {
     },
 });
 
@@ -38,6 +41,7 @@ const AccountContextProvider = (props) => {
     const [account, setAccount] = useState(null);
     const [chainId, setChainId] = useState(null);
     const [networkId, setNetworkId] = useState(null);
+    const [theme, setTheme] = useState('primary');
 
     const handleDisconnect = async () => {
 
@@ -50,6 +54,11 @@ const AccountContextProvider = (props) => {
         setChainId(null);
         setNetworkId(null);
         setAccount(null);
+    };
+
+
+    const handleChangeTheme = async (newTheme) => {
+        setTheme(newTheme);
     };
 
     const handleConnect = async (web3Modal2) => {
@@ -118,8 +127,10 @@ const AccountContextProvider = (props) => {
                 account: account,
                 chainId: chainId,
                 networkId: networkId,
+                theme: theme,
                 connect: handleConnect,
-                disconnect: handleDisconnect
+                disconnect: handleDisconnect,
+                changeTheme: handleChangeTheme
             }}
         >
             {props.children}

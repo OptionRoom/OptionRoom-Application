@@ -14,6 +14,12 @@ import Claim from "./pages/Claim";
 import LiquidityMining from "./pages/LiquidityMining";
 import ConnectionTest from "./pages/ConnectionTest";
 import Nft from "./pages/Nft";
+import NftStakePage from "./pages/NftStakePage";
+import NftBlue from "./assets/nftbgs/blue.svg";
+import React, {useContext} from "react";
+import {AccountContext} from "./shared/AccountContextProvider";
+import clsx from "clsx";
+import Drawer from "@material-ui/core/Drawer";
 
 const theme = createMuiTheme({
     palette: {
@@ -39,11 +45,16 @@ const useStyles = makeStyles((theme) => ({
     Main__Content: {
         'padding': '24px',
         flexGrow: 1,
+        minHeight: '100vh'
+    },
+    Main__Content___Black: {
+        backgroundImage: `url(${NftBlue})`,
     }
 }));
 
 function App() {
     const classes = useStyles();
+    const accountContext = useContext(AccountContext);
 
     return (
         <div>
@@ -52,7 +63,9 @@ function App() {
                 <Router>
                     <div className={classes.Main}>
                         <Sidebar></Sidebar>
-                        <div className={classes.Main__Content}>
+                        <div className={clsx(classes.Main__Content, {
+                            [classes.Main__Content___Black]: accountContext.theme === 'black',
+                        })}>
                             <Switch>
                                 <Route path="/claim">
                                     <Claim/>
@@ -65,6 +78,9 @@ function App() {
                                 </Route>
                                 <Route path="/nft">
                                     <Nft/>
+                                </Route>
+                                <Route path="/nft-stake">
+                                    <NftStakePage/>
                                 </Route>
                                 <Route path="/">
                                     <Home></Home>

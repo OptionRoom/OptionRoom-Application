@@ -21,8 +21,8 @@ export const useStyles = makeStyles((theme) => ({
     EarnCard__Icon: {
         width: '64px',
         height: '64px',
-        borderRadius: '50%',
-        background: '#004BFF',
+        //borderRadius: '50%',
+        //background: '#004BFF',
         margin: '0 auto 40px'
     },
     EarnCard__Title: {

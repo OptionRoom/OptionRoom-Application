@@ -12,25 +12,25 @@ import {AccountContext} from "../../shared/AccountContextProvider";
 function LiquidityMining() {
     const classes = useStyles();
 
-    const [currentView, setCurrentView] = useState('POOLS');
+    const [currentView, setCurrentView] = useState('ROOM_ETH_LP');
     const accountContext = useContext(AccountContext);
-
+    accountContext.changeTheme('primary');
     const pools = [
         {
             id: "ROOM_ETH_LP",
             title: 'Deposit ROOM-ETH LP',
-            decs: 'Earn $ROOM'
+            decs: 'Earn ROOM'
         } ,
         {
             id: "NftStake",
             title: 'Deposit ROOM-NFT',
-            decs: 'Earn $ROOM'
+            decs: 'Earn ROOM'
         }
     ];
 
     return (
         <>
-            <Navbar title={'Liquidity Mining Page'}
+            <Navbar title={'Liquidity Farming'}
                     details={'Earn ROOM tokens by providing liquidity to the ROOM/ETH pair on Uniswap and staking your LP tokens on this page.'}/>
 
             <div className={classes.LiquidityMiningPage}>

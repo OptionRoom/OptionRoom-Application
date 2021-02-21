@@ -16,7 +16,11 @@ function ConnectButton(props) {
 
     return (
         <div className={classes.ConnectBtnWrap}>
-            <Button className={classes.ConnectBtn}
+            <Button
+                    className={clsx(classes.ConnectBtn, {
+                        [classes.ConnectBtn___Black]: accountContext.theme === 'black',
+                    })}
+
                     onClick={() => {
                         accountContext.connect();
                     }}

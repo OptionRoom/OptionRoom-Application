@@ -11,18 +11,20 @@ import {
 } from '../../shared/helper';
 
 function Navbar(props) {
-    const accountContext = useContext(AccountContext);
 
     const classes = useStyles();
     const {
         title,
         details
     } = props;
+    const accountContext = useContext(AccountContext);
 
     return (
         <div className={classes.Navbar}>
             <div className={classes.Title}>
-                <h1 className={classes.Title__Head}>
+                <h1 className={clsx(classes.Title__Head, {
+                    [classes.Title__Head___Black]: accountContext.theme === 'black',
+                })}>
                     {title}
                 </h1>
                 {
@@ -38,14 +40,19 @@ function Navbar(props) {
                             <div className={classes.AccountHolder__Image}>
                                 <img className={classes.AccountHolder__Image_Image}
                                      src={getAddressImgUrl(accountContext.account)}
-                                      width="36px"
-                                      height={'36px'}/>
+                                     width="36px"
+                                     height={'36px'}/>
                             </div>
                             <div className={classes.AccountHolder__Details}>
-                                <div className={classes.AccountHolder__Details__Address}>
+                                <div className={clsx(classes.AccountHolder__Details__Address, {
+                                         [classes.AccountHolder__Details__Address___Black]: accountContext.theme === 'black',
+                                     })}
+                                >
                                     {ellipseAddress(accountContext.account)}
                                 </div>
-                                <div className={classes.AccountHolder__Details__Disconnect}
+                                <div className={clsx(classes.AccountHolder__Details__Disconnect, {
+                                    [classes.AccountHolder__Details__Disconnect__Black]: accountContext.theme === 'black',
+                                })}
                                      onClick={accountContext.disconnect}>
                                     Disconnect
                                 </div>

@@ -17,6 +17,9 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: '32px',
         marginBottom: '8px'
     },
+    Title__Head___Black: {
+        color: '#fff'
+    },
     Title__Details: {
         color: '#6D8096',
         fontSize: '18px',
@@ -41,5 +44,11 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: '12px',
         textDecoration: 'underline',
         cursor: 'pointer'
+    },
+    AccountHolder__Details__Disconnect__Black: {
+        color: "#fff"
+    },
+    AccountHolder__Details__Address___Black: {
+        color: "#fff"
     }
 }));

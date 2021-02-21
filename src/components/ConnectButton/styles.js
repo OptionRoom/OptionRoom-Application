@@ -22,5 +22,13 @@ export const useStyles = makeStyles((theme) => ({
             backgroundColor: '#000000',
             color: '#FFFFFF',
         }
+    },
+    ConnectBtn___Black: {
+        backgroundColor: '#004BFF',
+        color: '#FFFFFF',
+        '&:hover': {
+            backgroundColor: '#004BFF',
+            color: '#FFFFFF',
+        }
     }
 }));

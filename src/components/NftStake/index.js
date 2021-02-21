@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import {useState, useContext} from 'react';
-
+import {
+    Link,
+} from "react-router-dom";
 import {useStyles} from './styles'
 import {convertAmountToTokens} from "../../shared/helper";
 import Button from "../Button";
@@ -13,10 +15,13 @@ import swal from "sweetalert";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
 import {nftTires, nftImages} from '../../shared/constants';
+import CircularProgress from "@material-ui/core/CircularProgress";
+import ConnectButton from "../ConnectButton";
 
 function NftStake(props) {
     const accountContext = useContext(AccountContext);
     const classes = useStyles();
+    const [isIniting, setIsIniting] = useState(true);
     const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
     const [isUnstakeModalOpen, setIsUnstakeModalOpen] = useState(false);
     const [isHarvestInProgress, setIsHarvestInProgress] = useState(false);
@@ -97,12 +102,13 @@ function NftStake(props) {
 
         const UserNftTireBalance = await loadUserNftTireBalance(roomLPFarmingAPIs);
         const UserNftStakeTireBalance = await loadUserNftStakeTireBalance(roomLPFarmingAPIs);
-        console.log(UserNftTireBalance, UserNftStakeTireBalance);
         const userCurrentNftTire = findUserCurrentNftTire(UserNftTireBalance, UserNftStakeTireBalance);
         setUserCurrentNftTire(userCurrentNftTire);
 
-        const stakedRoomTokensWithNftStakeContract = await roomLPFarmingAPIs.getUserNftStakeBalanceOfTire(accountContext.account, userCurrentNftTire);
-        setStackedRoomTokensWithNftStakeContract(stakedRoomTokensWithNftStakeContract);
+        if (userCurrentNftTire !== -1) {
+            const stakedRoomTokensWithNftStakeContract = await roomLPFarmingAPIs.getUserNftStakeBalanceOfTire(accountContext.account, userCurrentNftTire);
+            setStackedRoomTokensWithNftStakeContract(stakedRoomTokensWithNftStakeContract);
+        }
 
         //Get room tokens balance of a user
         const userRoomBalance = await roomLPFarmingAPIs.getUserRoomTokenBalance(accountContext.account);
@@ -196,7 +202,7 @@ function NftStake(props) {
 
     const handleShowDepositModal = async () => {
         if (userRoomTokenBalance === 0) {
-            swal("Insufficient fund", `You must hold at least 1 $ROOM Tokens`, "error");
+            swal("Insufficient fund", `You must hold at least 1 ROOM Tokens`, "error");
             return;
         }
 
@@ -205,139 +211,176 @@ function NftStake(props) {
 
     useEffect(async () => {
         if (accountContext.account) {
-            initRoomLPPoolData();
+            setIsIniting(true);
+            await initRoomLPPoolData();
+            setIsIniting(false);
+        }
+    }, [accountContext.account]);
+
+    useEffect(async () => {
+        if (accountContext.account && userCurrentNftTire !== -1) {
             setInterval(async () => {
-                if (userCurrentNftTire !== -1) {
-                    const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
-                    const resultFarmedRoomTokens = await roomLPFarmingAPIs.getUserNftStakeRewardsBalanceOfTire(accountContext.account, userCurrentNftTire);
-                    setFarmedRoomTokens(resultFarmedRoomTokens);
-                }
+                const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+                const resultFarmedRoomTokens = await roomLPFarmingAPIs.getUserNftStakeRewardsBalanceOfTire(accountContext.account, userCurrentNftTire);
+                setFarmedRoomTokens(resultFarmedRoomTokens);
             }, 1000);
         }
-
-    }, [accountContext.account]);
+    }, [accountContext.account, userCurrentNftTire]);
 
     return (
         <div className={classes.RoomLpStake}>
             {
-                userCurrentNftTire === -1 && (
-                    'Buy some Nfts'
+                !accountContext.account && (
+                    <div className={classes.ConnectWrap}>
+                        <ConnectButton/>
+                    </div>
                 )
             }
             {
-                userCurrentNftTire !== -1 && (
+                accountContext.account && (
                     <>
-                        <div className={classes.NftImgWrap}>
-                            <img src={nftImages[userCurrentNftTire]}/>
-                        </div>
-                        <div className={classes.StakeCards}>
-                            <div className={classes.EarnCard}
-                                 key={'$ROOM-Earned'}>
-                                <div className={classes.EarnCard__Icon}></div>
-                                <div className={classes.EarnCard__Title}>
-                                    {convertAmountToTokens(farmedRoomTokens)}
+                        {
+                            isIniting && (
+                                <div className={classes.IsInitingWrap}>
+                                    <CircularProgress/>
                                 </div>
-                                <div className={classes.EarnCard__SubTitle}>$ROOM Earned</div>
-                                <div className={classes.EarnCard__Action}>
-                                    <Button classes={classes.EarnCard__Action__Btn}
-                                            isDisabled={farmedRoomTokens == 0}
-                                            isProcessing={isHarvestInProgress}
-                                            size={'large'}
-                                            fullWidth={true}
-                                            color="primary"
-                                            onClick={handleHarvest}>
-                                        Claim
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className={classes.EarnCard}
-                                 key={'Staked-RoomLP'}>
-                                <div className={classes.EarnCard__Icon}></div>
-                                <div className={classes.EarnCard__Title}>
-                                    {convertAmountToTokens(stackedRoomTokensWithNftStakeContract)}
-                                </div>
-                                <div className={classes.EarnCard__SubTitle}>Staked Tokens</div>
-                                <div
-                                    className={clsx(classes.EarnCard__Action, {
-                                        [classes.EarnCard__Action_Two]: isRoomTokenApprovedForNftStakeContract && isNftTokenApprovedForNftStakeContract && stackedRoomTokensWithNftStakeContract > 0
-                                    })}>
+                            )
+                        }
+                        {
+                            !isIniting && (
+                                <>
                                     {
-                                        isRoomTokenApprovedForNftStakeContract && isNftTokenApprovedForNftStakeContract && (
+                                        userCurrentNftTire === -1 && (
+                                            <div
+                                                className={classes.buyNftWrap}>
+                                                <Link to="/nft"
+                                                      className={classes.buyNft}>
+                                                    Buy some Nfts
+                                                </Link>
+                                            </div>
+                                        )
+                                    }
+                                    {
+                                        userCurrentNftTire !== -1 && (
                                             <>
-                                                {
-                                                    stackedRoomTokensWithNftStakeContract > 0 && (
-                                                        <>
-                                                            <Button className={classes.EarnCard__Action__Btn}
+                                                <div className={classes.NftImgWrap}>
+                                                    <img src={nftImages[userCurrentNftTire]}/>
+                                                </div>
+                                                <div className={classes.StakeCards}>
+                                                    <div className={classes.EarnCard}
+                                                         key={'ROOM-Earned'}>
+                                                        <div className={classes.EarnCard__Icon}></div>
+                                                        <div className={classes.EarnCard__Title}>
+                                                            {convertAmountToTokens(farmedRoomTokens)}
+                                                        </div>
+                                                        <div className={classes.EarnCard__SubTitle}>ROOM Earned</div>
+                                                        <div className={classes.EarnCard__Action}>
+                                                            <Button classes={classes.EarnCard__Action__Btn}
+                                                                    isDisabled={farmedRoomTokens == 0}
+                                                                    isProcessing={isHarvestInProgress}
                                                                     size={'large'}
+                                                                    fullWidth={true}
                                                                     color="primary"
-                                                                    isDisabled={stackedRoomTokensWithNftStakeContract == 0}
-                                                                    onClick={openUnstakeModal}>
-                                                                Unstake
+                                                                    onClick={handleHarvest}>
+                                                                Claim
                                                             </Button>
-                                                            <Button classes={classes.EarnCard__Action__Btn_Add}
-                                                                    color={'black'}
-                                                                    size={'large'}
-                                                                    onClick={handleShowDepositModal}>
-                                                                <AddIcon
-                                                                    className={classes.EarnCard__Action__Btn_Add__Icon}></AddIcon>
-                                                            </Button>
-                                                        </>
-                                                    )
-                                                }
-                                                {
-                                                    stackedRoomTokensWithNftStakeContract == 0 && (
-                                                        <Button size={'large'}
-                                                                color="primary"
-                                                                onClick={handleShowDepositModal}
-                                                                className={classes.EarnCard__Action__Btn}
-                                                                fullWidth={true}>
-                                                            Stake
-                                                        </Button>
-                                                    )
-                                                }
+                                                        </div>
+                                                    </div>
+                                                    <div className={classes.EarnCard}
+                                                         key={'Staked-RoomLP'}>
+                                                        <div className={classes.EarnCard__Icon}></div>
+                                                        <div className={classes.EarnCard__Title}>
+                                                            {convertAmountToTokens(stackedRoomTokensWithNftStakeContract)}
+                                                        </div>
+                                                        <div className={classes.EarnCard__SubTitle}>Staked Tokens</div>
+                                                        <div
+                                                            className={clsx(classes.EarnCard__Action, {
+                                                                [classes.EarnCard__Action_Two]: isRoomTokenApprovedForNftStakeContract && isNftTokenApprovedForNftStakeContract && stackedRoomTokensWithNftStakeContract > 0
+                                                            })}>
+                                                            {
+                                                                isRoomTokenApprovedForNftStakeContract && isNftTokenApprovedForNftStakeContract && (
+                                                                    <>
+                                                                        {
+                                                                            stackedRoomTokensWithNftStakeContract > 0 && (
+                                                                                <>
+                                                                                    <Button
+                                                                                        className={classes.EarnCard__Action__Btn}
+                                                                                        size={'large'}
+                                                                                        color="primary"
+                                                                                        isDisabled={stackedRoomTokensWithNftStakeContract == 0}
+                                                                                        onClick={openUnstakeModal}>
+                                                                                        Unstake
+                                                                                    </Button>
+                                                                                    <Button
+                                                                                        className={classes.EarnCard__Action__Btn_Add}
+                                                                                        size={'large'}
+                                                                                        onClick={handleShowDepositModal}>
+                                                                                        <AddIcon
+                                                                                            className={classes.EarnCard__Action__Btn_Add__Icon}></AddIcon>
+                                                                                    </Button>
+                                                                                </>
+                                                                            )
+                                                                        }
+                                                                        {
+                                                                            stackedRoomTokensWithNftStakeContract == 0 && (
+                                                                                <Button size={'large'}
+                                                                                        color="primary"
+                                                                                        onClick={handleShowDepositModal}
+                                                                                        className={classes.EarnCard__Action__Btn}
+                                                                                        fullWidth={true}>
+                                                                                    Stake
+                                                                                </Button>
+                                                                            )
+                                                                        }
+                                                                    </>
+                                                                )
+                                                            }
+                                                            {
+                                                                !isRoomTokenApprovedForNftStakeContract ? (
+                                                                    <Button size={'large'}
+                                                                            color="primary"
+                                                                            onClick={handleApprovingRoomTokenForNftStakeContract}
+                                                                            className={classes.EarnCard__Action__Btn}
+                                                                            fullWidth={true}
+                                                                            isProcessing={isApprovingRoomTokenForNftStakeContract}>
+                                                                        Approve ROOM
+                                                                    </Button>
+                                                                ) : (
+                                                                    !isNftTokenApprovedForNftStakeContract ? (
+                                                                        <Button size={'large'}
+                                                                                color="primary"
+                                                                                onClick={handleApprovingNftTokenForNftTokenContract}
+                                                                                className={classes.EarnCard__Action__Btn}
+                                                                                fullWidth={true}
+                                                                                isProcessing={isApprovingNftTokenForNftStakeContract}>
+                                                                            Approve NFT
+                                                                        </Button>
+                                                                    ) : (
+                                                                        null
+                                                                    )
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <DepositModal open={isDepositModalOpen}
+                                                                  onClose={() => setIsDepositModalOpen(false)}
+                                                                  onStake={handleOnStake}
+                                                                  userRoomLPTokens={userRoomTokenBalance}
+                                                                  nftTire={userCurrentNftTire}
+                                                                  type={'nftStake'}/>
+                                                    <UnstakeModal open={isUnstakeModalOpen}
+                                                                  onClose={() => setIsUnstakeModalOpen(false)}
+                                                                  onUnStake={handleOnUnStake}
+                                                                  stakedTokensBalance={stackedRoomTokensWithNftStakeContract}
+                                                                  nftTire={userCurrentNftTire}
+                                                                  type={'nftStake'}/>
+                                                </div>
                                             </>
                                         )
                                     }
-                                    {
-                                        !isRoomTokenApprovedForNftStakeContract ? (
-                                            <Button size={'large'}
-                                                    color="primary"
-                                                    onClick={handleApprovingRoomTokenForNftStakeContract}
-                                                    className={classes.EarnCard__Action__Btn}
-                                                    fullWidth={true}
-                                                    isProcessing={isApprovingRoomTokenForNftStakeContract}>
-                                                Approve $ROOM
-                                            </Button>
-                                        ) : (
-                                            !isNftTokenApprovedForNftStakeContract ? (
-                                                <Button size={'large'}
-                                                        color="primary"
-                                                        onClick={handleApprovingNftTokenForNftTokenContract}
-                                                        className={classes.EarnCard__Action__Btn}
-                                                        fullWidth={true}
-                                                        isProcessing={isApprovingNftTokenForNftStakeContract}>
-                                                    Approve NFT
-                                                </Button>
-                                            ) : (
-                                                null
-                                            )
-                                        )
-                                    }
-                                </div>
-                            </div>
-                            <DepositModal open={isDepositModalOpen}
-                                          onClose={() => setIsDepositModalOpen(false)}
-                                          onStake={handleOnStake}
-                                          userRoomLPTokens={userRoomTokenBalance}
-                                          nftTire={userCurrentNftTire}
-                                          type={'nftStake'}/>
-                            <UnstakeModal open={isUnstakeModalOpen}
-                                          onClose={() => setIsUnstakeModalOpen(false)}
-                                          onUnStake={handleOnUnStake}
-                                          stakedTokensBalance={stackedRoomTokensWithNftStakeContract}
-                                          nftTire={userCurrentNftTire}
-                                          type={'nftStake'}/>
-                        </div>
+                                </>
+                            )
+                        }
                     </>
                 )
             }

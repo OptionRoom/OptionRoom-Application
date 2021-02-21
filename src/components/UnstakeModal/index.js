@@ -45,7 +45,6 @@ function UnstakeModal(props) {
         }
 
         const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-        console.log("amountToUnstakeResult === stakedTokensBalance", amountToUnstakeResult === stakedTokensBalance, amountToUnstakeResult, stakedTokensBalance)
         return amountToUnstakeResult.eq(BigNumber.from(stakedTokensBalance));
     }
 
@@ -69,7 +68,22 @@ function UnstakeModal(props) {
             const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
 
             if (type === 'nftStake') {
+                let exitG = false;
+                if (exit) {
+                    exitG = true;
+                    handleSetMax();
+                }
+
+                if (BigNumber.from(amountToUnstakeResult).eq(BigNumber.from(stakedTokensBalance))) {
+                    exitG = true;
+                    setExit(true);
+                }
+
                 await roomLPFarmingAPIs.unstakeNftStakeContractForTire(accountContext.account, nftTire, amountToUnstakeResult, claim);
+
+                if (exitG) {
+                    await roomLPFarmingAPIs.exitNftStakeContractForTire(accountContext.account, nftTire);
+                }
             } else {
                 await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
             }
@@ -85,7 +99,7 @@ function UnstakeModal(props) {
 
     const checkValidAmount = () => {
         const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-        if (amountToUnstake === 0 || amountToUnstakeResult > stakedTokensBalance) {
+        if (amountToUnstake === 0 || BigNumber.from(amountToUnstakeResult).gt(BigNumber.from(stakedTokensBalance))) {
             setIsInvalidAmountError(true);
             return false;
         }
@@ -137,7 +151,13 @@ function UnstakeModal(props) {
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
-                    When unreachable, forward calls to a specific number.
+                    {
+                        type === 'nftStake' ? (
+                            'Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake'
+                        ) : (
+                            'Unstake your ROOM tokens and claim rewards'
+                        )
+                    }
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available <span

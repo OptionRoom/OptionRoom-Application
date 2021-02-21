@@ -12,6 +12,8 @@ import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import swal from "sweetalert";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
+import room_eth_lp_staking from '../../assets/room_eth_lp_staking.png';
+import room_icon from '../../assets/room-icon.png';
 
 function RoomLpStake(props) {
     const accountContext = useContext(AccountContext);
@@ -111,12 +113,14 @@ function RoomLpStake(props) {
     return (
         <div className={classes.RoomLpStake}>
             <div className={classes.EarnCard}
-                 key={'$ROOM-Earned'}>
-                <div className={classes.EarnCard__Icon}></div>
+                 key={'ROOM-Earned'}>
+                <div className={classes.EarnCard__Icon}>
+                    <img width={'100%'} src={room_icon}/>
+                </div>
                 <div className={classes.EarnCard__Title}>
                     {convertAmountToTokens(farmedRoomTokens)}
                 </div>
-                <div className={classes.EarnCard__SubTitle}>$ROOM Earned</div>
+                <div className={classes.EarnCard__SubTitle}>ROOM Earned</div>
                 <div className={classes.EarnCard__Action}>
                     <Button classes={classes.EarnCard__Action__Btn}
                             isDisabled={farmedRoomTokens == 0}
@@ -131,11 +135,13 @@ function RoomLpStake(props) {
             </div>
             <div className={classes.EarnCard}
                  key={'Staked-RoomLP'}>
-                <div className={classes.EarnCard__Icon}></div>
+                <div className={classes.EarnCard__Icon}>
+                    <img width={'100%'} src={room_eth_lp_staking}/>
+                </div>
                 <div className={classes.EarnCard__Title}>
                     {convertAmountToTokens(stackedRoomLPTokens)}
                 </div>
-                <div className={classes.EarnCard__SubTitle}>Staked RoomLP</div>
+                <div className={classes.EarnCard__SubTitle}>Staking ROOM-EHT LP</div>
                 <div
                     className={clsx(classes.EarnCard__Action, {
                         [classes.EarnCard__Action_Two]: userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0

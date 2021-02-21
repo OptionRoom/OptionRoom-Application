@@ -9,7 +9,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { CircularProgress } from '@material-ui/core';
+import {CircularProgress} from '@material-ui/core';
 
 import {useStyles} from './styles'
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -44,7 +44,7 @@ function DepositModal(props) {
 
         try {
             const tokensAmount = convertTokensToAmount(tokensCount);
-            if(type === 'nftStake') {
+            if (type === 'nftStake') {
                 await roomLPFarmingAPIs.stakeNftStakeContractForTire(accountContext.account, nftTire, tokensAmount);
             } else {
                 await roomLPFarmingAPIs.stackRoomLPTokens(accountContext.account, tokensAmount);
@@ -106,7 +106,7 @@ function DepositModal(props) {
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
-                    When unreachable, forward calls to a specific number.
+                    Deposit your ROOM-ETH LP tokens for staking
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available <span

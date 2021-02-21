@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -11,6 +11,7 @@ import Logo from '../../assets/logo.png';
 import {
     NavLink,
 } from "react-router-dom";
+import {AccountContext} from "../../shared/AccountContextProvider";
 
 const LiquidityIcon = () => {
     return (
@@ -47,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
     },
     drawerPaper: {
         background: '#EDEFF4',
+        borderRight: 'none'
+    },
+    drawerPaper___Black: {
+        background: '#000',
         borderRight: 'none'
     },
     drawerOpen: {
@@ -128,6 +133,7 @@ function Sidebar() {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
+    const accountContext = useContext(AccountContext);
 
     const handleDrawerClose = () => {
         setOpen(!open);
@@ -144,6 +150,7 @@ function Sidebar() {
                 paper: clsx(classes.drawerPaper, {
                     [classes.drawerOpen]: open,
                     [classes.drawerClose]: !open,
+                    [classes.drawerPaper___Black]: accountContext.theme === 'black',
                 }),
             }}
         >
@@ -164,13 +171,18 @@ function Sidebar() {
                             icon: GovernanceIcon
                         },*/
                         {
-                            title: 'Liquidity Pool',
+                            title: 'Liquidity Farming',
                             link: '/liquidity-mining',
                             icon: LiquidityIcon
                         },
                         {
-                            title: 'NFT',
+                            title: 'Get NFTs',
                             link: '/nft',
+                            icon: NftIcon
+                        },
+                        {
+                            title: 'NFT Staking',
+                            link: '/nft-stake',
                             icon: NftIcon
                         },
                         /*{
@@ -192,7 +204,11 @@ function Sidebar() {
                         <NavLink to={item.link}
                                  activeClassName={'Active'}
                                  key={`menut-item${index}`}
-                                 className={classes.NavLink}>
+                                 className={
+                                     clsx(classes.NavLink, {
+                                         [classes.NavLink___Black]: accountContext.theme === 'black',
+                                     })
+                                 }>
                             {item.icon()}
                             <span className={
                                 clsx(classes.NavLink__Title, {
