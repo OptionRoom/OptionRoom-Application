@@ -18,7 +18,9 @@ import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper'
 
 function DepositModal(props) {
     const {
-        userRoomLPTokens
+        userRoomLPTokens,
+        type,
+        nftTire
     } = props;
 
     const accountContext = useContext(AccountContext);
@@ -42,10 +44,16 @@ function DepositModal(props) {
 
         try {
             const tokensAmount = convertTokensToAmount(tokensCount);
-            await roomLPFarmingAPIs.stackRoomLPTokens(accountContext.account, tokensAmount);
+            if(type === 'nftStake') {
+                await roomLPFarmingAPIs.stakeNftStakeContractForTire(accountContext.account, nftTire, tokensAmount);
+            } else {
+                await roomLPFarmingAPIs.stackRoomLPTokens(accountContext.account, tokensAmount);
+            }
+
             setIsConfirmProcessing(false);
             props.onStake();
             props.onClose();
+
         } catch (e) {
             setIsConfirmProcessing(false);
         }
@@ -54,7 +62,7 @@ function DepositModal(props) {
     const checkValidAmount = () => {
         const availableTokens = convertAmountToTokens(userRoomLPTokens);
 
-        if (tokensCount == 0 || tokensCount > availableTokens) {
+        if (tokensCount == 0 || parseFloat(tokensCount) > parseFloat(availableTokens)) {
             setIsInvalidAmountError(true);
             return false;
         }
@@ -109,7 +117,6 @@ function DepositModal(props) {
                         value={tokensCount}
                         onChange={(e) => {
                             setTokensCount(e.target.value);
-                            checkValidAmount();
                         }}
                         className={clsx(classes.Modal__TokensInput, {
                             [classes.Modal__TokensInput__HasError]: isInvalidAmountError

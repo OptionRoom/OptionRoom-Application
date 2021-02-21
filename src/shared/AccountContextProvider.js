@@ -58,12 +58,15 @@ const AccountContextProvider = (props) => {
         const provider = await web3ModalInstance.connect();
         provider.on("close", handleDisconnect);
 
+
         provider.on("accountsChanged", async (accounts) => {
+            console.log("accounts", accounts);
             setAccount(accounts[0]);
         });
 
         provider.on("chainChanged", async (chainId) => {
             const networkId = await web3Instance.eth.net.getId();
+            console.log("chainId, networkId",chainId, networkId);
             setChainId(chainId);
             setNetworkId(networkId);
         });
@@ -72,6 +75,9 @@ const AccountContextProvider = (props) => {
             const chainId = await web3Instance.eth.chainId();
             setChainId(chainId);
             setNetworkId(networkId);
+
+            console.log("networkId, chainId",networkId, chainId);
+
         });
 
         const newWeb3 = initWeb3(provider);

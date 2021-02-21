@@ -15,10 +15,13 @@ import {useStyles} from './styles'
 import {AccountContext} from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from '../../shared/contracts/RoomLPFarmingAPIs';
 import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper';
+import {BigNumber} from "@ethersproject/bignumber";
 
 function UnstakeModal(props) {
     const {
-        stakedTokensBalance
+        stakedTokensBalance,
+        type,
+        nftTire
     } = props;
 
     const accountContext = useContext(AccountContext);
@@ -26,6 +29,7 @@ function UnstakeModal(props) {
     const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
     const [amountToUnstake, setAmountToUnstake] = useState(0);
     const [claim, setClaim] = useState(true);
+    const [exit, setExit] = useState(false);
     const [isInvalidAmountError, setIsInvalidAmountError] = useState(false);
     const [isUnstakeProcessing, setIsUnstakeProcessing] = useState(false);
 
@@ -34,6 +38,25 @@ function UnstakeModal(props) {
     const handleClose = () => {
         props.onClose();
     };
+
+    const isInputNumberDisabled = () => {
+        if (type !== 'nftStake') {
+            return false;
+        }
+
+        const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
+        console.log("amountToUnstakeResult === stakedTokensBalance", amountToUnstakeResult === stakedTokensBalance, amountToUnstakeResult, stakedTokensBalance)
+        return amountToUnstakeResult.eq(BigNumber.from(stakedTokensBalance));
+    }
+
+    const isExitCheckboxDisabled = () => {
+        if (type !== 'nftStake') {
+            return false;
+        }
+
+        const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
+        return amountToUnstakeResult === stakedTokensBalance;
+    }
 
     const handleConfirm = async () => {
         if (!checkValidAmount()) {
@@ -44,19 +67,25 @@ function UnstakeModal(props) {
 
         try {
             const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-            await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
-            setIsUnstakeProcessing(false);
+
+            if (type === 'nftStake') {
+                await roomLPFarmingAPIs.unstakeNftStakeContractForTire(accountContext.account, nftTire, amountToUnstakeResult, claim);
+            } else {
+                await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
+            }
+
             props.onUnStake();
             props.onClose();
+
         } catch (e) {
+        } finally {
             setIsUnstakeProcessing(false);
         }
     };
 
     const checkValidAmount = () => {
         const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-
-        if (amountToUnstakeResult === 0 || amountToUnstakeResult > stakedTokensBalance) {
+        if (amountToUnstake === 0 || amountToUnstakeResult > stakedTokensBalance) {
             setIsInvalidAmountError(true);
             return false;
         }
@@ -73,6 +102,10 @@ function UnstakeModal(props) {
 
     const handleClaimChange = (event) => {
         setClaim(event.target.checked);
+    };
+
+    const handleExitChange = (event) => {
+        setExit(event.target.checked);
     };
 
     return (
@@ -115,7 +148,6 @@ function UnstakeModal(props) {
                         value={amountToUnstake}
                         onChange={(e) => {
                             setAmountToUnstake(e.target.value);
-                            checkValidAmount();
                         }}
                         className={clsx(classes.Modal__TokensInput, {
                             [classes.Modal__TokensInput__HasError]: isInvalidAmountError
@@ -128,7 +160,16 @@ function UnstakeModal(props) {
                 {
                     isInvalidAmountError && (
                         <div className={classes.Modal__TokensErrorHelp}>
-                            Invalid amount, it must be between 1 and {convertAmountToTokens(stakedTokensBalance)}
+                            {
+                                convertAmountToTokens(stakedTokensBalance) === '1.0' && (
+                                    `Invalid amount, it must be 1`
+                                )
+                            }
+                            {
+                                convertAmountToTokens(stakedTokensBalance) !== '1.0' && (
+                                    `Invalid amount, it must be between 1 and ${convertAmountToTokens(stakedTokensBalance)}`
+                                )
+                            }
                         </div>
                     )
                 }
@@ -140,6 +181,15 @@ function UnstakeModal(props) {
                         inputProps={{'aria-label': 'claim rewards'}}
                     />
                     <span className={classes.ClaimLabel}>Claim rewards?</span>
+                </div>
+                <div className={classes.ClaimWrap}>
+                    <Checkbox
+                        checked={exit}
+                        onChange={handleExitChange}
+                        color="primary"
+                        inputProps={{'aria-label': 'claim rewards'}}
+                    />
+                    <span className={classes.ClaimLabel}>Exit pool and withdraw NFT?</span>
                 </div>
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
