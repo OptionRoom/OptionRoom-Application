@@ -3,7 +3,8 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+    Redirect
 } from "react-router-dom";
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -74,23 +75,23 @@ function App() {
                             [classes.Main__Content___Golden]: accountContext.background === 'golden',
                         })}>
                             <Switch>
-                                <Route path="/claim">
+{/*                                <Route path="/claim">
                                     <Claim/>
-                                </Route>
+                                </Route>*/}
                                 <Route path="/liquidity-mining">
                                     <LiquidityMining/>
                                 </Route>
-                                <Route path="/connection-test">
+{/*                                <Route path="/connection-test">
                                     <ConnectionTest/>
-                                </Route>
+                                </Route>*/}
                                 <Route path="/nft">
                                     <Nft/>
                                 </Route>
                                 <Route path="/nft-stake">
                                     <NftStakePage/>
                                 </Route>
-                                <Route path="/">
-                                    <Home></Home>
+                                <Route exact path="/">
+                                    <Redirect to="/liquidity-mining" />
                                 </Route>
                             </Switch>
                         </div>

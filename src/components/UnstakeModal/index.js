@@ -68,21 +68,10 @@ function UnstakeModal(props) {
             const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
 
             if (type === 'nftStake') {
-                let exitG = false;
-                if (exit) {
-                    exitG = true;
-                    handleSetMax();
-                }
-
                 if (BigNumber.from(amountToUnstakeResult).eq(BigNumber.from(stakedTokensBalance))) {
-                    exitG = true;
-                    setExit(true);
-                }
-
-                await roomLPFarmingAPIs.unstakeNftStakeContractForTire(accountContext.account, nftTire, amountToUnstakeResult, claim);
-
-                if (exitG) {
                     await roomLPFarmingAPIs.exitNftStakeContractForTire(accountContext.account, nftTire);
+                } else {
+                    await roomLPFarmingAPIs.unstakeNftStakeContractForTire(accountContext.account, nftTire, amountToUnstakeResult, claim);
                 }
             } else {
                 await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
@@ -200,21 +189,8 @@ function UnstakeModal(props) {
                         color="primary"
                         inputProps={{'aria-label': 'claim rewards'}}
                     />
-                    <span className={classes.ClaimLabel}>Claim rewards?</span>
+                    <span className={classes.ClaimLabel}>Claim rewards</span>
                 </div>
-                {
-                    type === 'nftStake' && (
-                        <div className={classes.ClaimWrap}>
-                            <Checkbox
-                                checked={exit}
-                                onChange={handleExitChange}
-                                color="primary"
-                                inputProps={{'aria-label': 'claim rewards'}}
-                            />
-                            <span className={classes.ClaimLabel}>Exit pool and withdraw NFT?</span>
-                        </div>
-                    )
-                }
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button className={classes.MuiDialogActions__CancelBtn}

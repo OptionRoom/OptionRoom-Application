@@ -204,7 +204,7 @@ function NftStake(props) {
 
     const handleShowDepositModal = async () => {
         if (userRoomTokenBalance === 0) {
-            swal("Insufficient fund", `You must hold at least 1 ROOM Tokens`, "error");
+            swal("Insufficient funds", `You must hold at least 1 ROOM Tokens`, "error");
             return;
         }
 

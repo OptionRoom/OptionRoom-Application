@@ -14,3 +14,6 @@ export const nftImages = {
     3: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/pyramid.jpg',
     4: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/citadel.jpg',
 };
+
+export const controlledNetworkId = "mainnet";
+//export const controlledNetworkId = "ropsten";

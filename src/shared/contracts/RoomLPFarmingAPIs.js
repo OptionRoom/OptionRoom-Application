@@ -3,17 +3,17 @@ import {getRoomLPTokenContract} from './RoomLPTokenContract';
 import {getRoomLPStakingContract} from './RoomLPStakingContract';
 import {getNftStakeContract} from './NftStakeContract';
 import {getNftTokenContract} from './NftTokenContract';
-import {MaxUint256} from '../../shared/constants';
+import {MaxUint256, controlledNetworkId} from '../../shared/constants';
 
 class RoomLPFarmingAPIs {
     constructor(chainId, web3) {
-        this.chainId = chainId;
+        this.chainId = controlledNetworkId;
         this.web3 = web3;
-        this.roomTokenContract = getRoomTokenContract(chainId, web3);
-        this.roomLPTokenContract = getRoomLPTokenContract(chainId, web3);
-        this.roomLPStakingContract = getRoomLPStakingContract(chainId, web3);
-        this.nftStakeContract = getNftStakeContract(chainId, web3);
-        this.nftTokenContract = getNftTokenContract(chainId, web3);
+        this.roomTokenContract = getRoomTokenContract(controlledNetworkId, web3);
+        this.roomLPTokenContract = getRoomLPTokenContract(controlledNetworkId, web3);
+        this.roomLPStakingContract = getRoomLPStakingContract(controlledNetworkId, web3);
+        this.nftStakeContract = getNftStakeContract(controlledNetworkId, web3);
+        this.nftTokenContract = getNftTokenContract(controlledNetworkId, web3);
     }
 
     async getUserRoomTokenBalance(address) {

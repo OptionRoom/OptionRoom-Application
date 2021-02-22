@@ -1,231 +1,4 @@
 export const getRoomLPStakingContract = (chainId, web3) => {
-/*    const ropstenContract = {
-        address: "0xbEd63701BA46d9B461b2A423723dea5796e82e5b",
-        abi: [{
-            "inputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-        }, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }, {"indexed": false, "internalType": "uint256", "name": "reward", "type": "uint256"}],
-            "name": "ClaimReward",
-            "type": "event"
-        }, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": false,
-                "internalType": "address",
-                "name": "oldAddress",
-                "type": "address"
-            }, {"indexed": false, "internalType": "address", "name": "newAddress", "type": "address"}],
-            "name": "CourtStakeChanged",
-            "type": "event"
-        }, {"anonymous": false, "inputs": [], "name": "RoomTokenWalletEmpty", "type": "event"}, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}, {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "lockTime",
-                "type": "uint256"
-            }],
-            "name": "StakeRewards",
-            "type": "event"
-        }, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}],
-            "name": "Staked",
-            "type": "event"
-        }, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "rewardPerBlock",
-                "type": "uint256"
-            }, {"indexed": false, "internalType": "uint256", "name": "rewardBlockCount", "type": "uint256"}],
-            "name": "StakingParametersChanged",
-            "type": "event"
-        }, {
-            "anonymous": false,
-            "inputs": [{
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}],
-            "name": "Unstaked",
-            "type": "event"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "_finishBlock",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-            "name": "balanceOf",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "blockNumber",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [{
-                "internalType": "uint256",
-                "name": "rewardPerBlock",
-                "type": "uint256"
-            }, {"internalType": "uint256", "name": "rewardBlockCount", "type": "uint256"}, {
-                "internalType": "address",
-                "name": "roomTokenRewardsReservoirAddress",
-                "type": "address"
-            }],
-            "name": "changeFarmingParameters",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [],
-            "name": "claimReward",
-            "outputs": [{"internalType": "uint256", "name": "reward", "type": "uint256"}, {
-                "internalType": "uint8",
-                "name": "reason",
-                "type": "uint8"
-            }],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "currentBlockNumer",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}],
-            "name": "expectedRewardsToday",
-            "outputs": [{"internalType": "uint256", "name": "reward", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [{"internalType": "uint256", "name": "count", "type": "uint256"}],
-            "name": "increasBlockNumber",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "info",
-            "outputs": [{
-                "internalType": "uint256",
-                "name": "cBlockNumber",
-                "type": "uint256"
-            }, {"internalType": "uint256", "name": "rewardPerBlock", "type": "uint256"}, {
-                "internalType": "uint256",
-                "name": "rewardFinishBlock",
-                "type": "uint256"
-            }, {"internalType": "uint256", "name": "walletBalance", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-            "name": "rewards",
-            "outputs": [{"internalType": "uint256", "name": "reward", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "roomLPToken",
-            "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "roomToken",
-            "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}],
-            "name": "stake",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, {
-            "constant": true,
-            "inputs": [],
-            "name": "totalSupply",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}, {
-                "internalType": "bool",
-                "name": "claim",
-                "type": "bool"
-            }],
-            "name": "unstake",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }, {
-            "constant": false,
-            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-            "name": "updateReward",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        }]
-    };*/
-
     const ropstenContract = {
         address: "0x462ff8527f625f2b1837d4ed5a410a54a9fa381d",
         abi: [{
@@ -482,12 +255,269 @@ export const getRoomLPStakingContract = (chainId, web3) => {
             "type": "function"
         }]
     };
-    if (chainId === "main") {
 
-    }
+
+    const mainContract = {
+        address: "0x94c238362a5217545a7e2c96fa571471265cc1bc",
+        abi: [{
+            "inputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        }, {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }, {"indexed": false, "internalType": "uint256", "name": "reward", "type": "uint256"}],
+            "name": "ClaimReward",
+            "type": "event"
+        }, {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "rewardPerBlock",
+                "type": "uint256"
+            }, {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "rewardBlockCount",
+                "type": "uint256"
+            }, {"indexed": true, "internalType": "address", "name": "roomTokenRewardsReservoirAdd", "type": "address"}],
+            "name": "FarmingParametersChanged",
+            "type": "event"
+        }, {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": false,
+                "internalType": "enum RoomLPProgram.TransferRewardState",
+                "name": "failure",
+                "type": "uint8"
+            }],
+            "name": "RewardTransferFailed",
+            "type": "event"
+        }, {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}],
+            "name": "Staked",
+            "type": "event"
+        }, {
+            "anonymous": false,
+            "inputs": [{
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}],
+            "name": "Unstaked",
+            "type": "event"
+        }, {
+            "constant": true,
+            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+            "name": "balanceOf",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "blockIncreased",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "blockNumber",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{
+                "internalType": "uint256",
+                "name": "rewardPerBlock",
+                "type": "uint256"
+            }, {"internalType": "uint256", "name": "rewardBlockCount", "type": "uint256"}, {
+                "internalType": "address",
+                "name": "roomTokenRewardsReservoirAdd",
+                "type": "address"
+            }],
+            "name": "changeFarmingParameters",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [],
+            "name": "claimReward",
+            "outputs": [{
+                "internalType": "uint256",
+                "name": "reward",
+                "type": "uint256"
+            }, {"internalType": "enum RoomLPProgram.TransferRewardState", "name": "reason", "type": "uint8"}],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "endTime",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}],
+            "name": "expectedRewardsToday",
+            "outputs": [{"internalType": "uint256", "name": "reward", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "finishBlock",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{"internalType": "uint256", "name": "count", "type": "uint256"}],
+            "name": "increaseBlock",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "info",
+            "outputs": [{
+                "internalType": "uint256",
+                "name": "cBlockNumber",
+                "type": "uint256"
+            }, {"internalType": "uint256", "name": "rewardPerBlock", "type": "uint256"}, {
+                "internalType": "uint256",
+                "name": "rewardFinishBlock",
+                "type": "uint256"
+            }, {"internalType": "uint256", "name": "rewardEndTime", "type": "uint256"}, {
+                "internalType": "uint256",
+                "name": "walletBalance",
+                "type": "uint256"
+            }],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "lastUpdateBlock",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "owner",
+            "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+            "name": "rewards",
+            "outputs": [{"internalType": "uint256", "name": "reward", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "roomLPToken",
+            "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "roomToken",
+            "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "roomTokenRewardsReservoirAddress",
+            "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}],
+            "name": "stake",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": true,
+            "inputs": [],
+            "name": "totalStaked",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}, {
+                "internalType": "bool",
+                "name": "claim",
+                "type": "bool"
+            }],
+            "name": "unstake",
+            "outputs": [{
+                "internalType": "uint256",
+                "name": "reward",
+                "type": "uint256"
+            }, {"internalType": "enum RoomLPProgram.TransferRewardState", "name": "reason", "type": "uint8"}],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }, {
+            "constant": false,
+            "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+            "name": "updateReward",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }]
+    };
+
+    const contract = chainId === "mainnet" ? mainContract : ropstenContract;
 
     return new web3.eth.Contract(
-        ropstenContract.abi,
-        ropstenContract.address
+        contract.abi,
+        contract.address
     );
 }

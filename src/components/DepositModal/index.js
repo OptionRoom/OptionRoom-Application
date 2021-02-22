@@ -106,7 +106,9 @@ function DepositModal(props) {
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
-                    Deposit your ROOM-ETH LP tokens for staking
+                    {
+                        type === 'nftStake' ? 'Deposit your ROOM tokens for staking' : 'Deposit your ROOM-ETH LP tokens for staking'
+                    }
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available <span

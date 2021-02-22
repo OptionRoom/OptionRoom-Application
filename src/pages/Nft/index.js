@@ -127,12 +127,6 @@ function Nft() {
         const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
 
         const userNftTireBalance = await loadUserNftTireBalance(roomLPFarmingAPIs);
-        /*
-                const availableNftTireBalance = await loadAvailableNftTireBalance(roomLPFarmingAPIs);
-        */
-        /*
-
-        */
         const requiredRoomsForTire = await loadRequiredRoomsForTire(roomLPFarmingAPIs);
         setRequiredRoomsForTire(requiredRoomsForTire);
         setUserCurrentNftTire(findUserCurrentNftTire(userNftTireBalance));
@@ -163,6 +157,9 @@ function Nft() {
     useEffect(async () => {
         if (accountContext.account) {
             setIsIniting(true);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const availableNftTireBalance = await loadAvailableNftTireBalance(roomLPFarmingAPIs);
+            console.log("availableNftTireBalance", availableNftTireBalance);
             await initRoomLPPoolData();
             setIsIniting(false);
         }
@@ -180,7 +177,7 @@ function Nft() {
             const nextNftTire = userCurrentNftTire + 1;
             const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
             const availableNftBalanceOfTheTire = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nextNftTire);
-            if (availableNftBalanceOfTheTire === 0) {
+            if (availableNftBalanceOfTheTire == 0) {
                 setIsUpgradingNftToken(false);
                 swal("Sorry!", `Can't upgrade, the maximum number of NFTs has been minted`, "error");
                 return;
@@ -193,7 +190,7 @@ function Nft() {
 
             if (BigNumber.from(userRoomTokenBalance).lt(BigNumber.from(requiredRoomForNftTire))) {
                 setIsUpgradingNftToken(false);
-                swal("Insufficient fund", `You must hold at least ${convertAmountToTokens(requiredRoomForNftTire)} ROOM Tokens`, "error");
+                swal("Insufficient funds", `You must hold at least ${convertAmountToTokens(requiredRoomForNftTire)} ROOM Tokens`, "error");
                 return;
             }
 

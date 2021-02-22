@@ -2,6 +2,9 @@ import React, {useState, useEffect} from "react";
 import Web3Modal from "web3modal";
 import Web3 from "web3";
 
+import {
+    controlledNetworkId
+} from './constants';
 
 function initWeb3(provider) {
     const web3 = new Web3(provider);
@@ -106,10 +109,7 @@ const AccountContextProvider = (props) => {
 
     useEffect(async () => {
         const web3Modal = new Web3Modal({
-            /*        network: getNetwork(),
-                    cacheProvider: true,
-                    providerOptions: this.getProviderOptions()*/
-            network: "ropsten", // optional
+            network: controlledNetworkId, // optional
             cacheProvider: true, // optional
             providerOptions: {}
         });
