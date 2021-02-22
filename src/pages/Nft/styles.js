@@ -14,11 +14,18 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 auto'
     },
     FirstNft__ImageWrap: {
-        marginBottom: '44px',
+        marginBottom: '20px',
         textAlign: 'center'
     },
     FirstNft__ImageWrap__Img: {
         width: '207px'
+    },
+    FirstNft__Remaining: {
+        color: '#FFF',
+        textAlign: 'center',
+        marginBottom: '20px',
+        fontSize: '20px',
+        fontWeight: 900,
     },
     FirstNft__GetBtn: {
         width: '160px',
@@ -45,7 +52,8 @@ export const useStyles = makeStyles((theme) => ({
         boxShadow: '0 0 30px 0 rgba(0,75,255,0.35)',
         padding: '24px 64px',
         marginBottom: '32px',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexWrap: 'wrap'
     },
     UpgradeNft__Card__Arrow__Wrap: {
         height: '64px',
@@ -78,6 +86,14 @@ export const useStyles = makeStyles((theme) => ({
         '&:hover': {
             boxShadow: '0 0 2px 0px #fff, 0 0 0px 0px #eff, 0 0 130px 14px #004bff'
         }
+    },
+    UpgradeNft__Remaining: {
+        color: '#FFF',
+        textAlign: 'center',
+        margin: '20px 0 0',
+        fontSize: '20px',
+        fontWeight: 900,
+        flex: '100%'
     },
     UpgradeNft__GetBtn: {
         width: '160px',
