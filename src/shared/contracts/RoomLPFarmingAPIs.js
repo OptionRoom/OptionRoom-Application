@@ -22,7 +22,6 @@ class RoomLPFarmingAPIs {
         this.tetherTokenContract = getTetherTokenContract(controlledNetworkId, web3);
     }
 
-
     async getWethPrice(address) {
         const result = await this.tetherTokenContract
             .methods
@@ -153,7 +152,7 @@ class RoomLPFarmingAPIs {
             .call({
                 from: address
             });
-
+        
         const roomPrice = await this.getRoomTokenPrice(address);
         return {
             totalStakedValue: (result / 1e18) * roomPrice,

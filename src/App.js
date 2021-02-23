@@ -1,4 +1,4 @@
-import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
     Switch,
@@ -18,8 +18,8 @@ import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
-import React, {useContext} from "react";
-import {AccountContext} from "./shared/AccountContextProvider";
+import React, { useContext } from "react";
+import { AccountContext } from "./shared/AccountContextProvider";
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
 
@@ -69,7 +69,7 @@ function App() {
 
     return (
         <div>
-            <CssBaseline/>
+            <CssBaseline />
             <ThemeProvider theme={theme}>
                 <Router>
                     <div className={classes.Main}>
@@ -79,20 +79,20 @@ function App() {
                             [classes.Main__Content___Golden]: accountContext.background === 'golden',
                         })}>
                             <Switch>
-{/*                                <Route path="/claim">
+                                {/*                                <Route path="/claim">
                                     <Claim/>
                                 </Route>*/}
                                 <Route path="/liquidity-mining">
-                                    <LiquidityMining/>
+                                    <LiquidityMining />
                                 </Route>
-{/*                                <Route path="/connection-test">
+                                {/*                                <Route path="/connection-test">
                                     <ConnectionTest/>
                                 </Route>*/}
                                 <Route path="/nft">
-                                    <Nft/>
+                                    <Nft />
                                 </Route>
                                 <Route path="/nft-stake">
-                                    <NftStakePage/>
+                                    <NftStakePage />
                                 </Route>
                                 <Route exact path="/">
                                     <Redirect to="/liquidity-mining" />
