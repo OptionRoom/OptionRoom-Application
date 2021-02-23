@@ -3,14 +3,13 @@ import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Logo from '../../assets/logo.png';
-
 import {
     NavLink,
 } from "react-router-dom";
+
+import Logo from '../../assets/logo.png';
+import LogoIcon from '../../assets/room-icon.png';
+import {isMobile} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
 const LiquidityIcon = () => {
@@ -41,10 +40,35 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     drawer: {
-        width: drawerWidth,
         flexShrink: 0,
         whiteSpace: 'nowrap',
-
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            transition: theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+        },
+        '& $LogoIcon': {
+            display: 'none'
+        },
+        '& $Logo': {
+            display: 'block',
+        },
+        width: drawerWidth,
+    },
+    NavLink__Title: {
+        marginLeft: '16px',
+        display: 'block',
+        opacity: 1,
+        transition: theme.transitions.create('opacity', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
     },
     drawerPaper: {
         background: '#EDEFF4',
@@ -54,38 +78,15 @@ const useStyles = makeStyles((theme) => ({
         background: '#000',
         borderRight: 'none'
     },
-    drawerOpen: {
-        width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    },
-    drawerClose: {
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-        overflowX: 'hidden',
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9) + 1,
-        },
-    },
     toolbar: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
+        padding: '40px 24px 28px 24px',
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
     },
     NavLinks: {
-        padding: '16px'
+        padding: '0 16px 16px'
     },
     NavLink: {
         display: 'flex',
@@ -106,33 +107,114 @@ const useStyles = makeStyles((theme) => ({
             }
         },
         '& svg': {
-            marginRight: '16px',
             color: '#8293A6',
             fill: '#8293A6',
         }
     },
-    NavLink__Icon: {
+    /**
+     root: {
+        display: 'flex',
     },
-    NavLink__Title: {
-        opacity: 0,
-        transition: theme.transitions.create('opacity', {
+     drawer: {
+        width: '72px',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+        '& .MuiDrawer-paper': {
+            width: '72px',
+            transition: theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+        },
+        '&:hover': {
+            '& $LogoIcon': {
+                display: 'none'
+            },
+            '& $Logo': {
+                display: 'block',
+            },
+            width: drawerWidth,
+            '& .MuiDrawer-paper': {
+                width: drawerWidth,
+            },
+            '& $NavLink__Title': {
+                display: 'block',
+                opacity: 1,
+                transition: theme.transitions.create('opacity', {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.enteringScreen,
+                }),
+            }
+        },
+        '& $NavLink__Title': {
+            marginLeft: '16px',
+            display: 'none',
+            opacity: 0,
+            transition: theme.transitions.create('opacity', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+        },
+
     },
-    NavLink__Title__Open: {
-        opacity: 1,
-        transition: theme.transitions.create('opacity', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }
+     drawerPaper: {
+        background: '#EDEFF4',
+        borderRight: 'none'
+    },
+     drawerPaper___Black: {
+        background: '#000',
+        borderRight: 'none'
+    },
+     LogoIcon: {
+        width: '24px',
+    },
+     Logo: {
+        display: 'none'
+    },
+     toolbar: {
+        padding: '40px 24px 28px 24px',
+    },
+     content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+    },
+     NavLinks: {
+        padding: '0 16px 16px'
+    },
+     NavLink: {
+        display: 'flex',
+        alignItems: 'center',
+        textDecoration: 'none',
+        color: '#8293A6',
+        fontSize: '14px',
+        marginBottom: '8px',
+        padding: '8px',
+        transition: '0.2s all',
+        '&:hover, &.Active': {
+            borderRadius: '8px',
+            background: '#004BFF',
+            color: '#fff',
+            '& svg': {
+                color: '#fff',
+                fill: '#fff',
+            }
+        },
+        '& svg': {
+            color: '#8293A6',
+            fill: '#8293A6',
+        }
+    },
+     */
 }));
 
 function Sidebar() {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
     const accountContext = useContext(AccountContext);
 
     const handleDrawerClose = () => {
@@ -141,21 +223,23 @@ function Sidebar() {
 
     return (
         <Drawer
-            variant="permanent"
-            className={clsx(classes.drawer, {
-                [classes.drawerOpen]: open,
-                [classes.drawerClose]: !open,
-            })}
+            variant={isMobile() ? "temporary" : "permanent"}
             classes={{
+                root: classes.drawer,
                 paper: clsx(classes.drawerPaper, {
                     [classes.drawerOpen]: open,
                     [classes.drawerClose]: !open,
                     [classes.drawerPaper___Black]: accountContext.theme === 'black',
                 }),
             }}
+            anchor={'left'}
+            open={isMobile() ? accountContext.isSidebarOpen : true}
+            onClose={isMobile() ? () => {accountContext.changeSidebarIsOpen(false);} : () => {}}
         >
             <div className={classes.toolbar}>
-                <img src={Logo} width={'150px'}/>
+                <img src={Logo}
+                     className={classes.Logo}
+                     width={'150px'}/>
             </div>
             <div className={classes.NavLinks}>
                 {

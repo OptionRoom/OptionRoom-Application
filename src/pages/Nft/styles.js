@@ -1,7 +1,18 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    NftPage: {
+    NftPage: {},
+    Stats: {
+        color: "#fff",
+
+/*        marginBottom: "20px",
+        display: 'flex',
+        '& > div': {
+            padding: '10px',
+            marginRight: '5px',
+            background: '#004BFF',
+            borderRadius: "13px"
+        }*/
     },
     IsInitingWrap: {
         display: 'flex',
@@ -41,30 +52,50 @@ export const useStyles = makeStyles((theme) => ({
     },
     //Upgrade
     UpgradeNft: {
-        width: '800px',
-        margin: '0 auto'
+        [theme.breakpoints.up('md')]: {
+            width: '800px',
+            margin: '0 auto',
+        },
     },
     UpgradeNft__Card: {
-        display: 'flex',
-        alignItems: 'center',
         borderRadius: '16px',
         backgroundColor: '#000',
         boxShadow: '0 0 30px 0 rgba(0,75,255,0.35)',
-        padding: '24px 64px',
+        padding: '15px',
         marginBottom: '32px',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap'
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '24px 64px',
+        },
     },
     UpgradeNft__Card__Arrow__Wrap: {
         height: '64px',
         width: '64px',
         backgroundColor: '#000080',
         borderRadius: '50%',
+        margin: '20px auto',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        [theme.breakpoints.up('md')]: {
+            margin: '0',
+            '& $UpgradeNft__Card__Arrow': {
+                display: 'block'
+            },
+            '& $UpgradeNft__Card__Arrow__Down': {
+                display: 'none'
+            },
+        },
     },
     UpgradeNft__Card__Arrow: {
+        fill: '#fff',
+        fontSize: '50px',
+        display: 'none'
+    },
+    UpgradeNft__Card__Arrow__Down: {
         fill: '#fff',
         fontSize: '50px'
     },
@@ -109,8 +140,10 @@ export const useStyles = makeStyles((theme) => ({
     },
     //Last
     LastNft: {
-        width: '400px',
-        margin: '0 auto'
+        [theme.breakpoints.up('md')]: {
+            width: '400px',
+            margin: '0 auto',
+        },
     },
     LastNft__ImageWrap: {
         width: '282px',
@@ -131,13 +164,17 @@ export const useStyles = makeStyles((theme) => ({
     },
     LastNft__Note: {
         color: '#fff',
-        fontSize: '28px',
+        fontSize: '20px',
         letterSpacing: 0,
-        lineHeight: '40px',
         textAlign: 'center',
         fontWeight: 600,
-        borderRadius: '12px',
-        marginBottom: '40px'
+        marginBottom: '20px',
+        [theme.breakpoints.up('md')]: {
+            marginBottom: '40px',
+            fontSize: '28px',
+            letterSpacing: 0,
+            lineHeight: '40px',
+        },
     },
     ///
     StakeWrap: {
@@ -188,15 +225,12 @@ export const useStyles = makeStyles((theme) => ({
             marginRight: '8px'
         }
     },
-    EarnCard__Action__Btn: {
-    },
+    EarnCard__Action__Btn: {},
     EarnCard__Action__Btn_Add__Icon: {
         width: '29px',
         height: '29px'
     },
-    EarnCard__Action__Btn_Add: {
-
-    },
+    EarnCard__Action__Btn_Add: {},
 
     ConnectWrap: {
         textAlign: 'center',

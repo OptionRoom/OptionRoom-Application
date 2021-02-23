@@ -3,6 +3,10 @@ import {formatFixed, parseFixed} from "@ethersproject/bignumber";
 
 import {supportedChains} from './chains';
 
+export const isMobile = () => {
+    return Math.min(window.screen.width, window.screen.height) < 768 || navigator.userAgent.indexOf("Mobi") > -1;
+}
+
 function toFixed(num, fixed) {
     const re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
     return num.toString().match(re)[0];

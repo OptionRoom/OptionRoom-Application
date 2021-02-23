@@ -2,9 +2,23 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     RoomLpStake: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+
+    },
+    Info: {
+      textAlign: 'center',
+      fontSize: "20px",
+      color: "#000",
+      marginBottom: "20px",
+        "& span": {
+          color: "#004BFF"
+        }
+    },
+    RoomLpStake__Cards: {
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
     },
     ///
     EarnCard: {
@@ -12,11 +26,15 @@ export const useStyles = makeStyles((theme) => ({
         backgroundColor: '#FFFFFF',
         boxShadow: '0 0 20px 0 #E6EDFF',
         padding: '40px 16px 24px',
-        marginRight: '48px',
-        width: '288px',
-        '&:last-child': {
-            marginRight: '0',
-        }
+        marginBottom: '20px',
+        [theme.breakpoints.up('md')]: {
+            width: '288px',
+            marginBottom: '0',
+            marginRight: '48px',
+            '&:last-child': {
+                marginRight: '0',
+            },
+        },
     },
     EarnCard__Icon: {
         width: '64px',

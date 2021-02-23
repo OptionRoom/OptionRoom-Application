@@ -1,5 +1,7 @@
 import React, {useEffect} from 'react';
 import clsx from 'clsx';
+import numeral from 'numeral';
+
 import {useState, useContext} from 'react';
 import {
     Link,
@@ -43,9 +45,11 @@ function NftStake(props) {
 
     const [userRoomTokenBalance, setUserRoomTokenBalance] = useState(0);
     const [userCurrentNftTire, setUserCurrentNftTire] = useState(-1);
+    const [poolStats, setPoolStats] = useState({});
 
 
     const findUserCurrentNftTire = (userNftTireBalance, userNftStakeTireBalance) => {
+
         if (userNftStakeTireBalance['4'] > 0) {
             return 4;
         }
@@ -91,7 +95,6 @@ function NftStake(props) {
 
     const initRoomLPPoolData = async () => {
         const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
-
 
         //Check if room is approved for nft stake contract
         const userRoomTokenAllowanceBalanceForNftStakeContract = await roomLPFarmingAPIs.getUserRoomTokenAllowanceBalanceForNftStakeContract(accountContext.account);
@@ -216,6 +219,20 @@ function NftStake(props) {
             setIsIniting(true);
             await initRoomLPPoolData();
             setIsIniting(false);
+
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const pool0__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 0);
+            const pool1__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 1);
+            const pool2__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 2);
+            const pool3__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 3);
+            const pool4__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 4);
+            setPoolStats({
+                0: pool0__staked,
+                1: pool1__staked,
+                2: pool2__staked,
+                3: pool3__staked,
+                4: pool4__staked,
+            })
         }
     }, [accountContext.account]);
 
@@ -263,6 +280,19 @@ function NftStake(props) {
                                     {
                                         userCurrentNftTire !== -1 && (
                                             <>
+                                                {
+                                                    poolStats && poolStats['0'] && (
+                                                        <div className={classes.Stats}>
+                                                            <div>Total value staked: {numeral(
+                                                                poolStats['0'].totalStakedValue+
+                                                                poolStats['1'].totalStakedValue+
+                                                                poolStats['2'].totalStakedValue+
+                                                                poolStats['3'].totalStakedValue+
+                                                                poolStats['4'].totalStakedValue                                                            ).format('$0,0.00')}</div>
+                                                            <div><b>APY: {numeral((poolStats[userCurrentNftTire].apy/100)).format('0%')}</b></div>
+                                                        </div>
+                                                    )
+                                                }
                                                 <div className={classes.NftImgWrap}>
                                                     <img src={nftImages[userCurrentNftTire]}/>
                                                 </div>

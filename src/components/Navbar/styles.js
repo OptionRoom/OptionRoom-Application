@@ -4,11 +4,19 @@ export const useStyles = makeStyles((theme) => ({
     Navbar: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '55px'
+        flexWrap: 'wrap',
+        [theme.breakpoints.up('md')]: {
+            marginBottom: '55px'
+        },
+        marginBottom: '20px'
     },
     Title: {
-        marginRight: 'auto',
-        maxWidth: '500px'
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            marginRight: 'auto',
+            maxWidth: '500px',
+            width: 'auto',
+        },
     },
     Title__Head: {
         fontSize: '28px',
@@ -26,8 +34,33 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         lineHeight: '24px',
     },
+    Actions: {
+        width: '100%',
+        order: -1,
+        display: 'flex',
+        alignItems: 'center',
+        [theme.breakpoints.up('md')]: {
+            order: 1,
+            width: 'auto',
+        },
+    },
+    MenuBtn: {
+        background: '#000',
+        color: "#fff",
+        borderRadius: '5px',
+        width: '36px',
+        height: '36px',
+        marginRight: 'auto',
+        [theme.breakpoints.up('md')]: {
+            display: 'none'
+        },
+    },
+    MenuBtn___Black: {
+        color: "#004BFF",
+        background: '#fff',
+    },
     AccountHolder: {
-        display: 'flex'
+        display: 'flex',
     },
     AccountHolder__Image: {
         marginRight: '5px',

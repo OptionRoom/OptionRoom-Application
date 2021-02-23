@@ -42,12 +42,16 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
     Main: {
-        display: 'flex'
+        [theme.breakpoints.up('md')]: {
+            display: 'flex'
+        },
     },
     Main__Content: {
         'padding': '24px',
-        flexGrow: 1,
-        minHeight: '100vh'
+        minHeight: '100vh',
+        [theme.breakpoints.up('md')]: {
+            flexGrow: 1,
+        },
     },
     Main__Content___Black: {
         backgroundImage: `url(${NftBlue})`,
@@ -69,7 +73,7 @@ function App() {
             <ThemeProvider theme={theme}>
                 <Router>
                     <div className={classes.Main}>
-                        <Sidebar></Sidebar>
+                        <Sidebar className={classes.DesktopSidebar}></Sidebar>
                         <div className={clsx(classes.Main__Content, {
                             [classes.Main__Content___Black]: accountContext.theme === 'black',
                             [classes.Main__Content___Golden]: accountContext.background === 'golden',

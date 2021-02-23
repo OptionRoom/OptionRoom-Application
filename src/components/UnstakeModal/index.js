@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import clsx from 'clsx';
 import {withStyles} from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
+import {BigNumber} from "@ethersproject/bignumber";
 
 import Button from '../Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,7 +16,6 @@ import {useStyles} from './styles'
 import {AccountContext} from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from '../../shared/contracts/RoomLPFarmingAPIs';
 import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper';
-import {BigNumber} from "@ethersproject/bignumber";
 
 function UnstakeModal(props) {
     const {

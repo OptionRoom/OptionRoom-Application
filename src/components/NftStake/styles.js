@@ -1,15 +1,23 @@
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
+    Stats: {
+        textAlign: "center",
+        color: "#fff",
+        marginBottom: "20px",
+        fontSize: "25px"
+    },
     IsInitingWrap: {
         display: 'flex',
         justifyContent: 'center',
         padding: '100px 0'
     },
     StakeCards: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
     },
     ///
     EarnCard: {
@@ -17,17 +25,19 @@ export const useStyles = makeStyles((theme) => ({
         backgroundColor: '#000',
         boxShadow: '0 0 20px 0 #E6EDFF',
         padding: '40px 16px 24px',
-        marginRight: '48px',
-        width: '288px',
-        '&:last-child': {
-            marginRight: '0',
-        }
+        marginBottom: '35px',
+        [theme.breakpoints.up('md')]: {
+            marginBottom: '0',
+            marginRight: '48px',
+            width: '288px',
+            '&:last-child': {
+                marginRight: '0',
+            }
+        },
     },
     EarnCard__Icon: {
         width: '64px',
         height: '64px',
-        //borderRadius: '50%',
-        //background: '#004BFF',
         margin: '0 auto 40px'
     },
     EarnCard__Title: {

@@ -1,3 +1,4 @@
+import numeral from 'numeral';
 import React, {useEffect} from 'react';
 import clsx from 'clsx';
 import {useState, useContext} from 'react';
@@ -29,6 +30,8 @@ function RoomLpStake(props) {
     const [farmedRoomTokens, setFarmedRoomTokens] = useState(0);
     const [stackedRoomLPTokens, setStackedRoomLPTokens] = useState(0);
     const [blockNumber, setBlockNumber] = useState(0);
+
+    const [stats, setStats] = useState({});
 
     const initRoomLPPoolData = async () => {
         const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
@@ -106,99 +109,136 @@ function RoomLpStake(props) {
                 setFarmedRoomTokens(resultFarmedRoomTokens);
                 setBlockNumber(res);
             }, 1000);
+
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomTotalLockedValue = await roomLPFarmingAPIs.getTotalValueLocked(accountContext.account);
+            const roomTotalLiquidity = await roomLPFarmingAPIs.getTotalLiquidity(accountContext.account);
+            const roomApy = await roomLPFarmingAPIs.getLpApy(accountContext.account);
+
+            setStats({
+                roomTotalLockedValue,
+                roomTotalLiquidity,
+                roomApy
+            })
         }
 
     }, [accountContext.account]);
 
     return (
         <div className={classes.RoomLpStake}>
-            <div className={classes.EarnCard}
-                 key={'ROOM-Earned'}>
-                <div className={classes.EarnCard__Icon}>
-                    <img width={'100%'} src={room_icon}/>
+            {
+                stats && (
+                    <div className={classes.Info}>
+                        {
+                            stats.roomTotalLockedValue && (
+                                <div>This pool has a total of <span>{numeral(stats.roomTotalLockedValue).format('$0,0.00')}</span> locked value</div>
+                            )
+                        }
+                        {
+                            stats.roomTotalLiquidity && (
+                                <div>OptionRoom has a total of <span>{numeral(stats.roomTotalLiquidity).format('$0,0.00')}</span> in liquidity</div>
+                            )
+                        }
+                        {
+                            stats.roomApy && (
+                                <div>
+                                    <b>Current APY <span>{numeral((stats.roomApy/100)).format('0%')}</span></b>
+                                </div>
+                            )
+                        }
+                    </div>
+                )
+            }
+            <div className={classes.RoomLpStake__Cards}>
+                <div className={classes.EarnCard}
+                     key={'ROOM-Earned'}>
+                    <div className={classes.EarnCard__Icon}>
+                        <img width={'100%'} src={room_icon}/>
+                    </div>
+                    <div className={classes.EarnCard__Title}>
+                        {convertAmountToTokens(farmedRoomTokens)}
+                    </div>
+                    <div className={classes.EarnCard__SubTitle}>ROOM Earned</div>
+                    <div className={classes.EarnCard__Action}>
+                        <Button classes={classes.EarnCard__Action__Btn}
+                                isDisabled={farmedRoomTokens == 0}
+                                isProcessing={isHarvestInProgress}
+                                size={'large'}
+                                fullWidth={true}
+                                color="primary"
+                                onClick={handleHarvest}>
+                            Claim
+                        </Button>
+                    </div>
                 </div>
-                <div className={classes.EarnCard__Title}>
-                    {convertAmountToTokens(farmedRoomTokens)}
-                </div>
-                <div className={classes.EarnCard__SubTitle}>ROOM Earned</div>
-                <div className={classes.EarnCard__Action}>
-                    <Button classes={classes.EarnCard__Action__Btn}
-                            isDisabled={farmedRoomTokens == 0}
-                            isProcessing={isHarvestInProgress}
-                            size={'large'}
-                            fullWidth={true}
-                            color="primary"
-                            onClick={handleHarvest}>
-                        Claim
-                    </Button>
-                </div>
-            </div>
-            <div className={classes.EarnCard}
-                 key={'Staked-RoomLP'}>
-                <div className={classes.EarnCard__Icon}>
-                    <img width={'100%'} src={room_eth_lp_staking}/>
-                </div>
-                <div className={classes.EarnCard__Title}>
-                    {convertAmountToTokens(stackedRoomLPTokens)}
-                </div>
-                <div className={classes.EarnCard__SubTitle}>Stake ROOM/ETH LP</div>
-                <div
-                    className={clsx(classes.EarnCard__Action, {
-                        [classes.EarnCard__Action_Two]: userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0
-                    })}>
-                    {
-                        userRoomLPTokensAllowance <= 0 && (
-                            <Button size={'large'}
-                                    color="primary"
-                                    onClick={handleApproveUserRoomLPTokens}
-                                    className={classes.EarnCard__Action__Btn}
-                                    fullWidth={true}
-                                    isProcessing={isApproveProcessing}>
-                                Approve
-                            </Button>
-                        )
-                    }
-                    {
-                        userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0 && (
-                            <>
-                                <Button className={classes.EarnCard__Action__Btn}
-                                        size={'large'}
+                <div className={classes.EarnCard}
+                     key={'Staked-RoomLP'}>
+                    <div className={classes.EarnCard__Icon}>
+                        <img width={'100%'} src={room_eth_lp_staking}/>
+                    </div>
+                    <div className={classes.EarnCard__Title}>
+                        {convertAmountToTokens(stackedRoomLPTokens)}
+                    </div>
+                    <div className={classes.EarnCard__SubTitle}>Stake ROOM/ETH LP</div>
+                    <div
+                        className={clsx(classes.EarnCard__Action, {
+                            [classes.EarnCard__Action_Two]: userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0
+                        })}>
+                        {
+                            userRoomLPTokensAllowance <= 0 && (
+                                <Button size={'large'}
                                         color="primary"
-                                        isDisabled={stackedRoomLPTokens == 0}
-                                        onClick={openUnstakeModal}>
-                                    Unstake
+                                        onClick={handleApproveUserRoomLPTokens}
+                                        className={classes.EarnCard__Action__Btn}
+                                        fullWidth={true}
+                                        isProcessing={isApproveProcessing}>
+                                    Approve
                                 </Button>
-                                <Button classes={classes.EarnCard__Action__Btn_Add}
-                                        color={'black'}
-                                        size={'large'}
-                                        onClick={() => setIsDepositModalOpen(true)}>
-                                    <AddIcon
-                                        className={classes.EarnCard__Action__Btn_Add__Icon}></AddIcon>
+                            )
+                        }
+                        {
+                            userRoomLPTokensAllowance > 0 && stackedRoomLPTokens> 0 && (
+                                <>
+                                    <Button className={classes.EarnCard__Action__Btn}
+                                            size={'large'}
+                                            color="primary"
+                                            isDisabled={stackedRoomLPTokens == 0}
+                                            onClick={openUnstakeModal}>
+                                        Unstake
+                                    </Button>
+                                    <Button classes={classes.EarnCard__Action__Btn_Add}
+                                            color={'black'}
+                                            size={'large'}
+                                            onClick={() => setIsDepositModalOpen(true)}>
+                                        <AddIcon
+                                            className={classes.EarnCard__Action__Btn_Add__Icon}></AddIcon>
+                                    </Button>
+                                </>
+                            )
+                        }
+                        {
+                            userRoomLPTokensAllowance > 0 && stackedRoomLPTokens == 0 && (
+                                <Button size={'large'}
+                                        color="primary"
+                                        onClick={() => setIsDepositModalOpen(true)}
+                                        className={classes.EarnCard__Action__Btn}
+                                        fullWidth={true}>
+                                    Stake
                                 </Button>
-                            </>
-                        )
-                    }
-                    {
-                        userRoomLPTokensAllowance > 0 && stackedRoomLPTokens == 0 && (
-                            <Button size={'large'}
-                                    color="primary"
-                                    onClick={() => setIsDepositModalOpen(true)}
-                                    className={classes.EarnCard__Action__Btn}
-                                    fullWidth={true}>
-                                Stake
-                            </Button>
-                        )
-                    }
+                            )
+                        }
+                    </div>
                 </div>
+                <DepositModal open={isDepositModalOpen}
+                              onClose={() => setIsDepositModalOpen(false)}
+                              onStake={handleOnStake}
+                              userRoomLPTokens={userRoomLPTokens}/>
+                <UnstakeModal open={isUnstakeModalOpen}
+                              onClose={() => setIsUnstakeModalOpen(false)}
+                              onUnStake={handleOnUnStake}
+                              stakedTokensBalance={stackedRoomLPTokens}/>
+
             </div>
-            <DepositModal open={isDepositModalOpen}
-                          onClose={() => setIsDepositModalOpen(false)}
-                          onStake={handleOnStake}
-                          userRoomLPTokens={userRoomLPTokens}/>
-            <UnstakeModal open={isUnstakeModalOpen}
-                          onClose={() => setIsUnstakeModalOpen(false)}
-                          onUnStake={handleOnUnStake}
-                          stakedTokensBalance={stackedRoomLPTokens}/>
         </div>
     );
 }

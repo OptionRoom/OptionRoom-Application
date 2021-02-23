@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState, createRef} from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import swal from 'sweetalert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {BigNumber} from "@ethersproject/bignumber";
@@ -125,7 +126,6 @@ function Nft() {
 
     const initRoomLPPoolData = async () => {
         const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
-
         const userNftTireBalance = await loadUserNftTireBalance(roomLPFarmingAPIs);
         const requiredRoomsForTire = await loadRequiredRoomsForTire(roomLPFarmingAPIs);
         setRequiredRoomsForTire(requiredRoomsForTire);
@@ -142,7 +142,6 @@ function Nft() {
     };
 
     const findCurrentView = () => {
-
         if (userCurrentNftTire === -1) {
             return 'FIRST';
         }
@@ -162,6 +161,7 @@ function Nft() {
     };
 
     const callInit = async () => {
+
         setIsIniting(true);
         await initRoomLPPoolData();
         setIsIniting(false);
@@ -252,15 +252,26 @@ function Nft() {
                                 !isIniting && (
                                     <>
                                         {
+                                            availableNftTireBalance && (
+                                                <div className={classes.Stats}>
+                                                    <div>Tier 1: {availableNftTireBalance['0']}/75</div>
+                                                    <div>Tier 2: {availableNftTireBalance['1']}/60</div>
+                                                    <div>Tier 3: {availableNftTireBalance['2']}/45</div>
+                                                    <div>Tier 4: {availableNftTireBalance['3']}/30</div>
+                                                    <div>Tier 5: {availableNftTireBalance['4']}/12</div>
+                                                </div>
+                                            )
+                                        }
+                                        {
                                             findCurrentView() === "FIRST" && (
                                                 <div className={classes.FirstNft}>
                                                     <div className={classes.FirstNft__ImageWrap}>
                                                         <img className={classes.FirstNft__ImageWrap__Img}
                                                              src={nftImages[0]}/>
                                                     </div>
-                                                    <div className={classes.FirstNft__Remaining}>
+{/*                                                    <div className={classes.FirstNft__Remaining}>
                                                         {availableNftTireBalance && availableNftTireBalance['0']} Available
-                                                    </div>
+                                                    </div>*/}
                                                     {
                                                         isRoomTokenApprovedForNftTokenContract && isNftTokenApprovedForNftTokenContract && (
                                                             <Button className={classes.FirstNft__GetBtn}
@@ -316,6 +327,8 @@ function Nft() {
                                                         <div className={classes.UpgradeNft__Card__Arrow__Wrap}>
                                                             <ArrowForwardIcon
                                                                 className={classes.UpgradeNft__Card__Arrow}/>
+                                                            <ArrowDownwardIcon
+                                                                className={classes.UpgradeNft__Card__Arrow__Down}/>
                                                         </div>
                                                         <div className={classes.UpgradeNft__ImageWrap}>
                                                             <div className={classes.UpgradeNft__ImageWrap__Note}>
@@ -324,9 +337,9 @@ function Nft() {
                                                             <img className={classes.UpgradeNft__ImageWrap__Img}
                                                                  src={nftImages[userCurrentNftTire + 1]}/>
                                                         </div>
-                                                        <div className={classes.UpgradeNft__Remaining}>
+{/*                                                        <div className={classes.UpgradeNft__Remaining}>
                                                             {availableNftTireBalance && availableNftTireBalance[`${userCurrentNftTire + 1}`]} Available
-                                                        </div>
+                                                        </div>*/}
                                                     </div>
                                                     <Button className={classes.UpgradeNft__GetBtn}
                                                             size={'medium'}

@@ -1,6 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import {useState, useContext} from 'react';
+import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
 
 import {useStyles} from './styles'
 import ConnectButton from '../ConnectButton';
@@ -9,6 +11,7 @@ import {
     ellipseAddress,
     getAddressImgUrl
 } from '../../shared/helper';
+import Button from "../Button";
 
 function Navbar(props) {
 
@@ -34,6 +37,16 @@ function Navbar(props) {
                 }
             </div>
             <div className={classes.Actions}>
+                <IconButton aria-label="delete"
+                            className={clsx(classes.MenuBtn, {
+                                [classes.MenuBtn___Black]: accountContext.theme === 'black',
+                            })}
+                            onClick={() => {
+                                accountContext.changeSidebarIsOpen(true);
+                            }}
+                            color="primary">
+                    <MenuIcon/>
+                </IconButton>
                 {
                     accountContext.account && (
                         <div className={classes.AccountHolder}>

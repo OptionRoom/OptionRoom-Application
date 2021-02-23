@@ -30,6 +30,10 @@ export const AccountContext = React.createContext({
     networkId: null,
     theme: 'primary',
     background: null,
+    isSidebarOpen: false,
+    changeSidebarIsOpen: () => {
+
+    },
     connect: () => {
     },
     disconnect: () => {
@@ -47,6 +51,12 @@ const AccountContextProvider = (props) => {
     const [networkId, setNetworkId] = useState(null);
     const [theme, setTheme] = useState('primary');
     const [background, setBackground] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const handleChangeSidebarIsOpen = (isOpen) => {
+        console.log("isOpen", isOpen);
+        setIsSidebarOpen(isOpen);
+    };
 
     const handleDisconnect = async () => {
 
@@ -132,9 +142,11 @@ const AccountContextProvider = (props) => {
                 networkId: networkId,
                 theme: theme,
                 background: background,
+                isSidebarOpen: isSidebarOpen,
                 connect: handleConnect,
                 disconnect: handleDisconnect,
-                changeTheme: handleChangeTheme
+                changeTheme: handleChangeTheme,
+                changeSidebarIsOpen: handleChangeSidebarIsOpen,
             }}
         >
             {props.children}
