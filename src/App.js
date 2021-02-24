@@ -68,9 +68,11 @@ function App() {
     const accountContext = useContext(AccountContext);
 
     return (
-        <div>
-            <CssBaseline />
-            <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+            <div>
+
+                <CssBaseline />
+
                 <Router>
                     <div className={classes.Main}>
                         <Sidebar className={classes.DesktopSidebar}></Sidebar>
@@ -101,8 +103,8 @@ function App() {
                         </div>
                     </div>
                 </Router>
-            </ThemeProvider>
-        </div>
+            </div>
+        </ThemeProvider>
 
     );
 }

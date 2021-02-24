@@ -34,6 +34,20 @@ const NftIcon = () => {
     );
 };
 
+
+const NftStakeIcon = () => {
+    return (
+        <svg width="24px" height="24px" viewBox="0 0 24 24">
+                <g id="Group-7" transform="translate(3.000000, 1.000000)">
+                    <g id="Group-6" transform="translate(0.000000, 0.500450)">
+                        <path d="M5.5002,11.49595 L12.5002,11.49595 L12.5002,18.49595 C12.5002,19.60095 11.6052,20.49595 10.5002,20.49595 L7.5002,20.49595 C6.3952,20.49595 5.5002,19.60095 5.5002,18.49595 L5.5002,11.49595 Z" id="Fill-2"></path>
+                        <path d="M18.0002,0.49595 L18.0002,9.49595 L15.5002,9.49595 L12.5002,7.04095 L12.5002,9.49595 L5.5002,9.49595 L5.5002,5.99595 L0.0002,5.99595 C0.0002,2.95595 2.4602,0.49595 5.5002,0.49595 L12.5002,0.49595 L12.5002,2.95095 L15.5002,0.49595 L18.0002,0.49595 Z" id="Fill-4"></path>
+                    </g>
+                </g>
+        </svg>
+    );
+};
+
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -267,7 +281,7 @@ function Sidebar() {
                         {
                             title: 'NFT Staking',
                             link: '/nft-stake',
-                            icon: NftIcon
+                            icon: NftStakeIcon
                         },
                         /*{
                             title: 'Claim',
