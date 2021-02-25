@@ -6,7 +6,7 @@ import {useStyles} from './styles';
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
 
-function NftStakePage() {
+function RoomCourtStakePage() {
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme('black');
@@ -15,11 +15,11 @@ function NftStakePage() {
         <>
             <Navbar title={'NFT Staking'}
                     details={'Earn ROOM by staking you NFT and ROOM tokens together.'}/>
-            <div className={classes.NftStakePage}>
+            <div className={classes.RoomCourtStakePage}>
                 <NftStake/>
             </div>
         </>
     );
 }
 
-export default NftStakePage;
+export default RoomCourtStakePage;

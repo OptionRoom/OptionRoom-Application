@@ -8,13 +8,15 @@ import NftStake from '../../components/NftStake';
 
 import {useStyles} from './styles';
 import {AccountContext} from "../../shared/AccountContextProvider";
+import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
 function LiquidityMining() {
     const classes = useStyles();
 
-    const [currentView, setCurrentView] = useState('ROOM_ETH_LP');
+    const [currentView, setCurrentView] = useState('POOLS');
     const accountContext = useContext(AccountContext);
-    accountContext.changeTheme('primary');
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
+    optionroomThemeContext.changeTheme('primary');
     const pools = [
         {
             id: "ROOM_ETH_LP",
@@ -22,9 +24,19 @@ function LiquidityMining() {
             decs: 'Earn ROOM'
         } ,
         {
-            id: "NftStake",
-            title: 'Deposit ROOM-NFT',
-            decs: 'Earn ROOM'
+            id: "ROOM_COURT",
+            title: 'Deposit ROOM',
+            decs: 'Earn COURT'
+        } ,
+        {
+            id: "ROOM_ETH_LP_EARN_COURT",
+            title: 'Deposit ROOM-ETH LP',
+            decs: 'Earn COURT'
+        } ,
+        {
+            id: "COURT_ETH_LP_EARN_COURT",
+            title: 'Deposit COURT-ETH LP',
+            decs: 'Earn COURT'
         }
     ];
 

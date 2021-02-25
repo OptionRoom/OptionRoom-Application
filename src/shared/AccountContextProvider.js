@@ -28,17 +28,9 @@ export const AccountContext = React.createContext({
     account: null,
     chainId: null,
     networkId: null,
-    theme: 'primary',
-    background: null,
-    isSidebarOpen: false,
-    changeSidebarIsOpen: () => {
-
-    },
     connect: () => {
     },
     disconnect: () => {
-    },
-    changeTheme: () => {
     },
 });
 
@@ -49,14 +41,7 @@ const AccountContextProvider = (props) => {
     const [account, setAccount] = useState(null);
     const [chainId, setChainId] = useState(null);
     const [networkId, setNetworkId] = useState(null);
-    const [theme, setTheme] = useState('primary');
-    const [background, setBackground] = useState(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const handleChangeSidebarIsOpen = (isOpen) => {
-        console.log("isOpen", isOpen);
-        setIsSidebarOpen(isOpen);
-    };
 
     const handleDisconnect = async () => {
 
@@ -69,12 +54,6 @@ const AccountContextProvider = (props) => {
         setChainId(null);
         setNetworkId(null);
         setAccount(null);
-    };
-
-
-    const handleChangeTheme = async (newTheme, mainBackground) => {
-        setTheme(newTheme);
-        setBackground(mainBackground);
     };
 
     const handleConnect = async (web3Modal2) => {
@@ -117,19 +96,22 @@ const AccountContextProvider = (props) => {
     };
 
 
-    useEffect(async () => {
-        const web3Modal = new Web3Modal({
-            network: controlledNetworkId, // optional
-            cacheProvider: true, // optional
-            providerOptions: {}
-        });
-
-        setWeb3Modal(web3Modal);
-
-        if (web3Modal.cachedProvider) {
-            handleConnect(web3Modal);
+    useEffect( () => {
+        async function init () {
+            const web3Modal = new Web3Modal({
+                network: controlledNetworkId, // optional
+                cacheProvider: true, // optional
+                providerOptions: {}
+            });
+    
+            setWeb3Modal(web3Modal);
+    
+            if (web3Modal.cachedProvider) {
+                handleConnect(web3Modal);
+            }
         }
 
+        init();
     }, []);
 
     return (
@@ -140,13 +122,8 @@ const AccountContextProvider = (props) => {
                 account: account,
                 chainId: chainId,
                 networkId: networkId,
-                theme: theme,
-                background: background,
-                isSidebarOpen: isSidebarOpen,
                 connect: handleConnect,
                 disconnect: handleDisconnect,
-                changeTheme: handleChangeTheme,
-                changeSidebarIsOpen: handleChangeSidebarIsOpen,
             }}
         >
             {props.children}

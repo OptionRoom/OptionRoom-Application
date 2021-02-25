@@ -10,7 +10,7 @@ import {
 import Logo from '../../assets/logo.png';
 import LogoIcon from '../../assets/room-icon.png';
 import {isMobile} from "../../shared/helper";
-import {AccountContext} from "../../shared/AccountContextProvider";
+import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
 const LiquidityIcon = () => {
     return (
@@ -227,13 +227,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Sidebar() {
     const classes = useStyles();
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-    const accountContext = useContext(AccountContext);
-
-    const handleDrawerClose = () => {
-        setOpen(!open);
-    };
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     return (
         <Drawer
@@ -241,18 +235,17 @@ function Sidebar() {
             classes={{
                 root: classes.drawer,
                 paper: clsx(classes.drawerPaper, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                    [classes.drawerPaper___Black]: accountContext.theme === 'black',
+                    [classes.drawerPaper___Black]: optionroomThemeContext.theme === 'black',
                 }),
             }}
             anchor={'left'}
-            open={isMobile() ? accountContext.isSidebarOpen : true}
-            onClose={isMobile() ? () => {accountContext.changeSidebarIsOpen(false);} : () => {}}
+            open={isMobile() ? optionroomThemeContext.isSidebarOpen : true}
+            onClose={isMobile() ? () => {optionroomThemeContext.changeSidebarIsOpen(false);} : () => {}}
         >
             <div className={classes.toolbar}>
                 <img src={Logo}
                      className={classes.Logo}
+                     alt={'OptionRoom logo'}
                      width={'150px'}/>
             </div>
             <div className={classes.NavLinks}>
@@ -304,15 +297,11 @@ function Sidebar() {
                                  key={`menut-item${index}`}
                                  className={
                                      clsx(classes.NavLink, {
-                                         [classes.NavLink___Black]: accountContext.theme === 'black',
+                                         [classes.NavLink___Black]: optionroomThemeContext.theme === 'black',
                                      })
                                  }>
                             {item.icon()}
-                            <span className={
-                                clsx(classes.NavLink__Title, {
-                                    [classes.NavLink__Title__Open]: open,
-                                })
-                            }>
+                            <span className={classes.NavLink__Title}>
                                {item.title}
                             </span>
                         </NavLink>

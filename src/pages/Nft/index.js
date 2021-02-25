@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState, createRef} from 'react';
-import AddIcon from '@material-ui/icons/Add';
+import React, {useContext, useEffect, useState} from 'react';
+
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import swal from 'sweetalert';
@@ -7,12 +7,11 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import {BigNumber} from "@ethersproject/bignumber";
 
 import Navbar from '../../components/Navbar';
-import DepositModal from '../../components/DepositModal';
-import UnstakeModal from '../../components/UnstakeModal';
 import Button from '../../components/Button';
 
 import {useStyles} from './styles';
 import {AccountContext} from "../../shared/AccountContextProvider";
+import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import {convertAmountToTokens} from "../../shared/helper";
 import ConnectButton from "../../components/ConnectButton";
@@ -38,8 +37,9 @@ function Nft() {
     const [isUpgradingNftToken, setIsUpgradingNftToken] = useState(false);
 
     const accountContext = useContext(AccountContext);
-    accountContext.changeTheme('black');
 
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
+    optionroomThemeContext.changeTheme('black');
 
     const handleApprovingRoomTokenForNftTokenContract = async () => {
         setIsApprovingRoomTokenForNftTokenContract(true);
