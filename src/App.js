@@ -15,6 +15,7 @@ import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Claim from "./pages/Claim";
 import LiquidityMining from "./pages/LiquidityMining";
+import CourtFarming from "./pages/CourtFarming";
 import ConnectionTest from "./pages/ConnectionTest";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
@@ -85,7 +86,11 @@ function App() {
                                     <Claim/>
                                 </Route>*/}
                                 <Route path="/liquidity-mining">
-                                    <LiquidityMining />
+                                    <FarminPoolPage pool={'RoomFarming_RoomEthLpStake'}
+                                            source={'room_eth_lp'} />
+                                </Route>
+                                <Route path="/governance-farming">
+                                    <CourtFarming />
                                 </Route>
                                 {/*                                <Route path="/connection-test">
                                     <ConnectionTest/>

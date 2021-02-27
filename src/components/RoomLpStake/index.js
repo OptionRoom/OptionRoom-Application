@@ -157,21 +157,20 @@ function RoomLpStake(props) {
         console.log("userFarmedTokenBalance", userFarmedTokenBalance);
         if(source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
             setUserFarmedTokenBalance(userFarmedTokenBalance);
+            
+            //Stats
+            const roomTotalLockedValue = await getTotalValueLocked(accountContext.account);
+            const roomTotalLiquidity = await getTotalLiquidity(accountContext.account);
+            const roomApy = await getLpApy(accountContext.account);
+            setStats({
+                roomTotalLockedValue,
+                roomTotalLiquidity,
+                roomApy
+            })
         } else {
             setUserFarmedTokenBalance(userFarmedTokenBalance.reward);
         }
-
-        //Stats
-        /*         const roomTotalLockedValue = await getTotalValueLocked(accountContext.account);
-                const roomTotalLiquidity = await getTotalLiquidity(accountContext.account);
-                const roomApy = await getLpApy(accountContext.account);
-                setStats({
-                    roomTotalLockedValue,
-                    roomTotalLiquidity,
-                    roomApy
-                }) */
     };
-
 
     useEffect(() => {
         let updateInfoIntervalId = null;
@@ -274,7 +273,7 @@ function RoomLpStake(props) {
                                         onClick={openUnstakeModal}>
                                         Unstake
                                     </Button>
-                                    <Button classes={classes.EarnCard__Action__Btn_Add}
+                                    <Button className={classes.EarnCard__Action__Btn_Add}
                                         color={'black'}
                                         size={'large'}
                                         onClick={() => setIsDepositModalOpen(true)}>

@@ -24,7 +24,7 @@ class RoomLPFarmingAPIs {
 
 
     async getUserRoomTokenBalance(address) {
-        const result = await getRoomLPStakingContract(1, walletHelperInstance.getWeb3())
+        const result = await this.roomTokenContract
             .methods
             .balanceOf(address)
             .call({

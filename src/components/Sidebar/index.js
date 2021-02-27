@@ -267,6 +267,11 @@ function Sidebar() {
                             icon: LiquidityIcon
                         },
                         {
+                            title: 'Governance Farming',
+                            link: '/governance-farming',
+                            icon: LiquidityIcon
+                        },
+                        {
                             title: 'Get NFTs',
                             link: '/nft',
                             icon: NftIcon

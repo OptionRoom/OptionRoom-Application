@@ -1,4 +1,6 @@
 import { BigNumber } from "@ethersproject/bignumber";
+
+import Web3 from "web3";
 import { walletHelper } from "../wallet.helper";
 import { getRoomTokenContract } from './RoomTokenContract';
 import { getRoomLPTokenContract } from './RoomLPTokenContract';
@@ -7,18 +9,20 @@ import { getNftStakeContract } from './NftStakeContract';
 import { getNftTokenContract } from './NftTokenContract';
 import { getWethTokenContract } from './WethTokenContract';
 import { getTetherTokenContract } from './TetherTokenContract';
-
+import {nftTires} from '../constants';
 const walletHelperInstance = walletHelper();
+//const web3 = new Web3(walletHelperInstance.getWeb3());
+const web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/30d5a6bb69194a75afa085a8a3a4a584"));
 
 export const getWethPrice = async (address) => {
-    const result = await getTetherTokenContract(1, walletHelperInstance.getWeb3())
+    const result = await getTetherTokenContract(1, web3)
         .methods
         .balanceOf('0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852')
         .call({
             from: address
         });
 
-    const result2 = await getWethTokenContract(1, walletHelperInstance.getWeb3())
+    const result2 = await getWethTokenContract(1, web3)
         .methods
         .balanceOf('0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852')
         .call({
@@ -33,7 +37,7 @@ export const getWethPrice = async (address) => {
 
 export const getRoomLpTokenValue = async (address) => {
     const totalLiquidity = await getTotalLiquidity(address);
-    const totalSupplyOfLp = await getRoomLPTokenContract(1, walletHelperInstance.getWeb3())
+    const totalSupplyOfLp = await getRoomLPTokenContract(1, web3)
         .methods
         .totalSupply()
         .call({
@@ -46,7 +50,7 @@ export const getRoomLpTokenValue = async (address) => {
 export const getTotalValueLocked = async (address) => {
     const lpTokenValue = await getRoomLpTokenValue(address);
 
-    const lockedLpTokens = await getRoomLPStakingContract(1, walletHelperInstance.getWeb3())
+    const lockedLpTokens = await getRoomLPStakingContract(1, web3)
         .methods
         .totalStaked()
         .call({
@@ -59,14 +63,14 @@ export const getTotalValueLocked = async (address) => {
 export const getRoomTokenPrice = async (address) => {
     const wethPrice = await getWethPrice(address);
     //0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732 = Room_RoomEthLpStake
-    const ethInLpContract = await getWethTokenContract(1, walletHelperInstance.getWeb3())
+    const ethInLpContract = await getWethTokenContract(1, web3)
         .methods
         .balanceOf('0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732')
         .call({
             from: address
         });
 
-    const roomInLpContract = await getRoomTokenContract(1, walletHelperInstance.getWeb3())
+    const roomInLpContract = await getRoomTokenContract(1, web3)
         .methods
         .balanceOf('0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732')
         .call({
@@ -80,7 +84,7 @@ export const getRoomTokenPrice = async (address) => {
 export const getLpApy = async (address) => {
     //(40,000 * 12 * Room Price) / (LP Locked * LP Token Value) * 100
     const roomPrice = await getRoomTokenPrice(address);
-    const lockedLpTokens = await getRoomLPStakingContract(1, walletHelperInstance.getWeb3())
+    const lockedLpTokens = await getRoomLPStakingContract(1, web3)
         .methods
         .totalStaked()
         .call({
@@ -112,7 +116,7 @@ export const getTotalValueStakedInNftStakingInUsd = async (address, poolId) => {
 
     };
 
-    const result = await getNftStakeContract(1, walletHelperInstance.getWeb3())
+    const result = await getNftStakeContract(1, web3)
         .methods
         .totalStaked(poolId)
         .call({
@@ -120,7 +124,6 @@ export const getTotalValueStakedInNftStakingInUsd = async (address, poolId) => {
         });
 
     const roomPrice = await getRoomTokenPrice(address);
-    console.log("roomPrice222", roomPrice);
     return {
         totalStakedValue: (result / 1e18) * roomPrice,
         apy: (getAt(poolId) / (result / 1e18)) * 100
@@ -129,7 +132,7 @@ export const getTotalValueStakedInNftStakingInUsd = async (address, poolId) => {
 
 export const getTotalLiquidity = async (address) => {
     //0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732 = this.roomLPTokenContract._address
-    const ethInLpContract = await getWethTokenContract(1, walletHelperInstance.getWeb3())
+    const ethInLpContract = await getWethTokenContract(1, web3)
         .methods
         .balanceOf('0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732')
         .call({
@@ -139,4 +142,25 @@ export const getTotalLiquidity = async (address) => {
     const wethPrice = await getWethPrice(address);
     const totalLiquidity = (ethInLpContract / 1e18) * wethPrice * 2;
     return totalLiquidity;
+}
+
+export const getAvailableNftTokenBalanceOfTire = async (address, tire) => {
+    const result = await getNftTokenContract(1, web3)
+        .methods
+        .checkAvailableToMint(tire)
+        .call({
+            from: address
+        });
+
+    return result;
+};
+
+export const loadAllNftTokenAvilable = async (address) => {
+    const data = {};
+    for (let nftTire of nftTires) {
+        const res = await getAvailableNftTokenBalanceOfTire(address, nftTire);
+        data[nftTire] = parseInt(res);
+    }
+
+    return data;
 }

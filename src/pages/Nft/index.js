@@ -15,7 +15,8 @@ import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvide
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import {convertAmountToTokens} from "../../shared/helper";
 import ConnectButton from "../../components/ConnectButton";
-import {nftTires, nftImages} from '../../shared/constants';
+import {nftTires, nftImages, allOfTires} from '../../shared/constants';
+import {loadAllNftTokenAvilable} from '../../shared/contracts/PoolsStatsAPIs';
 
 function Nft() {
     const classes = useStyles();
@@ -103,13 +104,8 @@ function Nft() {
         return data;
     };
 
-    const loadAvailableNftTireBalance = async (roomLPFarmingAPIs) => {
-        const data = {};
-        for (let nftTire of nftTires) {
-            const res = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nftTire);
-            data[nftTire] = parseInt(res);
-        }
-
+    const loadAvailableNftTireBalance = async () => {
+        const data = await loadAllNftTokenAvilable(accountContext.account);
         return data;
     };
 
@@ -136,9 +132,6 @@ function Nft() {
         if (userRoomTokenAllowanceBalanceForNftTokenContract > 0) {
             setIsRoomTokenApprovedForNftTokenContract(true);
         }
-
-        /*        const nftToken_Approved_NftTokenContract = await roomLPFarmingAPIs.isNftTokenApprovedForNftTokenContract(accountContext.account);
-                setIsNftTokenApprovedForNftTokenContract(nftToken_Approved_NftTokenContract);*/
     };
 
     const findCurrentView = () => {
@@ -147,7 +140,7 @@ function Nft() {
         }
 
         if (userCurrentNftTire === 4) {
-            accountContext.changeTheme('black', 'golden');
+            optionroomThemeContext.changeTheme('black', 'golden');
             return 'LAST';
         }
 
@@ -155,8 +148,7 @@ function Nft() {
     };
 
     const updateNftTireBalance = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
-        const availableNftTireBalance = await loadAvailableNftTireBalance(roomLPFarmingAPIs);
+        const availableNftTireBalance = await loadAvailableNftTireBalance();
         setAvailableNftTireBalance(availableNftTireBalance);
     };
 
@@ -178,6 +170,7 @@ function Nft() {
             const nextNftTire = userCurrentNftTire + 1;
             const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             const availableNftBalanceOfTheTire = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nextNftTire);
+            console.log("availableNftBalanceOfTheTire", availableNftBalanceOfTheTire);
             if (availableNftBalanceOfTheTire == 0) {
                 setIsUpgradingNftToken(false);
                 swal("Sorry!", `Can't upgrade, the maximum number of NFTs has been minted`, "error");
@@ -187,7 +180,7 @@ function Nft() {
             const requiredRoomForNftTire = await roomLPFarmingAPIs.getRequiredRoomsForTire(accountContext.account, nextNftTire);
             const userRoomTokenBalance = await roomLPFarmingAPIs.getUserRoomTokenBalance(accountContext.account);
 
-            //console.log("requiredRoomForNftTire", requiredRoomForNftTire, userRoomTokenBalance);
+            console.log("requiredRoomForNftTire", requiredRoomForNftTire, userRoomTokenBalance);
 
             if (BigNumber.from(userRoomTokenBalance).lt(BigNumber.from(requiredRoomForNftTire))) {
                 setIsUpgradingNftToken(false);
@@ -223,7 +216,7 @@ function Nft() {
         if (accountContext.account) {
             callInit();
             clearInterval(updateNftTireBalanceIntervalId);
-            updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 1000);
+            updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 10000);
         }
 
         return (() => {
@@ -253,11 +246,16 @@ function Nft() {
                                         {
                                             availableNftTireBalance && (
                                                 <div className={classes.Stats}>
-                                                    <div>Tier 1: {availableNftTireBalance['0']}/75</div>
-                                                    <div>Tier 2: {availableNftTireBalance['1']}/60</div>
-                                                    <div>Tier 3: {availableNftTireBalance['2']}/45</div>
-                                                    <div>Tier 4: {availableNftTireBalance['3']}/30</div>
-                                                    <div>Tier 5: {availableNftTireBalance['4']}/12</div>
+                                                    {
+                                                        nftTires.map((tire) => {
+                                                            return (
+                                                                <div key={'nft'+tire}>
+                                                                    <span>Tier {tire+1}: <span>{availableNftTireBalance[tire]}/{allOfTires[tire]}</span></span>
+                                                                    <span>APY: <span>178%</span></span>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
                                                 </div>
                                             )
                                         }
@@ -268,9 +266,6 @@ function Nft() {
                                                         <img className={classes.FirstNft__ImageWrap__Img}
                                                              src={nftImages[0]}/>
                                                     </div>
-{/*                                                    <div className={classes.FirstNft__Remaining}>
-                                                        {availableNftTireBalance && availableNftTireBalance['0']} Available
-                                                    </div>*/}
                                                     {
                                                         isRoomTokenApprovedForNftTokenContract && isNftTokenApprovedForNftTokenContract && (
                                                             <Button className={classes.FirstNft__GetBtn}

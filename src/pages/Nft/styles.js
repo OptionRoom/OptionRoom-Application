@@ -1,18 +1,36 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    NftPage: {},
+    NftPage: {
+        position: 'relative'
+    },
     Stats: {
-        color: "#fff",
-
-/*        marginBottom: "20px",
-        display: 'flex',
-        '& > div': {
-            padding: '10px',
-            marginRight: '5px',
-            background: '#004BFF',
-            borderRadius: "13px"
-        }*/
+        position: 'absolute',
+        top: '100px',
+        left: '0',
+        color: "#5c636d",
+        width: '200px',
+        padding: '20px 0',
+        background: '#000',
+        borderRadius: '5px',
+        '& div': {
+            padding: '5px 10px',
+            '&>span:first-child': {
+                width: '100px',
+                display: 'inline-block'
+            },
+            '&>span>span': {
+                display: 'inline-block',
+                fontWeight: 700,
+                marginLeft: '5px'
+            },
+            '&:nth-child(2n+1)': {
+                background: '#111216'
+            },
+            '&>span:last-child span': {
+                color: '#fff'
+            },
+        }
     },
     IsInitingWrap: {
         display: 'flex',
