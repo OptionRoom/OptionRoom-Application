@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import Logo from '../../assets/logo.png';
+import LogoSvg from '../../assets/optionroom_logo.svg';
 import LogoIcon from '../../assets/room-icon.png';
 import {isMobile} from "../../shared/helper";
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
@@ -243,7 +244,7 @@ function Sidebar() {
             onClose={isMobile() ? () => {optionroomThemeContext.changeSidebarIsOpen(false);} : () => {}}
         >
             <div className={classes.toolbar}>
-                <img src={Logo}
+                <img src={LogoSvg}
                      className={classes.Logo}
                      alt={'OptionRoom logo'}
                      width={'150px'}/>
