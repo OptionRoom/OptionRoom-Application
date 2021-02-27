@@ -94,7 +94,7 @@ function NftStake(props) {
     };
 
     const initRoomLPPoolData = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+        const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
 
         //Check if room is approved for nft stake contract
         const userRoomTokenAllowanceBalanceForNftStakeContract = await roomLPFarmingAPIs.getUserRoomTokenAllowanceBalanceForNftStakeContract(accountContext.account);
@@ -164,7 +164,7 @@ function NftStake(props) {
         setIsApprovingRoomTokenForNftStakeContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserRoomTokenForNftStakeContract(accountContext.account);
             setIsApprovingRoomTokenForNftStakeContract(true);
             setIsRoomTokenApprovedForNftStakeContract(true);
@@ -179,7 +179,7 @@ function NftStake(props) {
         setIsApprovingNftTokenForNftStakeContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserNftTokenForNftStakeContract(accountContext.account);
             setIsApprovingNftTokenForNftStakeContract(true);
             setIsNftTokenApprovedForNftStakeContract(true);
@@ -194,7 +194,7 @@ function NftStake(props) {
         setIsHarvestInProgress(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.claimNftStakeContractRewardsForTire(accountContext.account, userCurrentNftTire);
             const resultFarmedRoomTokens = await roomLPFarmingAPIs.getUserNftStakeRewardsBalanceOfTire(accountContext.account, userCurrentNftTire);
             setFarmedRoomTokens(resultFarmedRoomTokens);
@@ -220,7 +220,7 @@ function NftStake(props) {
             await initRoomLPPoolData();
             setIsIniting(false);
 
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             const pool0__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 0);
             const pool1__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 1);
             const pool2__staked = await roomLPFarmingAPIs.getTotalValueStakedInNftStakingInUsd(accountContext.account, 2);
@@ -239,7 +239,7 @@ function NftStake(props) {
     useEffect(async () => {
         if (accountContext.account && userCurrentNftTire !== -1) {
             setInterval(async () => {
-                const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+                const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
                 const resultFarmedRoomTokens = await roomLPFarmingAPIs.getUserNftStakeRewardsBalanceOfTire(accountContext.account, userCurrentNftTire);
                 setFarmedRoomTokens(resultFarmedRoomTokens);
             }, 1000);

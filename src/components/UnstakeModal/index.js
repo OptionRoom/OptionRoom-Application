@@ -15,18 +15,44 @@ import Typography from '@material-ui/core/Typography';
 import {useStyles} from './styles'
 import {AccountContext} from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from '../../shared/contracts/RoomLPFarmingAPIs';
+import CourtAPIs from '../../shared/contracts/CourtAPIs';
 import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper';
+
+const getModalText = (type, source, pool) => {
+    if(type=== 'nftStake') {
+        return 'Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake';
+    }
+
+    if (source === 'room' && pool === "CourtFarming_RoomStake") {
+        return 'Unstake your ROOM tokens and claim rewards';
+    }
+
+    if (source === 'room_eth_lp' && pool === "RoomFarming_RoomEthLpStake") {
+        return 'Unstake your ROOM/ETH LP tokens and claim rewards';
+    }
+
+    if (source === 'room_eth_lp' && pool === "CourtFarming_RoomEthLpStake") {
+        return 'Unstake your ROOM/ETH LP tokens and claim rewards';
+    }
+
+    if (source === 'court_eth_lp' && pool === "CourtFarming_CourtEthLpStake") {
+        return 'Unstake your COURT/ETH LP tokens and claim rewards';
+    }
+};
 
 function UnstakeModal(props) {
     const {
         stakedTokensBalance,
         type,
-        nftTire
+        nftTire,
+        pool,
+        source
     } = props;
 
     const accountContext = useContext(AccountContext);
 
-    const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+    const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
+    const courtAPIs = new CourtAPIs();
     const [amountToUnstake, setAmountToUnstake] = useState(0);
     const [claim, setClaim] = useState(true);
     const [exit, setExit] = useState(false);
@@ -38,24 +64,6 @@ function UnstakeModal(props) {
     const handleClose = () => {
         props.onClose();
     };
-
-    const isInputNumberDisabled = () => {
-        if (type !== 'nftStake') {
-            return false;
-        }
-
-        const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-        return amountToUnstakeResult.eq(BigNumber.from(stakedTokensBalance));
-    }
-
-    const isExitCheckboxDisabled = () => {
-        if (type !== 'nftStake') {
-            return false;
-        }
-
-        const amountToUnstakeResult = convertTokensToAmount(amountToUnstake);
-        return amountToUnstakeResult === stakedTokensBalance;
-    }
 
     const handleConfirm = async () => {
         if (!checkValidAmount()) {
@@ -74,7 +82,7 @@ function UnstakeModal(props) {
                     await roomLPFarmingAPIs.unstakeNftStakeContractForTire(accountContext.account, nftTire, amountToUnstakeResult, claim);
                 }
             } else {
-                await roomLPFarmingAPIs.unstackRoomLPTokens(accountContext.account, amountToUnstakeResult, claim);
+                await courtAPIs.unstackeTokens(accountContext.account, pool, amountToUnstakeResult, claim);
             }
 
             props.onUnStake();
@@ -107,10 +115,6 @@ function UnstakeModal(props) {
         setClaim(event.target.checked);
     };
 
-    const handleExitChange = (event) => {
-        setExit(event.target.checked);
-    };
-
     return (
         <Dialog classes={{
             paper: classes.paper,
@@ -140,13 +144,7 @@ function UnstakeModal(props) {
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
-                    {
-                        type === 'nftStake' ? (
-                            'Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake'
-                        ) : (
-                            'Unstake your ROOM tokens and claim rewards'
-                        )
-                    }
+                    {getModalText(type, source, pool)}
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available <span

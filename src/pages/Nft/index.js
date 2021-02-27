@@ -45,7 +45,7 @@ function Nft() {
         setIsApprovingRoomTokenForNftTokenContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserRoomTokenForNftTokenContract(accountContext.account);
             setIsRoomTokenApprovedForNftTokenContract(true);
         } catch (e) {
@@ -59,7 +59,7 @@ function Nft() {
         setIsApprovingNftTokenForNftTokenContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserNftTokenForNftTokenContract(accountContext.account);
             setIsNftTokenApprovedForNftTokenContract(true);
         } catch (e) {
@@ -125,7 +125,7 @@ function Nft() {
     };
 
     const initRoomLPPoolData = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+        const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
         const userNftTireBalance = await loadUserNftTireBalance(roomLPFarmingAPIs);
         const requiredRoomsForTire = await loadRequiredRoomsForTire(roomLPFarmingAPIs);
         setRequiredRoomsForTire(requiredRoomsForTire);
@@ -155,13 +155,12 @@ function Nft() {
     };
 
     const updateNftTireBalance = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+        const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
         const availableNftTireBalance = await loadAvailableNftTireBalance(roomLPFarmingAPIs);
         setAvailableNftTireBalance(availableNftTireBalance);
     };
 
     const callInit = async () => {
-
         setIsIniting(true);
         await initRoomLPPoolData();
         setIsIniting(false);
@@ -177,7 +176,7 @@ function Nft() {
 
         try {
             const nextNftTire = userCurrentNftTire + 1;
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             const availableNftBalanceOfTheTire = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nextNftTire);
             if (availableNftBalanceOfTheTire == 0) {
                 setIsUpgradingNftToken(false);

@@ -18,7 +18,7 @@ import LiquidityMining from "./pages/LiquidityMining";
 import ConnectionTest from "./pages/ConnectionTest";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
-import RoomCourtStakePage from "./pages/RoomCourtStakePage";
+import FarminPoolPage from "./pages/FarminPoolPage";
 import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
@@ -96,8 +96,21 @@ function App() {
                                 <Route path="/nft-stake">
                                     <NftStakePage />
                                 </Route>
-                                <Route path="/liquidity-farming/room-court">
-                                    <RoomCourtStakePage />
+                                <Route path="/liquidity-farming/room-roomethlp">
+                                    <FarminPoolPage pool={'RoomFarming_RoomEthLpStake'}
+                                        source={'room_eth_lp'} />
+                                </Route>
+                                <Route path="/liquidity-farming/court-room">
+                                    <FarminPoolPage pool={'CourtFarming_RoomStake'}
+                                        source={'room'} />
+                                </Route>
+                                <Route path="/liquidity-farming/court-roomethlp">
+                                    <FarminPoolPage pool={'CourtFarming_RoomEthLpStake'}
+                                        source={'room_eth_lp'} />
+                                </Route>
+                                <Route path="/liquidity-farming/court-courtethlp">
+                                    <FarminPoolPage pool={'CourtFarming_CourtEthLpStake'}
+                                        source={'court_eth_lp'} />
                                 </Route>
                                 <Route exact path="/">
                                     <Redirect to="/liquidity-mining" />
