@@ -1,6 +1,6 @@
 import * as blockies from "blockies-ts";
 import {formatFixed, parseFixed} from "@ethersproject/bignumber";
-
+import moment from 'moment';
 import {supportedChains} from './chains';
 
 export const isMobile = () => {
@@ -149,4 +149,8 @@ export function getDaiContract(chainId, web3) {
     );
 
     return dai;
+}
+
+export function timeConverter(UNIX_timestamp) {
+    return moment(UNIX_timestamp*1000).format('MMMM Do YYYY, h:mm a')
 }

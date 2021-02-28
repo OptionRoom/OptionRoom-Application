@@ -303,6 +303,78 @@ class CourtAPIs {
         }
     }
 
+    async getIncvRewardInfo(address, contract) {
+
+        if (contract === "CourtFarming_RoomStake") {
+            const result = await this.courtFarming_RoomStakeContract
+                .methods
+                .incvRewardInfo()
+                .call({
+                    from: address
+                });
+
+            return result;
+        }
+
+        if (contract === "CourtFarming_RoomEthLpStake") {
+            const result = await this.courtFarming_RoomEthLpStakeContract
+                .methods
+                .incvRewardInfo()
+                .call({
+                    from: address
+                });
+
+            return result;
+        }
+
+        if (contract === "CourtFarming_CourtEthLpStake") {
+            const result = await this.courtFarming_CourtEthLpStakeContract
+                .methods
+                .incvRewardInfo()
+                .call({
+                    from: address
+                });
+
+            return result;
+        }
+    }
+
+    async claimIncvRewards(address, contract) {
+
+        if (contract === "CourtFarming_RoomStake") {
+            const result = await this.courtFarming_RoomStakeContract
+                .methods
+                .claimIncvReward()
+                .send({
+                    from: address
+                });
+
+            return result;
+        }
+
+        if (contract === "CourtFarming_RoomEthLpStake") {
+            const result = await this.courtFarming_RoomEthLpStakeContract
+                .methods
+                .claimIncvReward()
+                .send({
+                    from: address
+                });
+
+            return result;
+        }
+
+        if (contract === "CourtFarming_CourtEthLpStake") {
+            const result = await this.courtFarming_CourtEthLpStakeContract
+                .methods
+                .claimIncvReward()
+                .send({
+                    from: address
+                });
+
+            return result;
+        }
+    }
+
     async claimRewards(address, contract) {
         if (contract === "RoomFarming_RoomEthLpStake") {
             const result = await this.roomFarming_RoomEthLpStakeContract
