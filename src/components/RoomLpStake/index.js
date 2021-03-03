@@ -9,7 +9,6 @@ import Button from "../Button";
 import AddIcon from "@material-ui/icons/Add";
 import DepositModal from "../DepositModal";
 import UnstakeModal from "../UnstakeModal";
-import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import {
@@ -23,8 +22,8 @@ import {
 } from '../../shared/helper';
 
 import room_eth_lp_staking from '../../assets/room_eth_lp_staking.png';
-import room_icon from '../../assets/room-icon.png';
-import courtTokenIconImg from '../../assets/court-token-icon.png';
+import room_icon from '../../assets/room.svg';
+import courtTokenIconImg from '../../assets/court.svg';
 import courtEthLpIconImg from '../../assets/courtethlp.png';
 
 const getPoolConfig = (source, pool) => {
@@ -244,82 +243,57 @@ function RoomLpStake(props) {
             <div className={classes.RoomLpStake__Cards}>
                 {
                     isIncvPool() && (
-                        <div className={classes.IncvEarnCard}
-                            key={'ROOM-Earned'}>
-                            <div className={classes.IncvEarnCard__Icon}>
-                                <img width={'100%'} src={getPoolConfig(source, pool).earnedTokenImg} />
-                            </div>
-                            <div className={classes.IncvEarnCard__Blocks}>
-                                <div className={classes.IncvEarnCard__Block}>
-                                    <div>
-                                        <div className={classes.IncvEarnCard__Block__Tokens}>
-                                            {convertAmountToTokens(userFarmedIncvTokenBalance)}
-                                        </div>
-                                        <div className={classes.IncvEarnCard__Block__Desc}>
-                                            Unlocked on {incvRewardInfo && timeConverter(incvRewardInfo.incvRewardLockTime)}
-                                        </div>
-                                    </div>
-                                    <Button classes={classes.IncvEarnCard__Action__Btn}
-                                        isDisabled={(
-                                            (incvRewardInfo && incvRewardInfo.incvRewardLockTime && incvRewardInfo.incvRewardLockTime * 1000 > new Date().getTime()) ||
-                                            userFarmedIncvTokenBalance == 0
-                                        )}
-                                        isProcessing={isIncvHarvestInProgress}
-                                        size={'small'}
-                                        color="primary"
-                                        onClick={handleIncvHarvest}>
-                                        Claim
-                                </Button>
-                                </div>
-                                <div className={classes.IncvEarnCard__Block}>
-                                    <div>
-                                        <div className={classes.IncvEarnCard__Block__Tokens}>
-                                            {convertAmountToTokens(userFarmedTokenBalance)}
-                                        </div>
-                                        <div className={classes.IncvEarnCard__Block__Desc}>
-                                            COURT Earned
-                                        </div>
-                                    </div>
-                                    <Button classes={classes.IncvEarnCard__Action__Btn}
-                                        isDisabled={userFarmedTokenBalance == 0}
-                                        isProcessing={isHarvestInProgress}
-                                        size={'small'}
-                                        color="primary"
-                                        onClick={handleHarvest}>
-                                        Claim Now
-                                </Button>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                }
-                {
-                    !isIncvPool() && (
                         <div className={classes.EarnCard}
                             key={'ROOM-Earned'}>
                             <div className={classes.EarnCard__Icon}>
                                 <img width={'100%'} src={getPoolConfig(source, pool).earnedTokenImg} />
                             </div>
                             <div className={classes.EarnCard__Title}>
-                                {convertAmountToTokens(userFarmedTokenBalance)}
+                                {convertAmountToTokens(userFarmedIncvTokenBalance)}
                             </div>
-                            <div className={classes.EarnCard__SubTitle}>
-                                {getPoolConfig(source, pool).earnedTokenName}
+                            <div className={`${classes.EarnCard__SubTitle} ${classes.EarnCard__SubTitleIncv}`}>
+                                Unlocked on {incvRewardInfo && timeConverter(incvRewardInfo.incvRewardLockTime)}
                             </div>
                             <div className={classes.EarnCard__Action}>
                                 <Button classes={classes.EarnCard__Action__Btn}
-                                    isDisabled={userFarmedTokenBalance == 0}
-                                    isProcessing={isHarvestInProgress}
+                                    isDisabled={(
+                                        (incvRewardInfo && incvRewardInfo.incvRewardLockTime && incvRewardInfo.incvRewardLockTime * 1000 > new Date().getTime()) ||
+                                        userFarmedIncvTokenBalance == 0
+                                    )}
+                                    isProcessing={isIncvHarvestInProgress}
                                     size={'large'}
                                     fullWidth={true}
                                     color="primary"
-                                    onClick={handleHarvest}>
+                                    onClick={handleIncvHarvest}>
                                     Claim
-                            </Button>
+                                </Button>
                             </div>
                         </div>
                     )
                 }
+                <div className={classes.EarnCard}
+                    key={'ROOM-Earned'}>
+                    <div className={classes.EarnCard__Icon}>
+                        <img width={'100%'} src={getPoolConfig(source, pool).earnedTokenImg} />
+                    </div>
+                    <div className={classes.EarnCard__Title}>
+                        {convertAmountToTokens(userFarmedTokenBalance)}
+                    </div>
+                    <div className={classes.EarnCard__SubTitle}>
+                        {getPoolConfig(source, pool).earnedTokenName}
+                    </div>
+                    <div className={classes.EarnCard__Action}>
+                        <Button classes={classes.EarnCard__Action__Btn}
+                            isDisabled={userFarmedTokenBalance == 0}
+                            isProcessing={isHarvestInProgress}
+                            size={'large'}
+                            fullWidth={true}
+                            color="primary"
+                            onClick={handleHarvest}>
+                            Claim
+                        </Button>
+                    </div>
+                </div>
 
                 <div className={classes.EarnCard}
                     key={'Staked-RoomLP'}>

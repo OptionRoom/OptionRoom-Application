@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     Pools: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
         flexWrap: 'wrap'
     },
     Pool: {

@@ -35,6 +35,7 @@ export const useStyles = makeStyles((theme) => ({
                 marginRight: '0',
             },
         },
+        minHeight: "326px"
     },
     EarnCard__Icon: {
         width: '64px',
@@ -50,15 +51,18 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         lineHeight: '24px',
         textAlign: 'center',
-        marginBottom: '8px',
+        marginBottom: '15px',
+        lineHeight: "23px"
     },
     EarnCard__SubTitle: {
         color: '#6D8096',
         fontSize: '16px',
         letterSpacing: 0,
-        lineHeight: '56px',
         textAlign: 'center',
         marginBottom: '40px',
+    },
+    EarnCard__SubTitleIncv: {
+        fontSize: '12px',
     },
     EarnCard__Action: {},
     EarnCard__Action_Two: {
