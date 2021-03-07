@@ -1,51 +1,56 @@
-import React, {useContext, useEffect, useState} from 'react';
-import clsx from 'clsx';
+import React, { useContext, useEffect, useState } from "react";
+import clsx from "clsx";
 
-import Button from '../Button';
-import Dialog from '@material-ui/core/Dialog';
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import MuiDialogContent from '@material-ui/core/DialogContent';
-import MuiDialogActions from '@material-ui/core/DialogActions';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
-import Typography from '@material-ui/core/Typography';
+import Button from "../Button";
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import MuiDialogActions from "@material-ui/core/DialogActions";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import Typography from "@material-ui/core/Typography";
 
-import {useStyles} from './styles'
-import {AccountContext} from "../../shared/AccountContextProvider";
-import RoomLPFarmingAPIs from '../../shared/contracts/RoomLPFarmingAPIs';
-import CourtAPIs from '../../shared/contracts/CourtAPIs';
-import {convertAmountToTokens, convertTokensToAmount} from '../../shared/helper';
+import { useStyles } from "./styles";
+import { AccountContext } from "../../shared/AccountContextProvider";
+import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
+import CourtAPIs from "../../shared/contracts/CourtAPIs";
+import {
+    convertAmountToTokens,
+    convertTokensToAmount,
+} from "../../shared/helper";
 
 const getModalText = (type, source, pool) => {
-    if(type=== 'nftStake') {
-        return 'Deposit your ROOM tokens for staking';
+    if (type === "nftStake") {
+        return "Deposit your ROOM tokens for staking";
     }
 
-    if (source === 'room' && pool === "CourtFarming_RoomStake") {
-        return 'Deposit your ROOM tokens for COURT staking';
+    if (source === "room" && pool === "CourtFarming_RoomStake") {
+        return "Deposit your ROOM tokens for COURT staking";
     }
 
-    if (source === 'room_eth_lp' && pool === "RoomFarming_RoomEthLpStake") {
-        return 'Deposit your ROOM-ETH LP tokens for ROOM staking';
+    if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
+        return "Deposit your ROOM-ETH LP tokens for ROOM staking";
     }
 
-    if (source === 'room_eth_lp' && pool === "CourtFarming_RoomEthLpStake") {
-        return 'Deposit your ROOM-ETH LP tokens for COURT staking';
+    if (source === "room_eth_lp" && pool === "CourtFarming_RoomEthLpStake") {
+        return "Deposit your ROOM-ETH LP tokens for COURT staking";
     }
 
-    if (source === 'court_eth_lp' && pool === "CourtFarming_CourtEthLpStake") {
-        return 'Deposit your COURT-ETH LP tokens for COURT staking';
+    if (source === "court_eth_lp" && pool === "CourtFarming_CourtEthLpStake") {
+        return "Deposit your COURT-ETH LP tokens for COURT staking";
+    }
+
+    if (source === "ht" && pool === "CourtFarming_HtStake") {
+        return "Deposit your HT tokens for COURT staking";
+    }
+
+    if (source === "matter" && pool === "CourtFarming_MatterStake") {
+        return "Deposit your MATTER tokens for COURT staking";
     }
 };
 
 function DepositModal(props) {
-    const {
-        userRoomLPTokens,
-        type,
-        nftTire,
-        source, 
-        pool
-    } = props;
+    const { userRoomLPTokens, type, nftTire, source, pool } = props;
 
     const accountContext = useContext(AccountContext);
     const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
@@ -69,16 +74,23 @@ function DepositModal(props) {
 
         try {
             const tokensAmount = convertTokensToAmount(tokensCount);
-            if (type === 'nftStake') {
-                await roomLPFarmingAPIs.stakeNftStakeContractForTire(accountContext.account, nftTire, tokensAmount);
+            if (type === "nftStake") {
+                await roomLPFarmingAPIs.stakeNftStakeContractForTire(
+                    accountContext.account,
+                    nftTire,
+                    tokensAmount
+                );
             } else {
-                await courtAPIs.stackeTokens(accountContext.account, pool, tokensAmount);
+                await courtAPIs.stackeTokens(
+                    accountContext.account,
+                    pool,
+                    tokensAmount
+                );
             }
 
             setIsConfirmProcessing(false);
             props.onStake();
             props.onClose();
-
         } catch (e) {
             setIsConfirmProcessing(false);
         }
@@ -87,7 +99,10 @@ function DepositModal(props) {
     const checkValidAmount = () => {
         const availableTokens = convertAmountToTokens(userRoomLPTokens);
 
-        if (tokensCount == 0 || parseFloat(tokensCount) > parseFloat(availableTokens)) {
+        if (
+            tokensCount == 0 ||
+            parseFloat(tokensCount) > parseFloat(availableTokens)
+        ) {
             setIsInvalidAmountError(true);
             return false;
         }
@@ -103,39 +118,43 @@ function DepositModal(props) {
     };
 
     return (
-        <Dialog classes={{
-            paper: classes.paper, // class name, e.g. `classes-nesting-root-x`
-        }}
-                onClose={handleClose}
-                aria-labelledby="DepositModal-dialog-title"
-                open={props.open}
-                disableBackdropClick={true}>
-            <MuiDialogTitle id="DepositModal-dialog-title"
-                            disableTypography
-                            className={classes.MuiDialogTitle}
+        <Dialog
+            classes={{
+                paper: classes.paper, // class name, e.g. `classes-nesting-root-x`
+            }}
+            onClose={handleClose}
+            aria-labelledby="DepositModal-dialog-title"
+            open={props.open}
+            disableBackdropClick={true}
+        >
+            <MuiDialogTitle
+                id="DepositModal-dialog-title"
+                disableTypography
+                className={classes.MuiDialogTitle}
             >
-                <Typography className={classes.DialogTitle}
-                            variant="h6">
+                <Typography className={classes.DialogTitle} variant="h6">
                     Deposit Tokens
                 </Typography>
-                {
-                    handleClose && (
-                        <IconButton aria-label="close"
-                                    className={classes.closeButton}
-                                    disabled={isConfirmProcessing}
-                                    onClick={handleClose}>
-                            <CloseIcon/>
-                        </IconButton>
-                    )
-                }
+                {handleClose && (
+                    <IconButton
+                        aria-label="close"
+                        className={classes.closeButton}
+                        disabled={isConfirmProcessing}
+                        onClick={handleClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                )}
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
                     {getModalText(type, source, pool)}
                 </div>
                 <div className={classes.Modal__TokensLabel}>
-                    Tokens Available <span
-                    className={classes.Modal__TokensLabel_Balance}>{convertAmountToTokens(userRoomLPTokens)}</span>
+                    Tokens Available{" "}
+                    <span className={classes.Modal__TokensLabel_Balance}>
+                        {convertAmountToTokens(userRoomLPTokens)}
+                    </span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>
                     <input
@@ -144,34 +163,41 @@ function DepositModal(props) {
                             setTokensCount(e.target.value);
                         }}
                         className={clsx(classes.Modal__TokensInput, {
-                            [classes.Modal__TokensInput__HasError]: isInvalidAmountError
+                            [classes.Modal__TokensInput__HasError]: isInvalidAmountError,
                         })}
-                        type={'number'}/>
-                    <div className={classes.Modal__TokensInputMaxBtn}
-                         onClick={handleSetMax}>Max
+                        type={"number"}
+                    />
+                    <div
+                        className={classes.Modal__TokensInputMaxBtn}
+                        onClick={handleSetMax}
+                    >
+                        Max
                     </div>
                 </div>
-                {
-                    isInvalidAmountError && (
-                        <div className={classes.Modal__TokensErrorHelp}>
-                            Invalid amount, it must be between 1 and {convertAmountToTokens(userRoomLPTokens)}
-                        </div>
-                    )
-                }
+                {isInvalidAmountError && (
+                    <div className={classes.Modal__TokensErrorHelp}>
+                        Invalid amount, it must be between 1 and{" "}
+                        {convertAmountToTokens(userRoomLPTokens)}
+                    </div>
+                )}
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
-                <Button className={classes.MuiDialogActions__CancelBtn}
-                        isDisabled={isConfirmProcessing}
-                        color={'gray'}
-                        onClick={handleClose}
-                        size={'small'}>
+                <Button
+                    className={classes.MuiDialogActions__CancelBtn}
+                    isDisabled={isConfirmProcessing}
+                    color={"gray"}
+                    onClick={handleClose}
+                    size={"small"}
+                >
                     Cancel
                 </Button>
-                <Button onClick={handleConfirm}
-                        className={classes.MuiDialogActions__ConfirmBtn}
-                        isProcessing={isConfirmProcessing}
-                        color={'primary'}
-                        size={'small'}>
+                <Button
+                    onClick={handleConfirm}
+                    className={classes.MuiDialogActions__ConfirmBtn}
+                    isProcessing={isConfirmProcessing}
+                    color={"primary"}
+                    size={"small"}
+                >
                     Confirm
                 </Button>
             </MuiDialogActions>

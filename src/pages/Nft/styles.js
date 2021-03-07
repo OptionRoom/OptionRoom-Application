@@ -5,14 +5,17 @@ export const useStyles = makeStyles((theme) => ({
         position: 'relative'
     },
     Stats: {
-        position: 'absolute',
-        top: '100px',
-        left: '0',
-        color: "#5c636d",
-        width: '200px',
+        [theme.breakpoints.up('md')]: {
+            position: 'absolute',
+            top: '100px',
+            left: '0',
+        },
+        maxWidth: '200px',
         padding: '20px 0',
         background: '#000',
         borderRadius: '5px',
+        margin: "0 auto 30px",
+        color: "#5c636d",
         '& div': {
             padding: '5px 10px',
             '&>span:first-child': {

@@ -5,6 +5,7 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import swal from 'sweetalert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {BigNumber} from "@ethersproject/bignumber";
+import numeral from 'numeral';
 
 import Navbar from '../../components/Navbar';
 import Button from '../../components/Button';
@@ -16,7 +17,10 @@ import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import {convertAmountToTokens} from "../../shared/helper";
 import ConnectButton from "../../components/ConnectButton";
 import {nftTires, nftImages, allOfTires} from '../../shared/constants';
-import {loadAllNftTokenAvilable} from '../../shared/contracts/PoolsStatsAPIs';
+import {
+    getTotalValueStakedInNftStakingInUsd,
+    loadAllNftTokenAvilable
+} from '../../shared/contracts/PoolsStatsAPIs';
 
 function Nft() {
     const classes = useStyles();
@@ -32,6 +36,7 @@ function Nft() {
 
     const [userNftTireBalance, setUserNftTireBalance] = useState({});
     const [availableNftTireBalance, setAvailableNftTireBalance] = useState({});
+    const [poolStats, setPoolStats] = useState({});
     const [userRoomTokenBalance, setUserRoomTokenBalance] = useState({});
     const [userCurrentNftTire, setUserCurrentNftTire] = useState(0);
     const [requiredRoomsForTire, setRequiredRoomsForTire] = useState(0);
@@ -150,12 +155,27 @@ function Nft() {
     const updateNftTireBalance = async () => {
         const availableNftTireBalance = await loadAvailableNftTireBalance();
         setAvailableNftTireBalance(availableNftTireBalance);
+
+        const pool0__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 0);
+        const pool1__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 1);
+        const pool2__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 2);
+        const pool3__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 3);
+        const pool4__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 4);
+
+        setPoolStats({
+            0: pool0__staked,
+            1: pool1__staked,
+            2: pool2__staked,
+            3: pool3__staked,
+            4: pool4__staked,
+        });
     };
 
     const callInit = async () => {
         setIsIniting(true);
         await initRoomLPPoolData();
         setIsIniting(false);
+        updateNftTireBalance();
     };
 
     const handleUpgrade = async () => {
@@ -244,14 +264,14 @@ function Nft() {
                                 !isIniting && (
                                     <>
                                         {
-                                            availableNftTireBalance && (
+                                            availableNftTireBalance && availableNftTireBalance['0'] && poolStats && poolStats['0'] && (
                                                 <div className={classes.Stats}>
                                                     {
                                                         nftTires.map((tire) => {
                                                             return (
                                                                 <div key={'nft'+tire}>
                                                                     <span>Tier {tire+1}: <span>{availableNftTireBalance[tire]}/{allOfTires[tire]}</span></span>
-                                                                    <span>APY: <span>178%</span></span>
+                                                                    <span>APY: <span>{numeral((poolStats[tire].apy / 100)).format('0%')}</span></span>
                                                                 </div>
                                                             )
                                                         })

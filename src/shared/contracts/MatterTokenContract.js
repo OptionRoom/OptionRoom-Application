@@ -1,0 +1,363 @@
+export const getMatterTokenContract = (chainId, web3) => {
+    const ropstenContract = {
+        address: "0x2d6cdf6f61eeda72971a69eaa4821827c56eba1a",
+        abi: [
+            {
+                inputs: [],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "constructor",
+            },
+            {
+                anonymous: false,
+                inputs: [
+                    {
+                        indexed: true,
+                        internalType: "address",
+                        name: "owner",
+                        type: "address",
+                    },
+                    {
+                        indexed: true,
+                        internalType: "address",
+                        name: "spender",
+                        type: "address",
+                    },
+                    {
+                        indexed: false,
+                        internalType: "uint256",
+                        name: "value",
+                        type: "uint256",
+                    },
+                ],
+                name: "Approval",
+                type: "event",
+            },
+            {
+                anonymous: false,
+                inputs: [
+                    {
+                        indexed: true,
+                        internalType: "address",
+                        name: "from",
+                        type: "address",
+                    },
+                    {
+                        indexed: true,
+                        internalType: "address",
+                        name: "to",
+                        type: "address",
+                    },
+                    {
+                        indexed: false,
+                        internalType: "uint256",
+                        name: "value",
+                        type: "uint256",
+                    },
+                ],
+                name: "Transfer",
+                type: "event",
+            },
+            {
+                constant: true,
+                inputs: [
+                    { internalType: "address", name: "owner", type: "address" },
+                    {
+                        internalType: "address",
+                        name: "spender",
+                        type: "address",
+                    },
+                ],
+                name: "allowance",
+                outputs: [
+                    { internalType: "uint256", name: "", type: "uint256" },
+                ],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "spender",
+                        type: "address",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "amount",
+                        type: "uint256",
+                    },
+                ],
+                name: "approve",
+                outputs: [{ internalType: "bool", name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                constant: true,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "account",
+                        type: "address",
+                    },
+                ],
+                name: "balanceOf",
+                outputs: [
+                    { internalType: "uint256", name: "", type: "uint256" },
+                ],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: true,
+                inputs: [],
+                name: "decimals",
+                outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "spender",
+                        type: "address",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "subtractedValue",
+                        type: "uint256",
+                    },
+                ],
+                name: "decreaseAllowance",
+                outputs: [{ internalType: "bool", name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "spender",
+                        type: "address",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "addedValue",
+                        type: "uint256",
+                    },
+                ],
+                name: "increaseAllowance",
+                outputs: [{ internalType: "bool", name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                constant: true,
+                inputs: [],
+                name: "name",
+                outputs: [{ internalType: "string", name: "", type: "string" }],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: true,
+                inputs: [],
+                name: "symbol",
+                outputs: [{ internalType: "string", name: "", type: "string" }],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: true,
+                inputs: [],
+                name: "totalSupply",
+                outputs: [
+                    { internalType: "uint256", name: "", type: "uint256" },
+                ],
+                payable: false,
+                stateMutability: "view",
+                type: "function",
+            },
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "recipient",
+                        type: "address",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "amount",
+                        type: "uint256",
+                    },
+                ],
+                name: "transfer",
+                outputs: [{ internalType: "bool", name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                constant: false,
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "sender",
+                        type: "address",
+                    },
+                    {
+                        internalType: "address",
+                        name: "recipient",
+                        type: "address",
+                    },
+                    {
+                        internalType: "uint256",
+                        name: "amount",
+                        type: "uint256",
+                    },
+                ],
+                name: "transferFrom",
+                outputs: [{ internalType: "bool", name: "", type: "bool" }],
+                payable: false,
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+        ],
+    };
+
+    const mainContract = {
+        address: "0x1c9491865a1de77c5b6e19d2e6a5f1d7a6f2b25f",
+        abi: [
+            {
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "_admin",
+                        type: "address",
+                    },
+                    {
+                        internalType: "address",
+                        name: "_logic",
+                        type: "address",
+                    },
+                    { internalType: "bytes", name: "_data", type: "bytes" },
+                ],
+                stateMutability: "payable",
+                type: "constructor",
+            },
+            {
+                anonymous: false,
+                inputs: [
+                    {
+                        indexed: false,
+                        internalType: "address",
+                        name: "previousAdmin",
+                        type: "address",
+                    },
+                    {
+                        indexed: false,
+                        internalType: "address",
+                        name: "newAdmin",
+                        type: "address",
+                    },
+                ],
+                name: "AdminChanged",
+                type: "event",
+            },
+            {
+                anonymous: false,
+                inputs: [
+                    {
+                        indexed: true,
+                        internalType: "address",
+                        name: "implementation",
+                        type: "address",
+                    },
+                ],
+                name: "Upgraded",
+                type: "event",
+            },
+            { stateMutability: "payable", type: "fallback" },
+            {
+                inputs: [],
+                name: "admin",
+                outputs: [
+                    { internalType: "address", name: "", type: "address" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "newAdmin",
+                        type: "address",
+                    },
+                ],
+                name: "changeAdmin",
+                outputs: [],
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                inputs: [],
+                name: "implementation",
+                outputs: [
+                    { internalType: "address", name: "", type: "address" },
+                ],
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "newImplementation",
+                        type: "address",
+                    },
+                ],
+                name: "upgradeTo",
+                outputs: [],
+                stateMutability: "nonpayable",
+                type: "function",
+            },
+            {
+                inputs: [
+                    {
+                        internalType: "address",
+                        name: "newImplementation",
+                        type: "address",
+                    },
+                    { internalType: "bytes", name: "data", type: "bytes" },
+                ],
+                name: "upgradeToAndCall",
+                outputs: [],
+                stateMutability: "payable",
+                type: "function",
+            },
+            { stateMutability: "payable", type: "receive" },
+        ],
+    };
+
+    const contract = chainId === 1 ? mainContract : ropstenContract;
+
+    return new web3.eth.Contract(
+        contract.abi,
+        contract.address
+    );
+}

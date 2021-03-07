@@ -262,23 +262,31 @@ function Sidebar() {
             classes={{
                 root: classes.drawer,
                 paper: clsx(classes.drawerPaper, {
-                    [classes.drawerPaper___Black]: optionroomThemeContext.theme === 'black',
+                    [classes.drawerPaper___Black]:
+                        optionroomThemeContext.theme === "black",
                 }),
             }}
-            anchor={'left'}
+            anchor={"left"}
             open={isMobile() ? optionroomThemeContext.isSidebarOpen : true}
-            onClose={isMobile() ? () => {optionroomThemeContext.changeSidebarIsOpen(false);} : () => {}}
+            onClose={
+                isMobile()
+                    ? () => {
+                          optionroomThemeContext.changeSidebarIsOpen(false);
+                      }
+                    : () => {}
+            }
         >
             <div className={classes.toolbar}>
-                <img src={LogoSvg}
-                     className={classes.Logo}
-                     alt={'OptionRoom logo'}
-                     width={'150px'}/>
+                <img
+                    src={LogoSvg}
+                    className={classes.Logo}
+                    alt={"OptionRoom logo"}
+                    width={"150px"}
+                />
             </div>
             <div className={classes.NavLinks}>
-                {
-                    [
-                        /*{
+                {[
+                    /*{
                             title: 'Markets',
                             link: '/markets',
                             icon: MarketsIcon
@@ -288,27 +296,27 @@ function Sidebar() {
                             link: '/governance',
                             icon: GovernanceIcon
                         },*/
-                        {
-                            title: 'Liquidity Farming',
-                            link: '/liquidity-mining',
-                            icon: LiquidityIcon
-                        },
-                        {
-                            title: 'Governance Farming',
-                            link: '/governance-farming',
-                            icon: CourtStakeIcon
-                        },
-                        {
-                            title: 'Get NFTs',
-                            link: '/nft',
-                            icon: NftIcon
-                        },
-                        {
-                            title: 'NFT Staking',
-                            link: '/nft-stake',
-                            icon: NftStakeIcon
-                        },
-                        /*{
+                    {
+                        title: "Liquidity Farming",
+                        link: "/liquidity-mining",
+                        icon: LiquidityIcon,
+                    },
+                    {
+                        title: "COURT Farming",
+                        link: "/court-farming",
+                        icon: CourtStakeIcon,
+                    },
+                    {
+                        title: "Get NFTs",
+                        link: "/nft",
+                        icon: NftIcon,
+                    },
+                    {
+                        title: "NFT Staking",
+                        link: "/nft-stake",
+                        icon: NftStakeIcon,
+                    },
+                    /*{
                             title: 'Claim',
                             link: '/claim',
                             icon: ClaimIcon
@@ -323,36 +331,43 @@ function Sidebar() {
                             link: '/docs',
                             icon: DocsIcon
                         },*/
-                    ].map((item, index) => (
-                        <NavLink to={item.link}
-                                 activeClassName={'Active'}
-                                 key={`menut-item${index}`}
-                                 className={
-                                     clsx(classes.NavLink, {
-                                         [classes.NavLink___Black]: optionroomThemeContext.theme === 'black',
-                                     })
-                                 }>
-                            {item.icon()}
-                            <span className={classes.NavLink__Title}>
-                               {item.title}
-                            </span>
-                        </NavLink>
-                    ))}
+                ].map((item, index) => (
+                    <NavLink
+                        to={item.link}
+                        activeClassName={"Active"}
+                        key={`menut-item${index}`}
+                        className={clsx(classes.NavLink, {
+                            [classes.NavLink___Black]:
+                                optionroomThemeContext.theme === "black",
+                        })}
+                    >
+                        {item.icon()}
+                        <span className={classes.NavLink__Title}>
+                            {item.title}
+                        </span>
+                    </NavLink>
+                ))}
             </div>
             <div className={classes.SocialLinks}>
-                <a href="https://github.com/OptionRoom"
+                <a
+                    href="https://github.com/OptionRoom"
                     rel="noreferrer"
-                    target="_blank">
+                    target="_blank"
+                >
                     <i className="fa fa-github"></i>
                 </a>
-                <a href="https://t.me/OptionRoom"
+                <a
+                    href="https://t.me/OptionRoom"
                     rel="noreferrer"
-                    target="_blank">
+                    target="_blank"
+                >
                     <i className="fa fa-telegram"></i>
                 </a>
-                <a href="https://twitter.com/option_room"
+                <a
+                    href="https://twitter.com/option_room"
                     rel="noreferrer"
-                    target="_blank">
+                    target="_blank"
+                >
                     <i className="fa fa-twitter"></i>
                 </a>
             </div>

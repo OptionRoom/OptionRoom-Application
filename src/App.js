@@ -71,25 +71,31 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <div>
-
                 <CssBaseline />
 
                 <Router>
                     <div className={classes.Main}>
                         <Sidebar className={classes.DesktopSidebar}></Sidebar>
-                        <div className={clsx(classes.Main__Content, {
-                            [classes.Main__Content___Black]: optionroomThemeContext.theme === 'black',
-                            [classes.Main__Content___Golden]: optionroomThemeContext.background === 'golden',
-                        })}>
+                        <div
+                            className={clsx(classes.Main__Content, {
+                                [classes.Main__Content___Black]:
+                                    optionroomThemeContext.theme === "black",
+                                [classes.Main__Content___Golden]:
+                                    optionroomThemeContext.background ===
+                                    "golden",
+                            })}
+                        >
                             <Switch>
                                 {/*                                <Route path="/claim">
                                     <Claim/>
                                 </Route>*/}
                                 <Route path="/liquidity-mining">
-                                    <FarminPoolPage pool={'RoomFarming_RoomEthLpStake'}
-                                            source={'room_eth_lp'} />
+                                    <FarminPoolPage
+                                        pool={"RoomFarming_RoomEthLpStake"}
+                                        source={"room_eth_lp"}
+                                    />
                                 </Route>
-                                <Route path="/governance-farming">
+                                <Route path="/court-farming" exact={true}>
                                     <CourtFarming />
                                 </Route>
                                 {/*                                <Route path="/connection-test">
@@ -101,22 +107,36 @@ function App() {
                                 <Route path="/nft-stake">
                                     <NftStakePage />
                                 </Route>
-                                <Route path="/liquidity-farming/room-roomethlp">
-                                    <FarminPoolPage pool={'RoomFarming_RoomEthLpStake'}
-                                        source={'room_eth_lp'} />
+                                <Route path="/court-farming/court-room">
+                                    <FarminPoolPage
+                                        pool={"CourtFarming_RoomStake"}
+                                        source={"room"}
+                                    />
                                 </Route>
-                                <Route path="/liquidity-farming/court-room">
-                                    <FarminPoolPage pool={'CourtFarming_RoomStake'}
-                                        source={'room'} />
+                                <Route path="/court-farming/court-roomethlp">
+                                    <FarminPoolPage
+                                        pool={"CourtFarming_RoomEthLpStake"}
+                                        source={"room_eth_lp"}
+                                    />
                                 </Route>
-                                <Route path="/liquidity-farming/court-roomethlp">
-                                    <FarminPoolPage pool={'CourtFarming_RoomEthLpStake'}
-                                        source={'room_eth_lp'} />
+                                <Route path="/court-farming/court-ht">
+                                    <FarminPoolPage
+                                        pool={"CourtFarming_HtStake"}
+                                        source={"ht"}
+                                    />
                                 </Route>
-                                <Route path="/liquidity-farming/court-courtethlp">
-                                    <FarminPoolPage pool={'CourtFarming_CourtEthLpStake'}
-                                        source={'court_eth_lp'} />
+                                <Route path="/court-farming/court-matter">
+                                    <FarminPoolPage
+                                        pool={"CourtFarming_MatterStake"}
+                                        source={"matter"}
+                                    />
                                 </Route>
+                                {/*                                 <Route path="/court-farming/court-courtethlp">
+                                    <FarminPoolPage
+                                        pool={"CourtFarming_CourtEthLpStake"}
+                                        source={"court_eth_lp"}
+                                    />
+                                </Route> */}
                                 <Route exact path="/">
                                     <Redirect to="/liquidity-mining" />
                                 </Route>
@@ -126,7 +146,6 @@ function App() {
                 </Router>
             </div>
         </ThemeProvider>
-
     );
 }
 

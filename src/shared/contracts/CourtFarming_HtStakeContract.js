@@ -1,6 +1,6 @@
-export const getCourtFarming_RoomEthLpStakeContract = (chainId, web3) => {
+export const getCourtFarming_HtStakeContract = (chainId, web3) => {
     const ropstenContract = {
-        address: "0x11de6daa41f6d9854e220d6280f206bcfdb06a76",
+        address: "0x7be53ae994041888f386feb712759e4b2e91b769",
         abi: [
             {
                 inputs: [],
@@ -622,7 +622,7 @@ export const getCourtFarming_RoomEthLpStakeContract = (chainId, web3) => {
     };
 
     const mainContract = {
-        address: "0x11de6daa41f6d9854e220d6280f206bcfdb06a76",
+        address: "0x7be53ae994041888f386feb712759e4b2e91b769",
         abi: [
             {
                 inputs: [],

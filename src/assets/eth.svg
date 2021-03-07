@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="72px" height="72px" viewBox="0 0 72 72" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>eth</title>
+    <defs>
+        <polygon id="path-1" points="0 0.052396298 21.2769947 0.052396298 21.2769947 47.9255823 0 47.9255823"></polygon>
+    </defs>
+    <g id="eth" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-13" transform="translate(15.000000, 1.000000)">
+            <g id="Group-10" transform="translate(0.000000, 0.013050)">
+                <g id="Group-3">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Clip-2"></g>
+                    <polygon id="Fill-1" fill="#8992B5" mask="url(#mask-2)" points="21.2769947 0.052396298 -1.30501365e-05 35.3550383 21.2769947 47.9255823"></polygon>
+                </g>
+                <polygon id="Fill-4" fill="#616792" points="21.2769947 0.052396298 21.2769947 47.9255823 42.5455852 35.3550383"></polygon>
+                <polygon id="Fill-6" fill="#8992B5" points="0 39.3863364 21.2770078 69.3614559 21.2770078 51.9568804"></polygon>
+                <polygon id="Fill-8" fill="#616792" points="21.2769686 51.9568804 21.2769686 69.3614559 42.5623285 39.3863364"></polygon>
+            </g>
+            <polygon id="Fill-11" fill="#454978" points="21.2728252 25.6933567 21.2728252 47.9361398 21.2770013 47.9386193 42.5455917 35.3680754 21.2770013 25.6914644"></polygon>
+            <polygon id="Fill-12" fill="#616792" points="0 35.368108 21.2728317 47.9361724 21.2728317 25.6933893"></polygon>
+        </g>
+    </g>
+</svg>
