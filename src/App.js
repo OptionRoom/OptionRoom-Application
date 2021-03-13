@@ -138,7 +138,7 @@ function App() {
                                     />
                                 </Route> */}
                                 <Route exact path="/">
-                                    <Redirect to="/liquidity-mining" />
+                                    <Redirect to="/court-farming" />
                                 </Route>
                             </Switch>
                         </div>

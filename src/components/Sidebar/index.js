@@ -62,82 +62,92 @@ const CourtStakeIcon = () => {
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        display: "flex",
     },
     drawer: {
         flexShrink: 0,
-        whiteSpace: 'nowrap',
-        transition: theme.transitions.create('width', {
+        whiteSpace: "nowrap",
+        transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
             width: drawerWidth,
-            transition: theme.transitions.create('width', {
+            transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
             }),
         },
-        '& $LogoIcon': {
-            display: 'none'
+        "& $LogoIcon": {
+            display: "none",
         },
-        '& $Logo': {
-            display: 'block',
+        "& $Logo": {
+            display: "block",
         },
         width: drawerWidth,
     },
     NavLink__Title: {
-        marginLeft: '16px',
-        display: 'block',
+        marginLeft: "16px",
+        display: "flex",
         opacity: 1,
-        transition: theme.transitions.create('opacity', {
+        transition: theme.transitions.create("opacity", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+        alignItems: 'center'
+    },
+    NewBadge: {
+        display: 'inline-block',
+        fontSize: '8px',
+        padding: '2px 5px',
+        marginLeft: '5px',
+        background: 'red',
+        borderRadius: '5px',
+        color: '#fff'
     },
     drawerPaper: {
-        background: '#EDEFF4',
-        borderRight: 'none'
+        background: "#EDEFF4",
+        borderRight: "none",
     },
     drawerPaper___Black: {
-        background: '#000',
-        borderRight: 'none'
+        background: "#000",
+        borderRight: "none",
     },
     toolbar: {
-        padding: '40px 24px 28px 24px',
+        padding: "40px 24px 28px 24px",
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
     },
     NavLinks: {
-        padding: '0 16px 16px'
+        padding: "0 16px 16px",
     },
     NavLink: {
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        color: '#8293A6',
-        fontSize: '14px',
-        marginBottom: '8px',
-        padding: '8px',
-        transition: '0.2s all',
-        '&:hover, &.Active': {
-            borderRadius: '8px',
-            background: '#004BFF',
-            color: '#fff',
-            '& svg': {
-                color: '#fff',
-                fill: '#fff',
-            }
+        display: "flex",
+        alignItems: "center",
+        textDecoration: "none",
+        color: "#8293A6",
+        fontSize: "14px",
+        marginBottom: "8px",
+        padding: "8px",
+        transition: "0.2s all",
+        "&:hover, &.Active": {
+            borderRadius: "8px",
+            background: "#004BFF",
+            color: "#fff",
+            "& svg": {
+                color: "#fff",
+                fill: "#fff",
+            },
         },
-        '& svg': {
-            color: '#8293A6',
-            fill: '#8293A6',
-        }
+        "& svg": {
+            color: "#8293A6",
+            fill: "#8293A6",
+        },
     },
     SocialLinks: {
-        padding: '40px 24px 28px 24px',
+        padding: "40px 24px 28px 24px",
         position: "absolute",
         bottom: 0,
         left: "0",
@@ -146,12 +156,12 @@ const useStyles = makeStyles((theme) => ({
         "&>a": {
             color: "#8293A6",
             marginRight: "10px",
-            transition: '0.2s all',
+            transition: "0.2s all",
             "&:hover": {
-                color: "#004BFF"
-            }
-        }
-    }
+                color: "#004BFF",
+            },
+        },
+    },
     /**
      root: {
         display: 'flex',
@@ -297,14 +307,14 @@ function Sidebar() {
                             icon: GovernanceIcon
                         },*/
                     {
-                        title: "Liquidity Farming",
-                        link: "/liquidity-mining",
-                        icon: LiquidityIcon,
-                    },
-                    {
                         title: "COURT Farming",
                         link: "/court-farming",
                         icon: CourtStakeIcon,
+                    },
+                    {
+                        title: "Liquidity Farming",
+                        link: "/liquidity-mining",
+                        icon: LiquidityIcon,
                     },
                     {
                         title: "Get NFTs",
@@ -344,6 +354,11 @@ function Sidebar() {
                         {item.icon()}
                         <span className={classes.NavLink__Title}>
                             {item.title}
+                            {
+                                item.link === "/court-farming" && (
+                                    <span className={classes.NewBadge}>new</span>
+                                )
+                            }
                         </span>
                     </NavLink>
                 ))}
