@@ -14,7 +14,7 @@ function NftStakePage() {
     return (
         <>
             <Navbar title={'NFT Staking'}
-                    details={'Earn ROOM by staking you NFT and ROOM tokens together.'}/>
+                    details={'Earn ROOM by staking your NFT and ROOM tokens together.'}/>
             <div className={classes.NftStakePage}>
                 <NftStake/>
             </div>

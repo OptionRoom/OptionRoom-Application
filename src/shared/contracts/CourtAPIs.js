@@ -12,7 +12,8 @@ import { getCourtFarming_HtStakeContract } from "./CourtFarming_HtStakeContract"
 import { getCourtFarming_MatterStakeContract } from "./CourtFarming_MatterStakeContract";
 import { getRoomLPStakingContract } from "./RoomLPStakingContract";
 import { getRoomLPTokenContract } from "./RoomLPTokenContract";
-
+import { getTokenPriceInUsd } from "./PoolsStatsAPIs";
+import {fromWei} from '../helper';
 import { MaxUint256, controlledNetworkId } from "../../shared/constants";
 
 const walletHelperInstance = walletHelper();
@@ -367,6 +368,36 @@ class CourtAPIs {
         }
     }
 
+    async getExpectedRewardsToday(address, contract, amount) {
+        let con = null;
+
+        if (contract === "CourtFarming_RoomStake") {
+            con = this.courtFarming_RoomStakeContract;
+        }
+
+        if (contract === "CourtFarming_RoomEthLpStake") {
+            con = this.courtFarming_RoomEthLpStakeContract;
+        }
+
+        if (contract === "CourtFarming_CourtEthLpStake") {
+            con = this.courtFarming_CourtEthLpStakeContract;
+        }
+
+        if (contract === "CourtFarming_HtStake") {
+            con = this.courtFarming_HtStakeContract;
+        }
+
+        if (contract === "CourtFarming_MatterStake") {
+            con = this.courtFarming_MatterStakeContract;
+        }
+
+        const result = await con.methods.expectedRewardsToday(amount).call({
+            from: address,
+        });
+
+        return result;
+    }
+
     async unstackeTokens(address, contract, amount, claim) {
         if (contract === "RoomFarming_RoomEthLpStake") {
             const result = await this.roomFarming_RoomEthLpStakeContract.methods
@@ -717,6 +748,38 @@ class CourtAPIs {
 
             return result;
         }
+    }
+
+    async getContractLockedValue(address, contract) {
+        let tokenPrice = 0;
+        let contractInstance = null;
+        if (contract === "CourtFarming_RoomStake") {
+            tokenPrice = await getTokenPriceInUsd(address, "room");
+            contractInstance = this.courtFarming_RoomStakeContract;
+        }
+
+        if (contract === "CourtFarming_HtStake") {
+            tokenPrice = await getTokenPriceInUsd(address, "ht");
+            contractInstance = this.courtFarming_HtStakeContract;
+        }
+
+        if (contract === "CourtFarming_MatterStake") {
+            tokenPrice = await getTokenPriceInUsd(address, "matter");
+            contractInstance = this.courtFarming_MatterStakeContract;
+        }
+
+        if (contract === "CourtFarming_RoomEthLpStake") {
+            tokenPrice = await getTokenPriceInUsd(address, "room_eth_lp");
+            contractInstance = this.courtFarming_RoomEthLpStakeContract;
+        }
+
+        const numberOfTokens = await contractInstance.methods
+            .totalStaked()
+            .call({
+                from: address,
+            });
+
+        return tokenPrice * fromWei(`${numberOfTokens}`);
     }
 }
 

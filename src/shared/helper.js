@@ -1,14 +1,26 @@
+import Web3 from "web3";
 import * as blockies from "blockies-ts";
-import {formatFixed, parseFixed} from "@ethersproject/bignumber";
-import moment from 'moment';
-import {supportedChains} from './chains';
+import { formatFixed, parseFixed } from "@ethersproject/bignumber";
+import moment from "moment";
+import { supportedChains } from "./chains";
+
+export const toWei = (value, decimals) => {
+    return Web3.utils.toWei(`${value}`, decimals);
+};
+
+export const fromWei = (value, decimals) => {
+    return Web3.utils.fromWei(value, decimals);
+};
 
 export const isMobile = () => {
-    return Math.min(window.screen.width, window.screen.height) < 768 || navigator.userAgent.indexOf("Mobi") > -1;
-}
+    return (
+        Math.min(window.screen.width, window.screen.height) < 768 ||
+        navigator.userAgent.indexOf("Mobi") > -1
+    );
+};
 
 function toFixed(num, fixed) {
-    const re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    const re = new RegExp("^-?\\d+(?:.\\d{0," + (fixed || -1) + "})?");
     return num.toString().match(re)[0];
 }
 
@@ -22,7 +34,7 @@ export const convertTokensToAmount = (amount) => {
 
 export const ellipseAddress = (address, width = 10) => {
     return `${address.slice(0, width)}...${address.slice(-width)}`;
-}
+};
 
 export const getAddressImgUrl = (address) => {
     const seed = address.toLowerCase() || "";
@@ -55,92 +67,161 @@ export function getChainData(chainId) {
 
         return {
             ...chainData,
-            rpc_url: rpcUrl
+            rpc_url: rpcUrl,
         };
     }
 
     return chainData;
-};
+}
 
 export function getDaiContract(chainId, web3) {
     const DAI_CONTRACT = {
         1: {
             address: "0x1874F8bb03e932178A0B53FcBF5Ca04f93FdF01E",
-            abi: [{
-                "constant": true,
-                "inputs": [],
-                "name": "getLastSetNumCaller",
-                "outputs": [{"internalType": "address", "name": "lastSetCaller", "type": "address"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [],
-                "name": "getNum",
-                "outputs": [{"internalType": "uint256", "name": "num", "type": "uint256"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [],
-                "name": "getNum2",
-                "outputs": [{"internalType": "uint256", "name": "num", "type": "uint256"}, {
-                    "internalType": "address",
-                    "name": "caller",
-                    "type": "address"
-                }],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-                "name": "getNumForAccount",
-                "outputs": [{"internalType": "uint256", "name": "num", "type": "uint256"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
-                "name": "getNumForAccount2",
-                "outputs": [{"internalType": "uint256", "name": "num", "type": "uint256"}, {
-                    "internalType": "address",
-                    "name": "iAcount",
-                    "type": "address"
-                }, {"internalType": "address", "name": "caller", "type": "address"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [],
-                "name": "lastSetNumCaller",
-                "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "constant": false,
-                "inputs": [{"internalType": "uint256", "name": "num", "type": "uint256"}],
-                "name": "setNum",
-                "outputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }, {
-                "constant": true,
-                "inputs": [{"internalType": "address", "name": "", "type": "address"}],
-                "name": "store",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }]
-
-        }
+            abi: [
+                {
+                    constant: true,
+                    inputs: [],
+                    name: "getLastSetNumCaller",
+                    outputs: [
+                        {
+                            internalType: "address",
+                            name: "lastSetCaller",
+                            type: "address",
+                        },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [],
+                    name: "getNum",
+                    outputs: [
+                        {
+                            internalType: "uint256",
+                            name: "num",
+                            type: "uint256",
+                        },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [],
+                    name: "getNum2",
+                    outputs: [
+                        {
+                            internalType: "uint256",
+                            name: "num",
+                            type: "uint256",
+                        },
+                        {
+                            internalType: "address",
+                            name: "caller",
+                            type: "address",
+                        },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [
+                        {
+                            internalType: "address",
+                            name: "account",
+                            type: "address",
+                        },
+                    ],
+                    name: "getNumForAccount",
+                    outputs: [
+                        {
+                            internalType: "uint256",
+                            name: "num",
+                            type: "uint256",
+                        },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [
+                        {
+                            internalType: "address",
+                            name: "account",
+                            type: "address",
+                        },
+                    ],
+                    name: "getNumForAccount2",
+                    outputs: [
+                        {
+                            internalType: "uint256",
+                            name: "num",
+                            type: "uint256",
+                        },
+                        {
+                            internalType: "address",
+                            name: "iAcount",
+                            type: "address",
+                        },
+                        {
+                            internalType: "address",
+                            name: "caller",
+                            type: "address",
+                        },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [],
+                    name: "lastSetNumCaller",
+                    outputs: [
+                        { internalType: "address", name: "", type: "address" },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+                {
+                    constant: false,
+                    inputs: [
+                        {
+                            internalType: "uint256",
+                            name: "num",
+                            type: "uint256",
+                        },
+                    ],
+                    name: "setNum",
+                    outputs: [],
+                    payable: false,
+                    stateMutability: "nonpayable",
+                    type: "function",
+                },
+                {
+                    constant: true,
+                    inputs: [
+                        { internalType: "address", name: "", type: "address" },
+                    ],
+                    name: "store",
+                    outputs: [
+                        { internalType: "uint256", name: "", type: "uint256" },
+                    ],
+                    payable: false,
+                    stateMutability: "view",
+                    type: "function",
+                },
+            ],
+        },
     };
 
     const dai = new web3.eth.Contract(
@@ -152,5 +233,28 @@ export function getDaiContract(chainId, web3) {
 }
 
 export function timeConverter(UNIX_timestamp) {
-    return moment(UNIX_timestamp*1000).format('MMMM Do YYYY, h:mm a')
+    return moment(UNIX_timestamp * 1000).format("MMMM Do YYYY, h:mm a");
 }
+
+export const getOrRemoveRoiOfCourt = () => {
+    let roiOfCourt = localStorage.getItem("roiOfCourt");
+    if (roiOfCourt) {
+        roiOfCourt = JSON.parse(roiOfCourt);
+        if (roiOfCourt.expiresAt > new Date().getTime()) {
+            return roiOfCourt.data;
+        } else {
+            localStorage.removeItem("roiOfCourt");
+        }
+    }
+};
+
+export const saveRoiOfCourt = (data) => {
+    const expiresAt = new Date().setMinutes(new Date().getMinutes() + 1);
+    localStorage.setItem(
+        "roiOfCourt",
+        JSON.stringify({
+            data: data,
+            expiresAt: expiresAt,
+        })
+    );
+};

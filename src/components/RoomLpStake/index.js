@@ -2,12 +2,14 @@ import numeral from "numeral";
 import React, { useEffect } from "react";
 import clsx from "clsx";
 import { useState, useContext } from "react";
+import Skeleton from "@material-ui/lab/Skeleton";
 
 import { useStyles } from "./styles";
 import { convertAmountToTokens } from "../../shared/helper";
 import Button from "../Button";
 import AddIcon from "@material-ui/icons/Add";
 import DepositModal from "../DepositModal";
+import Loader from "../Loader";
 import UnstakeModal from "../UnstakeModal";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import { AccountContext } from "../../shared/AccountContextProvider";
@@ -91,6 +93,27 @@ const getPoolConfig = (source, pool) => {
     }
 };
 
+function CardSkeleton(props) {
+    const classes = useStyles();
+
+    return (
+        <div>
+            <div className={classes.EarnCard__Icon}>
+                <Skeleton variant="circle" width={64} height={64} />
+            </div>
+            <div className={classes.EarnCard__Title}>
+                <Skeleton variant="text" height={40} />
+            </div>
+            <div className={`${classes.EarnCard__SubTitle}`}>
+                <Skeleton variant="text" height={16} />
+            </div>
+            <div className={classes.EarnCard__Action}>
+                <Skeleton variant="text" height={56} />
+            </div>
+        </div>
+    );
+}
+
 function RoomLpStake(props) {
     const { source, pool } = props;
 
@@ -120,6 +143,7 @@ function RoomLpStake(props) {
     const [incvRewardInfo, setIncvRewardInfo] = useState(null);
 
     const [stats, setStats] = useState({});
+    const [isInitializing, setIsInitializing] = useState(true);
 
     const initPoolData = async () => {
         try {
@@ -129,10 +153,7 @@ function RoomLpStake(props) {
                 accountContext.account,
                 source
             );
-            console.log(
-                "result_UserDepositTokenBalance",
-                result_UserDepositTokenBalance
-            );
+
             setUserDepositTokenBalance(result_UserDepositTokenBalance);
 
             const result_UserDepositTokenAllowance = await courtAPIs.getAddressAllowance(
@@ -140,20 +161,14 @@ function RoomLpStake(props) {
                 source,
                 pool
             );
-            console.log(
-                "result_UserDepositTokenAllowance",
-                result_UserDepositTokenAllowance
-            );
+
             setUserDepositTokenAllowance(result_UserDepositTokenAllowance);
 
             const result_UserDepositTokenStakedBalance = await courtAPIs.getAddressStakeBalance(
                 accountContext.account,
                 pool
             );
-            console.log(
-                "result_UserDepositTokenStakedBalance",
-                result_UserDepositTokenStakedBalance
-            );
+
             setUserDepositTokenStakedBalance(
                 result_UserDepositTokenStakedBalance
             );
@@ -271,6 +286,16 @@ function RoomLpStake(props) {
                 roomApy,
             });
         } else {
+
+            const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
+                accountContext.account,
+                pool
+            );
+
+            setStats({
+                courtPoolTotalLockedValue,
+            });
+
             setUserFarmedTokenBalance(userFarmedTokenBalance.reward);
             setUserFarmedIncvTokenBalance(userFarmedTokenBalance.incvReward);
         }
@@ -278,11 +303,16 @@ function RoomLpStake(props) {
 
     useEffect(() => {
         let updateInfoIntervalId = null;
-
-        if (accountContext.account) {
-            initPoolData();
+        const init = async () => {
+            setIsInitializing(true);
+            await initPoolData();
+            setIsInitializing(false);
             clearInterval(updateInfoIntervalId);
             updateInfoIntervalId = setInterval(updateInfo, 1000);
+        };
+
+        if (accountContext.account) {
+            init();
         }
 
         return () => {
@@ -294,6 +324,19 @@ function RoomLpStake(props) {
         <div className={classes.RoomLpStake}>
             {stats && (
                 <div className={classes.Info}>
+                    {
+                        !!stats.courtPoolTotalLockedValue && (
+                            <div>
+                                This pool has a total of{" "}
+                                <span>
+                                    {numeral(
+                                        stats.courtPoolTotalLockedValue
+                                    ).format("$0,0.00")}
+                                </span>{" "}
+                                locked value
+                            </div>
+                        )
+                    }
                     {stats.roomTotalLockedValue && (
                         <div>
                             This pool has a total of{" "}
@@ -329,175 +372,202 @@ function RoomLpStake(props) {
                 </div>
             )}
 
-            <div className={classes.RoomLpStake__Cards}>
-                {isIncvPool() && (
-                    <div className={classes.EarnCard} key={"ROOM-Earned2"}>
-                        <div className={classes.EarnCard__Icon}>
-                            <img
-                                width={"100%"}
-                                src={getPoolConfig(source, pool).earnedTokenImg}
-                            />
-                        </div>
-                        <div className={classes.EarnCard__Title}>
-                            {convertAmountToTokens(userFarmedIncvTokenBalance)}
-                        </div>
-                        <div
-                            className={`${classes.EarnCard__SubTitle} ${classes.EarnCard__SubTitleIncv}`}
-                        >
-                            Unlocked on{" "}
-                            {incvRewardInfo &&
-                                timeConverter(
-                                    incvRewardInfo.incvRewardLockTime
-                                )}
-                        </div>
-                        <div className={classes.EarnCard__Action}>
-                            <Button
-                                classes={classes.EarnCard__Action__Btn}
-                                isDisabled={
-                                    (incvRewardInfo &&
-                                        incvRewardInfo.incvRewardLockTime &&
-                                        incvRewardInfo.incvRewardLockTime *
-                                            1000 >
-                                            new Date().getTime()) ||
-                                    userFarmedIncvTokenBalance == 0
-                                }
-                                isProcessing={isIncvHarvestInProgress}
-                                size={"large"}
-                                fullWidth={true}
-                                color="primary"
-                                onClick={handleIncvHarvest}
-                            >
-                                Claim
-                            </Button>
-                        </div>
+            {isInitializing && (
+                <div className={classes.RoomLpStake__Cards}>
+                    <div className={classes.EarnCard} key={"ROOM-0"}>
+                        <CardSkeleton />
                     </div>
-                )}
-                {!isIncvPool() && (
-                    <div className={classes.EarnCard} key={"ROOM-Earned"}>
+                    <div className={classes.EarnCard} key={"ROOM-1"}>
+                        <CardSkeleton />
+                    </div>
+                </div>
+            )}
+            {!isInitializing && (
+                <div className={classes.RoomLpStake__Cards}>
+                    {isIncvPool() && (
+                        <div className={classes.EarnCard} key={"ROOM-Earned2"}>
+                            <div className={classes.EarnCard__Icon}>
+                                <img
+                                    width={"100%"}
+                                    src={
+                                        getPoolConfig(source, pool)
+                                            .earnedTokenImg
+                                    }
+                                />
+                            </div>
+                            <div className={classes.EarnCard__Title}>
+                                {convertAmountToTokens(
+                                    userFarmedIncvTokenBalance
+                                )}
+                            </div>
+                            <div
+                                className={`${classes.EarnCard__SubTitle} ${classes.EarnCard__SubTitleIncv}`}
+                            >
+                                Unlocked on{" "}
+                                {incvRewardInfo &&
+                                    timeConverter(
+                                        incvRewardInfo.incvRewardLockTime
+                                    )}
+                            </div>
+                            <div className={classes.EarnCard__Action}>
+                                <Button
+                                    classes={classes.EarnCard__Action__Btn}
+                                    isDisabled={
+                                        (incvRewardInfo &&
+                                            incvRewardInfo.incvRewardLockTime &&
+                                            incvRewardInfo.incvRewardLockTime *
+                                                1000 >
+                                                new Date().getTime()) ||
+                                        userFarmedIncvTokenBalance == 0
+                                    }
+                                    isProcessing={isIncvHarvestInProgress}
+                                    size={"large"}
+                                    fullWidth={true}
+                                    color="primary"
+                                    onClick={handleIncvHarvest}
+                                >
+                                    Claim
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                    {!isIncvPool() && (
+                        <div className={classes.EarnCard} key={"ROOM-Earned"}>
+                            <div className={classes.EarnCard__Icon}>
+                                <img
+                                    width={"100%"}
+                                    src={
+                                        getPoolConfig(source, pool)
+                                            .earnedTokenImg
+                                    }
+                                />
+                            </div>
+                            <div className={classes.EarnCard__Title}>
+                                {convertAmountToTokens(userFarmedTokenBalance)}
+                            </div>
+                            <div className={classes.EarnCard__SubTitle}>
+                                {getPoolConfig(source, pool).earnedTokenName}
+                            </div>
+                            <div className={classes.EarnCard__Action}>
+                                <Button
+                                    classes={classes.EarnCard__Action__Btn}
+                                    isDisabled={userFarmedTokenBalance == 0}
+                                    isProcessing={isHarvestInProgress}
+                                    size={"large"}
+                                    fullWidth={true}
+                                    color="primary"
+                                    onClick={handleHarvest}
+                                >
+                                    Claim
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                    <div className={classes.EarnCard} key={"Staked-RoomLP"}>
                         <div className={classes.EarnCard__Icon}>
                             <img
                                 width={"100%"}
-                                src={getPoolConfig(source, pool).earnedTokenImg}
+                                src={getPoolConfig(source, pool).stakeTokenImg}
                             />
                         </div>
                         <div className={classes.EarnCard__Title}>
-                            {convertAmountToTokens(userFarmedTokenBalance)}
+                            {convertAmountToTokens(
+                                userDepositTokenStakedBalance
+                            )}
                         </div>
                         <div className={classes.EarnCard__SubTitle}>
-                            {getPoolConfig(source, pool).earnedTokenName}
+                            {getPoolConfig(source, pool).stakeTokenTitle}
                         </div>
-                        <div className={classes.EarnCard__Action}>
-                            <Button
-                                classes={classes.EarnCard__Action__Btn}
-                                isDisabled={userFarmedTokenBalance == 0}
-                                isProcessing={isHarvestInProgress}
-                                size={"large"}
-                                fullWidth={true}
-                                color="primary"
-                                onClick={handleHarvest}
-                            >
-                                Claim
-                            </Button>
-                        </div>
-                    </div>
-                )}
-                <div className={classes.EarnCard} key={"Staked-RoomLP"}>
-                    <div className={classes.EarnCard__Icon}>
-                        <img
-                            width={"100%"}
-                            src={getPoolConfig(source, pool).stakeTokenImg}
-                        />
-                    </div>
-                    <div className={classes.EarnCard__Title}>
-                        {convertAmountToTokens(userDepositTokenStakedBalance)}
-                    </div>
-                    <div className={classes.EarnCard__SubTitle}>
-                        {getPoolConfig(source, pool).stakeTokenTitle}
-                    </div>
-                    <div
-                        className={clsx(classes.EarnCard__Action, {
-                            [classes.EarnCard__Action_Two]:
-                                userDepositTokenAllowance > 0 &&
-                                userDepositTokenStakedBalance > 0,
-                        })}
-                    >
-                        {userDepositTokenAllowance <= 0 && (
-                            <Button
-                                size={"large"}
-                                color="primary"
-                                onClick={handleApproveDepositToken}
-                                className={classes.EarnCard__Action__Btn}
-                                fullWidth={true}
-                                isProcessing={isApproveProcessing}
-                            >
-                                Approve
-                            </Button>
-                        )}
-                        {userDepositTokenAllowance > 0 &&
-                            userDepositTokenStakedBalance > 0 && (
-                                <>
-                                    <Button
-                                        className={
-                                            classes.EarnCard__Action__Btn
-                                        }
-                                        size={"large"}
-                                        color="primary"
-                                        isDisabled={
-                                            userDepositTokenStakedBalance == 0
-                                        }
-                                        onClick={openUnstakeModal}
-                                    >
-                                        Unstake
-                                    </Button>
-                                    <Button
-                                        className={
-                                            classes.EarnCard__Action__Btn_Add
-                                        }
-                                        color={"black"}
-                                        size={"large"}
-                                        onClick={() =>
-                                            setIsDepositModalOpen(true)
-                                        }
-                                    >
-                                        <AddIcon
-                                            className={
-                                                classes.EarnCard__Action__Btn_Add__Icon
-                                            }
-                                        ></AddIcon>
-                                    </Button>
-                                </>
-                            )}
-                        {userDepositTokenAllowance > 0 &&
-                            userDepositTokenStakedBalance == 0 && (
+                        <div
+                            className={clsx(classes.EarnCard__Action, {
+                                [classes.EarnCard__Action_Two]:
+                                    userDepositTokenAllowance > 0 &&
+                                    userDepositTokenStakedBalance > 0,
+                            })}
+                        >
+                            {userDepositTokenAllowance <= 0 && (
                                 <Button
                                     size={"large"}
                                     color="primary"
-                                    onClick={() => setIsDepositModalOpen(true)}
+                                    onClick={handleApproveDepositToken}
                                     className={classes.EarnCard__Action__Btn}
                                     fullWidth={true}
+                                    isProcessing={isApproveProcessing}
                                 >
-                                    Stake
+                                    Approve
                                 </Button>
                             )}
+                            {userDepositTokenAllowance > 0 &&
+                                userDepositTokenStakedBalance > 0 && (
+                                    <>
+                                        <Button
+                                            className={
+                                                classes.EarnCard__Action__Btn
+                                            }
+                                            size={"large"}
+                                            color="primary"
+                                            isDisabled={
+                                                userDepositTokenStakedBalance ==
+                                                0
+                                            }
+                                            onClick={openUnstakeModal}
+                                        >
+                                            Unstake
+                                        </Button>
+                                        <Button
+                                            className={
+                                                classes.EarnCard__Action__Btn_Add
+                                            }
+                                            color={"black"}
+                                            size={"large"}
+                                            onClick={() =>
+                                                setIsDepositModalOpen(true)
+                                            }
+                                        >
+                                            <AddIcon
+                                                className={
+                                                    classes.EarnCard__Action__Btn_Add__Icon
+                                                }
+                                            ></AddIcon>
+                                        </Button>
+                                    </>
+                                )}
+                            {userDepositTokenAllowance > 0 &&
+                                userDepositTokenStakedBalance == 0 && (
+                                    <Button
+                                        size={"large"}
+                                        color="primary"
+                                        onClick={() =>
+                                            setIsDepositModalOpen(true)
+                                        }
+                                        className={
+                                            classes.EarnCard__Action__Btn
+                                        }
+                                        fullWidth={true}
+                                    >
+                                        Stake
+                                    </Button>
+                                )}
+                        </div>
                     </div>
+                    <DepositModal
+                        open={isDepositModalOpen}
+                        onClose={() => setIsDepositModalOpen(false)}
+                        onStake={handleOnStake}
+                        userRoomLPTokens={userDepositTokenBalance}
+                        source={source}
+                        pool={pool}
+                    />
+                    <UnstakeModal
+                        open={isUnstakeModalOpen}
+                        onClose={() => setIsUnstakeModalOpen(false)}
+                        onUnStake={handleOnUnStake}
+                        stakedTokensBalance={userDepositTokenStakedBalance}
+                        source={source}
+                        pool={pool}
+                    />
                 </div>
-                <DepositModal
-                    open={isDepositModalOpen}
-                    onClose={() => setIsDepositModalOpen(false)}
-                    onStake={handleOnStake}
-                    userRoomLPTokens={userDepositTokenBalance}
-                    source={source}
-                    pool={pool}
-                />
-                <UnstakeModal
-                    open={isUnstakeModalOpen}
-                    onClose={() => setIsUnstakeModalOpen(false)}
-                    onUnStake={handleOnUnStake}
-                    stakedTokensBalance={userDepositTokenStakedBalance}
-                    source={source}
-                    pool={pool}
-                />
-            </div>
+            )}
         </div>
     );
 }

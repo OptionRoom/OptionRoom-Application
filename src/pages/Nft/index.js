@@ -190,7 +190,6 @@ function Nft() {
             const nextNftTire = userCurrentNftTire + 1;
             const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             const availableNftBalanceOfTheTire = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nextNftTire);
-            console.log("availableNftBalanceOfTheTire", availableNftBalanceOfTheTire);
             if (availableNftBalanceOfTheTire == 0) {
                 setIsUpgradingNftToken(false);
                 swal("Sorry!", `Can't upgrade, the maximum number of NFTs has been minted`, "error");
@@ -199,8 +198,6 @@ function Nft() {
 
             const requiredRoomForNftTire = await roomLPFarmingAPIs.getRequiredRoomsForTire(accountContext.account, nextNftTire);
             const userRoomTokenBalance = await roomLPFarmingAPIs.getUserRoomTokenBalance(accountContext.account);
-
-            console.log("requiredRoomForNftTire", requiredRoomForNftTire, userRoomTokenBalance);
 
             if (BigNumber.from(userRoomTokenBalance).lt(BigNumber.from(requiredRoomForNftTire))) {
                 setIsUpgradingNftToken(false);

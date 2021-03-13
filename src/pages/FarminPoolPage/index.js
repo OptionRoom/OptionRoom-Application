@@ -13,7 +13,7 @@ import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvi
 const getPageConfig = (source, pool) => {
     if (source === "room" && pool === "CourtFarming_RoomStake") {
         return {
-            title: "Liquidity Farming",
+            title: "COURT Farming",
             details:
                 "Earn COURT tokens by staking your ROOM tokens on this page.",
         };
@@ -21,7 +21,7 @@ const getPageConfig = (source, pool) => {
 
     if (source === "ht" && pool === "CourtFarming_HtStake") {
         return {
-            title: "Liquidity Farming",
+            title: "COURT Farming",
             details:
                 "Earn COURT tokens by staking your HT tokens on this page.",
         };
@@ -29,7 +29,7 @@ const getPageConfig = (source, pool) => {
 
     if (source === "matter" && pool === "CourtFarming_MatterStake") {
         return {
-            title: "Liquidity Farming",
+            title: "COURT Farming",
             details:
                 "Earn COURT tokens by staking your MATTER tokens on this page.",
         };
@@ -45,7 +45,7 @@ const getPageConfig = (source, pool) => {
 
     if (source === "room_eth_lp" && pool === "CourtFarming_RoomEthLpStake") {
         return {
-            title: "Liquidity Farming",
+            title: "COURT Farming",
             details:
                 "Earn COURT tokens by providing liquidity to the ROOM/ETH pair on Uniswap and staking your LP tokens on this page.",
         };
@@ -53,7 +53,7 @@ const getPageConfig = (source, pool) => {
 
     if (source === "court_eth_lp" && pool === "CourtFarming_CourtEthLpStake") {
         return {
-            title: "Liquidity Farming",
+            title: "COURT Farming",
             details:
                 "Earn COURT tokens by providing liquidity to the COURT/ETH pair on Uniswap and staking your LP tokens on this page.",
         };

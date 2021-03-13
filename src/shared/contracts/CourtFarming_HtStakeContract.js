@@ -1,6 +1,6 @@
 export const getCourtFarming_HtStakeContract = (chainId, web3) => {
     const ropstenContract = {
-        address: "0x7be53ae994041888f386feb712759e4b2e91b769",
+        address: "0x28aBa35A0D432b307Fc4ac41C2EB6881C2DDFc75",
         abi: [
             {
                 inputs: [],
