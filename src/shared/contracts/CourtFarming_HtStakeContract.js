@@ -622,7 +622,7 @@ export const getCourtFarming_HtStakeContract = (chainId, web3) => {
     };
 
     const mainContract = {
-        address: "0x7be53ae994041888f386feb712759e4b2e91b769",
+        address: "0x56cA5FAF9F40254e093D99B6381ccce8D8d78212",
         abi: [
             {
                 inputs: [],
