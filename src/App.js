@@ -4,7 +4,6 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link,
     Redirect
 } from "react-router-dom";
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,11 +11,7 @@ import clsx from "clsx";
 
 import './App.css';
 import Sidebar from "./components/Sidebar";
-import Home from "./pages/Home";
-import Claim from "./pages/Claim";
-import LiquidityMining from "./pages/LiquidityMining";
 import CourtFarming from "./pages/CourtFarming";
-import ConnectionTest from "./pages/ConnectionTest";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import FarminPoolPage from "./pages/FarminPoolPage";
@@ -86,9 +81,6 @@ function App() {
                             })}
                         >
                             <Switch>
-                                {/*                                <Route path="/claim">
-                                    <Claim/>
-                                </Route>*/}
                                 <Route path="/liquidity-mining">
                                     <FarminPoolPage
                                         pool={"RoomFarming_RoomEthLpStake"}
@@ -98,9 +90,6 @@ function App() {
                                 <Route path="/court-farming" exact={true}>
                                     <CourtFarming />
                                 </Route>
-                                {/*                                <Route path="/connection-test">
-                                    <ConnectionTest/>
-                                </Route>*/}
                                 <Route path="/nft">
                                     <Nft />
                                 </Route>
@@ -131,12 +120,6 @@ function App() {
                                         source={"matter"}
                                     />
                                 </Route>
-                                {/*                                 <Route path="/court-farming/court-courtethlp">
-                                    <FarminPoolPage
-                                        pool={"CourtFarming_CourtEthLpStake"}
-                                        source={"court_eth_lp"}
-                                    />
-                                </Route> */}
                                 <Route exact path="/">
                                     <Redirect to="/court-farming" />
                                 </Route>

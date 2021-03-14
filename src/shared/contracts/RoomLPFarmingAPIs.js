@@ -1,27 +1,17 @@
-import {BigNumber} from "@ethersproject/bignumber";
 import { walletHelper } from "../wallet.helper";
 import {getRoomTokenContract} from './RoomTokenContract';
-import {getRoomLPTokenContract} from './RoomLPTokenContract';
-import {getRoomLPStakingContract} from './RoomLPStakingContract';
 import {getNftStakeContract} from './NftStakeContract';
 import {getNftTokenContract} from './NftTokenContract';
-import {getWethTokenContract} from './WethTokenContract';
-import {getTetherTokenContract} from './TetherTokenContract';
 import {MaxUint256, controlledNetworkId} from '../../shared/constants';
 
 const walletHelperInstance = walletHelper();
+
 class RoomLPFarmingAPIs {
     constructor() {
         this.roomTokenContract = getRoomTokenContract(controlledNetworkId, walletHelperInstance.getWeb3());
-        this.roomLPTokenContract = getRoomLPTokenContract(controlledNetworkId, walletHelperInstance.getWeb3());
-        this.roomLPStakingContract = getRoomLPStakingContract(controlledNetworkId, walletHelperInstance.getWeb3());
         this.nftStakeContract = getNftStakeContract(controlledNetworkId, walletHelperInstance.getWeb3());
         this.nftTokenContract = getNftTokenContract(controlledNetworkId, walletHelperInstance.getWeb3());
-        this.wethTokenContract = getWethTokenContract(1, walletHelperInstance.getWeb3());
-        this.tetherTokenContract = getTetherTokenContract(1, walletHelperInstance.getWeb3());
     }
-
-
 
     async getUserRoomTokenBalance(address) {
         const result = await this.roomTokenContract
@@ -228,116 +218,6 @@ class RoomLPFarmingAPIs {
         const result = await this.nftStakeContract
             .methods
             .exit(tire)
-            .send({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getRoomLPTokensBalanceForAddress(address) {
-        const result = await this.roomLPTokenContract
-            .methods
-            .balanceOf(address)
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getRoomLPTokensAllowanceBalanceForAddress(address) {
-        const result = await this.roomLPTokenContract
-            .methods
-            .allowance(address, this.roomLPStakingContract._address)
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async approveUserRoomLPTokens(address) {
-        const result = await this.roomLPTokenContract
-            .methods
-            .approve(this.roomLPStakingContract._address, MaxUint256)
-            .send({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getStackedRoomLPTokens(address) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .balanceOf(address)
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getBlockNumber(address) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .blockNumber()
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getApprovedRoomLPTokens(address) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .balanceOf(address)
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async unstackRoomLPTokens(address, amount, claim) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .unstake(amount, claim)
-            .send({
-                from: address
-            });
-
-        return result;
-    }
-
-    async stackRoomLPTokens(address, amount) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .stake(amount)
-            .send({
-                from: address
-            });
-
-        return result;
-    }
-
-    async getFarmedRoomTokens(address) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .rewards(address)
-            .call({
-                from: address
-            });
-
-        return result;
-    }
-
-    async claimFarmedRoomTokens(address) {
-        const result = await this.roomLPStakingContract
-            .methods
-            .claimReward()
             .send({
                 from: address
             });

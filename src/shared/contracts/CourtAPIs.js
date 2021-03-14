@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { walletHelper } from "../wallet.helper";
 import { getRoomTokenContract } from "./RoomTokenContract";
 import { getHtTokenContract } from "./HtTokenContract";

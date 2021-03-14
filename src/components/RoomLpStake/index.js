@@ -5,11 +5,10 @@ import { useState, useContext } from "react";
 import Skeleton from "@material-ui/lab/Skeleton";
 
 import { useStyles } from "./styles";
-import { convertAmountToTokens } from "../../shared/helper";
+import { convertAmountToTokens, fromWei } from "../../shared/helper";
 import Button from "../Button";
 import AddIcon from "@material-ui/icons/Add";
 import DepositModal from "../DepositModal";
-import Loader from "../Loader";
 import UnstakeModal from "../UnstakeModal";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import { AccountContext } from "../../shared/AccountContextProvider";
@@ -145,6 +144,11 @@ function RoomLpStake(props) {
     const [stats, setStats] = useState({});
     const [isInitializing, setIsInitializing] = useState(true);
 
+    const isIncvPool = () => {
+        return pool !== "RoomFarming_RoomEthLpStake";
+    };
+
+
     const initPoolData = async () => {
         try {
             const courtAPIs = new CourtAPIs();
@@ -173,11 +177,17 @@ function RoomLpStake(props) {
                 result_UserDepositTokenStakedBalance
             );
 
-            const result_getIncvRewardInfo = await courtAPIs.getIncvRewardInfo(
-                accountContext.account,
-                pool
-            );
-            setIncvRewardInfo(result_getIncvRewardInfo);
+            updateUserFarmedTokensBalance();
+
+            if (isIncvPool()) {
+                const result_getIncvRewardInfo = await courtAPIs.getIncvRewardInfo(
+                    accountContext.account,
+                    pool
+                );
+
+                setIncvRewardInfo(result_getIncvRewardInfo);
+            }
+
         } catch (e) {
             console.log("e", e);
         }
@@ -227,14 +237,8 @@ function RoomLpStake(props) {
                 accountContext.account,
                 pool
             );
-            if (
-                source === "room_eth_lp" &&
-                pool === "RoomFarming_RoomEthLpStake"
-            ) {
-                setUserFarmedTokenBalance(userFarmedTokenBalance);
-            } else {
-                setUserFarmedTokenBalance(userFarmedTokenBalance.reward);
-            }
+
+            setUserFarmedTokenBalance(userFarmedTokenBalance);
         } catch (e) {
         } finally {
             setIsHarvestInProgress(false);
@@ -258,20 +262,36 @@ function RoomLpStake(props) {
         }
     };
 
-    const isIncvPool = () => {
-        return pool !== "RoomFarming_RoomEthLpStake";
-    };
-
-    const updateInfo = async () => {
+    const updateUserFarmedTokensBalance = async () => {
+        console.log("updateUserFarmedTokensBalance");
         const courtAPIs = new CourtAPIs();
 
         const userFarmedTokenBalance = await courtAPIs.getRewards(
             accountContext.account,
             pool
         );
-        if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
-            setUserFarmedTokenBalance(userFarmedTokenBalance);
 
+        if(isIncvPool()) {
+            setUserFarmedIncvTokenBalance(userFarmedTokenBalance.incvReward);
+        } else {
+            setUserFarmedTokenBalance(userFarmedTokenBalance);
+        }
+    };
+
+    const updateInfo = async () => {
+        console.log("updateInfo");
+        const courtAPIs = new CourtAPIs();
+
+        if (isIncvPool()) {
+            const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
+                accountContext.account,
+                pool
+            );
+
+            setStats({
+                courtPoolTotalLockedValue,
+            });
+        } else {
             //Stats
             const roomTotalLockedValue = await getTotalValueLocked(
                 accountContext.account
@@ -285,30 +305,27 @@ function RoomLpStake(props) {
                 roomTotalLiquidity,
                 roomApy,
             });
-        } else {
-
-            const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
-                accountContext.account,
-                pool
-            );
-
-            setStats({
-                courtPoolTotalLockedValue,
-            });
-
-            setUserFarmedTokenBalance(userFarmedTokenBalance.reward);
-            setUserFarmedIncvTokenBalance(userFarmedTokenBalance.incvReward);
         }
     };
 
     useEffect(() => {
+        let updateUserFarmedTokensBalance_IntervalId = null;
         let updateInfoIntervalId = null;
         const init = async () => {
+            clearInterval(updateInfoIntervalId);
+            clearInterval(updateUserFarmedTokensBalance_IntervalId);
+
             setIsInitializing(true);
             await initPoolData();
             setIsInitializing(false);
-            clearInterval(updateInfoIntervalId);
-            updateInfoIntervalId = setInterval(updateInfo, 1000);
+            updateInfo();
+
+            updateInfoIntervalId = setInterval(updateInfo, 5000);
+
+            updateUserFarmedTokensBalance_IntervalId = setInterval(
+                updateUserFarmedTokensBalance,
+                10000
+            );
         };
 
         if (accountContext.account) {
@@ -317,6 +334,7 @@ function RoomLpStake(props) {
 
         return () => {
             clearInterval(updateInfoIntervalId);
+            clearInterval(updateUserFarmedTokensBalance_IntervalId);
         };
     }, [accountContext.account]);
 
@@ -324,19 +342,17 @@ function RoomLpStake(props) {
         <div className={classes.RoomLpStake}>
             {stats && (
                 <div className={classes.Info}>
-                    {
-                        !!stats.courtPoolTotalLockedValue && (
-                            <div>
-                                This pool has a total of{" "}
-                                <span>
-                                    {numeral(
-                                        stats.courtPoolTotalLockedValue
-                                    ).format("$0,0.00")}
-                                </span>{" "}
-                                locked value
-                            </div>
-                        )
-                    }
+                    {!!stats.courtPoolTotalLockedValue && (
+                        <div>
+                            This pool has a total of{" "}
+                            <span>
+                                {numeral(
+                                    stats.courtPoolTotalLockedValue
+                                ).format("$0,0.00")}
+                            </span>{" "}
+                            locked value
+                        </div>
+                    )}
                     {stats.roomTotalLockedValue && (
                         <div>
                             This pool has a total of{" "}
@@ -396,9 +412,7 @@ function RoomLpStake(props) {
                                 />
                             </div>
                             <div className={classes.EarnCard__Title}>
-                                {convertAmountToTokens(
-                                    userFarmedIncvTokenBalance
-                                )}
+                                {fromWei(userFarmedIncvTokenBalance, null, 5)}
                             </div>
                             <div
                                 className={`${classes.EarnCard__SubTitle} ${classes.EarnCard__SubTitleIncv}`}
@@ -443,7 +457,7 @@ function RoomLpStake(props) {
                                 />
                             </div>
                             <div className={classes.EarnCard__Title}>
-                                {convertAmountToTokens(userFarmedTokenBalance)}
+                                {fromWei(userFarmedTokenBalance, null, 3)}
                             </div>
                             <div className={classes.EarnCard__SubTitle}>
                                 {getPoolConfig(source, pool).earnedTokenName}
@@ -471,9 +485,7 @@ function RoomLpStake(props) {
                             />
                         </div>
                         <div className={classes.EarnCard__Title}>
-                            {convertAmountToTokens(
-                                userDepositTokenStakedBalance
-                            )}
+                            {fromWei(userDepositTokenStakedBalance, null, 3)}
                         </div>
                         <div className={classes.EarnCard__SubTitle}>
                             {getPoolConfig(source, pool).stakeTokenTitle}

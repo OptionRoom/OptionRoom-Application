@@ -11,10 +11,6 @@ function ConnectButton(props) {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     const classes = useStyles();
-    const {
-        title,
-        details
-    } = props;
 
     return (
         <div className={classes.ConnectBtnWrap}>

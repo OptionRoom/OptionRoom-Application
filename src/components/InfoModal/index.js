@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import clsx from "clsx";
+import React from "react";
 
 import Button from "../Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
@@ -19,9 +17,6 @@ import { useStyles } from "./styles";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
 
 const useStyles2 = makeStyles({
     table: {
@@ -32,7 +27,7 @@ const useStyles2 = makeStyles({
 const rows = ["1d", "7d", "30d", "365d"];
 
 function InfoModal(props) {
-    const { modalContent, pool, info } = props;
+    const { pool, info } = props;
     const classes = useStyles();
     const classes2 = useStyles2();
 

@@ -10,6 +10,11 @@ class WalletHelper {
         this.chainId = null;
         this.account = null;
         this.networkId = null;
+        this.mainnetWeb3 = new Web3(
+            new Web3.providers.HttpProvider(
+                "https://mainnet.infura.io/v3/30d5a6bb69194a75afa085a8a3a4a584"
+            )
+        );
 
         const init = async () => {
             this.web3Modal = new Web3Modal({
@@ -98,8 +103,12 @@ class WalletHelper {
         return this.web3.eth.net.chainId();
     }
 
-    getWeb3() {
-        if(!this.web3) {
+    getWeb3(forceMainnet) {
+        if (forceMainnet){
+            return this.mainnetWeb3;
+        }
+
+        if (!this.web3) {
             this.web3 = new Web3(this.provider);
         }
 

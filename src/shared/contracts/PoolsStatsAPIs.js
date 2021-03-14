@@ -24,16 +24,13 @@ const lpContractAddress = {
 };
 
 export const getWeb3InstanceInside = () => {
-    if(controlledNetworkId) {
+    if(controlledNetworkId === 1) {
         return walletHelperInstance.getWeb3();
     }
 
-    return new Web3(
-        new Web3.providers.HttpProvider(
-            "https://mainnet.infura.io/v3/30d5a6bb69194a75afa085a8a3a4a584"
-        )
-    );
+    return walletHelperInstance.getWeb3(true);
 }
+
 export const getWethPrice = async (address) => {
     const result = await getTetherTokenContract(1, getWeb3InstanceInside())
         .methods.balanceOf("0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852")

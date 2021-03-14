@@ -8,8 +8,14 @@ export const toWei = (value, decimals) => {
     return Web3.utils.toWei(`${value}`, decimals);
 };
 
-export const fromWei = (value, decimals) => {
-    return Web3.utils.fromWei(value, decimals);
+export const fromWei = (value, decimals, precision) => {
+    if (!precision) {
+        return Web3.utils.fromWei(`${value}`, decimals);
+    }
+
+    return parseFloat(Web3.utils.fromWei(`${value}`, decimals)).toFixed(
+        precision
+    );
 };
 
 export const isMobile = () => {
