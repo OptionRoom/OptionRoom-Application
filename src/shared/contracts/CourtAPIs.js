@@ -239,8 +239,8 @@ class CourtAPIs {
         ) {
             const result = await this.roomEthLpTokenContract.methods
                 .approve(
-                    address,
-                    this.roomFarming_RoomEthLpStakeContract._address
+                    this.roomFarming_RoomEthLpStakeContract._address,
+                    MaxUint256
                 )
                 .send({
                     from: address,
