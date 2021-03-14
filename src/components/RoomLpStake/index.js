@@ -263,7 +263,6 @@ function RoomLpStake(props) {
     };
 
     const updateUserFarmedTokensBalance = async () => {
-        console.log("updateUserFarmedTokensBalance");
         const courtAPIs = new CourtAPIs();
 
         const userFarmedTokenBalance = await courtAPIs.getRewards(
@@ -279,7 +278,6 @@ function RoomLpStake(props) {
     };
 
     const updateInfo = async () => {
-        console.log("updateInfo");
         const courtAPIs = new CourtAPIs();
 
         if (isIncvPool()) {
@@ -336,7 +334,7 @@ function RoomLpStake(props) {
             clearInterval(updateInfoIntervalId);
             clearInterval(updateUserFarmedTokensBalance_IntervalId);
         };
-    }, [accountContext.account]);
+    }, [accountContext.account, source, pool]);
 
     return (
         <div className={classes.RoomLpStake}>
@@ -457,7 +455,7 @@ function RoomLpStake(props) {
                                 />
                             </div>
                             <div className={classes.EarnCard__Title}>
-                                {fromWei(userFarmedTokenBalance, null, 3)}
+                                {fromWei(userFarmedTokenBalance, null, 2)}
                             </div>
                             <div className={classes.EarnCard__SubTitle}>
                                 {getPoolConfig(source, pool).earnedTokenName}
@@ -485,7 +483,7 @@ function RoomLpStake(props) {
                             />
                         </div>
                         <div className={classes.EarnCard__Title}>
-                            {fromWei(userDepositTokenStakedBalance, null, 3)}
+                            {fromWei(userDepositTokenStakedBalance, null, 2)}
                         </div>
                         <div className={classes.EarnCard__SubTitle}>
                             {getPoolConfig(source, pool).stakeTokenTitle}

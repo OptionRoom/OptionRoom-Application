@@ -22,5 +22,5 @@ export const nftImages = {
     4: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/citadel.jpg',
 };
 
-export const controlledNetworkId = 3;//"mainnet";
+export const controlledNetworkId = 1;//"mainnet";
 //export const controlledNetworkId = 3;//"ropsten";
