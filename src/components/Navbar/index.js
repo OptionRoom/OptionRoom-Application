@@ -7,6 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import {useStyles} from './styles'
 import ConnectButton from '../ConnectButton';
 import {AccountContext} from '../../shared/AccountContextProvider';
+import {OptionroomThemeContext} from '../../shared/OptionroomThemeContextProvider';
 import {
     ellipseAddress,
     getAddressImgUrl
@@ -21,12 +22,13 @@ function Navbar(props) {
         details
     } = props;
     const accountContext = useContext(AccountContext);
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     return (
         <div className={classes.Navbar}>
             <div className={classes.Title}>
                 <h1 className={clsx(classes.Title__Head, {
-                    [classes.Title__Head___Black]: accountContext.theme === 'black',
+                    [classes.Title__Head___Black]: optionroomThemeContext.theme === 'black',
                 })}>
                     {title}
                 </h1>
@@ -39,10 +41,10 @@ function Navbar(props) {
             <div className={classes.Actions}>
                 <IconButton aria-label="delete"
                             className={clsx(classes.MenuBtn, {
-                                [classes.MenuBtn___Black]: accountContext.theme === 'black',
+                                [classes.MenuBtn___Black]: optionroomThemeContext.theme === 'black',
                             })}
                             onClick={() => {
-                                accountContext.changeSidebarIsOpen(true);
+                                optionroomThemeContext.changeSidebarIsOpen(true);
                             }}
                             color="primary">
                     <MenuIcon/>
@@ -58,13 +60,13 @@ function Navbar(props) {
                             </div>
                             <div className={classes.AccountHolder__Details}>
                                 <div className={clsx(classes.AccountHolder__Details__Address, {
-                                         [classes.AccountHolder__Details__Address___Black]: accountContext.theme === 'black',
+                                         [classes.AccountHolder__Details__Address___Black]: optionroomThemeContext.theme === 'black',
                                      })}
                                 >
                                     {ellipseAddress(accountContext.account)}
                                 </div>
                                 <div className={clsx(classes.AccountHolder__Details__Disconnect, {
-                                    [classes.AccountHolder__Details__Disconnect__Black]: accountContext.theme === 'black',
+                                    [classes.AccountHolder__Details__Disconnect__Black]: optionroomThemeContext.theme === 'black',
                                 })}
                                      onClick={accountContext.disconnect}>
                                     Disconnect

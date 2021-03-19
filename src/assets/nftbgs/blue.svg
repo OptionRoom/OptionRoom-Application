@@ -147,7 +147,7 @@
             <stop stop-color="#000000" offset="100%"></stop>
         </radialGradient>
     </defs>
-    <g id="Blue-bg" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Blue-bg" stroke="none" strokeWidth="1" fill="none" fill-rule="evenodd">
         <rect fill="#FFFFFF" x="0" y="0" width="1440" height="900"></rect>
         <g id="87-01" transform="translate(-720.000000, -429.000000)">
             <rect id="Rectangle" fill="url(#radialGradient-1)" fill-rule="nonzero" x="596.432818" y="305.921522" width="1731.92715" height="1141.49822"></rect>
@@ -165,9 +165,9 @@
             <polygon id="Path" fill="url(#radialGradient-13)" fill-rule="nonzero" style="mix-blend-mode: color-dodge;" points="1142.24304 794.708775 1158.09731 788.141165 960.234578 590.27843 944.380309 596.84547"></polygon>
             <polygon id="Path" fill="url(#radialGradient-14)" fill-rule="nonzero" style="mix-blend-mode: color-dodge;" points="1142.24304 1147.34668 1158.09731 1140.78021 1158.09731 788.141165 1142.24304 794.708775"></polygon>
             <polygon id="Path" fill="url(#radialGradient-15)" fill-rule="nonzero" style="mix-blend-mode: color-dodge;" points="1442.3161 1447.41974 1464.73684 1447.41974 1158.09731 1140.78021 1142.24304 1147.34668"></polygon>
-            <polyline id="Path" stroke="url(#radialGradient-16)" stroke-width="6.34165042" points="2510.33779 1447.41974 2510.33779 1101.07548 2403.83943 994.577122 2403.83943 577.474245 2132.28671 305.921522"></polyline>
-            <polyline id="Path" stroke="url(#radialGradient-17)" stroke-width="6.34165042" points="1786.20214 305.921522 1970.55639 490.275767 2138.11006 490.275767 2350.45327 702.618407 2350.45327 1147.34668 2450.50844 1247.40185 2450.50844 1447.41974"></polyline>
-            <polyline id="Path" stroke="url(#radialGradient-18)" stroke-width="6.34165042" points="1039.07672 1447.41974 1039.07672 1037.2429 835.313579 833.480333 835.313579 483.177931 779.63415 427.498502 779.63415 305.921522"></polyline>
+            <polyline id="Path" stroke="url(#radialGradient-16)" strokeWidth="6.34165042" points="2510.33779 1447.41974 2510.33779 1101.07548 2403.83943 994.577122 2403.83943 577.474245 2132.28671 305.921522"></polyline>
+            <polyline id="Path" stroke="url(#radialGradient-17)" strokeWidth="6.34165042" points="1786.20214 305.921522 1970.55639 490.275767 2138.11006 490.275767 2350.45327 702.618407 2350.45327 1147.34668 2450.50844 1247.40185 2450.50844 1447.41974"></polyline>
+            <polyline id="Path" stroke="url(#radialGradient-18)" strokeWidth="6.34165042" points="1039.07672 1447.41974 1039.07672 1037.2429 835.313579 833.480333 835.313579 483.177931 779.63415 427.498502 779.63415 305.921522"></polyline>
         </g>
         <rect id="Rectangle" fill="#000000" opacity="0.45" x="0" y="0" width="1440" height="900"></rect>
     </g>

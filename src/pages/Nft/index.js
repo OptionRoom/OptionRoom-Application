@@ -1,22 +1,26 @@
-import React, {useContext, useEffect, useState, createRef} from 'react';
-import AddIcon from '@material-ui/icons/Add';
+import React, {useContext, useEffect, useState} from 'react';
+
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import swal from 'sweetalert';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {BigNumber} from "@ethersproject/bignumber";
+import numeral from 'numeral';
 
 import Navbar from '../../components/Navbar';
-import DepositModal from '../../components/DepositModal';
-import UnstakeModal from '../../components/UnstakeModal';
 import Button from '../../components/Button';
 
 import {useStyles} from './styles';
 import {AccountContext} from "../../shared/AccountContextProvider";
+import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import {convertAmountToTokens} from "../../shared/helper";
 import ConnectButton from "../../components/ConnectButton";
-import {nftTires, nftImages} from '../../shared/constants';
+import {nftTires, nftImages, allOfTires} from '../../shared/constants';
+import {
+    getTotalValueStakedInNftStakingInUsd,
+    loadAllNftTokenAvilable
+} from '../../shared/contracts/PoolsStatsAPIs';
 
 function Nft() {
     const classes = useStyles();
@@ -32,20 +36,22 @@ function Nft() {
 
     const [userNftTireBalance, setUserNftTireBalance] = useState({});
     const [availableNftTireBalance, setAvailableNftTireBalance] = useState({});
+    const [poolStats, setPoolStats] = useState({});
     const [userRoomTokenBalance, setUserRoomTokenBalance] = useState({});
     const [userCurrentNftTire, setUserCurrentNftTire] = useState(0);
     const [requiredRoomsForTire, setRequiredRoomsForTire] = useState(0);
     const [isUpgradingNftToken, setIsUpgradingNftToken] = useState(false);
 
     const accountContext = useContext(AccountContext);
-    accountContext.changeTheme('black');
 
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
+    optionroomThemeContext.changeTheme('black');
 
     const handleApprovingRoomTokenForNftTokenContract = async () => {
         setIsApprovingRoomTokenForNftTokenContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserRoomTokenForNftTokenContract(accountContext.account);
             setIsRoomTokenApprovedForNftTokenContract(true);
         } catch (e) {
@@ -59,7 +65,7 @@ function Nft() {
         setIsApprovingNftTokenForNftTokenContract(true);
 
         try {
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             await roomLPFarmingAPIs.approveUserNftTokenForNftTokenContract(accountContext.account);
             setIsNftTokenApprovedForNftTokenContract(true);
         } catch (e) {
@@ -103,13 +109,8 @@ function Nft() {
         return data;
     };
 
-    const loadAvailableNftTireBalance = async (roomLPFarmingAPIs) => {
-        const data = {};
-        for (let nftTire of nftTires) {
-            const res = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nftTire);
-            data[nftTire] = parseInt(res);
-        }
-
+    const loadAvailableNftTireBalance = async () => {
+        const data = await loadAllNftTokenAvilable(accountContext.account);
         return data;
     };
 
@@ -125,7 +126,7 @@ function Nft() {
     };
 
     const initRoomLPPoolData = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+        const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
         const userNftTireBalance = await loadUserNftTireBalance(roomLPFarmingAPIs);
         const requiredRoomsForTire = await loadRequiredRoomsForTire(roomLPFarmingAPIs);
         setRequiredRoomsForTire(requiredRoomsForTire);
@@ -136,9 +137,6 @@ function Nft() {
         if (userRoomTokenAllowanceBalanceForNftTokenContract > 0) {
             setIsRoomTokenApprovedForNftTokenContract(true);
         }
-
-        /*        const nftToken_Approved_NftTokenContract = await roomLPFarmingAPIs.isNftTokenApprovedForNftTokenContract(accountContext.account);
-                setIsNftTokenApprovedForNftTokenContract(nftToken_Approved_NftTokenContract);*/
     };
 
     const findCurrentView = () => {
@@ -147,7 +145,7 @@ function Nft() {
         }
 
         if (userCurrentNftTire === 4) {
-            accountContext.changeTheme('black', 'golden');
+            optionroomThemeContext.changeTheme('black', 'golden');
             return 'LAST';
         }
 
@@ -155,16 +153,29 @@ function Nft() {
     };
 
     const updateNftTireBalance = async () => {
-        const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
-        const availableNftTireBalance = await loadAvailableNftTireBalance(roomLPFarmingAPIs);
+        const availableNftTireBalance = await loadAvailableNftTireBalance();
         setAvailableNftTireBalance(availableNftTireBalance);
+
+        const pool0__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 0);
+        const pool1__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 1);
+        const pool2__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 2);
+        const pool3__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 3);
+        const pool4__staked = await getTotalValueStakedInNftStakingInUsd(accountContext.account, 4);
+
+        setPoolStats({
+            0: pool0__staked,
+            1: pool1__staked,
+            2: pool2__staked,
+            3: pool3__staked,
+            4: pool4__staked,
+        });
     };
 
     const callInit = async () => {
-
         setIsIniting(true);
         await initRoomLPPoolData();
         setIsIniting(false);
+        updateNftTireBalance();
     };
 
     const handleUpgrade = async () => {
@@ -177,7 +188,7 @@ function Nft() {
 
         try {
             const nextNftTire = userCurrentNftTire + 1;
-            const roomLPFarmingAPIs = new RoomLPFarmingAPIs(0, accountContext.web3Instance);
+            const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
             const availableNftBalanceOfTheTire = await roomLPFarmingAPIs.getAvailableNftTokenBalanceOfTire(accountContext.account, nextNftTire);
             if (availableNftBalanceOfTheTire == 0) {
                 setIsUpgradingNftToken(false);
@@ -187,8 +198,6 @@ function Nft() {
 
             const requiredRoomForNftTire = await roomLPFarmingAPIs.getRequiredRoomsForTire(accountContext.account, nextNftTire);
             const userRoomTokenBalance = await roomLPFarmingAPIs.getUserRoomTokenBalance(accountContext.account);
-
-            //console.log("requiredRoomForNftTire", requiredRoomForNftTire, userRoomTokenBalance);
 
             if (BigNumber.from(userRoomTokenBalance).lt(BigNumber.from(requiredRoomForNftTire))) {
                 setIsUpgradingNftToken(false);
@@ -224,7 +233,7 @@ function Nft() {
         if (accountContext.account) {
             callInit();
             clearInterval(updateNftTireBalanceIntervalId);
-            updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 1000);
+            updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 10000);
         }
 
         return (() => {
@@ -252,13 +261,18 @@ function Nft() {
                                 !isIniting && (
                                     <>
                                         {
-                                            availableNftTireBalance && (
+                                            availableNftTireBalance && availableNftTireBalance['0'] && poolStats && poolStats['0'] && (
                                                 <div className={classes.Stats}>
-                                                    <div>Tier 1: {availableNftTireBalance['0']}/75</div>
-                                                    <div>Tier 2: {availableNftTireBalance['1']}/60</div>
-                                                    <div>Tier 3: {availableNftTireBalance['2']}/45</div>
-                                                    <div>Tier 4: {availableNftTireBalance['3']}/30</div>
-                                                    <div>Tier 5: {availableNftTireBalance['4']}/12</div>
+                                                    {
+                                                        nftTires.map((tire) => {
+                                                            return (
+                                                                <div key={'nft'+tire}>
+                                                                    <span>Tier {tire+1}: <span>{availableNftTireBalance[tire]}/{allOfTires[tire]}</span></span>
+                                                                    <span>APY: <span>{numeral((poolStats[tire].apy / 100)).format('0%')}</span></span>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
                                                 </div>
                                             )
                                         }
@@ -269,9 +283,6 @@ function Nft() {
                                                         <img className={classes.FirstNft__ImageWrap__Img}
                                                              src={nftImages[0]}/>
                                                     </div>
-{/*                                                    <div className={classes.FirstNft__Remaining}>
-                                                        {availableNftTireBalance && availableNftTireBalance['0']} Available
-                                                    </div>*/}
                                                     {
                                                         isRoomTokenApprovedForNftTokenContract && isNftTokenApprovedForNftTokenContract && (
                                                             <Button className={classes.FirstNft__GetBtn}

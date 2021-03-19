@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AccountContextProvider from './shared/AccountContextProvider';
+import OptionroomThemeContextProvider from './shared/OptionroomThemeContextProvider';
 
 ReactDOM.render(
     <React.StrictMode>
-        <AccountContextProvider>
-            <App/>
-        </AccountContextProvider>
+        <OptionroomThemeContextProvider>
+            <AccountContextProvider>
+                <App/>
+            </AccountContextProvider>
+        </OptionroomThemeContextProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

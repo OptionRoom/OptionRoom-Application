@@ -8,9 +8,10 @@ import {
 } from "react-router-dom";
 
 import Logo from '../../assets/logo.png';
+import LogoSvg from '../../assets/optionroom_logo.svg';
 import LogoIcon from '../../assets/room-icon.png';
 import {isMobile} from "../../shared/helper";
-import {AccountContext} from "../../shared/AccountContextProvider";
+import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
 const LiquidityIcon = () => {
     return (
@@ -34,16 +35,26 @@ const NftIcon = () => {
     );
 };
 
+/*
+
+*/
 
 const NftStakeIcon = () => {
     return (
         <svg width="24px" height="24px" viewBox="0 0 24 24">
-                <g id="Group-7" transform="translate(3.000000, 1.000000)">
-                    <g id="Group-6" transform="translate(0.000000, 0.500450)">
-                        <path d="M5.5002,11.49595 L12.5002,11.49595 L12.5002,18.49595 C12.5002,19.60095 11.6052,20.49595 10.5002,20.49595 L7.5002,20.49595 C6.3952,20.49595 5.5002,19.60095 5.5002,18.49595 L5.5002,11.49595 Z" id="Fill-2"></path>
-                        <path d="M18.0002,0.49595 L18.0002,9.49595 L15.5002,9.49595 L12.5002,7.04095 L12.5002,9.49595 L5.5002,9.49595 L5.5002,5.99595 L0.0002,5.99595 C0.0002,2.95595 2.4602,0.49595 5.5002,0.49595 L12.5002,0.49595 L12.5002,2.95095 L15.5002,0.49595 L18.0002,0.49595 Z" id="Fill-4"></path>
-                    </g>
-                </g>
+            <g id="Group-3" transform="translate(2.000000, 3.000000)">
+                <path d="M13.85595,15.49605 L13.49995,15.49605 L13.49995,10.99555 L13.49995,8.99605 L13.49995,6.99605 L10.99995,5.56755 L10.99995,2.49605 L13.85645,2.49605 L17.67945,8.99605 L13.85595,15.49605 Z M2.32045,8.99605 L6.14395,2.49605 L8.99995,2.49605 L8.99995,5.56755 L6.49995,6.99605 L6.49995,8.99605 L6.49995,10.99555 L6.49995,15.49605 L6.14395,15.49605 L2.32045,8.99605 Z M11.49995,12.13805 L11.49995,15.49605 L8.49995,15.49605 L8.49995,12.13805 L9.99995,12.99505 L11.49995,12.13805 Z M11.49995,8.99605 L11.49995,9.83505 L9.99995,10.69205 L8.49995,9.83505 L8.49995,8.99605 L8.49995,8.15655 L9.99995,7.29955 L11.49995,8.15655 L11.49995,8.99605 Z M14.99995,0.49605 L4.99995,0.49605 L-4.99999987e-05,8.99605 L4.99995,17.49605 L14.99995,17.49605 L19.99995,8.99605 L14.99995,0.49605 Z" id="Fill-2"></path>
+            </g>
+        </svg>
+    );
+};
+
+const CourtStakeIcon = () => {
+    return (
+        <svg width="22px" height="22px" viewBox="0 0 72 72">
+            <g id="court" stroke="none" strokeWidth="1">
+                <path d="M18.5002559,6 L1,36.4997425 L18.5002559,67 L53.4997441,67 L71,36.4997425 L53.5002559,6 L18.5002559,6 Z M21.8501163,12.0559595 L27.2357948,11.910703 L35.588434,26.5568841 L43.861729,11.9828161 L49.1086833,12.0585349 L35.7420034,36.1010597 L21.8501163,12.0559595 Z M50.323929,12.4402195 L53.1194039,17.0750348 L44.6183142,31.6341651 L61.2974858,31.6403462 L63.8334284,36.2633143 L36.456613,36.4997425 L50.323929,12.4402195 Z M10.3984468,31.7639688 L26.7720153,31.7639688 L18.535065,17.1703272 L21.2757668,12.6678911 L35.0089655,36.4997425 L7.77548155,36.4997425 L10.3984468,31.7639688 Z M36.456613,37.2667173 L63.690097,37.2667173 L61.0671318,42.0019759 L44.6935632,42.0019759 L52.9305135,56.5966477 L50.1892999,61.0990838 L36.456613,37.2667173 Z M18.535065,56.7990796 L26.8723473,42.1333249 L10.1921519,42.1292041 L7.65569742,37.5067511 L35.0325128,37.2667173 L21.3310517,61.4333798 L18.535065,56.7990796 Z M22.3712284,61.6929871 L35.7368844,37.6509774 L49.6287716,61.6960777 L44.2436049,61.8413342 L35.8904538,47.1951531 L27.6176707,61.7687059 L22.3712284,61.6929871 Z" id="Fill-1"></path>
+            </g>
         </svg>
     );
 };
@@ -51,79 +62,105 @@ const NftStakeIcon = () => {
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
     root: {
-        display: 'flex',
+        display: "flex",
     },
     drawer: {
         flexShrink: 0,
-        whiteSpace: 'nowrap',
-        transition: theme.transitions.create('width', {
+        whiteSpace: "nowrap",
+        transition: theme.transitions.create("width", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
-        '& .MuiDrawer-paper': {
+        "& .MuiDrawer-paper": {
             width: drawerWidth,
-            transition: theme.transitions.create('width', {
+            transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
             }),
         },
-        '& $LogoIcon': {
-            display: 'none'
+        "& $LogoIcon": {
+            display: "none",
         },
-        '& $Logo': {
-            display: 'block',
+        "& $Logo": {
+            display: "block",
         },
         width: drawerWidth,
     },
     NavLink__Title: {
-        marginLeft: '16px',
-        display: 'block',
+        marginLeft: "16px",
+        display: "flex",
         opacity: 1,
-        transition: theme.transitions.create('opacity', {
+        transition: theme.transitions.create("opacity", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
         }),
+        alignItems: 'center'
+    },
+    NewBadge: {
+        display: 'inline-block',
+        fontSize: '8px',
+        padding: '2px 5px',
+        marginLeft: '5px',
+        background: 'red',
+        borderRadius: '5px',
+        color: '#fff'
     },
     drawerPaper: {
-        background: '#EDEFF4',
-        borderRight: 'none'
+        background: "#EDEFF4",
+        borderRight: "none",
     },
     drawerPaper___Black: {
-        background: '#000',
-        borderRight: 'none'
+        background: "#000",
+        borderRight: "none",
     },
     toolbar: {
-        padding: '40px 24px 28px 24px',
+        padding: "40px 24px 28px 24px",
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
     },
     NavLinks: {
-        padding: '0 16px 16px'
+        padding: "0 16px 16px",
     },
     NavLink: {
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        color: '#8293A6',
-        fontSize: '14px',
-        marginBottom: '8px',
-        padding: '8px',
-        transition: '0.2s all',
-        '&:hover, &.Active': {
-            borderRadius: '8px',
-            background: '#004BFF',
-            color: '#fff',
-            '& svg': {
-                color: '#fff',
-                fill: '#fff',
-            }
+        display: "flex",
+        alignItems: "center",
+        textDecoration: "none",
+        color: "#8293A6",
+        fontSize: "14px",
+        marginBottom: "8px",
+        padding: "8px",
+        transition: "0.2s all",
+        "&:hover, &.Active": {
+            borderRadius: "8px",
+            background: "#004BFF",
+            color: "#fff",
+            "& svg": {
+                color: "#fff",
+                fill: "#fff",
+            },
         },
-        '& svg': {
-            color: '#8293A6',
-            fill: '#8293A6',
-        }
+        "& svg": {
+            color: "#8293A6",
+            fill: "#8293A6",
+        },
+    },
+    SocialLinks: {
+        padding: "40px 24px 28px 24px",
+        position: "absolute",
+        bottom: 0,
+        left: "0",
+        width: "100%",
+        fontSize: "25px",
+        "&>a": {
+            color: "#8293A6",
+            marginRight: "10px",
+            transition: "0.2s all",
+            "&:hover": {
+                color: "#004BFF",
+            },
+        },
     },
     /**
      root: {
@@ -227,13 +264,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Sidebar() {
     const classes = useStyles();
-    const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-    const accountContext = useContext(AccountContext);
-
-    const handleDrawerClose = () => {
-        setOpen(!open);
-    };
+    const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     return (
         <Drawer
@@ -241,24 +272,31 @@ function Sidebar() {
             classes={{
                 root: classes.drawer,
                 paper: clsx(classes.drawerPaper, {
-                    [classes.drawerOpen]: open,
-                    [classes.drawerClose]: !open,
-                    [classes.drawerPaper___Black]: accountContext.theme === 'black',
+                    [classes.drawerPaper___Black]:
+                        optionroomThemeContext.theme === "black",
                 }),
             }}
-            anchor={'left'}
-            open={isMobile() ? accountContext.isSidebarOpen : true}
-            onClose={isMobile() ? () => {accountContext.changeSidebarIsOpen(false);} : () => {}}
+            anchor={"left"}
+            open={isMobile() ? optionroomThemeContext.isSidebarOpen : true}
+            onClose={
+                isMobile()
+                    ? () => {
+                          optionroomThemeContext.changeSidebarIsOpen(false);
+                      }
+                    : () => {}
+            }
         >
             <div className={classes.toolbar}>
-                <img src={Logo}
-                     className={classes.Logo}
-                     width={'150px'}/>
+                <img
+                    src={LogoSvg}
+                    className={classes.Logo}
+                    alt={"OptionRoom logo"}
+                    width={"150px"}
+                />
             </div>
             <div className={classes.NavLinks}>
-                {
-                    [
-                        /*{
+                {[
+                    /*{
                             title: 'Markets',
                             link: '/markets',
                             icon: MarketsIcon
@@ -268,22 +306,27 @@ function Sidebar() {
                             link: '/governance',
                             icon: GovernanceIcon
                         },*/
-                        {
-                            title: 'Liquidity Farming',
-                            link: '/liquidity-mining',
-                            icon: LiquidityIcon
-                        },
-                        {
-                            title: 'Get NFTs',
-                            link: '/nft',
-                            icon: NftIcon
-                        },
-                        {
-                            title: 'NFT Staking',
-                            link: '/nft-stake',
-                            icon: NftStakeIcon
-                        },
-                        /*{
+                    {
+                        title: "COURT Farming",
+                        link: "/court-farming",
+                        icon: CourtStakeIcon,
+                    },
+                    {
+                        title: "Liquidity Farming",
+                        link: "/liquidity-mining",
+                        icon: LiquidityIcon,
+                    },
+                    {
+                        title: "Get NFTs",
+                        link: "/nft",
+                        icon: NftIcon,
+                    },
+                    {
+                        title: "NFT Staking",
+                        link: "/nft-stake",
+                        icon: NftStakeIcon,
+                    },
+                    /*{
                             title: 'Claim',
                             link: '/claim',
                             icon: ClaimIcon
@@ -298,25 +341,50 @@ function Sidebar() {
                             link: '/docs',
                             icon: DocsIcon
                         },*/
-                    ].map((item, index) => (
-                        <NavLink to={item.link}
-                                 activeClassName={'Active'}
-                                 key={`menut-item${index}`}
-                                 className={
-                                     clsx(classes.NavLink, {
-                                         [classes.NavLink___Black]: accountContext.theme === 'black',
-                                     })
-                                 }>
-                            {item.icon()}
-                            <span className={
-                                clsx(classes.NavLink__Title, {
-                                    [classes.NavLink__Title__Open]: open,
-                                })
-                            }>
-                               {item.title}
-                            </span>
-                        </NavLink>
-                    ))}
+                ].map((item, index) => (
+                    <NavLink
+                        to={item.link}
+                        activeClassName={"Active"}
+                        key={`menut-item${index}`}
+                        className={clsx(classes.NavLink, {
+                            [classes.NavLink___Black]:
+                                optionroomThemeContext.theme === "black",
+                        })}
+                    >
+                        {item.icon()}
+                        <span className={classes.NavLink__Title}>
+                            {item.title}
+                            {
+                                item.link === "/court-farming" && (
+                                    <span className={classes.NewBadge}>new</span>
+                                )
+                            }
+                        </span>
+                    </NavLink>
+                ))}
+            </div>
+            <div className={classes.SocialLinks}>
+                <a
+                    href="https://github.com/OptionRoom"
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i className="fa fa-github"></i>
+                </a>
+                <a
+                    href="https://t.me/OptionRoom"
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i className="fa fa-telegram"></i>
+                </a>
+                <a
+                    href="https://twitter.com/option_room"
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i className="fa fa-twitter"></i>
+                </a>
             </div>
         </Drawer>
     );

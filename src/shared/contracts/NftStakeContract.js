@@ -423,7 +423,7 @@ export const getNftStakeContract = (chainId, web3) => {
 
     };
 
-    const contract = chainId === "mainnet" ? mainContract : ropstenContract;
+    const contract = chainId === 1 ? mainContract : ropstenContract;
 
     return new web3.eth.Contract(
         contract.abi,

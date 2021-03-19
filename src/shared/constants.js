@@ -6,6 +6,13 @@ export const colors = {
 
 export const MaxUint256 = BigNumber.from("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 export const nftTires = [0, 1, 2, 3, 4];
+export const allOfTires = {
+    0: 75,
+    1: 60,
+    2: 45,
+    3: 30,
+    4: 12,
+};
 
 export const nftImages = {
     0: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/fallen-oracle.jpg',
@@ -15,5 +22,5 @@ export const nftImages = {
     4: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/citadel.jpg',
 };
 
-export const controlledNetworkId = "mainnet";
-//export const controlledNetworkId = "ropsten";
+export const controlledNetworkId = 1;//"mainnet";
+//export const controlledNetworkId = 3;//"ropsten";

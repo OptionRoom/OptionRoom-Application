@@ -5,15 +5,17 @@ export const useStyles = makeStyles((theme) => ({
     Pools: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap'
     },
     Pool: {
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
         boxShadow: '0 0 20px 0 #E6EDFF',
         padding: '40px 16px 24px',
-        marginRight: '48px',
+        //marginRight: '48px',
         width: '288px',
+        marginBottom: '30px',
         '&:last-child': {
             marginRight: '0',
         }
@@ -35,7 +37,9 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '40px',
     },
     Pool__Action: {},
-    Pool__Action__Btn: {},
+    Pool__Action__Link: {
+        textDecoration: 'none'
+    },
 
     ConnectWrap: {
         textAlign: 'center',
