@@ -1,6 +1,8 @@
 import Web3Modal from "web3modal";
 import Web3 from "web3";
 
+import ConfigHelper from "./config.helper";
+
 class WalletHelper {
     constructor() {
         this._events = {};
@@ -12,7 +14,7 @@ class WalletHelper {
         this.networkId = null;
         this.mainnetWeb3 = new Web3(
             new Web3.providers.HttpProvider(
-                "https://mainnet.infura.io/v3/30d5a6bb69194a75afa085a8a3a4a584"
+                `https://mainnet.infura.io/v3/${ConfigHelper.getInfuraAppId()}`
             )
         );
 

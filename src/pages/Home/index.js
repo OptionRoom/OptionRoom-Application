@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Home() {
     return (
-        <div>ddd</div>
+        <div>Welcome to OptionRoom</div>
     );
 }
 

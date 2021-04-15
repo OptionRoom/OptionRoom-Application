@@ -14,7 +14,14 @@ import Sidebar from "./components/Sidebar";
 import CourtFarming from "./pages/CourtFarming";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
+import CreateMarket from "./pages/CreateMarket";
 import FarminPoolPage from "./pages/FarminPoolPage";
+import Claim from "./pages/Claim";
+import MarketTest from "./pages/MarketTest";
+import Markets from "./pages/Markets";
+import Market from "./pages/Market";
+import Governance from "./pages/Governance";
+import GovernanceList from "./pages/GovernanceList";
 import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
@@ -119,6 +126,27 @@ function App() {
                                         pool={"CourtFarming_MatterStake"}
                                         source={"matter"}
                                     />
+                                </Route>
+                                <Route path="/claim">
+                                    <Claim />
+                                </Route>
+                                <Route path="/market-test">
+                                    <MarketTest />
+                                </Route>
+                                <Route path="/markets" exact={true}>
+                                    <Markets />
+                                </Route>
+                                <Route path="/markets/create" exact={true}>
+                                    <CreateMarket />
+                                </Route>
+                                <Route path="/markets/:marketId">
+                                    <Market />
+                                </Route>
+                                <Route path="/governance" exact={true}>
+                                    <GovernanceList />
+                                </Route>
+                                <Route path="/governance/:governanceId">
+                                    <Governance />
                                 </Route>
                                 <Route exact path="/">
                                     <Redirect to="/court-farming" />
