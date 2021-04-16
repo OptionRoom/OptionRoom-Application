@@ -13,6 +13,19 @@ import LogoIcon from '../../assets/room-icon.png';
 import {isMobile} from "../../shared/helper";
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
+const MarketsIcon = () => {
+    return (
+        <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+            <g id="Markets" stroke="none" strokeWidth="1">
+                <path d="M19.97265,2.00625 L4.03065,2.00625 C2.91015,2.00625 2.00165,2.91425 2.00165,4.03525 L2.00165,19.97675 C2.00165,21.09725 2.91015,22.00575 4.03065,22.00575 L19.97265,22.00575 C21.09315,22.00575 22.00165,21.09725 22.00165,19.97675 L22.00165,4.03525 C22.00165,2.91425 21.09315,2.00625 19.97265,2.00625 M19.97265,4.00625 C19.98865,4.00625 20.00165,4.01875 20.00165,4.03525 L20.00165,19.97675 C20.00165,19.99275 19.98865,20.00575 19.97265,20.00575 L4.03065,20.00575 C4.01465,20.00575 4.00165,19.99275 4.00165,19.97675 L4.00165,4.03525 C4.00165,4.01875 4.01465,4.00625 4.03065,4.00625 L19.97265,4.00625" id="Fill-2"></path>
+                <polygon id="Fill-4" points="7.0005 18.0005 9.0005 18.0005 9.0005 12.0005 7.0005 12.0005"></polygon>
+                <polygon id="Fill-6" points="11.0005 18.0005 13.0005 18.0005 13.0005 6.0005 11.0005 6.0005"></polygon>
+                <polygon id="Fill-7" points="15.0005 18 17.0005 18 17.0005 8 15.0005 8"></polygon>
+            </g>
+        </svg>
+    );
+};
+
 const LiquidityIcon = () => {
     return (
         <svg width="24px" height="24px" viewBox="0 0 24 24" >
@@ -309,11 +322,12 @@ function Sidebar() {
             </div>
             <div className={classes.NavLinks}>
                 {[
-                    /*{
-                            title: 'Markets',
-                            link: '/markets',
-                            icon: MarketsIcon
-                        },
+                    {
+                        title: 'Markets',
+                        link: '/markets',
+                        icon: MarketsIcon
+                    },
+                    /*
                         {
                             title: 'Governance',
                             link: '/governance',

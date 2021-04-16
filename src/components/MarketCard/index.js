@@ -1,9 +1,12 @@
 import React from 'react';
 import clsx from 'clsx';
+import {get} from 'lodash';
 import {useState, useContext} from 'react';
 import MenuIcon from '@material-ui/icons/Menu';
 import IconButton from '@material-ui/core/IconButton';
-
+import {
+    Link,
+} from "react-router-dom";
 import {useStyles} from './styles'
 import ConnectButton from '../ConnectButton';
 import {AccountContext} from '../../shared/AccountContextProvider';
@@ -18,24 +21,30 @@ function MarketCard(props) {
 
     const classes = useStyles();
     const {
-        title,
-        details
+        market
     } = props;
     const accountContext = useContext(AccountContext);
 
+    console.log("get(market, ['image'])", get(market, ['image']))
     return (
         <div className={classes.MarketCard}>
             <div className={classes.AvatarWrap}>
-                <div className={classes.Avatar}></div>
+                <div className={classes.Avatar} style={{
+                    backgroundImage: `url(${get(market, ['image'])})`
+                }}></div>
             </div>
             <div className={classes.Details}>
                 <div className={classes.Details__Header}>
-                    <div className={classes.Cat}>sports</div>
-                    <div className={classes.Resolve}>Resolved</div>
+                    <div className={classes.Cat}>{get(market, ['category', 'label'])}</div>
+                    {
+                        /**
+                         <div className={classes.Resolve}>Resolved</div>
+
+                         */
+                    }
                 </div>
-                <div className={classes.Title}>
-                    Will Andrew Cuomo be Governor of New York on June 1, 2021?
-                </div>
+                <Link className={classes.Title}
+                      to={`/markets/${get(market, ['id'])}`}>{get(market, ['title'])}</Link>
                 <div className={classes.Details__Footer}>
                     <div className={classes.Volume}>
                         <span className={classes.Volume__Title}>Volume</span>
@@ -48,7 +57,7 @@ function MarketCard(props) {
                         </div>
                         <div className={classes.Option}>
                             <span className={classes.Option__Title}>Yes</span>
-                            <span className={classes.Option__Value}>$6,145,215</span>
+                            <span className={classes.Option__Value}>$2,145,215</span>
                         </div>
                     </div>
                 </div>

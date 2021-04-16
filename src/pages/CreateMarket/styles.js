@@ -47,6 +47,10 @@ export const useStyles = makeStyles((theme) => ({
 
         }
     },
+    CreateMarket__FieldBodyFieldError: {
+      marginTop: '8px',
+      color: 'red'
+    },
     CreateMarket__FieldSources: {
         '& $CreateMarket__FieldBody' : {
             display: 'flex',
@@ -87,11 +91,39 @@ export const useStyles = makeStyles((theme) => ({
         cursor: 'pointer',
         marginRight: '12px'
     },
+    CreateMarket__Sources: {
+        border: "1px solid #D2D9E1",
+        borderRadius: "8px",
+        backgroundColor: "#FFFFFF",
+        padding: '16px',
+        marginTop: '8px',
+        '& >div': {
+            padding: '4px 8px',
+            background: '#EDEFF4',
+            borderRadius: "8px",
+            marginBottom: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            '& span:first-child': {
+                marginRight: 'auto'
+            },
+            '&:last-child': {
+                marginBottom: 0,
+            }
+        }
+    },
+    RemoveSourceIcon: {
+        cursor: 'pointer',
+        color: 'red'
+    },
     CreateMarket__FieldBodyImg: {
         border: "1px solid #D2D9E1",
         borderRadius: "8px",
         backgroundColor: "#FFFFFF",
         padding: '16px',
+
+    },
+    CreateMarket__FieldBodyImgEmpty: {
         textAlign: 'center',
         '& div': {
             color: "#5F7184",
@@ -104,7 +136,26 @@ export const useStyles = makeStyles((theme) => ({
         '& button': {
             width: '96px'
         }
+    },
+    CreateMarket__FieldBodySelected: {
+        textAlign: 'center',
 
+    },
+    MarketImgFileWrap: {
+        height: "96px",
+        width: "96px",
+        borderRadius: "8px",
+        backgroundColor: "#FFFFFF",
+        boxShadow: "0 0 20px 0 #E6EDFF",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: '0 auto 16px',
+    },
+    MarketImgFileWrap__Img: {
+        height: "64px",
+        width: "64px",
+        borderRadius: '50%'
     },
     CreateBtnWrap:{
         padding: '0 24px'

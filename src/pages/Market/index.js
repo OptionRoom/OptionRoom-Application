@@ -1,5 +1,8 @@
 import {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
+import { useHistory, useParams } from 'react-router-dom'
+import {get} from 'lodash';
+import moment from 'moment';
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -18,6 +21,7 @@ import {
     fromWei,
 } from "../../shared/helper";
 import OptionBlock from "../../components/OptionBlock";
+import {getMarketById} from "../../shared/firestore.service";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -33,11 +37,22 @@ function Market() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const [market, setMarket] = useState(null);
+    const { marketId } = useParams();
 
     const classes = useStyles();
 
     useEffect(() => {
+        const init = async () => {
+            /*            const cats = await getMarketCategories();
+                        setMarketCategories(cats);*/
 
+            const result = await getMarketById(marketId);
+            console.log("resule", result);
+            setMarket(result);
+        };
+
+        init();
     }, [accountContext.account]);
 
     const cats = [
@@ -86,10 +101,7 @@ function Market() {
     return (
         <>
             <Navbar
-                title={"Claim"}
-                details={
-                    "Earn COURT tokens by providing liquidity to one of the pools on this page."
-                }
+                title={"Markets"}
             />
             <div className={classes.MarketsPage}>
                 {accountContext.account && (
@@ -97,22 +109,20 @@ function Market() {
                         <Grid container spacing={3}>
                             <Grid item xs={8}>
                                 <div className={classes.MarketDetails}>
-                                    <div className={classes.Cat}>US Current Affairs</div>
-                                    <div className={classes.Title}>Will Donald Trump be President of the USA on March
-                                        31, 2021?
-                                    </div>
+                                    <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
+                                    <div className={classes.Title}>{get(market, 'title')}</div>
                                     <div className={classes.Info}>
                                         <div className={classes.Info__Block}>
                                             <div className={classes.Info__BlockTitle}>Trade volume</div>
-                                            <div className={classes.Info__BlockValue}>₮184,179</div>
+                                            <div className={classes.Info__BlockValue}>$184,179</div>
                                         </div>
                                         <div className={classes.Info__Block}>
                                             <div className={classes.Info__BlockTitle}>Liquidity</div>
-                                            <div className={classes.Info__BlockValue}>₮7,919</div>
+                                            <div className={classes.Info__BlockValue}>$7,919</div>
                                         </div>
                                         <div className={classes.Info__Block}>
                                             <div className={classes.Info__BlockTitle}>Market ends on</div>
-                                            <div className={classes.Info__BlockValue}>June 1, 2021</div>
+                                            <div className={classes.Info__BlockValue}>{moment(get(market, 'endDate') * 1000).format('L')}</div>
                                         </div>
                                     </div>
                                     <div className={classes.Graph}>
@@ -142,7 +152,7 @@ function Market() {
                                             </div>
                                             <div>
                                                 <OutcomeProgress title={'No'}
-                                                                 count={'₮0.01'}
+                                                                 count={'$0.01'}
                                                                  percent={40}
                                                                  color={'#7084FF'}/>
                                             </div>
@@ -156,10 +166,10 @@ function Market() {
                                             {
                                                 [
                                                     {title: 'Outcome', value: 'Yes (14.58 Shares)'},
-                                                    {title: 'Price: Average | Current', value: '₮0.46 | ₮0.21'},
+                                                    {title: 'Price: Average | Current', value: '$0.46 | $0.21'},
                                                     {title: 'P/L: $ | %', value: '-3.66 | -5.428%'},
-                                                    {title: 'Value: Inititial | Current', value: '₮6.75 | ₮3.09'},
-                                                    {title: 'Max Payout', value: '₮14.58'},
+                                                    {title: 'Value: Inititial | Current', value: '$6.75 | $3.09'},
+                                                    {title: 'Max Payout', value: '$14.58'},
                                                 ].map((entry) => {
                                                     return (
                                                         <div className={classes.MarketPosition__Block}>
@@ -175,30 +185,20 @@ function Market() {
                                         <div className={classes.About__Header}>
                                             About
                                         </div>
-                                        <div className={classes.About__Details}>
-                                            This is a market on if Donald Trump will be President of the United States
-                                            on March 31, 2021, 12pm EST. This market will resolve to “Yes“ if, on the
-                                            resolution date, Donald Trump is the current President of the United States,
-                                            officially substantiated More
-                                        </div>
+                                        <div className={classes.About__Details}>{get(market, 'description')}</div>
                                     </div>
                                     <div className={classes.Resolution}>
                                         <div className={classes.Resolution__Header}>
                                             Resolution Source
                                         </div>
                                         <div className={classes.Resolution__Details}>
-                                            {
-                                                [
-                                                    'https://history.house.gov/Institution/Presidents-Coinciding/Presidents-Coinciding/',
-                                                    'https://www.loc.gov/rr/print/list/057_chron.html',
-                                                ].map((entry) => {
-                                                    return (
-                                                        <div className={classes.ResolutionLink}>
-                                                            {entry}
-                                                        </div>
-                                                    )
-                                                })
-                                            }
+                                            {get(market, 'sources') && get(market, 'sources').map((entry) => {
+                                                return (
+                                                    <div className={classes.ResolutionLink}>
+                                                        {entry}
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +234,7 @@ function Market() {
                                         <div className={classes.BuySellWidgetInfo}>
                                             <div className={classes.BuySellWidgetInfo__Row}>
                                                 <div className={classes.BuySellWidgetInfo__RowTitle}>Your Avg. Price</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>₮0.5274</div>
+                                                <div className={classes.BuySellWidgetInfo__RowValue}>$0.5274</div>
                                             </div>
                                             <div className={classes.BuySellWidgetInfo__Row}>
                                                 <div className={classes.BuySellWidgetInfo__RowTitle}>Est. Shares</div>
@@ -242,7 +242,7 @@ function Market() {
                                             </div>
                                             <div className={classes.BuySellWidgetInfo__Row}>
                                                 <div className={classes.BuySellWidgetInfo__RowTitle}>Max Winnings</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>₮0.5274</div>
+                                                <div className={classes.BuySellWidgetInfo__RowValue}>$0.5274</div>
                                             </div>
                                             <div className={classes.BuySellWidgetInfo__Row}>
                                                 <div className={classes.BuySellWidgetInfo__RowTitle}>Max ROI</div>

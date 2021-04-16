@@ -34,5 +34,20 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: '12px',
         backgroundColor: '#EDEFF4',
         textAlign: 'center'
+    },
+    MarketsWrap: {
+        //maxWidth: '800px',
+        margin: '0 auto',
+        '& >div': {
+            marginBottom: '16px'
+        }
+    },
+    CreateMarketLinkWrap: {
+        marginBottom: '16px'
+    },
+    CreateMarketLink: {
+        display: 'block',
+        textDecoration: 'none',
+
     }
 }));
