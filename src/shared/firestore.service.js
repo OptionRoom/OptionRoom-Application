@@ -18,7 +18,7 @@ export const authenticateAnonymously = () => {
     return firebase.auth().signInAnonymously();
 };
 
-export const authUser = async (message, signature) => {
+export const createAuthOnFirebase = async (wallet, message, signature) => {
     return new Promise((resolve, reject) => {
         const req = new XMLHttpRequest();
         req.onload = function () {
@@ -37,15 +37,20 @@ export const authUser = async (message, signature) => {
             }
 
             resolve(data.token);
-        }
+        };
+
         req.onerror = function () {
             reject('Network error in Firebase Cloud Function call see developer console for details');
-        }
+        };
 
         const url = 'https://us-central1-' + ConfigHelper.getFirebaseProjectId() + '.cloudfunctions.net/auth';
         req.open('POST', url, true);
         req.setRequestHeader('Content-Type', 'application/json');
-        req.send(JSON.stringify({ message, signature }));
+        req.send(JSON.stringify({
+            account: wallet,
+            message: message,
+            signature: signature
+        }));
     });
 };
 

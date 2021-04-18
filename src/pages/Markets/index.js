@@ -53,49 +53,6 @@ function Markets() {
         init();
     }, [accountContext.account]);
 
-    const cats = [
-        {
-            name: 'All',
-            count: '2',
-        },
-        {
-            name: 'Business',
-            count: '3',
-        },
-        {
-            name: 'Coronavirus',
-            count: '99',
-        },
-        {
-            name: 'Crypto',
-            count: '105',
-        },
-        {
-            name: 'NFTs',
-            count: '78',
-        },
-        {
-            name: 'Pop Culture',
-            count: '2',
-        },
-        {
-            name: 'Science',
-            count: '1',
-        },
-        {
-            name: 'Sports',
-            count: '65',
-        },
-        {
-            name: 'Tech',
-            count: '75',
-        },
-        {
-            name: 'US Current Affairs',
-            count: '82',
-        },
-    ];
-
     return (
         <>
             <Navbar
@@ -106,14 +63,15 @@ function Markets() {
                     <div>
                         <Grid container spacing={3}>
                             {
-                                (
-                                    <Grid item xs={2}>
-                                        <div className={classes.Sidebar}>
-                                            <div className={classes.Sidebar__Title}>
-                                                Categories
-                                            </div>
-                                            <div className={classes.Sidebar__Content}>
-                                                {
+                                /**
+                                 (
+                                 <Grid item xs={2}>
+                                 <div className={classes.Sidebar}>
+                                 <div className={classes.Sidebar__Title}>
+                                 Categories
+                                 </div>
+                                 <div className={classes.Sidebar__Content}>
+                                 {
                                                     marketCategories.map((cat) => {
                                                         return (
                                                             <div className={classes.Cat}>
@@ -129,13 +87,13 @@ function Markets() {
                                                         );
                                                     })
                                                 }
-                                            </div>
-                                        </div>
-                                    </Grid>
-                                )
+                                 </div>
+                                 </div>
+                                 </Grid>
+                                 )
+                                 */
                             }
-                            <Grid item xs={10}>
-
+                            <Grid item xs={12}>
                                 <div className={classes.MarketsWrap}>
                                     {
                                         isLoading && (
@@ -170,9 +128,7 @@ function Markets() {
                                             </>
                                         )
                                     }
-
                                 </div>
-
                             </Grid>
                         </Grid>
                     </div>

@@ -8,16 +8,13 @@ const walletHelperInstance = walletHelper();
 
 class MarketAPIs {
     constructor() {
-        this.courtTokenContract = getCourtTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
+        this.marketPlaceContract = null;
     }
 
     async buy(marketId, buyIndex, buyAmount, wallet) {
-        const result = await getContract()
+        const result = await this.marketPlaceContract
             .methods.buy(
-                questionId,
+                marketId,
                 buyIndex,
                 buyAmount
             )
@@ -29,7 +26,7 @@ class MarketAPIs {
 
     async sell(marketId, sellIndex, sellAmount, wallet) {
 
-        const result = await getContract()
+        const result = await this.marketPlaceContract
             .methods.sell(
                 marketId,
                 sellIndex,
@@ -41,189 +38,190 @@ class MarketAPIs {
         return result;
     };
 
-    async getAllAccountsDollarBalance() {
-        const result = await getContract().methods.dollar_balanceList().call({
-            from: accountContext.account,
+    async getAllAccountsDollarBalance(wallet) {
+        const result = await this.marketPlaceContract.methods.dollar_balanceList().call({
+            from: wallet,
         });
 
         return result;
     };
 
-    async getQuestionMarket() {
-        const result = await getContract().methods.getMarket(questionId).call({
-            from: accountContext.account,
+    async getQuestionMarket(wallet, marketId) {
+        const result = await this.marketPlaceContract.methods.getMarket(marketId).call({
+            from: wallet,
         });
 
         return result;
     };
 
-    async getQuestion_YesNo_BalanceList() {
-        const result = await getContract()
-            .methods.yesno_balanceList(questionId)
+    async getQuestion_YesNo_BalanceList(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.yesno_balanceList(marketId)
             .call({
-                from: accountContext.account,
+                from: wallet,
             });
         return result;
 
     };
 
-    async getQuestion_YesNo_Percentage() {
-        const result = await getContract()
-            .methods.yesno_percentage(questionId)
+    async getQuestion_YesNo_Percentage(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.yesno_percentage(marketId)
             .call({
-                from: accountContext.account,
-            });
-
-        return result;
-
-    };
-
-    async getQuestion_YesNo_BalancePool() {
-        const result = await getContract()
-            .methods.yesno_balancePool(questionId)
-            .call({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;
 
     };
 
-    async getQuestion__Account_Share_Balance() {
-        const result = await getContract()
-            .methods.share_balance(questionId, mainAccount)
+    async getQuestion_YesNo_BalancePool(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.yesno_balancePool(marketId)
             .call({
-                from: accountContext.account,
-            });
-        return result;
-
-    };
-
-    async getQuestion_Share_BalanceList() {
-        const result = await getContract()
-            .methods.share_balanceList(questionId)
-            .call({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;
 
     };
 
-    asyncgetAccount__Question_YesNo_Balance() {
-        const result = await getContract()
-            .methods.yesno_balance(questionId, mainAccount)
+    async getQuestion__Account_Share_Balance(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.share_balance(marketId)
             .call({
-                from: accountContext.account,
+                from: wallet,
+            });
+        return result;
+
+    };
+
+    async getQuestion_Share_BalanceList(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.share_balanceList(marketId)
+            .call({
+                from: wallet,
             });
 
         return result;
 
     };
 
-    asyncgetYesNoBalanceList() {
-        const result = await getContract().methods.yesno_balanceList().call({
-            from: accountContext.account,
+    async getAccount__Question_YesNo_Balance(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.yesno_balance(marketId)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+
+    };
+
+    async getYesNoBalanceList(wallet,) {
+        const result = await this.marketPlaceContract.methods.yesno_balanceList().call({
+            from: wallet,
         });
 
         return result;
 
     };
 
-    async add__Market_Liquidity() {
-        const result = await getContract()
+    async add__Market_Liquidity(wallet, marketId,
+                                add__Market_Liquidity__Input) {
+        const result = await this.marketPlaceContract
             .methods.addLiquidity(
-                questionId,
-                getBigNumberFromNumber(add__Market_Liquidity__Input),
-                mainAccount
+                marketId,
+                add__Market_Liquidity__Input
             )
             .send({
-                from: accountContext.account,
+                from: wallet,
             });
         return result;
 
     };
 
-    async remove__Market_Liquidity() {
-        const result = await getContract()
+    async remove__Market_Liquidity(wallet, marketId, marketAccountShareBalanceInput) {
+        const result = await this.marketPlaceContract
             .methods.removeLiquidity(
-                questionId,
-                getBigNumberFromNumber(marketAccountShareBalanceInput),
-                mainAccount
+                marketId,
+                marketAccountShareBalanceInput,
             )
             .send({
-                from: accountContext.account,
+                from: wallet,
             });
         return result;
 
     };
 
-    async add__Account_DollarBalance() {
-        const result = await getContract()
-            .methods.dollar_mint(mainAccount, getBigNumberFromNumber(1000))
+    async add__Account_DollarBalance(wallet,) {
+        const result = await this.marketPlaceContract
+            .methods.dollar_mint(wallet, 1000)
             .send({
-                from: accountContext.account,
+                from: wallet,
             });
         return result;
 
     };
 
-    async get__Account_DollarBalance() {
-        const result = await getContract()
+    async get__Account_DollarBalance(wallet, mainAccount) {
+        const result = await this.marketPlaceContract
             .methods.dollar_balance(mainAccount)
             .call({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;
 
     };
 
-    async getNumberOfTokensByAmount() {
-        const result = await getContract()
+    async getNumberOfTokensByAmount(wallet, marketId,
+                                    buyAmount,
+                                    buyIndex) {
+        const result = await this.marketPlaceContract
             .methods.calcBuyAmount(
-                questionId,
-                getBigNumberFromNumber(buyAmount),
+                marketId,
+                buyAmount,
                 buyIndex
             )
             .call({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;
 
     };
 
-    async getAmountByNumberOfTokens() {
-        const result = await getContract()
+    async getAmountByNumberOfTokens(wallet, marketId, sellIndex, sellAmount) {
+        const result = await this.marketPlaceContract
             .methods.calcSellReturnInv(
-                questionId,
+                marketId,
                 sellIndex,
-                getBigNumberFromNumber(sellAmount)
+                sellAmount
             )
             .call({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;
 
     };
 
-    async resolveMarket() {
-        const result = await getContract()
-            .methods.resolve(questionId, resolveIndex)
+    async resolveMarket(wallet, marketId, resolveIndex) {
+        const result = await this.marketPlaceContract
+            .methods.resolve(marketId, resolveIndex)
             .send({
-                from: accountContext.account,
+                from: wallet,
             });
-        return result;
 
+        return result;
     };
 
-    async createMarket() {
-        const result = await getContract()
-            .methods.marketCreate(questionId)
+    async createMarket(wallet, marketId) {
+        const result = await this.marketPlaceContract
+            .methods.marketCreate(marketId)
             .send({
-                from: accountContext.account,
+                from: wallet,
             });
 
         return result;

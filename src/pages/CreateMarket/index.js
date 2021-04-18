@@ -24,7 +24,7 @@ import {
     toWei,
     fromWei,
 } from "../../shared/helper";
-import {getMarketCategories, uploadMarketImage, createMarket} from "../../shared/firestore.service";
+import {getMarketCategories, uploadMarketImage, createMarket, createAuthOnFirebase} from "../../shared/firestore.service";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -92,6 +92,9 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async () => {
+/*        const re = await walletHelperInsatnce.signWallet("OptionRoom login");
+        createAuthOnFirebase(accountContext.account, "OptionRoom login", re);
+        return ;*/
         const errors = {};
         if (!get(formData, ['title'])) {
             errors.title = "Title is required";

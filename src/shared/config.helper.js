@@ -7,6 +7,7 @@ const ConfigHelper = {
     getFirebaseMessagingSenderId: () => process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     getFirebaseAppId: () => process.env.REACT_APP_FIREBASE_APP_ID,
     getFirebaseMeasurementId: () => process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+    getAuthSignMessage: () => process.env.REACT_APP_AUTH_SIGN_PASSWORD,
 };
 
 export default ConfigHelper;

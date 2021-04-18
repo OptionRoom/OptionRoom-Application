@@ -117,6 +117,12 @@ class WalletHelper {
         return this.web3;
     }
 
+    async signWallet(message) {
+        const web3 = this.getWeb3();
+        const signature = await web3.eth.personal.sign(message, this.account, ConfigHelper.getAuthSignMessage());
+        return signature;
+    }
+
     on(name, listener) {
         if (!this._events[name]) {
             this._events[name] = [];

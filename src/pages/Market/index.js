@@ -44,59 +44,12 @@ function Market() {
 
     useEffect(() => {
         const init = async () => {
-            /*            const cats = await getMarketCategories();
-                        setMarketCategories(cats);*/
-
             const result = await getMarketById(marketId);
-            console.log("resule", result);
             setMarket(result);
         };
 
         init();
     }, [accountContext.account]);
-
-    const cats = [
-        {
-            name: 'All',
-            count: '2',
-        },
-        {
-            name: 'Business',
-            count: '3',
-        },
-        {
-            name: 'Coronavirus',
-            count: '99',
-        },
-        {
-            name: 'Crypto',
-            count: '105',
-        },
-        {
-            name: 'NFTs',
-            count: '78',
-        },
-        {
-            name: 'Pop Culture',
-            count: '2',
-        },
-        {
-            name: 'Science',
-            count: '1',
-        },
-        {
-            name: 'Sports',
-            count: '65',
-        },
-        {
-            name: 'Tech',
-            count: '75',
-        },
-        {
-            name: 'US Current Affairs',
-            count: '82',
-        },
-    ];
 
     return (
         <>

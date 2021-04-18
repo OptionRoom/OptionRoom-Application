@@ -23,9 +23,9 @@ function MarketCard(props) {
     const {
         market
     } = props;
+
     const accountContext = useContext(AccountContext);
 
-    console.log("get(market, ['image'])", get(market, ['image']))
     return (
         <div className={classes.MarketCard}>
             <div className={classes.AvatarWrap}>
