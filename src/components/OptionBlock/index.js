@@ -12,7 +12,9 @@ function OptionBlock(props) {
     const classes = useStyles();
 
     return (
-        <div className={classes.Options__OptionBlock}>
+        <div className={classes.Options__OptionBlock}
+             onClick={() => props.onClick && props.onClick(props.title)}
+                data-selected={props.isSelected ? 'true' : 'false'}>
             <div className={classes.OptionBlock__Indicator}><div></div></div>
             <div className={classes.OptionBlock__Title}>{props.title}</div>
             {

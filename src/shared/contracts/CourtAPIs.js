@@ -71,6 +71,16 @@ class CourtAPIs {
         );
     }
 
+
+    async getRoomPastEvents(address, token) {
+        const result = await this.roomTokenContract
+            .getPastEvents("allEvents", {
+
+                fromBlock: 1,
+            });
+        return result;
+    }
+
     async getAddressTokenBalance(address, token) {
         if (token === "room") {
             const result = await this.roomTokenContract.methods

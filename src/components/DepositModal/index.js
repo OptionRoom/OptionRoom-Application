@@ -14,12 +14,17 @@ import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
+import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {
     convertAmountToTokens,
     convertTokensToAmount,
 } from "../../shared/helper";
 
 const getModalText = (type, source, pool) => {
+    if (type === "Add_Market_Liquidity") {
+        return "Add liquidity to this market";
+    }
+
     if (type === "nftStake") {
         return "Deposit your ROOM tokens for staking";
     }
@@ -47,6 +52,14 @@ const getModalText = (type, source, pool) => {
     if (source === "matter" && pool === "CourtFarming_MatterStake") {
         return "Deposit your MATTER tokens for COURT staking";
     }
+};
+
+const getModalHeaderText = (type) => {
+    if (type === "Add_Market_Liquidity") {
+        return "Add liquidity";
+    }
+
+    return 'Deposit Tokens';
 };
 
 function DepositModal(props) {
@@ -80,6 +93,9 @@ function DepositModal(props) {
                     nftTire,
                     tokensAmount
                 );
+            } else if(type === 'Add_Market_Liquidity'){
+                const marketAPIs = new MarketAPIs();
+                await marketAPIs.addLiquidityToMarket(accountContext.account, props.marketContractId, tokensAmount);
             } else {
                 await courtAPIs.stackeTokens(
                     accountContext.account,
@@ -133,7 +149,7 @@ function DepositModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    Deposit Tokens
+                    {getModalHeaderText(type)}
                 </Typography>
                 {handleClose && (
                     <IconButton

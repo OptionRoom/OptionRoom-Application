@@ -1,231 +1,357 @@
-import {walletHelper} from "../wallet.helper";
-import {getCourtTokenContract} from "./CourtTokenContract";
-import {fromWei} from '../helper';
-import {MaxUint256, controlledNetworkId} from "../../shared/constants";
-import swal from "sweetalert";
+import { walletHelper } from "../wallet.helper";
+import { MaxUint256, controlledNetworkId } from "../../shared/constants";
+import { getCollateralTokenContract } from "./CollateralTokenContract";
+import { getMarketContract } from "./MarketContract";
+import { getMarketRouterContract } from "./MarketRouterContract";
+import { getGovernanceContract } from "./GovernanceContract";
+import { getOptionTokenContract } from "./OptionTokenContract";
 
 const walletHelperInstance = walletHelper();
 
+const generateMarketContract = (marketId) => {
+    return getMarketContract(walletHelperInstance.getWeb3(), marketId);
+};
+
 class MarketAPIs {
     constructor() {
-        this.marketPlaceContract = null;
+        this.marketRouterContract = getMarketRouterContract(
+            controlledNetworkId,
+            walletHelperInstance.getWeb3()
+        );
+
+        this.collateralTokenContract = getCollateralTokenContract(
+            controlledNetworkId,
+            walletHelperInstance.getWeb3()
+        );
+
+        this.governanceContract = getGovernanceContract(
+            controlledNetworkId,
+            walletHelperInstance.getWeb3()
+        );
+
+        this.optionsTokenContract = getOptionTokenContract(
+            controlledNetworkId,
+            walletHelperInstance.getWeb3()
+        );
     }
 
-    async buy(marketId, buyIndex, buyAmount, wallet) {
-        const result = await this.marketPlaceContract
-            .methods.buy(
-                marketId,
-                buyIndex,
-                buyAmount
-            )
+    async buy(
+        wallet,
+        marketId,
+        investmentAmount,
+        outcomeIndex,
+        minOutcomeTokensToBuy
+    ) {
+        /**
+         {
+                    internalType: "uint256",
+                    name: "investmentAmount",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "outcomeIndex",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "minOutcomeTokensToBuy",
+                    type: "uint256",
+                },
+         */
+        const result = await generateMarketContract(marketId)
+            .methods
+            .buy(investmentAmount, outcomeIndex, 0)
             .send({
                 from: wallet,
             });
         return result;
-    };
+    }
 
-    async sell(marketId, sellIndex, sellAmount, wallet) {
+    async getWalletMarketPastEvents(
+        wallet,
+        marketId) {
+        /**
+         {
+                    internalType: "uint256",
+                    name: "investmentAmount",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "outcomeIndex",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "minOutcomeTokensToBuy",
+                    type: "uint256",
+                },
+         */
+        const result = await generateMarketContract(marketId)
+            .getPastEvents("allEvents", {
+                fromBlock: 1,
+            });
+        return result;
+    }
 
-        const result = await this.marketPlaceContract
-            .methods.sell(
-                marketId,
-                sellIndex,
-                sellAmount
-            )
+    async sell(wallet, marketId, amount, sellIndex) {
+        /*
+                        {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "index",
+                    type: "uint256",
+                },
+        */
+        const result = await generateMarketContract(marketId)
+            .methods
+            .sell(amount, sellIndex)
             .send({
                 from: wallet,
             });
         return result;
-    };
+    }
 
-    async getAllAccountsDollarBalance(wallet) {
-        const result = await this.marketPlaceContract.methods.dollar_balanceList().call({
+    async getOptionTokensCountOfBuy(wallet, marketId, buyAmount, outcomeIndex) {
+        /**
+                {
+                    internalType: "uint256",
+                    name: "investmentAmount",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "outcomeIndex",
+                    type: "uint256",
+                }
+         */
+        const result = await generateMarketContract(marketId)
+            .methods
+            .calcBuyAmount(buyAmount, outcomeIndex)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getCollateralTokensCountOfSell(wallet, marketId, sellAmount, inputIndex) {
+        /**
+                {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "inputIndex",
+                    type: "uint256",
+                },
+         */
+        const result = await generateMarketContract(marketId)
+        .methods
+            .calcSellReturnInv(sellAmount, inputIndex)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getWalletOptionTokensBalance(wallet, marketId) {
+        /**
+                {
+                    internalType: "address",
+                    name: "account",
+                    type: "address",
+                }
+         */
+        const result = await generateMarketContract(marketId)
+        .methods
+            .getBalances(wallet)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getMarketState(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+        .methods
+            .getCurrentState()
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getMarketOptionTokensPercentage(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .getPercentage()
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getMarketOutcome(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .getResolvingOutcome()
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getWalletSharesOfMarket(wallet, marketId) {
+        /*
+
+                        {
+                    internalType: "address",
+                    name: "account",
+                    type: "address",
+                },
+                */
+        const result = await generateMarketContract(marketId)
+            .methods
+            .balanceOf(wallet)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async addLiquidityToMarket(wallet, marketId, amount) {
+        /*
+                {
+                    internalType: "uint256",
+                    name: "amount",
+                    type: "uint256",
+                },
+        */
+        const result = await generateMarketContract(marketId)
+            .methods
+            .addLiquidity(amount)
+            .send({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async removeLiquidityFromMarket(wallet, marketId, amount) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .removeLiquidity(amount)
+            .send({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async getMarketTotalSupply(wallet, marketId) {
+        return await generateMarketContract(marketId)
+        .methods
+        .totalSupply()
+        .call({
             from: wallet,
         });
+    }
 
-        return result;
-    };
-
-    async getQuestionMarket(wallet, marketId) {
-        const result = await this.marketPlaceContract.methods.getMarket(marketId).call({
-            from: wallet,
-        });
-
-        return result;
-    };
-
-    async getQuestion_YesNo_BalanceList(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.yesno_balanceList(marketId)
-            .call({
-                from: wallet,
-            });
-        return result;
-
-    };
-
-    async getQuestion_YesNo_Percentage(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.yesno_percentage(marketId)
-            .call({
-                from: wallet,
-            });
-
-        return result;
-
-    };
-
-    async getQuestion_YesNo_BalancePool(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.yesno_balancePool(marketId)
-            .call({
-                from: wallet,
-            });
-
-        return result;
-
-    };
-
-    async getQuestion__Account_Share_Balance(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.share_balance(marketId)
-            .call({
-                from: wallet,
-            });
-        return result;
-
-    };
-
-    async getQuestion_Share_BalanceList(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.share_balanceList(marketId)
-            .call({
-                from: wallet,
-            });
-
-        return result;
-
-    };
-
-    async getAccount__Question_YesNo_Balance(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.yesno_balance(marketId)
-            .call({
-                from: wallet,
-            });
-
-        return result;
-
-    };
-
-    async getYesNoBalanceList(wallet,) {
-        const result = await this.marketPlaceContract.methods.yesno_balanceList().call({
-            from: wallet,
-        });
-
-        return result;
-
-    };
-
-    async add__Market_Liquidity(wallet, marketId,
-                                add__Market_Liquidity__Input) {
-        const result = await this.marketPlaceContract
-            .methods.addLiquidity(
-                marketId,
-                add__Market_Liquidity__Input
-            )
+    //Router functions
+    async createMarket(wallet, question, endTimestamp, resolveTimestamp) {
+        /*
+                {
+                    internalType: "string",
+                    name: "marketQuestion",
+                    type: "string",
+                },
+                {
+                    internalType: "uint256",
+                    name: "participationEndTime",
+                    type: "uint256",
+                },
+                {
+                    internalType: "uint256",
+                    name: "resolvingPeriodInDays",
+                    type: "uint256",
+                },
+        */
+        const result = await this.marketRouterContract
+            .methods
+            .createMarketProposal(question, endTimestamp, resolveTimestamp)
             .send({
                 from: wallet,
             });
         return result;
+    }
 
-    };
-
-    async remove__Market_Liquidity(wallet, marketId, marketAccountShareBalanceInput) {
-        const result = await this.marketPlaceContract
-            .methods.removeLiquidity(
-                marketId,
-                marketAccountShareBalanceInput,
-            )
-            .send({
-                from: wallet,
-            });
-        return result;
-
-    };
-
-    async add__Account_DollarBalance(wallet,) {
-        const result = await this.marketPlaceContract
-            .methods.dollar_mint(wallet, 1000)
-            .send({
-                from: wallet,
-            });
-        return result;
-
-    };
-
-    async get__Account_DollarBalance(wallet, mainAccount) {
-        const result = await this.marketPlaceContract
-            .methods.dollar_balance(mainAccount)
+    async getMarkets(wallet) {
+        const result = await this.marketRouterContract
+            .methods
+            .getMarkets()
             .call({
                 from: wallet,
             });
 
         return result;
+    }
 
-    };
-
-    async getNumberOfTokensByAmount(wallet, marketId,
-                                    buyAmount,
-                                    buyIndex) {
-        const result = await this.marketPlaceContract
-            .methods.calcBuyAmount(
-                marketId,
-                buyAmount,
-                buyIndex
-            )
+    // Collateral Token Contract
+    async getWalletBalanceOfCollateralToken(wallet) {
+        const result = await this.collateralTokenContract
+            .methods
+            .balanceOf(wallet)
             .call({
                 from: wallet,
             });
 
         return result;
+    }
 
-    };
-
-    async getAmountByNumberOfTokens(wallet, marketId, sellIndex, sellAmount) {
-        const result = await this.marketPlaceContract
-            .methods.calcSellReturnInv(
-                marketId,
-                sellIndex,
-                sellAmount
-            )
+    async getWalletAllowanceOfCollateralTokenForMarket(wallet, marketContractId) {
+        const result = await this.collateralTokenContract
+            .methods
+            .allowance(wallet, marketContractId)
             .call({
                 from: wallet,
             });
 
         return result;
+    }
 
-    };
-
-    async resolveMarket(wallet, marketId, resolveIndex) {
-        const result = await this.marketPlaceContract
-            .methods.resolve(marketId, resolveIndex)
+    async approveCollateralTokenForMarket(wallet, marketContractId) {
+        const result = await this.collateralTokenContract
+            .methods
+            .approve(marketContractId, MaxUint256)
             .send({
                 from: wallet,
             });
 
         return result;
-    };
+    }
 
-    async createMarket(wallet, marketId) {
-        const result = await this.marketPlaceContract
-            .methods.marketCreate(marketId)
+    async mintCollateralToken(wallet, amount) {
+        const result = await this.collateralTokenContract
+            .methods
+            .mint(amount)
             .send({
                 from: wallet,
             });
 
         return result;
-    };
+    }
 }
 
 export default MarketAPIs;

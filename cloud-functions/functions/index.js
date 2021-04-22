@@ -26,16 +26,14 @@ exports.auth = functions.https.onRequest((req, res) => {
 
     const handleResponse = (msg, status, body) => {
         if (body) {
-            return res.status(200).json(body);
+            return res.status(200).json({data: body});
         }
 
-        return res.status(status).json({msg});
+        return res.status(status).json({data: msg});
     }
 
     try {
         return cors(req, res, async () => {
-            functions.logger.log("1", req);
-
             if (req.method !== 'POST') {
                 return handleResponse('post error', 403);
             }
@@ -53,37 +51,28 @@ exports.auth = functions.https.onRequest((req, res) => {
             }
 
             if (!web3.utils.isAddress(req.body.account)) {
-                functions.logger.log("2", {
-                    is: web3.utils.isAddress(req.body.account)
-                });
-
                 return handleResponse(`${req.body.account} is not an account`, 400);
             }
 
-            const account = web3.utils.toChecksumAddress(req.body.account);
-            functions.logger.log("3", {
-                account
-            });
             const message = req.body.message;
             const signature = req.body.signature;
+            const account = req.body.account;
 
-            const recover = await web3.eth.personal.ecRecover(message, signature);
-            functions.logger.log("4", {
-                recover
-            });
-            if (recover != account) {
-                functions.logger.log("5", {
-                    recover
-                });
+            const recoveredAccount = web3.eth.accounts.recover(message, signature);
+
+            if (recoveredAccount != account) {
+                functions.logger.log(`Invalid login of ${recoveredAccount} ${account}`);
                 return handleResponse("Invalid signature", 401); // Invalid signature
             }
 
             // On success return the Firebase Custom Auth Token.
             const firebaseToken = await admin.auth().createCustomToken(account);
-            functions.logger.log("6", {
-                firebaseToken
+
+            functions.logger.log(`Successful login of ${account}`);
+
+            return handleResponse('Successful', 200, {
+                token: firebaseToken
             });
-            return handleResponse('address', 200, {token: firebaseToken});
         })
     } catch (error) {
         return handleError('auth error', error)

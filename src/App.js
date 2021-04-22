@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect} from "react";
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
@@ -25,6 +25,7 @@ import GovernanceList from "./pages/GovernanceList";
 import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
+import { watchUserSignIn } from "./shared/firestore.service";
 
 const theme = createMuiTheme({
     palette: {
@@ -69,6 +70,10 @@ const useStyles = makeStyles((theme) => ({
 function App() {
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
+
+    useEffect(() => {
+        watchUserSignIn();
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>

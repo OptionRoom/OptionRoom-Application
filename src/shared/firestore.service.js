@@ -18,7 +18,26 @@ export const authenticateAnonymously = () => {
     return firebase.auth().signInAnonymously();
 };
 
-export const createAuthOnFirebase = async (wallet, message, signature) => {
+export const signInUserWithToken = async (token) => {
+    return firebase.auth().signInWithCustomToken(token);
+};
+
+export const signoutUser = async () => {
+    return firebase.auth().signOut();
+};
+
+export const watchUserSignIn =  () => {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("user", user);
+        } else {
+            // User is signed out
+            console.log("User is signed out");
+        }
+    });
+};
+
+export const createAuthOnFirebase = async (account, message, signature) => {
     return new Promise((resolve, reject) => {
         const req = new XMLHttpRequest();
         req.onload = function () {
@@ -31,12 +50,12 @@ export const createAuthOnFirebase = async (wallet, message, signature) => {
                 return;
             }
             const data = JSON.parse(req.responseText);
-            if(!data.token) {
+            if(!data || !data.data || !data.data.token) {
                 reject('Invalid response from Firebase Cloud Function see developer console for details');
                 return;
             }
 
-            resolve(data.token);
+            resolve(data.data.token);
         };
 
         req.onerror = function () {
@@ -47,7 +66,7 @@ export const createAuthOnFirebase = async (wallet, message, signature) => {
         req.open('POST', url, true);
         req.setRequestHeader('Content-Type', 'application/json');
         req.send(JSON.stringify({
-            account: wallet,
+            account: account,
             message: message,
             signature: signature
         }));
@@ -89,7 +108,6 @@ export const getMarketById = async (marketId) => {
 export const getMarketCategories = async () => {
     const snapshot = await db.collection('market-categories').get();
     return snapshot.docs.map(doc => {
-        console.log("dco", doc);
         return {
             id: doc.id,
             ...doc.data()
@@ -99,7 +117,6 @@ export const getMarketCategories = async () => {
 
 export const uploadMarketImage = async (file, progressCb) => {
     return new Promise((resolve, reject) => {
-        // console.log(this.state.image);
         const storage = firebase.storage();
         const storageRef = storage.ref();
         const uploadTask = storageRef.child(`market-thumbnail/${uuidv4()}.${file.name.split('.').pop()}`).put(file);
@@ -114,52 +131,13 @@ export const uploadMarketImage = async (file, progressCb) => {
                 uploadTask.snapshot.ref.getDownloadURL().then((url) =>{
                     resolve(url);
                 });
+
+                uploadTask.snapshot.ref.getMetadata().then((url) =>{
+                    console.log("url", url);
+                });
+
+                console.log("uploadTask.snapshot.ref", uploadTask.snapshot.ref.fullPath);
             }
         )
     });
-};
-
-export const getGroceryListItems = groceryListId => {
-    return db.collection('groceryLists')
-        .doc(groceryListId)
-        .collection('items')
-        .get();
-}
-
-export const streamGroceryListItems = (groceryListId, observer) => {
-    return db.collection('groceryLists')
-        .doc(groceryListId)
-        .collection('items')
-        .orderBy('created')
-        .onSnapshot(observer);
-};
-
-export const addUserToGroceryList = (userName, groceryListId, userId) => {
-    return db.collection('groceryLists')
-        .doc(groceryListId)
-        .update({
-            users: firebase.firestore.FieldValue.arrayUnion({
-                userId: userId,
-                name: userName
-            })
-        });
-};
-
-export const addGroceryListItem = (item, groceryListId, userId) => {
-    return getGroceryListItems(groceryListId)
-        .then(querySnapshot => querySnapshot.docs)
-        .then(groceryListItems => groceryListItems.find(groceryListItem => groceryListItem.data().name.toLowerCase() === item.toLowerCase()))
-        .then(matchingItem => {
-            if (!matchingItem) {
-                return db.collection('groceryLists')
-                    .doc(groceryListId)
-                    .collection('items')
-                    .add({
-                        name: item,
-                        created: firebase.firestore.FieldValue.serverTimestamp(),
-                        createdBy: userId
-                    });
-            }
-            throw new Error('duplicate-item-error');
-        });
 };

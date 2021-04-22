@@ -12,6 +12,8 @@ import { useHistory } from "react-router-dom";
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
+import MarketAPIs from "../../shared/contracts/MarketAPIs";
+
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
 import MarketCard from "../../components/MarketCard";
@@ -24,7 +26,9 @@ import {
     toWei,
     fromWei,
 } from "../../shared/helper";
-import {getMarketCategories, uploadMarketImage, createMarket, createAuthOnFirebase} from "../../shared/firestore.service";
+import {getMarketCategories, uploadMarketImage, createMarket, createAuthOnFirebase, signInUserWithToken, signoutUser} from "../../shared/firestore.service";
+import ConfigHelper from "../../shared/config.helper";
+const Web3 = require('web3');
 
 const walletHelperInsatnce = walletHelper();
 
@@ -52,10 +56,27 @@ function CreateMarket() {
     const [formDataErrors, setFormDataErrors] = useState({});
     const [marketCategories, setMarketCategories] = useState([]);
     const [selectedMarketImage, setSelectedMarketImage] = useState(null);
+    const [walletData, setWalletData] = useState({});
     const history = useHistory();
 
-    useEffect(() => {
+    const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
+    const [walletMarketPositions, setWalletMarketPositions] = useState(0);
 
+    const loadWalletBalanceOfCollateralToken = async ()=> {
+        const marketApis = new MarketAPIs();
+        const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
+        console.log("balanceOfColletralToken", balanceOfColletralToken);
+        setWalletBalanceOfCollateralToken(balanceOfColletralToken);
+    };
+
+    const loadWalletData = async () => {
+        loadWalletBalanceOfCollateralToken();
+    };
+
+    useEffect(() => {
+        if(accountContext.account) {
+            loadWalletData();
+        }
     }, [accountContext.account]);
 
     const handleFormDataChange = (fieldKey, fieldValue) => {
@@ -92,9 +113,7 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async () => {
-/*        const re = await walletHelperInsatnce.signWallet("OptionRoom login");
-        createAuthOnFirebase(accountContext.account, "OptionRoom login", re);
-        return ;*/
+/*       */
         const errors = {};
         if (!get(formData, ['title'])) {
             errors.title = "Title is required";
@@ -127,27 +146,50 @@ function CreateMarket() {
             return;
         }
 
-        setIsCreatingMarket(true);
-        const imageUpload = await uploadMarketImage(selectedMarketImage);
-        const createdMarket = await createMarket(
-            accountContext.account,
-            {
-                id: get(formData, ['category', 'value']),
-                title: get(formData, ['category', 'label']),
-            },
-            get(formData, ['description']),
-            get(formData, ['endDate']).unix(),
-            imageUpload,
-            get(formData, ['sources']),
-            get(formData, ['title'])
-        );
+        try {
+            const marketApis = new MarketAPIs();
 
-        setIsCreatingMarket(false);
-        console.log("imageUpload", imageUpload);
-        console.log("createdMarket", createdMarket);
-        console.log("createdMarket", createdMarket.id);
-        //Redirect to market page after creation
-        history.push(`/markets/${createdMarket.id}`);
+            setIsCreatingMarket(true);
+            const imageUpload = await uploadMarketImage(selectedMarketImage);
+            const createdMarket = await createMarket(
+                accountContext.account,
+                {
+                    id: get(formData, ['category', 'value']),
+                    title: get(formData, ['category', 'label']),
+                },
+                get(formData, ['description']),
+                get(formData, ['endDate']).unix(),
+                imageUpload,
+                get(formData, ['sources']),
+                get(formData, ['title'])
+            );
+
+            console.log("imageUpload", imageUpload);
+            console.log("createdMarket", createdMarket);
+            console.log("createdMarket", createdMarket.id);
+            const resolveTimestamp = get(formData, ['endDate']).clone().add(4, 'days').unix();
+
+            const newMarketContract = await marketApis.createMarket(accountContext.account, createdMarket.id, toWei(get(formData, ['endDate']).unix()), toWei(2));
+            console.log("newMarketContract", newMarketContract);
+
+            //Redirect to market page after creation
+            history.push(`/markets/${createdMarket.id}`);
+        } catch (e) {
+            console.log("Something went wrong!", e);
+        } finally {
+            setIsCreatingMarket(false);
+        }
+    };
+
+    const handleLogin = async () => {
+        const message = "OptionRoom login";
+        const sign = await walletHelperInsatnce.signWallet(message);
+        const token = await createAuthOnFirebase(accountContext.account, message, sign);
+        const userDetails = await signInUserWithToken(token);
+    };
+
+    const handleLogout = async () => {
+        signoutUser();
     };
 
     useEffect(() => {
@@ -169,6 +211,8 @@ function CreateMarket() {
                 }
             />
             <div className={classes.CreateMarketPage}>
+                <button onClick={handleLogin}>Login</button>
+                <button onClick={handleLogout}>logout</button>
                 {accountContext.account && (
                     <div className={classes.CreateMarketPage__Main}>
 

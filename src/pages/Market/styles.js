@@ -210,7 +210,28 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "24px",
     },
-
+    MarketSidebar__AddLiquidity: {
+        textAlign: 'center',
+        marginBottom: '24px',
+        '&>button': {
+            marginRight: '10px',
+            '&:last-child': {
+                marginRight: 0,
+            }
+        }
+    },
+    MarketSidebar__AddLiquidityBtn: {
+        //height: 'auto',
+        //paddingLeft: '40px',
+        //paddingRight: '40px',
+    },
+    MarketSidebar__AddLiquidityBtnInner: {
+        flexWrap: 'wrap'
+    },
+    MarketSidebar__AddLiquidityApprove: {
+        flex: 1,
+        fontSize: '10px'
+    },
     BuySellWidget: {
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
@@ -233,7 +254,7 @@ export const useStyles = makeStyles((theme) => ({
             borderBottom: '2px solid #EDEFF4',
             cursor: 'pointer',
             transition: '0.2s all',
-            '&:hover': {
+            '&[data-selected="true"], &:hover': {
                 borderBottom: '2px solid #0051FF',
             }
         }

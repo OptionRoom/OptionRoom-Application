@@ -119,8 +119,7 @@ class WalletHelper {
 
     async signWallet(message) {
         const web3 = this.getWeb3();
-        const signature = await web3.eth.personal.sign(message, this.account, ConfigHelper.getAuthSignMessage());
-        return signature;
+        return web3.eth.personal.sign(message, this.account, ConfigHelper.getAuthSignMessage());
     }
 
     on(name, listener) {

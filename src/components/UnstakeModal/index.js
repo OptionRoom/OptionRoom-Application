@@ -19,9 +19,23 @@ import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import {
     convertAmountToTokens,
     convertTokensToAmount,
+    toWei,
 } from "../../shared/helper";
+import MarketAPIs from "../../shared/contracts/MarketAPIs";
+
+const getModalHeaderText = (type) => {
+    if (type === "market_liquidity") {
+        return "Remove liquidity";
+    }
+
+    return 'Unstake Tokens';
+};
 
 const getModalText = (type, source, pool) => {
+    if (type === "market_liquidity") {
+        return "Remove liquidity from market";
+    }
+
     if (type === "nftStake") {
         return "Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake";
     }
@@ -100,6 +114,9 @@ function UnstakeModal(props) {
                         claim
                     );
                 }
+            } else if (type === "market_liquidity") {
+                const marketAPIs = new MarketAPIs();
+                await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
             } else {
                 await courtAPIs.unstackeTokens(
                     accountContext.account,
@@ -159,7 +176,7 @@ function UnstakeModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    Unstake Tokens
+                    {getModalHeaderText(type)}
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -210,15 +227,19 @@ function UnstakeModal(props) {
                             )}`}
                     </div>
                 )}
-                <div className={classes.ClaimWrap}>
-                    <Checkbox
-                        checked={claim}
-                        onChange={handleClaimChange}
-                        color="primary"
-                        inputProps={{ "aria-label": "claim rewards" }}
-                    />
-                    <span className={classes.ClaimLabel}>Claim rewards</span>
-                </div>
+                {
+                    type !== "market_liquidity" && (
+                        <div className={classes.ClaimWrap}>
+                            <Checkbox
+                                checked={claim}
+                                onChange={handleClaimChange}
+                                color="primary"
+                                inputProps={{ "aria-label": "claim rewards" }}
+                            />
+                            <span className={classes.ClaimLabel}>Claim rewards</span>
+                        </div>
+                    )
+                }
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button

@@ -152,6 +152,8 @@ function RoomLpStake(props) {
     const initPoolData = async () => {
         try {
             const courtAPIs = new CourtAPIs();
+            const oldEvents = await courtAPIs.getRoomPastEvents(accountContext.account);
+            console.log("oldEvents", oldEvents);
 
             const result_UserDepositTokenBalance = await courtAPIs.getAddressTokenBalance(
                 accountContext.account,
