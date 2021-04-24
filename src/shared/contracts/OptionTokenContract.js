@@ -823,8 +823,8 @@ export const getOptionTokenContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F",
-        3: "0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F",
+        1: "0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618",
+        3: "0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618",
     };
 
     return new web3.eth.Contract(

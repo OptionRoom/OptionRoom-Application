@@ -310,8 +310,8 @@ export const getCollateralTokenContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0xd07002ADEdc02797D383bc9C2B8A96822FB385b5",
-        3: "0xd07002ADEdc02797D383bc9C2B8A96822FB385b5",
+        1: "0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37",
+        3: "0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37",
     };
 
     return new web3.eth.Contract(

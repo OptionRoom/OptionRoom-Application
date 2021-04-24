@@ -30,7 +30,7 @@ function VoteWidget(props) {
         try {
             await marketApis.addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
             loadVote();
-            props.onVote && props.onVoate();
+            props.onVote && props.onVote();
         } catch (e) {
 
         } finally {

@@ -74,8 +74,8 @@ export const getGovernanceContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A",
-        3: "0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A",
+        1: "0xE2527a3e890085513fDC4b7E8d97d314D9c2e81F",
+        3: "0xE2527a3e890085513fDC4b7E8d97d314D9c2e81F",
     };
 
     return new web3.eth.Contract(

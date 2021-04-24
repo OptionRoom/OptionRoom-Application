@@ -171,7 +171,7 @@ function CreateMarket() {
             setIsCreatingMarket(true);
             const imageUpload = await uploadMarketImage(selectedMarketImage);
             const resolveTimestamp = get(formData, ['endDate']).clone().add(4, 'days').unix();
-            const collateralTokenAddress = '0xd07002ADEdc02797D383bc9C2B8A96822FB385b5';
+            const collateralTokenAddress = '0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37';
 
             const createdMarket = await createMarket(
                 accountContext.account,

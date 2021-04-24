@@ -16,6 +16,7 @@ import {useStyles} from "./styles";
 import DepositModal from "../../components/DepositModal";
 import BuySellWidget from "../../components/BuySellWidget";
 import VoteWidget from "../../components/VoteWidget";
+import RedeemMarketRewardsWidget from "../../components/RedeemMarketRewardsWidget";
 
 import {walletHelper} from "../../shared/wallet.helper";
 import {
@@ -178,6 +179,10 @@ function Market() {
                 }
             }
         });
+    };
+
+    const handleOnRedeem = () => {
+        pageDetails();
     };
 
     const pageDetails = () => {
@@ -523,6 +528,14 @@ function Market() {
                                                                 (["1", "5"].indexOf(get(marketContractData, 'state')) > -1) && (
                                                                     <VoteWidget marketState={get(marketContractData, 'state')}
                                                                                 marketContractAddress={marketContractAddress}/>
+                                                                )
+                                                            }
+                                                            {
+                                                                (["6"].indexOf(get(marketContractData, 'state')) > -1) && (
+                                                                    <RedeemMarketRewardsWidget marketState={get(marketContractData, 'state')}
+                                                                                               walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                                                               onRedeem={handleOnRedeem}
+                                                                                               marketContractAddress={marketContractAddress}/>
                                                                 )
                                                             }
                                                             {

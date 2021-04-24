@@ -397,8 +397,8 @@ export const getMarketRouterContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0x47EBe7BcA2315dd91a58050Db4C4e991cC523C87",
-        3: "0x47EBe7BcA2315dd91a58050Db4C4e991cC523C87",
+        1: "0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1",
+        3: "0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1",
     };
 
     return new web3.eth.Contract(

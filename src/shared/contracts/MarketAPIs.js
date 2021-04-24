@@ -18,7 +18,6 @@ const generateMarketContract = (marketId) => {
 class MarketAPIs {
     constructor() {
         /**
-         *
          demoGovernence.address (AAA0)
          0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A
          demoToken.address (AAA1)
@@ -27,6 +26,17 @@ class MarketAPIs {
          0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F
          factoryC.address (AAA3)
          0x47EBe7BcA2315dd91a58050Db4C4e991cC523C87
+         */
+        /*
+            Repo:
+            demoGovernence.address (AAA0)
+0xE2527a3e890085513fDC4b7E8d97d314D9c2e81F
+demoToken.address (AAA1)
+0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37
+condToken.address (AAA2)
+0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618
+factoryC.address (AAA3)
+0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1
          */
         this.marketRouterContract = getMarketRouterContract(
             controlledNetworkId,
@@ -478,6 +488,19 @@ class MarketAPIs {
                 from: wallet,
             });
 
+        return result;
+    }
+
+    async redeemMarketRewards(wallet, marketAddress) {
+        console.log("hello");
+        const result = await this.optionsTokenContract
+            .methods
+            .redeem(marketAddress)
+            .send({
+                from: wallet,
+            });
+
+        console.log("dd", result);
         return result;
     }
 }
