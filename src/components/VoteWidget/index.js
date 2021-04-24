@@ -51,8 +51,14 @@ function VoteWidget(props) {
     const loadVote = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getMarketVoting(accountContext.account, props.marketContractAddress, props.marketState);
-        console.log("votes", votes);
-        setMarketVotes(votes);
+        if(props.marketState == 1) {
+            const formattedVotes = [];
+            formattedVotes[0] = (parseFloat(votes[0])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
+            formattedVotes[1] = (parseFloat(votes[1])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
+            setMarketVotes(formattedVotes);
+        } else {
+            setMarketVotes(votes);
+        }
     };
 
     useEffect(() => {
