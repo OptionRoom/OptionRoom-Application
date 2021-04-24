@@ -8,14 +8,23 @@ export const toWei = (value, decimals) => {
     return Web3.utils.toWei(`${value}`, decimals);
 };
 
+const toFixedNoRounding = function(number, decimals) {
+    const reg = new RegExp("^-?\\d+(?:\\.\\d{0," + decimals + "})?", "g")
+    const a = number.toString().match(reg)[0];
+    const dot = a.indexOf(".");
+    if (dot === -1) { // integer, insert decimal dot and pad up zeros
+        return a + "." + "0".repeat(decimals);
+    }
+    const b = decimals - (a.length - dot) + 1;
+    return b > 0 ? (a + "0".repeat(b)) : a;
+};
+
 export const fromWei = (value, decimals, precision) => {
     if (!precision) {
         return Web3.utils.fromWei(`${value}`, decimals);
     }
 
-    return parseFloat(Web3.utils.fromWei(`${value}`, decimals)).toFixed(
-        precision
-    );
+    return toFixedNoRounding(parseFloat(Web3.utils.fromWei(`${value}`, decimals)), precision);
 };
 
 export const isMobile = () => {
@@ -264,3 +273,21 @@ export const saveRoiOfCourt = (data) => {
         })
     );
 };
+
+export const isValidURL = (str) => {
+/*    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+
+    return !!pattern.test(str);*/
+    try {
+        new URL(str);
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+    return true;
+}

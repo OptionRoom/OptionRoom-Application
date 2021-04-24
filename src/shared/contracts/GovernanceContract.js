@@ -1,92 +1,81 @@
 export const getGovernanceContract = (chainId, web3) => {
     const abi = [
         {
-            constant: true,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "marketAddress",
-                    type: "address",
-                },
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
             ],
-            name: "getInputsToResolve",
-            outputs: [
+            "name": "getPowerCount",
+            "outputs": [
                 {
-                    internalType: "contract ORConditionalTokens",
-                    name: "orConditionalTokens",
-                    type: "address",
-                },
-                {
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
-                },
-                {
-                    internalType: "uint256[]",
-                    name: "indices",
-                    type: "uint256[]",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "account",
-                    type: "address",
-                },
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
             ],
-            name: "getPowerCount",
-            outputs: [
-                {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
-            ],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "resolveMarketAction",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "marketAddress",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 },
+                {
+                    "internalType": "uint256",
+                    "name": "power",
+                    "type": "uint256"
+                }
             ],
-            name: "resolve",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "setPower",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "uint256",
-                    name: "power",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "power",
+                    "type": "uint256"
+                }
             ],
-            name: "setPower",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
-        },
+            "name": "setSenderPower",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
     ];
 
     const addresses = {
-        1: "0x512e65b968e991749C3601Ea69F7ba28d29819AC",
-        3: "0x512e65b968e991749C3601Ea69F7ba28d29819AC",
+        1: "0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A",
+        3: "0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A",
     };
 
     return new web3.eth.Contract(

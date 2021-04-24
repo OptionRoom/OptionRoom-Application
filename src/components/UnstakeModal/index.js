@@ -115,6 +115,7 @@ function UnstakeModal(props) {
                     );
                 }
             } else if (type === "market_liquidity") {
+                console.log("Ddd");
                 const marketAPIs = new MarketAPIs();
                 await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
             } else {

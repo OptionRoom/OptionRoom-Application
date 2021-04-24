@@ -6,7 +6,6 @@ export const useStyles = makeStyles((theme) => ({
     MarketDetails: {},
     Cat: {
         color: "#6D8096",
-        fontFamily: "Poppins",
         fontSize: "18px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -14,12 +13,10 @@ export const useStyles = makeStyles((theme) => ({
     },
     Title: {
         color: "#171D28",
-        fontFamily: "Poppins",
         fontSize: "26px",
         fontWeight: 600,
         letterSpacing: "0",
         lineHeight: "32px",
-
         marginBottom: "24px",
     },
     Info: {
@@ -34,7 +31,6 @@ export const useStyles = makeStyles((theme) => ({
     Info__Block: {},
     Info__BlockTitle: {
         color: "#8293A6",
-        fontFamily: "Poppins",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -42,7 +38,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     Info__BlockValue: {
         color: "#4E5D6D",
-        fontFamily: "Poppins",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -63,7 +58,6 @@ export const useStyles = makeStyles((theme) => ({
     Graph__HeaderTitle: {
         marginRight: "auto",
         color: "#3F4A57",
-        fontFamily: "Poppins",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -106,7 +100,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     Outcome__Header: {
         color: "#3F4A57",
-        fontFamily: "Poppins",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -166,7 +159,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     MarketPositions__Header: {
         color: "#3F4A57",
-        fontFamily: "Poppins",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -211,7 +203,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     About__Header: {
         color: "#3F4A57",
-        fontFamily: "Poppins",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -245,39 +236,4 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "24px",
     },
-
-    VoteWidget: {
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
-        padding: "24px",
-    },
-    VoteWidget__Header: {
-        color: "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: '16px'
-    },
-    VoteWidget__Options: {
-        marginBottom: '16.5px',
-        paddingBottom: '16.5px',
-        borderBottom: '1px solid #EDEFF4',
-        '& >div': {
-            display: 'flex',
-            '&>div' :{
-                 width: '50%'
-            }
-        }
-    },
-    VoteWidget__Progress: {
-        marginBottom: '23px',
-        '&>div' : {
-            marginBottom: '16px',
-            '&:last-child': {
-                marginBottom: 0
-            }
-        }
-    }
 }));

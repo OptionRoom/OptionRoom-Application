@@ -117,39 +117,6 @@ function Governance() {
                             </Grid>
                             <Grid item xs={4}>
                                 <div className={classes.MarketSidebar}>
-                                    <div className={classes.VoteWidget}>
-                                        <div className={classes.VoteWidget__Header}>
-                                            Pick Outcome
-                                        </div>
-                                        <div className={classes.VoteWidget__Progress}>
-                                            <div>
-                                                <OutcomeProgress title={'Yes'}
-                                                                 count={'₮0.01'}
-                                                                 percent={60}
-                                                                 color={'#86DC8B'}/>
-                                            </div>
-                                            <div>
-                                                <OutcomeProgress title={'No'}
-                                                                 count={'₮0.01'}
-                                                                 percent={40}
-                                                                 color={'#7084FF'}/>
-                                            </div>
-                                        </div>
-                                        <div className={classes.VoteWidget__Options}>
-                                            <div className={classes.Options__Options}>
-                                                {
-                                                    ['Yes', 'No'].map((entry) => {
-                                                        return (
-                                                            <OptionBlock title={entry}/>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <Button color="primary"
-                                                size={"large"}
-                                                fullWidth={true}>Vote</Button>
-                                    </div>
                                 </div>
                             </Grid>
                         </Grid>

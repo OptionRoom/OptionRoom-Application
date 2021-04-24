@@ -73,14 +73,17 @@ export const createAuthOnFirebase = async (account, message, signature) => {
     });
 };
 
-export const createMarket = async (wallet, category, description, endDate, image, sources, title) => {
+export const createMarket = async (wallet, category, description, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity, image, sources, title) => {
     return db.collection('markets')
         .add({
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             wallet: wallet,
             category: category,
             description: description,
-            endDate: endDate,
+            endTimestamp: endTimestamp,
+            resolveTimestamp: resolveTimestamp,
+            collateralTokenAddress: collateralTokenAddress,
+            initialLiquidity: initialLiquidity,
             image: image,
             sources: sources,
             title: title,

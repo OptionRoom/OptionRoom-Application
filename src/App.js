@@ -26,6 +26,7 @@ import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
 import { watchUserSignIn } from "./shared/firestore.service";
+import ConfigWallet from "./pages/ConfigWallet";
 
 const theme = createMuiTheme({
     palette: {
@@ -152,6 +153,9 @@ function App() {
                                 </Route>
                                 <Route path="/governance/:governanceId">
                                     <Governance />
+                                </Route>
+                                <Route path="/config-wallet">
+                                    <ConfigWallet />
                                 </Route>
                                 <Route exact path="/">
                                     <Redirect to="/court-farming" />

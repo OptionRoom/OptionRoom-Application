@@ -5,15 +5,29 @@ import { getMarketContract } from "./MarketContract";
 import { getMarketRouterContract } from "./MarketRouterContract";
 import { getGovernanceContract } from "./GovernanceContract";
 import { getOptionTokenContract } from "./OptionTokenContract";
+import {fromWei, toWei} from "../helper";
+import {map, sum} from 'lodash';
 
 const walletHelperInstance = walletHelper();
 
 const generateMarketContract = (marketId) => {
+    console.log("marketId", marketId);
     return getMarketContract(walletHelperInstance.getWeb3(), marketId);
 };
 
 class MarketAPIs {
     constructor() {
+        /**
+         *
+         demoGovernence.address (AAA0)
+         0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A
+         demoToken.address (AAA1)
+         0xd07002ADEdc02797D383bc9C2B8A96822FB385b5
+         condToken.address (AAA2)
+         0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F
+         factoryC.address (AAA3)
+         0x47EBe7BcA2315dd91a58050Db4C4e991cC523C87
+         */
         this.marketRouterContract = getMarketRouterContract(
             controlledNetworkId,
             walletHelperInstance.getWeb3()
@@ -42,23 +56,6 @@ class MarketAPIs {
         outcomeIndex,
         minOutcomeTokensToBuy
     ) {
-        /**
-         {
-                    internalType: "uint256",
-                    name: "investmentAmount",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "outcomeIndex",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "minOutcomeTokensToBuy",
-                    type: "uint256",
-                },
-         */
         const result = await generateMarketContract(marketId)
             .methods
             .buy(investmentAmount, outcomeIndex, 0)
@@ -68,46 +65,75 @@ class MarketAPIs {
         return result;
     }
 
-    async getWalletMarketPastEvents(
+    async getMarketTradingVolume(
         wallet,
         marketId) {
-        /**
-         {
-                    internalType: "uint256",
-                    name: "investmentAmount",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "outcomeIndex",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "minOutcomeTokensToBuy",
-                    type: "uint256",
-                },
-         */
-        const result = await generateMarketContract(marketId)
-            .getPastEvents("allEvents", {
-                fromBlock: 1,
+        const buyEvents = await generateMarketContract(marketId)
+            .getPastEvents("FPMMBuy", {
+                fromBlock: 1
             });
-        return result;
+
+        const sum2 = sum(map(buyEvents, (entry) => {
+            return parseFloat(entry.returnValues.investmentAmount);
+        }))
+
+        return sum2;
+    }
+
+    async getWalletTradeOptionBuyPrice(
+        wallet,
+        marketId,
+        tradeOption) {
+        const buyEvents = await generateMarketContract(marketId)
+            .getPastEvents("FPMMBuy", {
+                filter: {
+                    buyer: wallet,
+                    outcomeIndex: 0
+                },
+                fromBlock: 1
+            });
+
+        if(!buyEvents || buyEvents.length === 0) {
+            return 0;
+        }
+
+        const totalPrices = sum(map(buyEvents, (entry) => {
+            return parseFloat(entry.returnValues.investmentAmount)/parseFloat(entry.returnValues.outcomeTokensBought);
+        }));
+
+        /**
+         * investmentAmount: "100000000000000000000"
+         outcomeIndex: "0"
+         outcomeTokensBought: "139418017682957753621"
+         */
+        return totalPrices/buyEvents.length;
+    }
+
+    async getWalletMarketBuyAndSellHistory(
+        wallet,
+        marketId) {
+        const buyEvents = await generateMarketContract(marketId)
+            .getPastEvents("FPMMBuy", {
+                filter: {
+                    buyer: wallet,
+                    outcomeIndex: 0
+                },
+                fromBlock: 1
+            });
+
+        const sellEvents = await generateMarketContract(marketId)
+            .getPastEvents("FPMMSell", {
+                filter: {
+                    buyer: wallet,
+                    outcomeIndex: 0
+                },
+                fromBlock: 1
+            });
+
+        return buyEvents.concat(sellEvents);
     }
 
     async sell(wallet, marketId, amount, sellIndex) {
-        /*
-                        {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "index",
-                    type: "uint256",
-                },
-        */
         const result = await generateMarketContract(marketId)
             .methods
             .sell(amount, sellIndex)
@@ -117,19 +143,30 @@ class MarketAPIs {
         return result;
     }
 
+    async getPricesOfBuy(wallet, marketAddress) {
+        const numberOfYes = await this.getOptionTokensCountOfBuy(wallet, marketAddress, toWei(1), 0);
+        const numberOfNo = await this.getOptionTokensCountOfBuy(wallet, marketAddress, toWei(1), 1);
+
+        const priceOfYes = 1/fromWei(numberOfYes);
+        const priceOfNo = 1/fromWei(numberOfNo);
+
+        return {
+            priceOfYes,
+            priceOfNo
+        }
+    }
+
+    async getPricesOfSell(wallet, marketAddress) {
+        const priceOfSellingYes = await this.getCollateralTokensCountOfSell(wallet, marketAddress, toWei(1), 0);
+        const priceOfSellingNo = await this.getCollateralTokensCountOfSell(wallet, marketAddress, toWei(1), 1);
+
+        return {
+            yes: fromWei(priceOfSellingYes),
+            no: fromWei(priceOfSellingNo)
+        }
+    }
+
     async getOptionTokensCountOfBuy(wallet, marketId, buyAmount, outcomeIndex) {
-        /**
-                {
-                    internalType: "uint256",
-                    name: "investmentAmount",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "outcomeIndex",
-                    type: "uint256",
-                }
-         */
         const result = await generateMarketContract(marketId)
             .methods
             .calcBuyAmount(buyAmount, outcomeIndex)
@@ -141,18 +178,6 @@ class MarketAPIs {
     }
 
     async getCollateralTokensCountOfSell(wallet, marketId, sellAmount, inputIndex) {
-        /**
-                {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
-                {
-                    internalType: "uint256",
-                    name: "inputIndex",
-                    type: "uint256",
-                },
-         */
         const result = await generateMarketContract(marketId)
         .methods
             .calcSellReturnInv(sellAmount, inputIndex)
@@ -164,21 +189,18 @@ class MarketAPIs {
     }
 
     async getWalletOptionTokensBalance(wallet, marketId) {
-        /**
-                {
-                    internalType: "address",
-                    name: "account",
-                    type: "address",
-                }
-         */
-        const result = await generateMarketContract(marketId)
-        .methods
-            .getBalances(wallet)
-            .call({
-                from: wallet,
-            });
+        try {
+            const result = await generateMarketContract(marketId)
+                .methods
+                .getBalances(wallet)
+                .call({
+                    from: wallet,
+                });
 
-        return result;
+            return result;
+        } catch (e) {
+            console.log("e", e);
+        }
     }
 
     async getMarketState(wallet, marketId) {
@@ -215,14 +237,6 @@ class MarketAPIs {
     }
 
     async getWalletSharesOfMarket(wallet, marketId) {
-        /*
-
-                        {
-                    internalType: "address",
-                    name: "account",
-                    type: "address",
-                },
-                */
         const result = await generateMarketContract(marketId)
             .methods
             .balanceOf(wallet)
@@ -234,13 +248,6 @@ class MarketAPIs {
     }
 
     async addLiquidityToMarket(wallet, marketId, amount) {
-        /*
-                {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
-        */
         const result = await generateMarketContract(marketId)
             .methods
             .addLiquidity(amount)
@@ -253,8 +260,28 @@ class MarketAPIs {
     async removeLiquidityFromMarket(wallet, marketId, amount) {
         const result = await generateMarketContract(marketId)
             .methods
-            .removeLiquidity(amount)
+            .removeLiquidity(amount, true)
             .send({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async increaseTime(wallet, marketId, amount) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .increaseTime(amount)
+            .send({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async getMarketTime(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .getCurrentTime()
+            .call({
                 from: wallet,
             });
         return result;
@@ -269,28 +296,74 @@ class MarketAPIs {
         });
     }
 
+    async addGovernanceVoteForMarket(wallet, marketId, vote, state) {
+        if(state == 1) {
+            return await generateMarketContract(marketId)
+                .methods
+                .castGovernanceApprovalVote(vote)
+                .send({
+                    from: wallet,
+                });
+        }
+
+        return await generateMarketContract(marketId)
+            .methods
+            .castGovernanceResolvingVote(vote)
+            .send({
+                from: wallet,
+            });
+    }
+
+    async getMarketVoting(wallet, marketId, state) {
+        if (state == 1) {
+            return await generateMarketContract(marketId)
+                .methods
+                .getGovernanceVotingResults()
+                .call({
+                    from: wallet,
+                });
+        }
+
+        return await generateMarketContract(marketId)
+            .methods
+            .getResolvingOutcome()
+            .call({
+                from: wallet,
+            });
+    }
+
     //Router functions
-    async createMarket(wallet, question, endTimestamp, resolveTimestamp) {
-        /*
-                {
-                    internalType: "string",
-                    name: "marketQuestion",
-                    type: "string",
+    async createMarket(wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity) {
+        /**
+         {
+                    "internalType": "string",
+                    "name": "marketQuestionID",
+                    "type": "string"
                 },
-                {
-                    internalType: "uint256",
-                    name: "participationEndTime",
-                    type: "uint256",
+         {
+                    "internalType": "uint256",
+                    "name": "participationEndTime",
+                    "type": "uint256"
                 },
-                {
-                    internalType: "uint256",
-                    name: "resolvingPeriodInDays",
-                    type: "uint256",
+         {
+                    "internalType": "uint256",
+                    "name": "resolvingEndTime",
+                    "type": "uint256"
                 },
-        */
+         {
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
+                },
+         {
+                    "internalType": "uint256",
+                    "name": "initialLiq",
+                    "type": "uint256"
+                }
+         */
         const result = await this.marketRouterContract
             .methods
-            .createMarketProposal(question, endTimestamp, resolveTimestamp)
+            .createMarketProposal(question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity)
             .send({
                 from: wallet,
             });
@@ -301,6 +374,17 @@ class MarketAPIs {
         const result = await this.marketRouterContract
             .methods
             .getMarkets()
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getMarketById(wallet, marketId) {
+        const result = await this.marketRouterContract
+            .methods
+            .getMarket(marketId)
             .call({
                 from: wallet,
             });
@@ -320,11 +404,33 @@ class MarketAPIs {
         return result;
     }
 
+    async getWalletAllowanceOfCollateralTokenForMarketRouter(wallet) {
+        const result = await this.collateralTokenContract
+            .methods
+            .allowance(wallet, this.marketRouterContract._address)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
     async getWalletAllowanceOfCollateralTokenForMarket(wallet, marketContractId) {
         const result = await this.collateralTokenContract
             .methods
             .allowance(wallet, marketContractId)
             .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async approveCollateralTokenForMarketRouter(wallet) {
+        const result = await this.collateralTokenContract
+            .methods
+            .approve(this.marketRouterContract._address, MaxUint256)
+            .send({
                 from: wallet,
             });
 
@@ -346,6 +452,28 @@ class MarketAPIs {
         const result = await this.collateralTokenContract
             .methods
             .mint(amount)
+            .send({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getIsWalletOptionTokenApprovedForMarket(wallet, marketAddress) {
+        const result = await this.optionsTokenContract
+            .methods
+            .isApprovedForAll(wallet, marketAddress)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async approveOptionTokenForMarket(wallet, marketAddress) {
+        const result = await this.optionsTokenContract
+            .methods
+            .setApprovalForAll(marketAddress, true)
             .send({
                 from: wallet,
             });

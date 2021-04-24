@@ -14,6 +14,8 @@ import MarketCard from "../../components/MarketCard";
 import OutcomeProgress from "../../components/OutcomeProgress";
 import {useStyles} from "./styles";
 import DepositModal from "../../components/DepositModal";
+import BuySellWidget from "../../components/BuySellWidget";
+import VoteWidget from "../../components/VoteWidget";
 
 import {walletHelper} from "../../shared/wallet.helper";
 import {
@@ -43,18 +45,17 @@ function Market() {
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
 
-    //Buy & Sell
-    const [selectedTradeType, setSelectedTradeType] = useState('buy');
-    const [tradeInput, setTradeInput] = useState(0);
-    const [selectedTradeOption, setSelectedTradeOption] = useState('Yes');
-    const [pricesOfBuy, setPricesOfBuy] = useState(0);
-    const [isTradeInProgress, setIsTradeInProgress] = useState(false);
+    //Buy and sell
+    const [pricesOfBuy, setPricesOfBuy] = useState(null);
+    const [pricesOfSell, setPricesOfSell] = useState(null);
+    const [buySellHistoryOfWallet, setBuySellHistoryOfWallet] = useState(null);
 
     //Mrket
     const [market, setMarket] = useState(null);
     const { marketId } = useParams();
-    const [marketContractId, setMarketContractId] = useState(false);
+    const [marketContractAddress, setMarketContractAddress] = useState(null);
     const [marketContractData, setMarketContractData] = useState({});
+    const [marketTradingVolume, setMarketTradingVolume] = useState(0);
 
     //Liq
     const [isRemoveLiquidityModalOpen, setIsRemoveLiquidityModalOpen] = useState(false);
@@ -65,63 +66,142 @@ function Market() {
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralToken, setWalletAllowanceOfCollateralToken] = useState(0);
+    const [isWalletOptionTokenApprovedForMarket, setIsWalletOptionTokenApprovedForMarket] = useState(0);
     const [walletMarketPositions, setWalletMarketPositions] = useState(0);
 
     const loadWalletBalanceOfCollateralToken = async ()=> {
         const marketApis = new MarketAPIs();
         const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
-        console.log("balanceOfColletralToken", balanceOfColletralToken, fromWei(balanceOfColletralToken));
-
-        if(balanceOfColletralToken == 0){
-            await marketApis.mintCollateralToken(accountContext.account, toWei(100));
-        }
-
         setWalletBalanceOfCollateralToken(balanceOfColletralToken);
     };
 
     const loadWalletAllowanceOfCollateralToken = async ()=> {
         const marketApis = new MarketAPIs();
-        const balanceOfAllowanceToken = await marketApis.getWalletAllowanceOfCollateralTokenForMarket(accountContext.account, marketContractId);
+        const balanceOfAllowanceToken = await marketApis.getWalletAllowanceOfCollateralTokenForMarket(accountContext.account, marketContractAddress);
         setWalletAllowanceOfCollateralToken(balanceOfAllowanceToken);
+    };
+
+    const loadWalletAllowanceOfOptionToken = async ()=> {
+        const marketApis = new MarketAPIs();
+        const isWalletOptionTokenApprovedForMarketRes = await marketApis.getIsWalletOptionTokenApprovedForMarket(accountContext.account, marketContractAddress);
+        setIsWalletOptionTokenApprovedForMarket(isWalletOptionTokenApprovedForMarketRes);
     };
 
     const loadWalletData = async () => {
         loadWalletBalanceOfCollateralToken();
     };
 
-    const loadWalletMarketPastEvents = async () => {
-        const marketApis = new MarketAPIs();
-        const myPastEvents = await marketApis.getWalletMarketPastEvents(accountContext.account, marketContractId);
-        console.log("myPastEvents", myPastEvents);
-    };
 
     useEffect(() => {
-        if(accountContext.account && marketContractId) {
+        if(accountContext.account && marketContractAddress) {
+            loadWalletAllowanceOfOptionToken();
             loadWalletAllowanceOfCollateralToken();
-            loadWalletMarketPastEvents();
+            loadBuySellHistoryOfWallet();
             //getWalletMarketPastEvents
         }
-    }, [accountContext.account, marketContractId]);
+    }, [accountContext.account, marketContractAddress]);
 
-    useEffect(() => {
-        if(accountContext.account) {
-            loadWalletData();
-        }
-    }, [accountContext.account]);
+    const handleOnBuy = () => {
+        pageDetails();
+        loadWalletData();
+    };
+
+    const handleGetBuyPrice = async (marketId) => {
+        const marketAPIs = new MarketAPIs();
+        //marketId, buyAmount, outcomeIndex
+        const pricesOfBuy = await marketAPIs.getPricesOfBuy(accountContext.account, marketContractAddress);
+
+        setPricesOfBuy({
+            'yes': pricesOfBuy.priceOfYes,
+            'no': pricesOfBuy.priceOfNo,
+        })
+    };
+
+    const handleGetSellPrice = async (marketId) => {
+        const marketAPIs = new MarketAPIs();
+        //marketId, buyAmount, outcomeIndex
+        const pricesOfSell = await marketAPIs.getPricesOfSell(accountContext.account, marketContractAddress);
+
+        setPricesOfSell({
+            'yes': pricesOfSell.yes,
+            'no': pricesOfSell.no,
+        })
+    };
+
+    const loadMarketTradingVolume = async (marketId) => {
+        const marketAPIs = new MarketAPIs();
+        const tradingVolume = await marketAPIs.getMarketTradingVolume(accountContext.account, marketContractAddress);
+        setMarketTradingVolume(tradingVolume);
+    };
+
+    const loadBuySellHistoryOfWallet = async (marketId) => {
+        const marketAPIs = new MarketAPIs();
+        const historyOfWallet = await marketAPIs.getWalletMarketBuyAndSellHistory(accountContext.account, marketContractAddress);
+
+        let totalBuyOfYes = 0;
+        let numberBuyOfYes = 0;
+        let tokenBuyOfYes = 0;
+        let totalBuyOfNo = 0;
+        let numberOfBuyOfNo = 0;
+        let tokenOfBuyOfNo = 0;
+
+        historyOfWallet.forEach((entry) => {
+            if(entry.event === 'FPMMBuy') {
+                const amount = entry.returnValues.investmentAmount;
+                const tokens = entry.returnValues.outcomeTokensBought;
+
+                if(entry.returnValues.outcomeIndex == '0') {
+                    totalBuyOfYes += amount;
+                    numberBuyOfYes += 1;
+                    tokenBuyOfYes += tokens;
+                } else {
+                    totalBuyOfNo += amount;
+                    numberOfBuyOfNo += 1;
+                    tokenOfBuyOfNo += tokens;
+                }
+            }
+        });
+
+        setBuySellHistoryOfWallet({
+            buy: {
+                yes: {
+                    total: totalBuyOfYes,
+                    averagePrice: totalBuyOfYes && tokenBuyOfYes ? totalBuyOfYes/tokenBuyOfYes : 0,
+                },
+                no: {
+                    total: totalBuyOfNo,
+                    averagePrice: totalBuyOfNo && tokenOfBuyOfNo ? totalBuyOfNo/tokenOfBuyOfNo : 0,
+                }
+            }
+        });
+    };
+
+    const pageDetails = () => {
+        loadMarketContractData();
+        handleGetBuyPrice();
+        handleGetSellPrice();
+        loadMarketTradingVolume();
+        loadBuySellHistoryOfWallet();
+    };
 
     const loadMarketContractData = async () => {
         const wallet = accountContext.account;
         const marketApis = new MarketAPIs();
-        const markets = await marketApis.getMarkets(accountContext.account);
-        const marketId = markets[0];
-        setMarketContractId(marketId);
+        const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
+        const marketState = await marketApis.getMarketState(wallet, marketContractAddress);
+        const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
+        const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketContractAddress);
+        const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
+        const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketContractAddress);
 
-        const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketId);
-        const marketState = await marketApis.getMarketState(wallet, marketId);
-        const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketId);
-        const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketId);
-        const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketId);
-        const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketId);
+        console.log("dd", {
+            totalSupply: marketTotalSupply,
+            state: marketState,
+            optionTokensPercentage: MarketOptionTokensPercentage,
+            outcome: MarketOutcome,
+            walletSharesOfMarket: WalletSharesOfMarket,
+            walletOptionTokensBalance: WalletOptionTokensBalance,
+        });
 
         setMarketContractData({
             totalSupply: marketTotalSupply,
@@ -131,25 +211,41 @@ function Market() {
             walletSharesOfMarket: WalletSharesOfMarket,
             walletOptionTokensBalance: WalletOptionTokensBalance,
         });
-
-        handleGetBuyPrice(marketId);
-        console.log("marketTotalSupply", marketTotalSupply);
-        console.log("marketState", marketState);
-        console.log("WalletOptionTokensBalance", WalletOptionTokensBalance);
-        console.log("MarketOptionTokensPercentage", MarketOptionTokensPercentage);
-        console.log("MarketOutcome", MarketOutcome);
-        console.log("WalletSharesOfMarke", WalletSharesOfMarket);
     };
 
     useEffect(() => {
-        const init = async () => {
-            const result = await getMarketById(marketId);
-            setMarket(result);
+        if(accountContext.account) {
+        }
+    }, [accountContext.account]);
 
-            loadMarketContractData();
+    useEffect(() => {
+        if(marketContractAddress) {
+            pageDetails();
+        }
+    }, [marketContractAddress]);
+
+    useEffect(() => {
+        const init = async () => {
+            if(!market) {
+                const result = await getMarketById(marketId);
+                setMarket(result);
+            }
+
+            if(accountContext.account) {
+                loadWalletData();
+
+                if(!marketContractAddress) {
+                    const marketApis = new MarketAPIs();
+                    const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, marketId);
+                    setMarketContractAddress(marketContractAddressVal);
+                } else {
+                    pageDetails();
+                }
+            }
         };
 
         init();
+
     }, [accountContext.account]);
 
     //Liquidity stuff
@@ -161,73 +257,66 @@ function Market() {
 
         setIsAddLiquidityInProgress(true);
         const marketAPIs = new MarketAPIs();
-        await marketAPIs.approveCollateralTokenForMarket(accountContext.account, marketContractId);
+        await marketAPIs.approveCollateralTokenForMarket(accountContext.account, marketContractAddress);
         setWalletAllowanceOfCollateralToken(MaxUint256);
         setIsAddLiquidityInProgress(false);
     };
 
     const handleOnAddLiquidityComplete = () => {
         loadWalletBalanceOfCollateralToken();
-        loadMarketContractData();
+        pageDetails();
     };
 
     const handleOnRemoveLiquidityComplete = () => {
         loadWalletBalanceOfCollateralToken();
-        loadMarketContractData();
+        pageDetails();
+    };
+
+    //UI stuff
+    const showOutcomeSection = () => {
+        return ["3", "5", "6"].indexOf(get(marketContractData, 'state')) > -1;
+    };
+
+    const showTradeVolumeSection = () => {
+        return ["3", "5", "6"].indexOf(get(marketContractData, 'state')) > -1;
+    };
+
+    const showAddLiquiditySection = () => {
+        return ["1", "3"].indexOf(get(marketContractData, 'state')) > -1;
+    };
+
+    const getProfit = (option) => {
+        if(
+            !get(marketContractData, ['walletOptionTokensBalance'])
+            || get(marketContractData, ['walletOptionTokensBalance']).length == 0
+            || !pricesOfBuy
+            || !buySellHistoryOfWallet
+        ) {
+            return {
+                value: 0,
+                percent: 0
+            }
+        };
+
+        const currentValue = get(marketContractData, ['walletOptionTokensBalance'])[`${option === 'yes' ? 0 : 1}`] * get(pricesOfBuy, [`${option}`]);
+        const totalInves = get(buySellHistoryOfWallet, ['buy', `${option}`, 'total']);
+
+        if(!currentValue || !totalInves) {
+            return {
+                value: 0,
+                percent: 0
+            }
+        }
+
+        const profit = currentValue - totalInves;
+
+        return {
+            value: numeral(fromWei(profit)).format("$0,0.00"),
+            percent: numeral(profit/totalInves).format("0%")
+        }
     };
 
     //Buy adn sell stuff
-    const handleGetBuyPrice = async (marketId) => {
-        const marketAPIs = new MarketAPIs();
-        //marketId, buyAmount, outcomeIndex
-        const numberOfYes = await marketAPIs.getOptionTokensCountOfBuy(accountContext.account, marketId ? marketId : marketContractId, toWei(1), 0);
-        const numberOfNo = await marketAPIs.getOptionTokensCountOfBuy(accountContext.account, marketId ? marketId : marketContractId, toWei(1), 1);
-
-        const priceOfYes = 1/fromWei(numberOfYes);
-        const priceOfNo = 1/fromWei(numberOfNo);
-
-        console.log("d1", {
-            'yes': priceOfYes,
-            'no': priceOfNo,
-        });
-
-        setPricesOfBuy({
-            'yes': priceOfYes,
-            'no': priceOfNo,
-        })
-    };
-
-    const handleSetMaxTradeInput = ()=>{
-        setTradeInput(fromWei(walletBalanceOfCollateralToken));
-    };
-
-    const getTradeInputAveragePrice = () => {
-        return get(pricesOfBuy, selectedTradeOption.toLowerCase()) || 0;
-    };
-
-    const getBuyNumberOfShares = () => {
-        return tradeInput && get(pricesOfBuy, selectedTradeOption.toLowerCase()) ? tradeInput/get(pricesOfBuy, selectedTradeOption.toLowerCase()) : 0;
-    };
-
-    const startTrade = async () => {
-        const tradeOption = selectedTradeOption.toLowerCase() === 'yes' ? 0 : 1;
-        const marketAPIs = new MarketAPIs();
-        setIsTradeInProgress(true);
-        try {
-            if (selectedTradeType === 'buy') {
-                await marketAPIs.buy(accountContext.account, marketContractId, toWei(tradeInput), tradeOption);
-            } else {
-                await marketAPIs.buy(accountContext.account, marketContractId, toWei(tradeInput), tradeOption);
-            }
-        } catch (e) {
-            console.log("error in trade", e);
-        } finally {
-            setIsTradeInProgress(false);
-        }
-
-        loadMarketContractData();
-        loadWalletData();
-    };
 
     return (
         <>
@@ -238,15 +327,28 @@ function Market() {
                 {accountContext.account && (
                     <div>
                         <Grid container spacing={3}>
-                            <Grid item xs={8}>
+                            <Grid item md={8}>
                                 <div className={classes.MarketDetails}>
-                                    <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
-                                    <div className={classes.Title}>{get(market, 'title')}</div>
-                                    <div className={classes.Info}>
-                                        <div className={classes.Info__Block}>
-                                            <div className={classes.Info__BlockTitle}>Trade volume</div>
-                                            <div className={classes.Info__BlockValue}>$184,179</div>
+                                    <div className={classes.MarketDetails__Header}>
+                                        <div className={classes.MarketDetails__HeaderAvatar}
+                                             style={{
+                                                 backgroundImage: `url(${get(market, ['image'])})`
+                                             }}></div>
+                                        <div>
+                                            <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
+                                            <div className={classes.Title}>{get(market, 'title')}</div>
                                         </div>
+                                    </div>
+                                    <div className={classes.Info}>
+                                        {
+                                            showTradeVolumeSection() && (
+                                                <div className={classes.Info__Block}>
+                                                    <div className={classes.Info__BlockTitle}>Trade volume</div>
+                                                    <div className={classes.Info__BlockValue}>{numeral(fromWei(`${marketTradingVolume}`)).format("$0,0.00")}</div>
+                                                </div>
+                                            )
+                                        }
+
                                         <div className={classes.Info__Block}>
                                             <div className={classes.Info__BlockTitle}>Liquidity</div>
                                             <div className={classes.Info__BlockValue}>
@@ -255,47 +357,56 @@ function Market() {
                                         </div>
                                         <div className={classes.Info__Block}>
                                             <div className={classes.Info__BlockTitle}>Market ends on</div>
-                                            <div className={classes.Info__BlockValue}>{moment(get(market, 'endDate') * 1000).format('L')}</div>
+                                            <div className={classes.Info__BlockValue}>{moment(get(market, 'endTimestamp') * 1000).format('L')}</div>
                                         </div>
                                     </div>
-                                    <div className={classes.Graph}>
-                                        <div className={classes.Graph__Header}>
-                                            <div className={classes.Graph__HeaderTitle}>History</div>
-                                            <div className={classes.Graph__HeaderNav}>
-                                                <div className={classes.Graph__HeaderNavOption}>24h</div>
-                                                <div className={classes.Graph__HeaderNavOption}>7d</div>
-                                                <div className={classes.Graph__HeaderNavOption}>30d</div>
-                                                <div className={classes.Graph__HeaderNavOption}>all</div>
-                                            </div>
-                                        </div>
-                                        <div className={classes.Graph__Deatils}>
+                                    {
+                                        /**
+                                         <div className={classes.Graph}>
+                                         <div className={classes.Graph__Header}>
+                                         <div className={classes.Graph__HeaderTitle}>History</div>
+                                         <div className={classes.Graph__HeaderNav}>
+                                         <div className={classes.Graph__HeaderNavOption}>24h</div>
+                                         <div className={classes.Graph__HeaderNavOption}>7d</div>
+                                         <div className={classes.Graph__HeaderNavOption}>30d</div>
+                                         <div className={classes.Graph__HeaderNavOption}>all</div>
+                                         </div>
+                                         </div>
+                                         <div className={classes.Graph__Deatils}>
 
-                                        </div>
-                                    </div>
-                                    <div className={classes.Outcome}>
-                                        <div className={classes.Outcome__Header}>
-                                            Outcome
-                                        </div>
-                                        <div className={classes.Outcome__Details}>
-                                            <div>
-                                                <OutcomeProgress title={'Yes'}
-                                                                 count={'50'}
-                                                                 percent={get(marketContractData, ['optionTokensPercentage', ['0']]) || 0}
-                                                                 color={'#86DC8B'}/>
+                                         </div>
+                                         </div>
+                                         */
+                                    }
+                                    {
+                                        showOutcomeSection() && (
+                                            <div className={classes.Outcome}>
+                                                <div className={classes.Outcome__Header}>
+                                                    Outcome
+                                                </div>
+                                                <div className={classes.Outcome__Details}>
+                                                    <div>
+                                                        <OutcomeProgress title={'Yes'}
+                                                                         count={numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}
+                                                                         percent={get(marketContractData, ['optionTokensPercentage', ['0']]) || 0}
+                                                                         color={'#86DC8B'}/>
+                                                    </div>
+                                                    <div>
+                                                        <OutcomeProgress title={'No'}
+                                                                         count={numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}
+                                                                         percent={get(marketContractData, ['optionTokensPercentage', ['1']]) || 0}
+                                                                         color={'#7084FF'}/>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <OutcomeProgress title={'No'}
-                                                                 count={'$0.01'}
-                                                                 percent={get(marketContractData, ['optionTokensPercentage', ['1']]) || 0}
-                                                                 color={'#7084FF'}/>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        )
+                                    }
                                     {get(marketContractData, ['walletOptionTokensBalance']) && get(marketContractData, ['walletOptionTokensBalance']).map((entry, index) => {
                                         if(entry == 0) {
                                             return null;
                                         }
                                         const optionName = index === 0 ? 'Yes' : 'No';
+                                        const optionNameL = optionName.toLowerCase();
 
                                         return (
                                             <div className={classes.MarketPositions}>
@@ -311,15 +422,15 @@ function Market() {
                                                             },
                                                             {
                                                                 title: 'Price: Average | Current',
-                                                                value: `$0.46 | ${numeral(get(pricesOfBuy, optionName.toLowerCase()) || 0).format("$0,0.00")}`
+                                                                value: `${numeral( get(buySellHistoryOfWallet, ['buy', optionNameL, 'averagePrice']) || 0).format("$0,0.00")} | ${numeral(get(pricesOfBuy, optionNameL) || 0).format("$0,0.00")}`
                                                             },
                                                             {
                                                                 title: 'P/L: $ | %',
-                                                                value: '-3.66 | -5.428%'
+                                                                value: `${getProfit(optionNameL).value} | ${getProfit(optionNameL).percent}`
                                                             },
                                                             {
                                                                 title: 'Value: Initial | Current',
-                                                                value: `$6.75 | ${numeral((get(pricesOfBuy, optionName.toLowerCase()) || 0) * fromWei(entry)).format("$0,0.00")}`
+                                                                value: `${numeral(fromWei(get(buySellHistoryOfWallet, ['buy', `${optionNameL}`, 'total']) || 0)).format("$0,0.00")} | ${numeral((get(pricesOfBuy, optionNameL) || 0) * fromWei(entry)).format("$0,0.00")}`
                                                             },
                                                             {
                                                                 title: 'Max Payout',
@@ -360,14 +471,16 @@ function Market() {
                                     </div>
                                 </div>
                             </Grid>
-                            <Grid item xs={4}>
+                            <Grid item md={4}>
                                 <div className={classes.MarketSidebar}>
                                     <div className={classes.MarketSidebar__AddLiquidity}>
-                                        <Button className={classes.MarketSidebar__AddLiquidityBtn}
-                                                color="gray"
-                                                isProcessing={isAddLiquidityInProgress}
-                                                onClick={handleAddLiquidity}
-                                                size={"medium"}>
+                                        {
+                                            showAddLiquiditySection() && (
+                                                <Button className={classes.MarketSidebar__AddLiquidityBtn}
+                                                        color="gray"
+                                                        isProcessing={isAddLiquidityInProgress}
+                                                        onClick={handleAddLiquidity}
+                                                        size={"medium"}>
                                                     <div className={classes.MarketSidebar__AddLiquidityBtnInner}>
                                                         <div>+ Add Liquidity</div>
                                                         {walletAllowanceOfCollateralToken == 0 && (
@@ -375,6 +488,8 @@ function Market() {
                                                         )}
                                                     </div>
                                                 </Button>
+                                            )
+                                        }
                                         {(get(marketContractData, ['walletSharesOfMarket']) && get(marketContractData, ['walletSharesOfMarket'])>0) && (
                                             <Button className={classes.MarketSidebar__RemoveLiquidityBtn}
                                                     color="primary"
@@ -384,67 +499,31 @@ function Market() {
                                             </Button>
                                         )}
                                     </div>
-                                    <div className={classes.BuySellWidget}>
-                                        <div className={classes.BuySellWidget__Nav}>
-                                            <div data-selected={selectedTradeType === 'buy' ? 'true' : 'false'}
-                                                 onClick={() => setSelectedTradeType('buy')}>Buy</div>
-                                            <div data-selected={selectedTradeType === 'sell' ? 'true' : 'false'}
-                                                 onClick={() => setSelectedTradeType('sell')}>Sell</div>
-                                        </div>
-                                        <div className={classes.BuySellWidget__Options}>
-                                            <div className={classes.Options__Header}>
-                                                Pick Outcome
-                                            </div>
-                                            <div className={classes.Options__Options}>
-                                                {
-                                                    ['Yes', 'No'].map((entry) => {
-                                                        return (
-                                                            <OptionBlock isSelected={selectedTradeOption === entry}
-                                                                        onClick={(value)=>setSelectedTradeOption(value)}
-                                                                        title={entry}
-                                                                        value={numeral(get(pricesOfBuy, entry.toLowerCase()) || 0).format("$0,0.00")}/>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className={classes.BuySellWidgetAmount}>
-                                            <div className={classes.BuySellWidgetAmount__Header}>How Much?</div>
-                                            <div className={classes.BuySellWidgetAmount__InputWrap}>
-                                                <input value={tradeInput}
-                                                       onChange={(e) => {
-                                                           setTradeInput(e.target.value)
-                                                       }}
-                                                       type='number'/>
-                                                <div onClick={handleSetMaxTradeInput}>Max</div>
-                                            </div>
-                                        </div>
-                                        <div className={classes.BuySellWidgetInfo}>
-                                            <div className={classes.BuySellWidgetInfo__Row}>
-                                                <div className={classes.BuySellWidgetInfo__RowTitle}>Your Avg. Price</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>{numeral(getTradeInputAveragePrice()).format("$0,0.00")}</div>
-                                            </div>
-                                            <div className={classes.BuySellWidgetInfo__Row}>
-                                                <div className={classes.BuySellWidgetInfo__RowTitle}>Est. Shares</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>{numeral(getBuyNumberOfShares()).format("0,0.00")}</div>
-                                            </div>
-                                            <div className={classes.BuySellWidgetInfo__Row}>
-                                                <div className={classes.BuySellWidgetInfo__RowTitle}>Max Winnings</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>{numeral(getBuyNumberOfShares()).format("$0,0.00")}</div>
-                                            </div>
-                                            <div className={classes.BuySellWidgetInfo__Row}>
-                                                <div className={classes.BuySellWidgetInfo__RowTitle}>Max ROI</div>
-                                                <div className={classes.BuySellWidgetInfo__RowValue}>{numeral((getBuyNumberOfShares()-tradeInput)/tradeInput).format("0,0.00%")}</div>
-                                            </div>
-                                        </div>
-                                        <Button color="primary"
-                                                size={"large"}
-                                                fullWidth={true}
-                                                onClick={startTrade}
-                                                isProcessing={isTradeInProgress}>
-                                            {walletAllowanceOfCollateralToken == 0 ? 'Approve' : 'Trade'}
-                                        </Button>
-                                    </div>
+                                    {
+                                        (["1", "5"].indexOf(get(marketContractData, 'state')) > -1) && (
+                                            <VoteWidget marketState={get(marketContractData, 'state')}
+                                                        marketContractAddress={marketContractAddress}/>
+                                        )
+                                    }
+                                    {
+                                        get(marketContractData, 'state') == 3 && (
+                                            <BuySellWidget pricesOfBuy={pricesOfBuy}
+                                                           pricesOfSell={pricesOfSell}
+                                                           onBuy={handleOnBuy}
+                                                           onApprove={(type) => {
+                                                               if(type == 'CollateralToken') {
+                                                                   setWalletAllowanceOfCollateralToken(MaxUint256);
+                                                               } else {
+                                                                   setIsWalletOptionTokenApprovedForMarket(true);
+                                                               }
+                                                           }}
+                                                           walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                           walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                           isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                           walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                           marketContractAddress={marketContractAddress}/>
+                                        )
+                                    }
                                 </div>
                             </Grid>
                         </Grid>
@@ -456,10 +535,10 @@ function Market() {
                             userRoomLPTokens={
                                 walletBalanceOfCollateralToken
                             }
-                            marketContractId={marketContractId}
+                            marketContractId={marketContractAddress}
                             type={"Add_Market_Liquidity"}/>
                         <UnstakeModal
-                            marketContractId={marketContractId}
+                            marketContractId={marketContractAddress}
                             open={isRemoveLiquidityModalOpen}
                             onClose={() =>
                                 setIsRemoveLiquidityModalOpen(false)

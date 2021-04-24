@@ -8,7 +8,9 @@ import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import {get, isEmpty} from "lodash";
 import { useHistory } from "react-router-dom";
+import swal from "sweetalert";
 
+import {useStyles} from "./styles";
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
@@ -16,57 +18,49 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
-import MarketCard from "../../components/MarketCard";
-import {useStyles} from "./styles";
 
 import {walletHelper} from "../../shared/wallet.helper";
 import {
-    ellipseAddress,
-    getAddressImgUrl,
     toWei,
     fromWei,
+    isValidURL
 } from "../../shared/helper";
-import {getMarketCategories, uploadMarketImage, createMarket, createAuthOnFirebase, signInUserWithToken, signoutUser} from "../../shared/firestore.service";
-import ConfigHelper from "../../shared/config.helper";
-const Web3 = require('web3');
+
+import {
+    getMarketCategories,
+    uploadMarketImage,
+    createMarket,
+    createAuthOnFirebase,
+    signInUserWithToken,
+    signoutUser
+} from "../../shared/firestore.service";
 
 const walletHelperInsatnce = walletHelper();
 
-const getNumberFromBigNumber = (bigNumber) => {
-    return fromWei(bigNumber, "ether", 2);
-};
-
-const getBigNumberFromNumber = (number) => {
-    return toWei(number, "ether");
-};
-const options = [
-    {value: 'chocolate', label: 'Chocolate'},
-    {value: 'strawberry', label: 'Strawberry'},
-    {value: 'vanilla', label: 'Vanilla'}
-]
-
 function CreateMarket() {
+    const classes = useStyles();
+
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
+
     const accountContext = useContext(AccountContext);
-    const [selectedDate, handleDateChange] = useState(new Date("2018-01-01T00:00:00.000Z"));
-    const classes = useStyles();
     const [formData, setFormData] = useState({});
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
     const [formDataErrors, setFormDataErrors] = useState({});
     const [marketCategories, setMarketCategories] = useState([]);
     const [selectedMarketImage, setSelectedMarketImage] = useState(null);
-    const [walletData, setWalletData] = useState({});
     const history = useHistory();
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
-    const [walletMarketPositions, setWalletMarketPositions] = useState(0);
+    const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
 
     const loadWalletBalanceOfCollateralToken = async ()=> {
         const marketApis = new MarketAPIs();
         const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
-        console.log("balanceOfColletralToken", balanceOfColletralToken);
         setWalletBalanceOfCollateralToken(balanceOfColletralToken);
+
+        const walletAllowanceOfCollateralTokenForMarketRouter = await marketApis.getWalletAllowanceOfCollateralTokenForMarketRouter(accountContext.account);
+        setWalletAllowanceOfCollateralTokenForMarketRouter(walletAllowanceOfCollateralTokenForMarketRouter);
     };
 
     const loadWalletData = async () => {
@@ -83,7 +77,6 @@ function CreateMarket() {
         const newFormData = {...formData};
         newFormData[fieldKey] = fieldValue;
 
-        console.log("newFormData", newFormData);
         setFormData(newFormData);
     };
 
@@ -93,18 +86,25 @@ function CreateMarket() {
             return;
         }
 
+        if(!isValidURL(newSource)){
+            swal("Error!", `Please make sure it's a valid URL, it should start with http:// or https://, e.g: http://example.com`, "error");
+            return;
+        }
+
         const newFormData = {...formData};
         newFormData['sources'] = newFormData['sources'] || [];
+        if(newFormData['sources'].indexOf(newSource) > -1) {
+            return;
+        }
+
         newFormData['sources'].push(newSource);
 
-        console.log("newFormData", newFormData);
         setFormData(newFormData);
     };
 
     const handleRemoveSource = (entryIndex) => {
         const newFormData = {...formData};
         newFormData['sources'].splice(entryIndex, 1)
-        console.log("newFormData", newFormData);
         setFormData(newFormData);
     };
 
@@ -113,7 +113,16 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async () => {
-/*       */
+
+        if(walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
+            setIsCreatingMarket(true);
+            const marketApis = new MarketAPIs();
+            marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
+            loadWalletData();
+            setIsCreatingMarket(false);
+            return;
+        }
+
         const errors = {};
         if (!get(formData, ['title'])) {
             errors.title = "Title is required";
@@ -125,6 +134,12 @@ function CreateMarket() {
 
         if (!get(formData, ['endDate'])) {
             errors.endDate = "End date is required";
+        }
+
+        if (!get(formData, ['liquidity'])) {
+            errors.liquidity = "Liquidity is required";
+        } else if (parseFloat(get(formData, ['liquidity'])) > parseFloat(fromWei(walletBalanceOfCollateralToken))) {
+            errors.liquidity = "Liquidity is bigger than wallet balance";
         }
 
         if (!get(formData, ['description'])) {
@@ -139,18 +154,22 @@ function CreateMarket() {
             errors.image = "Image is required";
         }
 
-        console.log("errors", errors);
         setFormDataErrors(errors);
 
         if (!isEmpty(errors)) {
             return;
         }
 
+        await handleLogin();
+
         try {
             const marketApis = new MarketAPIs();
 
             setIsCreatingMarket(true);
             const imageUpload = await uploadMarketImage(selectedMarketImage);
+            const resolveTimestamp = get(formData, ['endDate']).clone().add(4, 'days').unix();
+            const collateralTokenAddress = '0xd07002ADEdc02797D383bc9C2B8A96822FB385b5';
+
             const createdMarket = await createMarket(
                 accountContext.account,
                 {
@@ -159,18 +178,15 @@ function CreateMarket() {
                 },
                 get(formData, ['description']),
                 get(formData, ['endDate']).unix(),
+                resolveTimestamp,
+                collateralTokenAddress,
+                get(formData, ['liquidity']),
                 imageUpload,
                 get(formData, ['sources']),
                 get(formData, ['title'])
             );
 
-            console.log("imageUpload", imageUpload);
-            console.log("createdMarket", createdMarket);
-            console.log("createdMarket", createdMarket.id);
-            const resolveTimestamp = get(formData, ['endDate']).clone().add(4, 'days').unix();
-
-            const newMarketContract = await marketApis.createMarket(accountContext.account, createdMarket.id, toWei(get(formData, ['endDate']).unix()), toWei(2));
-            console.log("newMarketContract", newMarketContract);
+            const newMarketContract = await marketApis.createMarket(accountContext.account, createdMarket.id, get(formData, ['endDate']).unix(), resolveTimestamp, collateralTokenAddress, toWei(get(formData, ['liquidity'])));
 
             //Redirect to market page after creation
             history.push(`/markets/${createdMarket.id}`);
@@ -195,7 +211,6 @@ function CreateMarket() {
     useEffect(() => {
         const init = async () => {
             const cats = await getMarketCategories();
-            console.log("cats", cats);
             setMarketCategories(cats);
         };
 
@@ -211,8 +226,6 @@ function CreateMarket() {
                 }
             />
             <div className={classes.CreateMarketPage}>
-                <button onClick={handleLogin}>Login</button>
-                <button onClick={handleLogout}>logout</button>
                 {accountContext.account && (
                     <div className={classes.CreateMarketPage__Main}>
 
@@ -267,10 +280,11 @@ function CreateMarket() {
                                                 <MuiPickersUtilsProvider utils={MomentUtils}>
                                                     <DateTimePicker
                                                         variant="inline"
-                                                        value={get(formData, ['endDate'])}
+                                                        value={get(formData, ['endDate']) || moment().add(1, 'days')}
                                                         onChange={(e) => {
                                                             handleFormDataChange('endDate', e);
                                                         }}
+                                                        minDate={moment().add(1, 'days')}
                                                     />
                                                 </MuiPickersUtilsProvider>
                                                 {get(formDataErrors, ['endDate']) && (
@@ -355,19 +369,32 @@ function CreateMarket() {
                                         Liquidity
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
-                                        <input type={'text'}
+                                        <input type={'number'}
                                                className={classes.CreateMarket__LiquidityInput}
                                                value={get(formData, ['liquidity'])}
                                                onChange={(e) => {
                                                    handleFormDataChange('liquidity', e.target.value);
                                                }}/>
                                         <div className={classes.CreateMarket__FieldAddon}>
-                                            <div className={classes.Liquidity__MaxBtn}>Max</div>
-                                            <Button className={classes.Liquidity__AddBtn}
-                                                    size={'medium'}
-                                                    color={'primary'}>Add</Button>
+                                            <div className={classes.Liquidity__MaxBtn}
+                                                 onClick={()=>{
+                                                     handleFormDataChange('liquidity', fromWei(walletBalanceOfCollateralToken));
+                                                 }}>Max</div>
+                                            {
+                                                /**
+                                                 *
+                                                 <Button className={classes.Liquidity__AddBtn}
+                                                 size={'medium'}
+                                                 color={'primary'}>Add</Button>
+                                                 * */
+                                            }
                                         </div>
                                     </div>
+                                    {get(formDataErrors, ['liquidity']) && (
+                                        <div className={classes.CreateMarket__FieldBodyFieldError}>
+                                            {get(formDataErrors, ['liquidity'])}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className={classes.CreateMarket__Section}>
@@ -432,7 +459,18 @@ function CreateMarket() {
                                     isProcessing={isCreatingMarket}
                                     color={'primary'}
                                     onClick={handleCreateMarket}
-                                    fullWidth={true}>Create</Button>
+                                    fullWidth={true}>
+                                {
+                                    walletAllowanceOfCollateralTokenForMarketRouter > 0 && (
+                                        'Create'
+                                    )
+                                }
+                                {
+                                    walletAllowanceOfCollateralTokenForMarketRouter <= 0 && (
+                                        'Approve'
+                                    )
+                                }
+                            </Button>
                         </div>
 
                     </div>

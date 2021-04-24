@@ -18,13 +18,15 @@ function OutcomeProgress(props) {
                 <span>
                     {
                         props.count && (
-                            <span className={classes.OutcomeOption__HeaderCount}>({props.count})</span>
+                            <span className={classes.OutcomeOption__HeaderPercent}>{props.count}</span>
                         )
                     }
                     {
-                        props.percent && (
-                            <span className={classes.OutcomeOption__HeaderPercent}>{props.percent}</span>
-                        )
+                        /**
+                         props.percent && (
+                         <span className={classes.OutcomeOption__HeaderPercent}>{props.percent}</span>
+                         )
+                         */
                     }
                 </span>
             </div>

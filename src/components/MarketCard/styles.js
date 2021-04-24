@@ -41,7 +41,7 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "12px",
         textAlign: "center",
         borderRadius: "16px",
-        backgroundColor: "#00B306",
+        backgroundColor: "#8293A6",
         padding: '0 8px'
     },
     Title: {
@@ -52,7 +52,8 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "28px",
         marginBottom: '24px',
         display: 'block',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        maxWidth: '400px'
     },
     Details__Footer: {
         display: 'flex'

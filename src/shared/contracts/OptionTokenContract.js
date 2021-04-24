@@ -1,830 +1,830 @@
 export const getOptionTokenContract = (chainId, web3) => {
     const abi = [
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "owner",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "operator",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "operator",
+                    "type": "address"
                 },
                 {
-                    indexed: false,
-                    internalType: "bool",
-                    name: "approved",
-                    type: "bool",
-                },
+                    "indexed": false,
+                    "internalType": "bool",
+                    "name": "approved",
+                    "type": "bool"
+                }
             ],
-            name: "ApprovalForAll",
-            type: "event",
+            "name": "ApprovalForAll",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "oracle",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "oracle",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "questionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "outcomeSlotCount",
-                    type: "uint256",
-                },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "outcomeSlotCount",
+                    "type": "uint256"
+                }
             ],
-            name: "ConditionPreparation",
-            type: "event",
+            "name": "ConditionPreparation",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "oracle",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "oracle",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "questionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "outcomeSlotCount",
-                    type: "uint256",
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "outcomeSlotCount",
+                    "type": "uint256"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "payoutNumerators",
-                    type: "uint256[]",
-                },
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "payoutNumerators",
+                    "type": "uint256[]"
+                }
             ],
-            name: "ConditionResolution",
-            type: "event",
+            "name": "ConditionResolution",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "redeemer",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "redeemer",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "indexed": false,
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "indexSets",
-                    type: "uint256[]",
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "indexSets",
+                    "type": "uint256[]"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "payout",
-                    type: "uint256",
-                },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "payout",
+                    "type": "uint256"
+                }
             ],
-            name: "PayoutRedemption",
-            type: "event",
+            "name": "PayoutRedemption",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "stakeholder",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "stakeholder",
+                    "type": "address"
                 },
                 {
-                    indexed: false,
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "indexed": false,
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "partition",
-                    type: "uint256[]",
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "partition",
+                    "type": "uint256[]"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
             ],
-            name: "PositionSplit",
-            type: "event",
+            "name": "PositionSplit",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "stakeholder",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "stakeholder",
+                    "type": "address"
                 },
                 {
-                    indexed: false,
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "indexed": false,
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: true,
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "indexed": true,
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "partition",
-                    type: "uint256[]",
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "partition",
+                    "type": "uint256[]"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
             ],
-            name: "PositionsMerge",
-            type: "event",
+            "name": "PositionsMerge",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "operator",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "operator",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "from",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "from",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "to",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "ids",
-                    type: "uint256[]",
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "ids",
+                    "type": "uint256[]"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256[]",
-                    name: "values",
-                    type: "uint256[]",
-                },
+                    "indexed": false,
+                    "internalType": "uint256[]",
+                    "name": "values",
+                    "type": "uint256[]"
+                }
             ],
-            name: "TransferBatch",
-            type: "event",
+            "name": "TransferBatch",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "operator",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "operator",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "from",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "from",
+                    "type": "address"
                 },
                 {
-                    indexed: true,
-                    internalType: "address",
-                    name: "to",
-                    type: "address",
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "id",
-                    type: "uint256",
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
                 },
                 {
-                    indexed: false,
-                    internalType: "uint256",
-                    name: "value",
-                    type: "uint256",
-                },
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "value",
+                    "type": "uint256"
+                }
             ],
-            name: "TransferSingle",
-            type: "event",
+            "name": "TransferSingle",
+            "type": "event"
         },
         {
-            anonymous: false,
-            inputs: [
+            "anonymous": false,
+            "inputs": [
                 {
-                    indexed: false,
-                    internalType: "string",
-                    name: "value",
-                    type: "string",
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "value",
+                    "type": "string"
                 },
                 {
-                    indexed: true,
-                    internalType: "uint256",
-                    name: "id",
-                    type: "uint256",
-                },
+                    "indexed": true,
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                }
             ],
-            name: "URI",
-            type: "event",
+            "name": "URI",
+            "type": "event"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "owner",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
                 },
                 {
-                    internalType: "uint256",
-                    name: "id",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
+                }
             ],
-            name: "balanceOf",
-            outputs: [
+            "name": "balanceOf",
+            "outputs": [
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "address[]",
-                    name: "owners",
-                    type: "address[]",
+                    "internalType": "address[]",
+                    "name": "owners",
+                    "type": "address[]"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "ids",
-                    type: "uint256[]",
-                },
+                    "internalType": "uint256[]",
+                    "name": "ids",
+                    "type": "uint256[]"
+                }
             ],
-            name: "balanceOfBatch",
-            outputs: [
+            "name": "balanceOfBatch",
+            "outputs": [
                 {
-                    internalType: "uint256[]",
-                    name: "",
-                    type: "uint256[]",
-                },
+                    "internalType": "uint256[]",
+                    "name": "",
+                    "type": "uint256[]"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256",
-                    name: "indexSet",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "indexSet",
+                    "type": "uint256"
+                }
             ],
-            name: "getCollectionId",
-            outputs: [
+            "name": "getCollectionId",
+            "outputs": [
                 {
-                    internalType: "bytes32",
-                    name: "",
-                    type: "bytes32",
-                },
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "oracle",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "oracle",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "questionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256",
-                    name: "outcomeSlotCount",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "outcomeSlotCount",
+                    "type": "uint256"
+                }
             ],
-            name: "getConditionId",
-            outputs: [
+            "name": "getConditionId",
+            "outputs": [
                 {
-                    internalType: "bytes32",
-                    name: "",
-                    type: "bytes32",
-                },
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
             ],
-            payable: false,
-            stateMutability: "pure",
-            type: "function",
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
-                },
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
+                }
             ],
-            name: "getOutcomeSlotCount",
-            outputs: [
+            "name": "getOutcomeSlotCount",
+            "outputs": [
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "collectionId",
-                    type: "bytes32",
-                },
+                    "internalType": "bytes32",
+                    "name": "collectionId",
+                    "type": "bytes32"
+                }
             ],
-            name: "getPositionId",
-            outputs: [
+            "name": "getPositionId",
+            "outputs": [
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "pure",
-            type: "function",
+            "payable": false,
+            "stateMutability": "pure",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "owner",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "owner",
+                    "type": "address"
                 },
                 {
-                    internalType: "address",
-                    name: "operator",
-                    type: "address",
-                },
+                    "internalType": "address",
+                    "name": "operator",
+                    "type": "address"
+                }
             ],
-            name: "isApprovedForAll",
-            outputs: [
+            "name": "isApprovedForAll",
+            "outputs": [
                 {
-                    internalType: "bool",
-                    name: "",
-                    type: "bool",
-                },
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "partition",
-                    type: "uint256[]",
+                    "internalType": "uint256[]",
+                    "name": "partition",
+                    "type": "uint256[]"
                 },
                 {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
             ],
-            name: "mergePositions",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "mergePositions",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "bytes32",
-                    name: "",
-                    type: "bytes32",
-                },
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
+                }
             ],
-            name: "payoutDenominator",
-            outputs: [
+            "name": "payoutDenominator",
+            "outputs": [
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "bytes32",
-                    name: "",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            name: "payoutNumerators",
-            outputs: [
+            "name": "payoutNumerators",
+            "outputs": [
                 {
-                    internalType: "uint256",
-                    name: "",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "oracle",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "oracle",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "questionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256",
-                    name: "outcomeSlotCount",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "outcomeSlotCount",
+                    "type": "uint256"
+                }
             ],
-            name: "prepareCondition",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "prepareCondition",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "marketAddress",
-                    type: "address",
-                },
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
             ],
-            name: "redeem",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "redeem",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "indexSets",
-                    type: "uint256[]",
-                },
+                    "internalType": "uint256[]",
+                    "name": "indexSets",
+                    "type": "uint256[]"
+                }
             ],
-            name: "redeemPositions",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "redeemPositions",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "bytes32",
-                    name: "questionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "questionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "payouts",
-                    type: "uint256[]",
-                },
+                    "internalType": "uint256[]",
+                    "name": "payouts",
+                    "type": "uint256[]"
+                }
             ],
-            name: "reportPayouts",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "reportPayouts",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "from",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "from",
+                    "type": "address"
                 },
                 {
-                    internalType: "address",
-                    name: "to",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "ids",
-                    type: "uint256[]",
+                    "internalType": "uint256[]",
+                    "name": "ids",
+                    "type": "uint256[]"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "values",
-                    type: "uint256[]",
+                    "internalType": "uint256[]",
+                    "name": "values",
+                    "type": "uint256[]"
                 },
                 {
-                    internalType: "bytes",
-                    name: "data",
-                    type: "bytes",
-                },
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                }
             ],
-            name: "safeBatchTransferFrom",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "safeBatchTransferFrom",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "from",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "from",
+                    "type": "address"
                 },
                 {
-                    internalType: "address",
-                    name: "to",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
                 },
                 {
-                    internalType: "uint256",
-                    name: "id",
-                    type: "uint256",
+                    "internalType": "uint256",
+                    "name": "id",
+                    "type": "uint256"
                 },
                 {
-                    internalType: "uint256",
-                    name: "value",
-                    type: "uint256",
+                    "internalType": "uint256",
+                    "name": "value",
+                    "type": "uint256"
                 },
                 {
-                    internalType: "bytes",
-                    name: "data",
-                    type: "bytes",
-                },
+                    "internalType": "bytes",
+                    "name": "data",
+                    "type": "bytes"
+                }
             ],
-            name: "safeTransferFrom",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "safeTransferFrom",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "address",
-                    name: "operator",
-                    type: "address",
+                    "internalType": "address",
+                    "name": "operator",
+                    "type": "address"
                 },
                 {
-                    internalType: "bool",
-                    name: "approved",
-                    type: "bool",
-                },
+                    "internalType": "bool",
+                    "name": "approved",
+                    "type": "bool"
+                }
             ],
-            name: "setApprovalForAll",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "setApprovalForAll",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: false,
-            inputs: [
+            "constant": false,
+            "inputs": [
                 {
-                    internalType: "contract IERC20",
-                    name: "collateralToken",
-                    type: "address",
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "parentCollectionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "parentCollectionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "bytes32",
-                    name: "conditionId",
-                    type: "bytes32",
+                    "internalType": "bytes32",
+                    "name": "conditionId",
+                    "type": "bytes32"
                 },
                 {
-                    internalType: "uint256[]",
-                    name: "partition",
-                    type: "uint256[]",
+                    "internalType": "uint256[]",
+                    "name": "partition",
+                    "type": "uint256[]"
                 },
                 {
-                    internalType: "uint256",
-                    name: "amount",
-                    type: "uint256",
-                },
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
             ],
-            name: "splitPosition",
-            outputs: [],
-            payable: false,
-            stateMutability: "nonpayable",
-            type: "function",
+            "name": "splitPosition",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
-            constant: true,
-            inputs: [
+            "constant": true,
+            "inputs": [
                 {
-                    internalType: "bytes4",
-                    name: "interfaceId",
-                    type: "bytes4",
-                },
+                    "internalType": "bytes4",
+                    "name": "interfaceId",
+                    "type": "bytes4"
+                }
             ],
-            name: "supportsInterface",
-            outputs: [
+            "name": "supportsInterface",
+            "outputs": [
                 {
-                    internalType: "bool",
-                    name: "",
-                    type: "bool",
-                },
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
             ],
-            payable: false,
-            stateMutability: "view",
-            type: "function",
-        },
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        }
     ];
 
     const addresses = {
-        1: "0x1C95eAfc20bb3cd5B79169B25f526a87C291e5e7",
-        3: "0x1C95eAfc20bb3cd5B79169B25f526a87C291e5e7",
+        1: "0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F",
+        3: "0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F",
     };
 
     return new web3.eth.Contract(
