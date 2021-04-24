@@ -90,6 +90,31 @@ export const createMarket = async (wallet, category, description, endTimestamp, 
         });
 };
 
+
+export const getBetaWhitelist = async () => {
+    const snapshot = await db.collection('beta-whitelist').get();
+    const data = snapshot.docs.map(doc => {
+        return {
+            id: doc.id,
+            ...doc.data()
+        };
+    });
+
+    return data;
+};
+
+export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
+    const snapshot = await db.collection("beta-whitelist")
+        .where("address", "==", wallet)
+        .get();
+
+    if(snapshot.docs.length > 0) {
+        return true;
+    }
+
+    return false;
+};
+
 export const getMarkets = async () => {
     const snapshot = await db.collection('markets').get();
     return snapshot.docs.map(doc => {
@@ -138,8 +163,6 @@ export const uploadMarketImage = async (file, progressCb) => {
                 uploadTask.snapshot.ref.getMetadata().then((url) =>{
                     console.log("url", url);
                 });
-
-                console.log("uploadTask.snapshot.ref", uploadTask.snapshot.ref.fullPath);
             }
         )
     });

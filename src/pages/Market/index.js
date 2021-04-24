@@ -25,10 +25,11 @@ import {
     fromWei,
 } from "../../shared/helper";
 import OptionBlock from "../../components/OptionBlock";
-import {getMarketById} from "../../shared/firestore.service";
+import {getIfWalletIsWhitelistedForBeta, getMarketById} from "../../shared/firestore.service";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import { MaxUint256 } from '../../shared/constants';
 import UnstakeModal from "../../components/UnstakeModal";
+import NotWhitelisted from "../../components/NotWhitelisted";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -44,6 +45,9 @@ function Market() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+
+    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     //Buy and sell
     const [pricesOfBuy, setPricesOfBuy] = useState(null);
@@ -226,12 +230,22 @@ function Market() {
 
     useEffect(() => {
         const init = async () => {
-            if(!market) {
-                const result = await getMarketById(marketId);
-                setMarket(result);
-            }
-
             if(accountContext.account) {
+                setIsLoading(true);
+                const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
+                setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
+                if(!isWalletWhitelistedForBetaRes) {
+                    setIsLoading(false);
+                    return;
+                }
+
+                if(!market) {
+                    const result = await getMarketById(marketId);
+                    setMarket(result);
+                }
+
+                setIsLoading(false);
+
                 loadWalletData();
 
                 if(!marketContractAddress) {
@@ -325,229 +339,251 @@ function Market() {
             />
             <div className={classes.MarketsPage}>
                 {accountContext.account && (
-                    <div>
-                        <Grid container spacing={3}>
-                            <Grid item md={8}>
-                                <div className={classes.MarketDetails}>
-                                    <div className={classes.MarketDetails__Header}>
-                                        <div className={classes.MarketDetails__HeaderAvatar}
-                                             style={{
-                                                 backgroundImage: `url(${get(market, ['image'])})`
-                                             }}></div>
-                                        <div>
-                                            <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
-                                            <div className={classes.Title}>{get(market, 'title')}</div>
-                                        </div>
-                                    </div>
-                                    <div className={classes.Info}>
-                                        {
-                                            showTradeVolumeSection() && (
-                                                <div className={classes.Info__Block}>
-                                                    <div className={classes.Info__BlockTitle}>Trade volume</div>
-                                                    <div className={classes.Info__BlockValue}>{numeral(fromWei(`${marketTradingVolume}`)).format("$0,0.00")}</div>
-                                                </div>
-                                            )
-                                        }
-
-                                        <div className={classes.Info__Block}>
-                                            <div className={classes.Info__BlockTitle}>Liquidity</div>
-                                            <div className={classes.Info__BlockValue}>
-                                                {numeral(fromWei(get(marketContractData, 'totalSupply') || 0)).format("$0,0.00")}
-                                            </div>
-                                        </div>
-                                        <div className={classes.Info__Block}>
-                                            <div className={classes.Info__BlockTitle}>Market ends on</div>
-                                            <div className={classes.Info__BlockValue}>{moment(get(market, 'endTimestamp') * 1000).format('L')}</div>
-                                        </div>
-                                    </div>
+                    <>
+                        {
+                            !isLoading && (
+                                <>
                                     {
-                                        /**
-                                         <div className={classes.Graph}>
-                                         <div className={classes.Graph__Header}>
-                                         <div className={classes.Graph__HeaderTitle}>History</div>
-                                         <div className={classes.Graph__HeaderNav}>
-                                         <div className={classes.Graph__HeaderNavOption}>24h</div>
-                                         <div className={classes.Graph__HeaderNavOption}>7d</div>
-                                         <div className={classes.Graph__HeaderNavOption}>30d</div>
-                                         <div className={classes.Graph__HeaderNavOption}>all</div>
-                                         </div>
-                                         </div>
-                                         <div className={classes.Graph__Deatils}>
-
-                                         </div>
-                                         </div>
-                                         */
-                                    }
-                                    {
-                                        showOutcomeSection() && (
-                                            <div className={classes.Outcome}>
-                                                <div className={classes.Outcome__Header}>
-                                                    Outcome
-                                                </div>
-                                                <div className={classes.Outcome__Details}>
-                                                    <div>
-                                                        <OutcomeProgress title={'Yes'}
-                                                                         count={numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}
-                                                                         percent={get(marketContractData, ['optionTokensPercentage', ['0']]) || 0}
-                                                                         color={'#86DC8B'}/>
-                                                    </div>
-                                                    <div>
-                                                        <OutcomeProgress title={'No'}
-                                                                         count={numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}
-                                                                         percent={get(marketContractData, ['optionTokensPercentage', ['1']]) || 0}
-                                                                         color={'#7084FF'}/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                    {get(marketContractData, ['walletOptionTokensBalance']) && get(marketContractData, ['walletOptionTokensBalance']).map((entry, index) => {
-                                        if(entry == 0) {
-                                            return null;
-                                        }
-                                        const optionName = index === 0 ? 'Yes' : 'No';
-                                        const optionNameL = optionName.toLowerCase();
-
-                                        return (
-                                            <div className={classes.MarketPositions}>
-                                                <div className={classes.MarketPositions__Header}>
-                                                    Market Positions
-                                                </div>
-                                                <div className={classes.MarketPositions__Details}>
-                                                    {
-                                                        [
-                                                            {
-                                                                title: 'Outcome',
-                                                                value: `${optionName} (${fromWei(entry, null, 3)} Shares)`
-                                                            },
-                                                            {
-                                                                title: 'Price: Average | Current',
-                                                                value: `${numeral( get(buySellHistoryOfWallet, ['buy', optionNameL, 'averagePrice']) || 0).format("$0,0.00")} | ${numeral(get(pricesOfBuy, optionNameL) || 0).format("$0,0.00")}`
-                                                            },
-                                                            {
-                                                                title: 'P/L: $ | %',
-                                                                value: `${getProfit(optionNameL).value} | ${getProfit(optionNameL).percent}`
-                                                            },
-                                                            {
-                                                                title: 'Value: Initial | Current',
-                                                                value: `${numeral(fromWei(get(buySellHistoryOfWallet, ['buy', `${optionNameL}`, 'total']) || 0)).format("$0,0.00")} | ${numeral((get(pricesOfBuy, optionNameL) || 0) * fromWei(entry)).format("$0,0.00")}`
-                                                            },
-                                                            {
-                                                                title: 'Max Payout',
-                                                                value: `${numeral(fromWei(entry, null, 3)).format("$0,0.00")}`
-                                                            },
-                                                        ].map((entry) => {
-                                                            return (
-                                                                <div className={classes.MarketPosition__Block}>
-                                                                    <span>{entry.title}</span>
-                                                                    <span>{entry.value}</span>
+                                        isWalletWhitelistedForBeta && (
+                                            <div>
+                                                <Grid container spacing={3}>
+                                                    <Grid item md={8}>
+                                                        <div className={classes.MarketDetails}>
+                                                            <div className={classes.MarketDetails__Header}>
+                                                                <div className={classes.MarketDetails__HeaderAvatar}
+                                                                     style={{
+                                                                         backgroundImage: `url(${get(market, ['image'])})`
+                                                                     }}></div>
+                                                                <div>
+                                                                    <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
+                                                                    <div className={classes.Title}>{get(market, 'title')}</div>
                                                                 </div>
-                                                            )
-                                                        })
+                                                            </div>
+                                                            <div className={classes.Info}>
+                                                                {
+                                                                    showTradeVolumeSection() && (
+                                                                        <div className={classes.Info__Block}>
+                                                                            <div className={classes.Info__BlockTitle}>Trade volume</div>
+                                                                            <div className={classes.Info__BlockValue}>{numeral(fromWei(`${marketTradingVolume}`)).format("$0,0.00")}</div>
+                                                                        </div>
+                                                                    )
+                                                                }
+
+                                                                <div className={classes.Info__Block}>
+                                                                    <div className={classes.Info__BlockTitle}>Liquidity</div>
+                                                                    <div className={classes.Info__BlockValue}>
+                                                                        {numeral(fromWei(get(marketContractData, 'totalSupply') || 0)).format("$0,0.00")}
+                                                                    </div>
+                                                                </div>
+                                                                <div className={classes.Info__Block}>
+                                                                    <div className={classes.Info__BlockTitle}>Market ends on</div>
+                                                                    <div className={classes.Info__BlockValue}>{moment(get(market, 'endTimestamp') * 1000).format('L')}</div>
+                                                                </div>
+                                                            </div>
+                                                            {
+                                                                /**
+                                                                 <div className={classes.Graph}>
+                                                                 <div className={classes.Graph__Header}>
+                                                                 <div className={classes.Graph__HeaderTitle}>History</div>
+                                                                 <div className={classes.Graph__HeaderNav}>
+                                                                 <div className={classes.Graph__HeaderNavOption}>24h</div>
+                                                                 <div className={classes.Graph__HeaderNavOption}>7d</div>
+                                                                 <div className={classes.Graph__HeaderNavOption}>30d</div>
+                                                                 <div className={classes.Graph__HeaderNavOption}>all</div>
+                                                                 </div>
+                                                                 </div>
+                                                                 <div className={classes.Graph__Deatils}>
+
+                                                                 </div>
+                                                                 </div>
+                                                                 */
+                                                            }
+                                                            {
+                                                                showOutcomeSection() && (
+                                                                    <div className={classes.Outcome}>
+                                                                        <div className={classes.Outcome__Header}>
+                                                                            Outcome
+                                                                        </div>
+                                                                        <div className={classes.Outcome__Details}>
+                                                                            <div>
+                                                                                <OutcomeProgress title={'Yes'}
+                                                                                                 count={numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}
+                                                                                                 percent={get(marketContractData, ['optionTokensPercentage', ['0']]) || 0}
+                                                                                                 color={'#86DC8B'}/>
+                                                                            </div>
+                                                                            <div>
+                                                                                <OutcomeProgress title={'No'}
+                                                                                                 count={numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}
+                                                                                                 percent={get(marketContractData, ['optionTokensPercentage', ['1']]) || 0}
+                                                                                                 color={'#7084FF'}/>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                            {get(marketContractData, ['walletOptionTokensBalance']) && get(marketContractData, ['walletOptionTokensBalance']).map((entry, index) => {
+                                                                if(entry == 0) {
+                                                                    return null;
+                                                                }
+                                                                const optionName = index === 0 ? 'Yes' : 'No';
+                                                                const optionNameL = optionName.toLowerCase();
+
+                                                                return (
+                                                                    <div className={classes.MarketPositions}>
+                                                                        <div className={classes.MarketPositions__Header}>
+                                                                            Market Positions
+                                                                        </div>
+                                                                        <div className={classes.MarketPositions__Details}>
+                                                                            {
+                                                                                [
+                                                                                    {
+                                                                                        title: 'Outcome',
+                                                                                        value: `${optionName} (${fromWei(entry, null, 3)} Shares)`
+                                                                                    },
+                                                                                    {
+                                                                                        title: 'Price: Average | Current',
+                                                                                        value: `${numeral( get(buySellHistoryOfWallet, ['buy', optionNameL, 'averagePrice']) || 0).format("$0,0.00")} | ${numeral(get(pricesOfBuy, optionNameL) || 0).format("$0,0.00")}`
+                                                                                    },
+                                                                                    {
+                                                                                        title: 'P/L: $ | %',
+                                                                                        value: `${getProfit(optionNameL).value} | ${getProfit(optionNameL).percent}`
+                                                                                    },
+                                                                                    {
+                                                                                        title: 'Value: Initial | Current',
+                                                                                        value: `${numeral(fromWei(get(buySellHistoryOfWallet, ['buy', `${optionNameL}`, 'total']) || 0)).format("$0,0.00")} | ${numeral((get(pricesOfBuy, optionNameL) || 0) * fromWei(entry)).format("$0,0.00")}`
+                                                                                    },
+                                                                                    {
+                                                                                        title: 'Max Payout',
+                                                                                        value: `${numeral(fromWei(entry, null, 3)).format("$0,0.00")}`
+                                                                                    },
+                                                                                ].map((entry) => {
+                                                                                    return (
+                                                                                        <div className={classes.MarketPosition__Block}>
+                                                                                            <span>{entry.title}</span>
+                                                                                            <span>{entry.value}</span>
+                                                                                        </div>
+                                                                                    )
+                                                                                })
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                            <div className={classes.About}>
+                                                                <div className={classes.About__Header}>
+                                                                    About
+                                                                </div>
+                                                                <div className={classes.About__Details}>{get(market, 'description')}</div>
+                                                            </div>
+                                                            <div className={classes.Resolution}>
+                                                                <div className={classes.Resolution__Header}>
+                                                                    Resolution Source
+                                                                </div>
+                                                                <div className={classes.Resolution__Details}>
+                                                                    {get(market, 'sources') && get(market, 'sources').map((entry) => {
+                                                                        return (
+                                                                            <div className={classes.ResolutionLink}>
+                                                                                {entry}
+                                                                            </div>
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Grid>
+                                                    <Grid item md={4}>
+                                                        <div className={classes.MarketSidebar}>
+                                                            <div className={classes.MarketSidebar__AddLiquidity}>
+                                                                {
+                                                                    showAddLiquiditySection() && (
+                                                                        <Button className={classes.MarketSidebar__AddLiquidityBtn}
+                                                                                color="gray"
+                                                                                isProcessing={isAddLiquidityInProgress}
+                                                                                onClick={handleAddLiquidity}
+                                                                                size={"medium"}>
+                                                                            <div className={classes.MarketSidebar__AddLiquidityBtnInner}>
+                                                                                <div>+ Add Liquidity</div>
+                                                                                {walletAllowanceOfCollateralToken == 0 && (
+                                                                                    <div className={classes.MarketSidebar__AddLiquidityApprove}>(approve first)</div>
+                                                                                )}
+                                                                            </div>
+                                                                        </Button>
+                                                                    )
+                                                                }
+                                                                {(get(marketContractData, ['walletSharesOfMarket']) && get(marketContractData, ['walletSharesOfMarket'])>0) && (
+                                                                    <Button className={classes.MarketSidebar__RemoveLiquidityBtn}
+                                                                            color="primary"
+                                                                            onClick={() => setIsRemoveLiquidityModalOpen(true)}
+                                                                            size={"medium"}>
+                                                                        Remove Liquidity
+                                                                    </Button>
+                                                                )}
+                                                            </div>
+                                                            {
+                                                                (["1", "5"].indexOf(get(marketContractData, 'state')) > -1) && (
+                                                                    <VoteWidget marketState={get(marketContractData, 'state')}
+                                                                                marketContractAddress={marketContractAddress}/>
+                                                                )
+                                                            }
+                                                            {
+                                                                get(marketContractData, 'state') == 3 && (
+                                                                    <BuySellWidget pricesOfBuy={pricesOfBuy}
+                                                                                   pricesOfSell={pricesOfSell}
+                                                                                   onBuy={handleOnBuy}
+                                                                                   onApprove={(type) => {
+                                                                                       if(type == 'CollateralToken') {
+                                                                                           setWalletAllowanceOfCollateralToken(MaxUint256);
+                                                                                       } else {
+                                                                                           setIsWalletOptionTokenApprovedForMarket(true);
+                                                                                       }
+                                                                                   }}
+                                                                                   walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                                                   walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                                                   isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                                                   walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                                                   marketContractAddress={marketContractAddress}/>
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </Grid>
+                                                </Grid>
+                                                <DepositModal open={isDepositModalOpen}
+                                                              onClose={() =>setIsDepositModalOpen(false)}
+                                                              onStake={()=>{
+                                                                  handleOnAddLiquidityComplete();
+                                                              }}
+                                                              userRoomLPTokens={
+                                                                  walletBalanceOfCollateralToken
+                                                              }
+                                                              marketContractId={marketContractAddress}
+                                                              type={"Add_Market_Liquidity"}/>
+                                                <UnstakeModal
+                                                    marketContractId={marketContractAddress}
+                                                    open={isRemoveLiquidityModalOpen}
+                                                    onClose={() =>
+                                                        setIsRemoveLiquidityModalOpen(false)
                                                     }
-                                                </div>
+                                                    onUnStake={handleOnRemoveLiquidityComplete}
+                                                    stakedTokensBalance={get(marketContractData, ['walletSharesOfMarket']) || 0}
+                                                    type={"market_liquidity"}
+                                                />
                                             </div>
                                         )
-                                    })}
-                                    <div className={classes.About}>
-                                        <div className={classes.About__Header}>
-                                            About
-                                        </div>
-                                        <div className={classes.About__Details}>{get(market, 'description')}</div>
-                                    </div>
-                                    <div className={classes.Resolution}>
-                                        <div className={classes.Resolution__Header}>
-                                            Resolution Source
-                                        </div>
-                                        <div className={classes.Resolution__Details}>
-                                            {get(market, 'sources') && get(market, 'sources').map((entry) => {
-                                                return (
-                                                    <div className={classes.ResolutionLink}>
-                                                        {entry}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </Grid>
-                            <Grid item md={4}>
-                                <div className={classes.MarketSidebar}>
-                                    <div className={classes.MarketSidebar__AddLiquidity}>
-                                        {
-                                            showAddLiquiditySection() && (
-                                                <Button className={classes.MarketSidebar__AddLiquidityBtn}
-                                                        color="gray"
-                                                        isProcessing={isAddLiquidityInProgress}
-                                                        onClick={handleAddLiquidity}
-                                                        size={"medium"}>
-                                                    <div className={classes.MarketSidebar__AddLiquidityBtnInner}>
-                                                        <div>+ Add Liquidity</div>
-                                                        {walletAllowanceOfCollateralToken == 0 && (
-                                                            <div className={classes.MarketSidebar__AddLiquidityApprove}>(approve first)</div>
-                                                        )}
-                                                    </div>
-                                                </Button>
-                                            )
-                                        }
-                                        {(get(marketContractData, ['walletSharesOfMarket']) && get(marketContractData, ['walletSharesOfMarket'])>0) && (
-                                            <Button className={classes.MarketSidebar__RemoveLiquidityBtn}
-                                                    color="primary"
-                                                    onClick={() => setIsRemoveLiquidityModalOpen(true)}
-                                                    size={"medium"}>
-                                                Remove Liquidity
-                                            </Button>
-                                        )}
-                                    </div>
-                                    {
-                                        (["1", "5"].indexOf(get(marketContractData, 'state')) > -1) && (
-                                            <VoteWidget marketState={get(marketContractData, 'state')}
-                                                        marketContractAddress={marketContractAddress}/>
-                                        )
                                     }
                                     {
-                                        get(marketContractData, 'state') == 3 && (
-                                            <BuySellWidget pricesOfBuy={pricesOfBuy}
-                                                           pricesOfSell={pricesOfSell}
-                                                           onBuy={handleOnBuy}
-                                                           onApprove={(type) => {
-                                                               if(type == 'CollateralToken') {
-                                                                   setWalletAllowanceOfCollateralToken(MaxUint256);
-                                                               } else {
-                                                                   setIsWalletOptionTokenApprovedForMarket(true);
-                                                               }
-                                                           }}
-                                                           walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                           walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                           isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-                                                           walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                           marketContractAddress={marketContractAddress}/>
+                                        !isWalletWhitelistedForBeta && (
+                                            <NotWhitelisted/>
                                         )
                                     }
-                                </div>
-                            </Grid>
-                        </Grid>
-                        <DepositModal open={isDepositModalOpen}
-                            onClose={() =>setIsDepositModalOpen(false)}
-                            onStake={()=>{
-                                handleOnAddLiquidityComplete();
-                            }}
-                            userRoomLPTokens={
-                                walletBalanceOfCollateralToken
-                            }
-                            marketContractId={marketContractAddress}
-                            type={"Add_Market_Liquidity"}/>
-                        <UnstakeModal
-                            marketContractId={marketContractAddress}
-                            open={isRemoveLiquidityModalOpen}
-                            onClose={() =>
-                                setIsRemoveLiquidityModalOpen(false)
-                            }
-                            onUnStake={handleOnRemoveLiquidityComplete}
-                            stakedTokensBalance={get(marketContractData, ['walletSharesOfMarket']) || 0}
-                            type={"market_liquidity"}
-                        />
-                    </div>
+                                </>
+                            )
+                        }
+                        {
+                            isLoading && (
+                                'Loading ...'
+                            )
+                        }
+                    </>
                 )}
                 {!accountContext.account && (
                     <div className={classes.ConnectWrap}>

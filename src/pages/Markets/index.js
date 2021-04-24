@@ -8,7 +8,7 @@ import ConnectButton from "../../components/ConnectButton";
 import Navbar from "../../components/Navbar";
 import MarketCard from "../../components/MarketCard";
 import {useStyles} from "./styles";
-import {getMarketCategories, getMarkets} from '../../shared/firestore.service';
+import {getMarketCategories, getMarkets, getIfWalletIsWhitelistedForBeta} from '../../shared/firestore.service';
 
 import {walletHelper} from "../../shared/wallet.helper";
 import {
@@ -19,6 +19,7 @@ import {
 } from "../../shared/helper";
 import {Link} from "react-router-dom";
 import Button from "../../components/Button";
+import NotWhitelisted from "../../components/NotWhitelisted";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -37,6 +38,7 @@ function Markets() {
     const [marketCategories, setMarketCategories] = useState([]);
     const [markets, setMarkets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(false);
 
     const classes = useStyles();
 
@@ -44,13 +46,17 @@ function Markets() {
         const init = async () => {
             setIsLoading(true);
             const cats = await getMarketCategories();
+            const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
+            setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
             setMarketCategories(cats);
             const result = await getMarkets();
             setMarkets(result);
             setIsLoading(false);
         };
 
-        init();
+        if(accountContext.account) {
+            init();
+        }
     }, [accountContext.account]);
 
     return (
@@ -110,21 +116,32 @@ function Markets() {
                                     {
                                         !isLoading && (
                                             <>
-                                                <div className={classes.CreateMarketLinkWrap}>
-                                                    <Link to={`/markets/create`}
-                                                          className={classes.CreateMarketLink}>
-                                                        <Button
-                                                            color="primary"
-                                                            size={'medium'}>Create new market</Button>
-                                                    </Link>
-                                                </div>
-                                                {markets.map((entry) => {
-                                                    return (
-                                                        <div>
-                                                            <MarketCard market={entry}/>
-                                                        </div>
-                                                    );
-                                                })}
+                                                {
+                                                    !isWalletWhitelistedForBeta && (
+                                                        <NotWhitelisted/>
+                                                    )
+                                                }
+                                                {
+                                                    isWalletWhitelistedForBeta && (
+                                                        <>
+                                                            <div className={classes.CreateMarketLinkWrap}>
+                                                                <Link to={`/markets/create`}
+                                                                      className={classes.CreateMarketLink}>
+                                                                    <Button
+                                                                        color="primary"
+                                                                        size={'medium'}>Create new market</Button>
+                                                                </Link>
+                                                            </div>
+                                                            {markets.map((entry) => {
+                                                                return (
+                                                                    <div>
+                                                                        <MarketCard market={entry}/>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                        </>
+                                                    )
+                                                }
                                             </>
                                         )
                                     }
