@@ -6,7 +6,7 @@ import { getMarketRouterContract } from "./MarketRouterContract";
 import { getGovernanceContract } from "./GovernanceContract";
 import { getOptionTokenContract } from "./OptionTokenContract";
 import {fromWei, toWei} from "../helper";
-import {map, sum} from 'lodash';
+import {map, sum, filter} from 'lodash';
 
 const walletHelperInstance = walletHelper();
 
@@ -85,7 +85,7 @@ factoryC.address (AAA3)
 
         const sum2 = sum(map(buyEvents, (entry) => {
             return parseFloat(entry.returnValues.investmentAmount);
-        }))
+        }));
 
         return sum2;
     }
@@ -154,12 +154,12 @@ factoryC.address (AAA3)
     }
 
     async getPricesOfBuy(wallet, marketAddress) {
-        const numberOfYes = await this.getOptionTokensCountOfBuy(wallet, marketAddress, toWei(1), 0);
-        const numberOfNo = await this.getOptionTokensCountOfBuy(wallet, marketAddress, toWei(1), 1);
+        const marketOutcome = await this.getMarketOptionTokensPercentage(wallet, marketAddress);
 
-        const priceOfYes = 1/fromWei(numberOfYes);
-        const priceOfNo = 1/fromWei(numberOfNo);
+        console.log("marketOutcome", marketOutcome);
 
+        const priceOfYes = parseFloat(marketOutcome[0]) / (parseFloat(marketOutcome[1]) + parseFloat(marketOutcome[0]));
+        const priceOfNo = parseFloat(marketOutcome[1]) / (parseFloat(marketOutcome[1]) + parseFloat(marketOutcome[0]));
         return {
             priceOfYes,
             priceOfNo
@@ -380,15 +380,50 @@ factoryC.address (AAA3)
         return result;
     }
 
-    async getMarkets(wallet) {
-        const result = await this.marketRouterContract
-            .methods
-            .getMarkets()
-            .call({
-                from: wallet,
-            });
+    async getAllMarketContracts(wallet) {
+        let all = [];
 
-        return result;
+        /**
+         Invalid,
+         Pending, // governance voting for validation
+         Rejected,
+         Active,
+         Inactive,
+         Resolving, // governance voting for result
+         Resolved  // can redeem
+         */
+        for(let i in ["1", "3", "4", "5"]) {
+            const contracts = await this.marketRouterContract
+                .methods
+                .getMarketsQuestionIDs(i, 0, 99)
+                .call({
+                    from: wallet,
+                });
+
+            const ids = {};
+            for (let i = 0; i < contracts.questionsIDs.length; i++) {
+                console.log("contracts.questionsIDs[i]", contracts.questionsIDs[i]);
+                if (!contracts.questionsIDs[i]) {
+                    break;
+                }
+
+                ids[contracts.questionsIDs[i]] = true;
+            }
+
+/*            const data = questionsIDs.map((entry, index) => {
+               return {
+                   marketId: entry,
+                   marketAddress: contracts.markets[index],
+               }
+            });*/
+
+            all = {
+                ...all,
+                ...ids
+            };
+        }
+
+        return all;
     }
 
     async getMarketById(wallet, marketId) {

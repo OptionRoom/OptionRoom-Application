@@ -143,6 +143,8 @@ function CreateMarket() {
             errors.liquidity = "Liquidity is required";
         } else if (parseFloat(get(formData, ['liquidity'])) > parseFloat(fromWei(walletBalanceOfCollateralToken))) {
             errors.liquidity = "Liquidity is bigger than wallet balance";
+        } else if (parseFloat(get(formData, ['liquidity'])) < 1000) {
+            errors.liquidity = "Liquidity can't be smaller than 1000";
         }
 
         if (!get(formData, ['description'])) {
@@ -299,6 +301,7 @@ function CreateMarket() {
                                                                         className={`${classes.CreateMarket__FieldBody} ${classes.DateTimePickerField}`}>
                                                                         <MuiPickersUtilsProvider utils={MomentUtils}>
                                                                             <DateTimePicker
+                                                                                format="yyyy/MM/DD hh:mm a"
                                                                                 variant="inline"
                                                                                 value={get(formData, ['endDate']) || moment().add(1, 'days')}
                                                                                 onChange={(e) => {
@@ -323,10 +326,10 @@ function CreateMarket() {
                                                                 Rules / Description
                                                             </div>
                                                             <div className={classes.CreateMarket__FieldBody}>
-                                        <textarea value={get(formData, ['description'])}
-                                                  onChange={(e) => {
-                                                      handleFormDataChange('description', e.target.value);
-                                                  }}/>
+                                                                <textarea value={get(formData, ['description'])}
+                                                                          onChange={(e) => {
+                                                                              handleFormDataChange('description', e.target.value);
+                                                                          }}/>
                                                                 {get(formDataErrors, ['description']) && (
                                                                     <div className={classes.CreateMarket__FieldBodyFieldError}>
                                                                         {get(formDataErrors, ['description'])}
@@ -364,13 +367,13 @@ function CreateMarket() {
                                                                             <div key={`Source-${index}`}>
                                                                                 <span>{entry}</span>
                                                                                 <span>
-                                                            <DeleteIcon
-                                                                onClick={() => handleRemoveSource(index)}
-                                                                className={
-                                                                    classes.RemoveSourceIcon
-                                                                }
-                                                            ></DeleteIcon>
-                                                        </span>
+                                                                                    <DeleteIcon
+                                                                                        onClick={() => handleRemoveSource(index)}
+                                                                                        className={
+                                                                                            classes.RemoveSourceIcon
+                                                                                        }
+                                                                                    ></DeleteIcon>
+                                                                                </span>
                                                                             </div>
                                                                         );
                                                                     })}
@@ -385,8 +388,9 @@ function CreateMarket() {
                                                     </div>
                                                     <div className={classes.CreateMarket__Section}>
                                                         <div className={classes.CreateMarket__Field}>
-                                                            <div className={classes.CreateMarket__FieldTitle}>
-                                                                Liquidity
+                                                            <div className={`${classes.CreateMarket__FieldTitle} ${classes.CreateMarket__FieldTitleLiquidity}`}>
+                                                                <span>Liquidity</span>
+                                                                <span className={classes.CreateMarket__FieldTitle__helper}>(available {fromWei(walletBalanceOfCollateralToken)})</span>
                                                             </div>
                                                             <div className={classes.CreateMarket__FieldBody}>
                                                                 <input type={'number'}
@@ -434,7 +438,8 @@ function CreateMarket() {
                                                                                        hidden={true}
                                                                                        onChange={handleChangeSelectedFile}
                                                                                        type="file"/>
-                                                                                Upload</Button>
+                                                                                Upload
+                                                                            </Button>
                                                                         </div>
                                                                     )
                                                                 }

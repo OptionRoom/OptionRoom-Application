@@ -1,6 +1,8 @@
 import React, {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
 import Skeleton from "@material-ui/lab/Skeleton";
+import {Link} from "react-router-dom";
+import {filter} from 'lodash';
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -10,26 +12,9 @@ import MarketCard from "../../components/MarketCard";
 import {useStyles} from "./styles";
 import {getMarketCategories, getMarkets, getIfWalletIsWhitelistedForBeta} from '../../shared/firestore.service';
 
-import {walletHelper} from "../../shared/wallet.helper";
-import {
-    ellipseAddress,
-    getAddressImgUrl,
-    toWei,
-    fromWei,
-} from "../../shared/helper";
-import {Link} from "react-router-dom";
 import Button from "../../components/Button";
 import NotWhitelisted from "../../components/NotWhitelisted";
-
-const walletHelperInsatnce = walletHelper();
-
-const getNumberFromBigNumber = (bigNumber) => {
-    return fromWei(bigNumber, "ether", 2);
-};
-
-const getBigNumberFromNumber = (number) => {
-    return toWei(number, "ether");
-};
+import MarketAPIs from "../../shared/contracts/MarketAPIs";
 
 function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -45,12 +30,20 @@ function Markets() {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-            const cats = await getMarketCategories();
+/*            const cats = await getMarketCategories();
+            setMarketCategories(cats);*/
             const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
             setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
-            setMarketCategories(cats);
+
+            const marketApis = new MarketAPIs();
+            const createdContracts = await marketApis.getAllMarketContracts();
+            console.log("createdContracts", createdContracts);
             const result = await getMarkets();
-            setMarkets(result);
+            const filteredMarkets = filter(result, (entry) => {
+                return !!createdContracts[entry.id];
+            });
+
+            setMarkets(filteredMarkets);
             setIsLoading(false);
         };
 

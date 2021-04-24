@@ -30,6 +30,16 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "24px",
         marginBottom: '4px'
     },
+    CreateMarket__FieldTitleLiquidity: {
+        display: 'flex',
+        alignItems: 'center',
+        '&>span:first-child': {
+            marginRight: 'auto'
+        }
+    },
+    CreateMarket__FieldTitle__helper: {
+        fontSize: '12px'
+    },
     CreateMarket__FieldBody:{
         position: 'relative',
         '& input, & textarea': {

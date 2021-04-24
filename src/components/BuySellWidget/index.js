@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 
 import {useStyles} from "./styles";
 import OptionBlock from "../OptionBlock";
@@ -20,6 +20,7 @@ function BuySellWidget(props) {
     const [tradeInput, setTradeInput] = useState(0);
     const [selectedTradeOption, setSelectedTradeOption] = useState('Yes');
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
+    const [buySellDetails, setBuySellDetails] = useState(null);
 
     const handleSetMaxTradeInput = () => {
         if(selectedTradeType === 'buy') {
@@ -83,6 +84,56 @@ function BuySellWidget(props) {
         }
     }
 
+    const handleUpdateBuySellDetails = async () => {
+        if(tradeInput && parseFloat(tradeInput) > 0) {
+            const marketApis = new MarketAPIs();
+            const buySellDeatils = {};
+
+            for(let i in ["0", "1"]) {
+                if(selectedTradeType === 'buy') {
+                    const numberOfBoughtTokens = await marketApis.getOptionTokensCountOfBuy(
+                        accountContext.account,
+                        props.marketContractAddress,
+                        toWei(tradeInput),
+                        i
+                    );
+
+                    const averagePrice = parseFloat(tradeInput)/fromWei(numberOfBoughtTokens);
+                    const estShares = fromWei(numberOfBoughtTokens);
+                    const maxRoi = (parseFloat(fromWei(numberOfBoughtTokens)) - parseFloat(tradeInput)) / parseFloat(tradeInput);
+                    buySellDeatils[i] = {
+                        averagePrice,
+                        estShares,
+                        maxRoi
+                    };
+                } else {
+
+                    const amountOfColletralTokenOutput = await marketApis.getCollateralTokensCountOfSell(
+                        accountContext.account,
+                        props.marketContractAddress,
+                        toWei(tradeInput),
+                        i
+                    );
+
+                    const averagePrice = parseFloat(fromWei(amountOfColletralTokenOutput))/parseFloat(tradeInput);
+                    const totalSellPrice = fromWei(amountOfColletralTokenOutput);
+
+                    buySellDeatils[i] = {
+                        averagePrice,
+                        totalSellPrice
+                    };
+                }
+            }
+
+            setBuySellDetails(buySellDeatils);
+        }
+    };
+
+    useEffect(() => {
+        handleUpdateBuySellDetails();
+    }, [tradeInput]);
+
+    const selectedTradeOptionIndex = selectedTradeOption === 'Yes' ? 0 : 1;
     return (
         <div className={classes.BuySellWidget}>
             <div className={classes.BuySellWidget__Nav}>
@@ -99,12 +150,15 @@ function BuySellWidget(props) {
                 </div>
                 <div className={classes.Options__Options}>
                     {
-                        ['Yes', 'No'].map((entry) => {
+                        ['Yes', 'No'].map((entry, index) => {
+                            console.log("buySellDetails", buySellDetails);
+                            const averagePrice = numeral(get(buySellDetails, [index , 'averagePrice'])).format("$0,0.00");
                             return (
-                                <OptionBlock isSelected={selectedTradeOption === entry}
+                                <OptionBlock key={`OptionBlock-${index}`}
+                                             isSelected={selectedTradeOption === entry}
                                              onClick={(value) => setSelectedTradeOption(value)}
                                              title={entry}
-                                             value={numeral(get(selectedTradeType === 'buy' ? props.pricesOfBuy : props.pricesOfSell, entry.toLowerCase()) || 0).format("$0,0.00")}/>
+                                             value={averagePrice}/>
                             )
                         })
                     }
@@ -132,19 +186,19 @@ function BuySellWidget(props) {
                                 [
                                     {
                                         title: 'Your Avg. Price',
-                                        value: numeral(getTradeInputAveragePrice()).format("$0,0.00"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex , 'averagePrice']) || 0).format("$0,0.00"),
                                     },
                                     {
                                         title: 'Est. Shares',
-                                        value: numeral(getBuyNumberOfShares()).format("0,0.00"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex , 'estShares']) || 0).format("0,0.00"),
                                     },
                                     {
                                         title: 'Max Winnings',
-                                        value: numeral(getBuyNumberOfShares()).format("$0,0.00"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex ,'estShares']) || 0).format("$0,0.00"),
                                     },
                                     {
                                         title: 'Max ROI',
-                                        value: numeral((getBuyNumberOfShares() - tradeInput) / tradeInput).format("0,0.00%"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex , 'maxRoi']) || 0).format("0,0.00%"),
                                     }
                                 ].map((entry) => {
                                     return (
@@ -166,11 +220,11 @@ function BuySellWidget(props) {
                                 [
                                     {
                                         title: 'Your Avg. sell Price',
-                                        value: numeral(getTradeInputAveragePrice()).format("$0,0.00"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex ,'averagePrice']) || 0).format("$0,0.00"),
                                     },
                                     {
                                         title: 'Total sell amount',
-                                        value: numeral(getBuyNumberOfShares()).format("0,0.00"),
+                                        value: numeral(get(buySellDetails, [selectedTradeOptionIndex ,'totalSellPrice']) || 0).format("0,0.00"),
                                     }
                                 ].map((entry) => {
                                     return (

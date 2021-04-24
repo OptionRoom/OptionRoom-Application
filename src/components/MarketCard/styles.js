@@ -17,7 +17,8 @@ export const useStyles = makeStyles((theme) => ({
         width: "48px",
         marginTop: '26px',
         backgroundSize: "cover",
-        backgroundRepeat: "no-repeat"
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: 'center'
     },
     Details: {
         width: 'calc(100% - 64px)'
@@ -53,7 +54,8 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '24px',
         display: 'block',
         textDecoration: 'none',
-        maxWidth: '400px'
+        maxWidth: '400px',
+        wordBreak: 'break-all'
     },
     Details__Footer: {
         display: 'flex'

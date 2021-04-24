@@ -488,7 +488,7 @@ function Market() {
                                                                     {get(market, 'sources') && get(market, 'sources').map((entry) => {
                                                                         return (
                                                                             <div className={classes.ResolutionLink}>
-                                                                                {entry}
+                                                                                <a href={entry} target={'_blank'}>{entry}</a>
                                                                             </div>
                                                                         )
                                                                     })}

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {get} from 'lodash';
+import numeral from "numeral";
 import {useState, useContext} from 'react';
 import {
     Link,
@@ -8,10 +9,10 @@ import {useStyles} from './styles'
 import {AccountContext} from '../../shared/AccountContextProvider';
 
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import numeral from "numeral";
-import {fromWei} from "../../shared/helper";
+import {fromWei, truncateText} from "../../shared/helper";
 
 function MarketCard(props) {
+    const marketAPIs = new MarketAPIs();
 
     const classes = useStyles();
     const {
@@ -24,7 +25,6 @@ function MarketCard(props) {
     const accountContext = useContext(AccountContext);
 
     const handleInit = async () => {
-        const marketAPIs = new MarketAPIs();
         //marketId, buyAmount, outcomeIndex
         const marketContractAddress = await marketAPIs.getMarketById(accountContext.account, get(market, ['id']));
         const pricesOfBuy = await marketAPIs.getPricesOfBuy(accountContext.account, marketContractAddress);
@@ -38,6 +38,7 @@ function MarketCard(props) {
 
         //marketId, buyAmount, outcomeIndex
         const tradingVolume = await marketAPIs.getMarketTradingVolume(accountContext.account, marketContractAddress);
+        console.log("tradingVolume", tradingVolume);
         setMarketTradingVolume(tradingVolume);
     };
 
@@ -77,11 +78,11 @@ function MarketCard(props) {
                     <div className={classes.Resolve}>{getMarketStateText()}</div>
                 </div>
                 <Link className={classes.Title}
-                      to={`/markets/${get(market, ['id'])}`}>{get(market, ['title'])}</Link>
+                      to={`/markets/${get(market, ['id'])}`}>{truncateText(get(market, ['title']), 100)}</Link>
                 <div className={classes.Details__Footer}>
                     <div className={classes.Volume}>
                         <span className={classes.Volume__Title}>Volume</span>
-                        <span className={classes.Volume__Value}>{numeral(fromWei(`${marketTradingVolume}`)).format("$0,0.00")}</span>
+                        <span className={classes.Volume__Value}>{numeral(fromWei(marketTradingVolume || 0)).format("$0,0.00")}</span>
                     </div>
                     <div className={classes.Options}>
                         <div className={classes.Option}>
@@ -89,7 +90,7 @@ function MarketCard(props) {
                             <span className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}</span>
                         </div>
                         <div className={classes.Option}>
-                            <span className={classes.Option__Title}>Yes</span>
+                            <span className={classes.Option__Title}>No</span>
                             <span className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}</span>
                         </div>
                     </div>

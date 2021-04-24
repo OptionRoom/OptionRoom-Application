@@ -20,11 +20,15 @@ const toFixedNoRounding = function(number, decimals) {
 };
 
 export const fromWei = (value, decimals, precision) => {
-    if (!precision) {
-        return Web3.utils.fromWei(`${value}`, decimals);
-    }
+    try {
+        if (!precision) {
+            return Web3.utils.fromWei(`${value}`, decimals);
+        }
 
-    return toFixedNoRounding(parseFloat(Web3.utils.fromWei(`${value}`, decimals)), precision);
+        return toFixedNoRounding(parseFloat(Web3.utils.fromWei(`${value}`, decimals)), precision);
+    } catch (e) {
+        return 0;
+    }
 };
 
 export const isMobile = () => {
@@ -291,3 +295,11 @@ export const isValidURL = (str) => {
     }
     return true;
 }
+
+export const truncateText = (str, length) => {
+    if(str && str.length > length) {
+        return `${str.substring(0,length)}...`;
+    }
+
+    return str;
+};
