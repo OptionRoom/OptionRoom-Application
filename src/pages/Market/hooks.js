@@ -48,7 +48,7 @@ export const useGetMarketSellPrices = (wallet, marketContractAddress) => {
     return sellPrices;
 };
 
-export const useGetMarketTradeVolume = (wallet, marketContractAddress) => {
+export const useGetMarketTradeVolume = (wallet, marketContractAddress, optionTokensPercentage) => {
     const [tradeVolume, setTradeVolume] = useState(0);
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export const useGetMarketTradeVolume = (wallet, marketContractAddress) => {
             init();
         }
 
-    }, [wallet, marketContractAddress]);
+    }, [wallet, marketContractAddress, optionTokensPercentage]);
 
     return tradeVolume;
 };

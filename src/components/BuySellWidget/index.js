@@ -119,6 +119,7 @@ function BuySellWidget(props) {
             } else {
                 if (props.isWalletOptionTokenApprovedForMarket) {
                     await marketAPIs.sell(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
+                    setTradeInput(0);
                     props.onTrade && props.onTrade();
                 } else {
                     await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);

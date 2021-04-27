@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConfigHelper from "./config.helper";
 
-const marketsDbName = 'markets2';
+const marketsDbName = 'markets';
 
 const firebaseConfig = {
     apiKey: ConfigHelper.getFirebaseApiKey(),

@@ -48,7 +48,7 @@ function Market() {
     const {marketId} = useParams();
     const [marketContractAddress, setMarketContractAddress] = useState(null);
     const [marketContractData, setMarketContractData] = useState({});
-    const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress);
+    const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
 
     //Liq
     const [isRemoveLiquidityModalOpen, setIsRemoveLiquidityModalOpen] = useState(false);
