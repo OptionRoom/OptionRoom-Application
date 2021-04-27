@@ -17,7 +17,7 @@ function VoteWidget(props) {
     const accountContext = useContext(AccountContext);
 
     //Vote
-    const [voteInput, setVoteInput] = useState('yes');
+    const [voteInput, setVoteInput] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [marketVotes, setMarketVotes] = useState(null);
 
@@ -51,6 +51,7 @@ function VoteWidget(props) {
     const loadVote = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getMarketVoting(accountContext.account, props.marketContractAddress, props.marketState);
+
         if(props.marketState == 1) {
             const formattedVotes = [];
             formattedVotes[0] = (parseFloat(votes[0])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
@@ -103,6 +104,7 @@ function VoteWidget(props) {
             <Button color="primary"
                     size={"large"}
                     onClick={handleVote}
+                    isDisabled={!voteInput}
                     isProcessing={isProcessing}
                     fullWidth={true}>Vote</Button>
         </div>

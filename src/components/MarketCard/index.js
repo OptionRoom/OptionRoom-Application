@@ -10,6 +10,8 @@ import {AccountContext} from '../../shared/AccountContextProvider';
 
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, truncateText} from "../../shared/helper";
+import {marketStates} from '../../shared/constants';
+import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
 
 function MarketCard(props) {
     const marketAPIs = new MarketAPIs();
@@ -20,13 +22,15 @@ function MarketCard(props) {
     } = props;
     const [pricesOfBuy, setPricesOfBuy] = useState(0);
     const [marketState, setMarketState] = useState(null);
-    const [marketTradingVolume, setMarketTradingVolume] = useState(0);
-
+    const [marketContractAddress, setMarketContractAddress] = useState(null);
     const accountContext = useContext(AccountContext);
+    const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress);
 
     const handleInit = async () => {
         //marketId, buyAmount, outcomeIndex
         const marketContractAddress = await marketAPIs.getMarketById(accountContext.account, get(market, ['id']));
+        setMarketContractAddress(marketContractAddress);
+
         const pricesOfBuy = await marketAPIs.getPricesOfBuy(accountContext.account, marketContractAddress);
         setPricesOfBuy({
             'yes': pricesOfBuy.priceOfYes,
@@ -35,29 +39,14 @@ function MarketCard(props) {
 
         const marketContractInState = await marketAPIs.getMarketState(accountContext.account, marketContractAddress);
         setMarketState(marketContractInState);
-
-        //marketId, buyAmount, outcomeIndex
-        const tradingVolume = await marketAPIs.getMarketTradingVolume(accountContext.account, marketContractAddress);
-        console.log("tradingVolume", tradingVolume);
-        setMarketTradingVolume(tradingVolume);
     };
 
     const getMarketStateText = () => {
-        if(!marketState) {
+        if (!marketState) {
             return null;
         }
 
-        const states = {
-            "0": "Invalid",
-            "1": "Pending",
-            "2": "Rejected",
-            "3": "Active",
-            "4": "Inactive",
-            "5": "Resolving",
-            "6": "Resolved",
-        }
-
-        return states[marketState];
+        return marketStates[marketState];
     };
 
 
@@ -65,8 +54,20 @@ function MarketCard(props) {
         handleInit();
     }, []);
 
+    useEffect(() => {
+        props.onMarketDataLoad && props.onMarketDataLoad({
+            tradeVolume: marketTradeVolume,
+            pricesOfBuy: pricesOfBuy,
+            state: marketState,
+            marketContractAddress: marketContractAddress,
+            marketId: get(market, ['id']),
+        });
+    }, [marketContractAddress, marketTradeVolume, pricesOfBuy, marketState]);
+
+
     return (
-        <div className={classes.MarketCard}>
+        <Link to={`/markets/${get(market, ['id'])}`}
+              className={classes.MarketCard}>
             <div className={classes.AvatarWrap}>
                 <div className={classes.Avatar} style={{
                     backgroundImage: `url(${get(market, ['image'])})`
@@ -75,28 +76,31 @@ function MarketCard(props) {
             <div className={classes.Details}>
                 <div className={classes.Details__Header}>
                     <div className={classes.Cat}>{get(market, ['category', 'label'])}</div>
-                    <div className={classes.Resolve}>{getMarketStateText()}</div>
+                    <div className={classes.MarketState}>{getMarketStateText()}</div>
                 </div>
-                <Link className={classes.Title}
-                      to={`/markets/${get(market, ['id'])}`}>{truncateText(get(market, ['title']), 100)}</Link>
+                <h1 className={classes.Title}>
+                    {truncateText(get(market, ['title']), 100)}
+                </h1>
                 <div className={classes.Details__Footer}>
                     <div className={classes.Volume}>
                         <span className={classes.Volume__Title}>Volume</span>
-                        <span className={classes.Volume__Value}>{numeral(fromWei(marketTradingVolume || 0)).format("$0,0.00")}</span>
+                        <span className={classes.Volume__Value}>{numeral(marketTradeVolume).format("$0,0.00")}</span>
                     </div>
                     <div className={classes.Options}>
                         <div className={classes.Option}>
                             <span className={classes.Option__Title}>Yes</span>
-                            <span className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}</span>
+                            <span
+                                className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}</span>
                         </div>
                         <div className={classes.Option}>
                             <span className={classes.Option__Title}>No</span>
-                            <span className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}</span>
+                            <span
+                                className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }
 

@@ -18,10 +18,16 @@ import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import {
     convertAmountToTokens,
-    convertTokensToAmount,
+    convertTokensToAmount, fromWei,
     toWei,
 } from "../../shared/helper";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
+import Slide from "@material-ui/core/Slide";
+import TradeInput from "../TradeInput";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const getModalHeaderText = (type) => {
     if (type === "market_liquidity") {
@@ -77,6 +83,7 @@ function UnstakeModal(props) {
     const [exit, setExit] = useState(false);
     const [isInvalidAmountError, setIsInvalidAmountError] = useState(false);
     const [isUnstakeProcessing, setIsUnstakeProcessing] = useState(false);
+    const [canTrade, setCanTrade] = useState(false);
 
     const classes = useStyles();
 
@@ -170,6 +177,8 @@ function UnstakeModal(props) {
             aria-labelledby="UnstakeModal-dialog-title"
             open={props.open}
             disableBackdropClick={true}
+            TransitionComponent={Transition}
+            keepMounted
         >
             <MuiDialogTitle
                 id="UnstakeModal-dialog-title"
@@ -197,37 +206,20 @@ function UnstakeModal(props) {
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available{" "}
                     <span className={classes.Modal__TokensLabel_Balance}>
-                        {convertAmountToTokens(stakedTokensBalance)}
+                        {fromWei(stakedTokensBalance)}
                     </span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>
-                    <input
-                        value={amountToUnstake}
-                        onChange={(e) => {
-                            setAmountToUnstake(e.target.value);
-                        }}
-                        className={clsx(classes.Modal__TokensInput, {
-                            [classes.Modal__TokensInput__HasError]: isInvalidAmountError,
-                        })}
-                        type={"number"}
-                    />
-                    <div
-                        className={classes.Modal__TokensInputMaxBtn}
-                        onClick={handleSetMax}
-                    >
-                        Max
-                    </div>
+                    <TradeInput max={fromWei(stakedTokensBalance)}
+                                min={0}
+                                value={amountToUnstake}
+                                onValidityUpdate={(valid) => {
+                                    setCanTrade(valid);
+                                }}
+                                onChange={(e)=> {
+                                    setAmountToUnstake(e);
+                                }}/>
                 </div>
-                {isInvalidAmountError && (
-                    <div className={classes.Modal__TokensErrorHelp}>
-                        {convertAmountToTokens(stakedTokensBalance) === "1.0" &&
-                            `Invalid amount, it must be 1`}
-                        {convertAmountToTokens(stakedTokensBalance) !== "1.0" &&
-                            `Invalid amount, it must be between 1 and ${convertAmountToTokens(
-                                stakedTokensBalance
-                            )}`}
-                    </div>
-                )}
                 {
                     type !== "market_liquidity" && (
                         <div className={classes.ClaimWrap}>
@@ -259,6 +251,7 @@ function UnstakeModal(props) {
                     isProcessing={isUnstakeProcessing}
                     color={"primary"}
                     size={"small"}
+                    isDisabled={!canTrade}
                 >
                     Confirm
                 </Button>

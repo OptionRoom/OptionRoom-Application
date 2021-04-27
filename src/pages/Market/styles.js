@@ -1,18 +1,23 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
+    LoadingWrapper: {
+        padding: '100px',
+        textAlign: 'center'
+    },
     MarketsPage: {},
     Sidebar: {},
     MarketDetails: {},
     MarketDetails__Header: {
         display: 'flex',
         marginBottom: "24px",
+        alignItems: 'center'
     },
     MarketDetails__HeaderAvatar: {
         borderRadius: '50%',
         height: "48px",
         width: "48px",
-        marginTop: '26px',
+        boxShadow: "0 0 20px 0 #E6EDFF",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         marginRight: '15px',
@@ -199,6 +204,7 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: "16px",
         backgroundColor: "#E9EAFF",
         marginBottom: "24px",
+        wordBreak: 'break-all'
     },
     Resolution__Header: {
         color: "#6D8096",

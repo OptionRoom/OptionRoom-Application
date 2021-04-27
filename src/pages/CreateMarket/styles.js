@@ -1,6 +1,10 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
+    LoadingWrapper: {
+        padding: '100px',
+        textAlign: 'center'
+    },
     CreateMarketPage:{},
     CreateMarketPage__Main:{
         maxWidth: '600px',
@@ -30,6 +34,9 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "24px",
         marginBottom: '4px'
     },
+    CreateMarket__FieldTitleRequired: {
+      color: 'red'
+    },
     CreateMarket__FieldTitleLiquidity: {
         display: 'flex',
         alignItems: 'center',
@@ -54,7 +61,7 @@ export const useStyles = makeStyles((theme) => ({
             lineHeight: "14px",
             padding: '16.5px',
             outline: 'none',
-
+            maxWidth: '100%'
         }
     },
     CreateMarket__FieldBodyFieldError: {
@@ -107,9 +114,9 @@ export const useStyles = makeStyles((theme) => ({
         backgroundColor: "#FFFFFF",
         padding: '16px',
         marginTop: '8px',
+        width: '100%',
         '& >div': {
             padding: '4px 8px',
-            background: '#EDEFF4',
             borderRadius: "8px",
             marginBottom: '8px',
             display: 'flex',
@@ -124,14 +131,13 @@ export const useStyles = makeStyles((theme) => ({
     },
     RemoveSourceIcon: {
         cursor: 'pointer',
-        color: 'red'
+        color: 'black'
     },
     CreateMarket__FieldBodyImg: {
         border: "1px solid #D2D9E1",
         borderRadius: "8px",
         backgroundColor: "#FFFFFF",
         padding: '16px',
-
     },
     CreateMarket__FieldBodyImgEmpty: {
         textAlign: 'center',

@@ -6,7 +6,7 @@ import { getMarketRouterContract } from "./MarketRouterContract";
 import { getGovernanceContract } from "./GovernanceContract";
 import { getOptionTokenContract } from "./OptionTokenContract";
 import {fromWei, toWei} from "../helper";
-import {map, sum, filter} from 'lodash';
+import {map, sum, sortBy} from 'lodash';
 
 const walletHelperInstance = walletHelper();
 
@@ -87,7 +87,16 @@ factoryC.address (AAA3)
             return parseFloat(entry.returnValues.investmentAmount);
         }));
 
-        return sum2;
+        console.log("buyEvents", buyEvents, sum2);
+        const sellEvents = await generateMarketContract(marketId)
+            .getPastEvents("FPMMSell", {
+                fromBlock: 1
+            });
+        const sum3 = sum(map(sellEvents, (entry) => {
+            return parseFloat(entry.returnValues.returnAmount);
+        }));
+
+        return (sum2 + sum3) / 1e18;
     }
 
     async getWalletTradeOptionBuyPrice(
@@ -121,26 +130,32 @@ factoryC.address (AAA3)
 
     async getWalletMarketBuyAndSellHistory(
         wallet,
-        marketId) {
-        const buyEvents = await generateMarketContract(marketId)
-            .getPastEvents("FPMMBuy", {
+        marketId
+        ) {
+
+        const marketContract = generateMarketContract(marketId);
+
+        const buyEvents = await marketContract
+            .getPastEvents('FPMMBuy', {
                 filter: {
-                    buyer: wallet,
-                    outcomeIndex: 0
+                    buyer: wallet
                 },
                 fromBlock: 1
             });
 
-        const sellEvents = await generateMarketContract(marketId)
-            .getPastEvents("FPMMSell", {
+        const sellEvents = await marketContract
+            .getPastEvents('FPMMSell', {
                 filter: {
-                    buyer: wallet,
-                    outcomeIndex: 0
+                    seller: wallet
                 },
                 fromBlock: 1
             });
 
-        return buyEvents.concat(sellEvents);
+        let allEvents = buyEvents.concat(sellEvents);
+
+        allEvents = sortBy(allEvents, ["blockNumber", "transactionIndex"]);
+
+        return allEvents;
     }
 
     async sell(wallet, marketId, amount, sellIndex) {
@@ -156,13 +171,9 @@ factoryC.address (AAA3)
     async getPricesOfBuy(wallet, marketAddress) {
         const marketOutcome = await this.getMarketOptionTokensPercentage(wallet, marketAddress);
 
-        console.log("marketOutcome", marketOutcome);
-
-        const priceOfYes = parseFloat(marketOutcome[0]) / (parseFloat(marketOutcome[1]) + parseFloat(marketOutcome[0]));
-        const priceOfNo = parseFloat(marketOutcome[1]) / (parseFloat(marketOutcome[1]) + parseFloat(marketOutcome[0]));
         return {
-            priceOfYes,
-            priceOfNo
+            priceOfYes: parseFloat(marketOutcome[0])/100,
+            priceOfNo: parseFloat(marketOutcome[1])/100
         }
     }
 
@@ -325,6 +336,24 @@ factoryC.address (AAA3)
     }
 
     async getMarketVoting(wallet, marketId, state) {
+        if (state == 1) {
+            return await generateMarketContract(marketId)
+                .methods
+                .getGovernanceVotingResults()
+                .call({
+                    from: wallet,
+                });
+        }
+
+        return await generateMarketContract(marketId)
+            .methods
+            .getResolvingOutcome()
+            .call({
+                from: wallet,
+            });
+    }
+
+    async didWalletVotedOnMarket(wallet, marketId, state) {
         if (state == 1) {
             return await generateMarketContract(marketId)
                 .methods

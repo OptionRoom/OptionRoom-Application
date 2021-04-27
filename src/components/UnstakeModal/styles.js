@@ -2,7 +2,8 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     paper: {
-        borderRadius: '12px'
+        borderRadius: '12px',
+        minWidth: "400px"
     },
     closeButton: {
         position: 'absolute',

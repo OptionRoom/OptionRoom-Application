@@ -6,7 +6,8 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px',
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: '0 0 20px 0 #e6edff',
+        textDecoration: 'none'
     },
     AvatarWrap: {
         width: '64px'
@@ -18,7 +19,9 @@ export const useStyles = makeStyles((theme) => ({
         marginTop: '26px',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: 'center'
+        backgroundPosition: 'center',
+        boxShadow: '0 0 20px 0 #e6edff',
+        border: '1px solid #e6edff'
     },
     Details: {
         width: 'calc(100% - 64px)'
@@ -34,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "16px"
     },
-    Resolve: {
+    MarketState: {
         color: "#FFFFFF",
         fontSize: "10px",
         fontWeight: 500,
@@ -43,7 +46,7 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         borderRadius: "16px",
         backgroundColor: "#8293A6",
-        padding: '0 8px'
+        padding: '2px 8px'
     },
     Title: {
         color: "#212529",

@@ -1,7 +1,12 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    MarketsPage: {},
+    MarketsPage: {
+        '&>div': {
+            maxWidth: '800px',
+            margin: '0 auto',
+        }
+    },
     Sidebar: {},
     Sidebar__Title: {
         color: '#3F4A57',
@@ -36,8 +41,6 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: 'center'
     },
     MarketsWrap: {
-        maxWidth: '800px',
-        margin: '0 auto',
         '& >div': {
             marginBottom: '16px'
         }
@@ -46,8 +49,6 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '16px'
     },
     CreateMarketLink: {
-        display: 'block',
         textDecoration: 'none',
-
     }
 }));

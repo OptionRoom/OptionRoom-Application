@@ -2,8 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     paper: {
-        borderRadius: '12px',
-        minWidth: "400px"
+        borderRadius: '12px'
     },
     closeButton: {
         position: 'absolute',
@@ -39,26 +38,15 @@ export const useStyles = makeStyles((theme) => ({
         marginRight: '5px',
         color: 'rgba(0, 0, 0, 0.26)'
     },
-    Modal__Text: {
-        color: '#6D8096',
-        fontSize: '16px',
-        letterSpacing: 0,
-        lineHeight: '24px',
-        marginBottom: '24px'
-    },
-    Modal__TokensLabel: {
-        color: '#4E5D6D',
-        fontSize: '14px',
-        letterSpacing: 0,
-        lineHeight: '24px',
-        marginBottom: '8px'
-    },
-    Modal__TokensLabel_Balance: {
-        fontWeight: 700,
-        float: 'right',
-        color: '#000'
-    },
     MuiDialogContent: {
         padding: '32px 24px',
+    },
+    Actions: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        '& button': {
+            marginLeft: '10px'
+        }
     }
 }));

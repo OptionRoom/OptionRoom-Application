@@ -22,5 +22,15 @@ export const nftImages = {
     4: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/citadel.jpg',
 };
 
+export const marketStates = {
+    "0": "Invalid",
+    "1": "Pending",
+    "2": "Rejected",
+    "3": "Active",
+    "4": "Inactive",
+    "5": "Resolving",
+    "6": "Resolved",
+};
+
 export const controlledNetworkId = 3;//"mainnet";
 //export const controlledNetworkId = 3;//"ropsten";

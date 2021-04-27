@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConfigHelper from "./config.helper";
 
+const marketsDbName = 'markets2';
 
 const firebaseConfig = {
     apiKey: ConfigHelper.getFirebaseApiKey(),
@@ -74,7 +75,7 @@ export const createAuthOnFirebase = async (account, message, signature) => {
 };
 
 export const createMarket = async (wallet, category, description, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity, image, sources, title) => {
-    return db.collection('markets')
+    return db.collection(marketsDbName)
         .add({
             createdAt: firebase.firestore.FieldValue.serverTimestamp(),
             wallet: wallet,
@@ -116,7 +117,7 @@ export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
 };
 
 export const getMarkets = async () => {
-    const snapshot = await db.collection('markets').get();
+    const snapshot = await db.collection(marketsDbName).get();
     return snapshot.docs.map(doc => {
         return {
             id: doc.id,
@@ -126,7 +127,7 @@ export const getMarkets = async () => {
 };
 
 export const getMarketById = async (marketId) => {
-    const snapshot = await db.collection('markets').doc(marketId).get();
+    const snapshot = await db.collection(marketsDbName).doc(marketId).get();
     return {
         id: snapshot.id,
         ...snapshot.data()
@@ -147,7 +148,7 @@ export const uploadMarketImage = async (file, progressCb) => {
     return new Promise((resolve, reject) => {
         const storage = firebase.storage();
         const storageRef = storage.ref();
-        const uploadTask = storageRef.child(`market-thumbnail/${uuidv4()}.${file.name.split('.').pop()}`).put(file);
+        const uploadTask = storageRef.child(`market-thumbnail/${uuidv4()}.png`).putString(file, 'data_url');
 
         uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
             (snapshot) =>{
@@ -158,10 +159,6 @@ export const uploadMarketImage = async (file, progressCb) => {
             },() =>{
                 uploadTask.snapshot.ref.getDownloadURL().then((url) =>{
                     resolve(url);
-                });
-
-                uploadTask.snapshot.ref.getMetadata().then((url) =>{
-                    console.log("url", url);
                 });
             }
         )

@@ -327,12 +327,11 @@ function Sidebar() {
                         link: '/markets',
                         icon: MarketsIcon
                     },
-                    /*
-                        {
-                            title: 'Governance',
-                            link: '/governance',
-                            icon: GovernanceIcon
-                        },*/
+                    /*{
+                        title: 'Governance',
+                        link: '/governance',
+                        icon: GovernanceIcon
+                    },
                     {
                         title: "COURT Farming",
                         link: "/court-farming",
@@ -357,7 +356,7 @@ function Sidebar() {
                         title: "Claim",
                         link: "/claim",
                         icon: ClaimIcon,
-                    },
+                    },*/
                     /*
                         {
                             title: 'Oracle',
