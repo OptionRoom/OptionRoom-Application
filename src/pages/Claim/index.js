@@ -74,13 +74,14 @@ function Claim() {
 
     return (
         <>
-            <Navbar
-                title={"Claim"}
-                details={
-                    "Earn COURT tokens by providing liquidity to one of the pools on this page."
-                }
-            />
+
             <div className={classes.ClaimPage}>
+                <Navbar
+                    title={"Claim"}
+                    details={
+                        "Earn COURT tokens by providing liquidity to one of the pools on this page."
+                    }
+                />
                 {accountContext.account && (
                     <div className={classes.ClaimCard}>
                         <StyledTabs

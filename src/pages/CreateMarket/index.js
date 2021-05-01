@@ -41,6 +41,7 @@ import NotWhitelisted from "../../components/NotWhitelisted";
 import CropModal from "../../components/CropModal";
 import {useGetMarketCategories} from "../../shared/hooks";
 import TradeInput from "../../components/TradeInput";
+import ConfigHelper from "../../shared/config.helper";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -62,7 +63,7 @@ function CreateMarket() {
     const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
 
-    const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {errors}} = useForm({
+    const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
         defaultValues: {
             sources: [{value: ''}],
             liquidity: 0
@@ -150,7 +151,7 @@ function CreateMarket() {
         if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
             setIsCreatingMarket(true);
             const marketApis = new MarketAPIs();
-            marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
+            await marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
             loadWalletData();
             setIsCreatingMarket(false);
             return;
@@ -165,7 +166,7 @@ function CreateMarket() {
             const imageUpload = await uploadMarketImage(data.image);
 
             const resolveTimestamp = data.endDate.clone().add(4, 'hours').unix();
-            const collateralTokenAddress = '0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37';
+            const collateralTokenAddress = ConfigHelper.getContractsAddresses().collateralToken;
             const sources = data.sources.map((entry) => entry.name);
 
             //wallet, category, description, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity, image, sources, title
@@ -228,327 +229,322 @@ function CreateMarket() {
         init();
     }, [accountContext.account]);
 
+    if(!accountContext.account) {
+        return (
+            <div className={classes.ConnectWrap}>
+                <ConnectButton/>
+            </div>
+        )
+    }
+
+    if(isLoading) {
+        return (
+            <div className={classes.LoadingWrapper}>
+                <CircularProgress/>
+            </div>
+        )
+    }
+
+    if(!isWalletWhitelistedForBeta) {
+        return (
+            <NotWhitelisted/>
+        )
+    }
+
     return (
         <>
-            <Navbar
-                title={"Create a market"}
-                details={
-                    "Fill in details and have your market ready"
-                }
-            />
             <div className={classes.CreateMarketPage}>
-                {accountContext.account && (
-                    <>
-                        {isLoading && (
-                            <div className={classes.LoadingWrapper}><CircularProgress/></div>
-                        )}
-                        {
-                            !isLoading && (
-                                <>
-                                    {
-                                        !isWalletWhitelistedForBeta && (
-                                            <NotWhitelisted/>
-                                        )
-                                    }
-                                    {
-                                        isWalletWhitelistedForBeta && (
-                                            <div className={classes.CreateMarketPage__Main}>
-                                                <form noValidate
-                                                      onSubmit={handleSubmit(handleCreateMarket)}>
-                                                    <div className={classes.CreateMarketBox}>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <div className={classes.CreateMarket__Field}>
-                                                                <div className={classes.CreateMarket__FieldTitle}>
-                                                                    Market Question <span
-                                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                </div>
-                                                                <div className={classes.CreateMarket__FieldBody}>
-                                                                    <input {...register("title")}/>
-                                                                    {
-                                                                        errors.title?.message && (
-                                                                            <div
-                                                                                className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                                {errors.title?.message}
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                </div>
-                                                            </div>
+                <Navbar
+                    title={"Create a market"}
+                    details={
+                        "Fill in details and have your market ready"
+                    }
+                />
+                <div className={classes.CreateMarketPage__Main}>
+                    <form noValidate
+                          onSubmit={handleSubmit(handleCreateMarket)}>
+                        <div className={classes.CreateMarketBox}>
+                            <div className={classes.CreateMarket__Section}>
+                                <div className={classes.CreateMarket__Field}>
+                                    <div className={classes.CreateMarket__FieldTitle}>
+                                        Market Question <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBody}>
+                                        <input {...register("title")}/>
+                                        {
+                                            errors.title?.message && (
+                                                <div
+                                                    className={classes.CreateMarket__FieldBodyFieldError}>
+                                                    {errors.title?.message}
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <Grid container spacing={3}>
+                                    <Grid item xs={6}>
+                                        <div className={classes.CreateMarket__Field}>
+                                            <div
+                                                className={classes.CreateMarket__FieldTitle}>
+                                                Category <span
+                                                className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                            </div>
+                                            <div
+                                                className={`${classes.CreateMarket__FieldBody} ${classes.CreateMarket__CategoryField}`}>
+                                                <Select onChange={(e) => {
+                                                    setValue("category", e, { shouldValidate: true });
+                                                }}
+                                                        options={marketCategories.map((entry) => {
+                                                            return {
+                                                                value: entry.id,
+                                                                label: entry.title
+                                                            };
+                                                        })}
+                                                        classNamePrefix={'CreateMarket__CategoryField'}/>
+                                                {errors.category?.message && (
+                                                    <div
+                                                        className={classes.CreateMarket__FieldBodyFieldError}>
+                                                        {errors.category?.message}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <div className={classes.CreateMarket__Field}>
+                                            <div
+                                                className={classes.CreateMarket__FieldTitle}>End
+                                                Date <span
+                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                            </div>
+                                            <div
+                                                className={`${classes.CreateMarket__FieldBody} ${classes.DateTimePickerField}`}>
+                                                <MuiPickersUtilsProvider
+                                                    utils={MomentUtils}>
+                                                    <DateTimePicker
+                                                        format="yyyy/MM/DD hh:mm a"
+                                                        variant="inline"
+                                                        value={getValues('endDate') || moment().add(1, 'days')}
+                                                        onChange={(e) => {
+                                                            setValue("endDate", e, { shouldValidate: true });
+                                                        }}
+                                                        minDate={moment().add(1, 'days')}
+                                                    />
+                                                </MuiPickersUtilsProvider>
+                                                {errors.endDate?.message && (
+                                                    <div
+                                                        className={classes.CreateMarket__FieldBodyFieldError}>
+                                                        {errors.endDate?.message}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <div className={classes.CreateMarket__Field}>
+                                    <div className={classes.CreateMarket__FieldTitle}>
+                                        Rules / Description <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBody}>
+                                        <textarea {...register("description")}/>
+                                        {errors.description?.message && (
+                                            <div
+                                                className={classes.CreateMarket__FieldBodyFieldError}>
+                                                {errors.description?.message}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <div
+                                    className={`${classes.CreateMarket__Field} ${classes.CreateMarket__FieldSources}`}>
+                                    <div className={classes.CreateMarket__FieldTitle}>
+                                        References/Sources <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBody}>
+                                        <div className={classes.CreateMarket__Sources}>
+                                            {sourceFields.map((entry, index) => {
+                                                return (
+                                                    <>
+                                                        <div key={`Source-${index}`}>
+                                                            <input type={'text'}
+                                                                   key={entry.id}
+                                                                   {...register(`sources.${index}.name`)}/>
+                                                            {
+                                                                index === 0 ? (
+                                                                    <Button size={'medium'}
+                                                                            color={'black'}
+                                                                            onClick={() => {
+                                                                                appendSource({
+                                                                                    name: ""
+                                                                                });
+                                                                            }}>
+                                                                        <AddIcon
+                                                                            className={
+                                                                                classes.EarnCard__Action__Btn_Add__Icon
+                                                                            }
+                                                                        ></AddIcon>
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button size={'medium'}
+                                                                            color={'red'}
+                                                                            onClick={() => {
+                                                                                removeSource(index);
+                                                                            }}>
+                                                                        <DeleteIcon
+                                                                            className={
+                                                                                classes.RemoveSourceIcon
+                                                                            }
+                                                                        ></DeleteIcon>
+                                                                    </Button>
+                                                                )
+                                                            }
                                                         </div>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <Grid container spacing={3}>
-                                                                <Grid item xs={6}>
-                                                                    <div className={classes.CreateMarket__Field}>
-                                                                        <div
-                                                                            className={classes.CreateMarket__FieldTitle}>
-                                                                            Category <span
-                                                                            className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                        </div>
-                                                                        <div
-                                                                            className={`${classes.CreateMarket__FieldBody} ${classes.CreateMarket__CategoryField}`}>
-                                                                            <Select onChange={(e) => {
-                                                                                setValue("category", e, { shouldValidate: true });
-                                                                            }}
-                                                                                    options={marketCategories.map((entry) => {
-                                                                                        return {
-                                                                                            value: entry.id,
-                                                                                            label: entry.title
-                                                                                        };
-                                                                                    })}
-                                                                                    classNamePrefix={'CreateMarket__CategoryField'}/>
-                                                                            {errors.category?.message && (
-                                                                                <div
-                                                                                    className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                                    {errors.category?.message}
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                </Grid>
-                                                                <Grid item xs={6}>
-                                                                    <div className={classes.CreateMarket__Field}>
-                                                                        <div
-                                                                            className={classes.CreateMarket__FieldTitle}>End
-                                                                            Date <span
-                                                                                className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                        </div>
-                                                                        <div
-                                                                            className={`${classes.CreateMarket__FieldBody} ${classes.DateTimePickerField}`}>
-                                                                            <MuiPickersUtilsProvider
-                                                                                utils={MomentUtils}>
-                                                                                <DateTimePicker
-                                                                                    format="yyyy/MM/DD hh:mm a"
-                                                                                    variant="inline"
-                                                                                    value={getValues('endDate') || moment().add(1, 'days')}
-                                                                                    onChange={(e) => {
-                                                                                        setValue("endDate", e, { shouldValidate: true });
-                                                                                    }}
-                                                                                    minDate={moment().add(1, 'days')}
-                                                                                />
-                                                                            </MuiPickersUtilsProvider>
-                                                                            {errors.endDate?.message && (
-                                                                                <div
-                                                                                    className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                                    {errors.endDate?.message}
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </div>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <div className={classes.CreateMarket__Field}>
-                                                                <div className={classes.CreateMarket__FieldTitle}>
-                                                                    Rules / Description <span
-                                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                </div>
-                                                                <div className={classes.CreateMarket__FieldBody}>
-                                                                <textarea {...register("description")}/>
-                                                                    {errors.description?.message && (
-                                                                        <div
-                                                                            className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                            {errors.description?.message}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <div
-                                                                className={`${classes.CreateMarket__Field} ${classes.CreateMarket__FieldSources}`}>
-                                                                <div className={classes.CreateMarket__FieldTitle}>
-                                                                    References/Sources <span
-                                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                </div>
-                                                                <div className={classes.CreateMarket__FieldBody}>
-                                                                    <div className={classes.CreateMarket__Sources}>
-                                                                        {sourceFields.map((entry, index) => {
-                                                                            return (
-                                                                                <>
-                                                                                    <div key={`Source-${index}`}>
-                                                                                        <input type={'text'}
-                                                                                               key={entry.id}
-                                                                                               {...register(`sources.${index}.name`)}/>
-                                                                                        {
-                                                                                            index === 0 ? (
-                                                                                                <Button size={'medium'}
-                                                                                                        color={'black'}
-                                                                                                        onClick={() => {
-                                                                                                            appendSource({
-                                                                                                                name: ""
-                                                                                                            });
-                                                                                                        }}>
-                                                                                                    <AddIcon
-                                                                                                        className={
-                                                                                                            classes.EarnCard__Action__Btn_Add__Icon
-                                                                                                        }
-                                                                                                    ></AddIcon>
-                                                                                                </Button>
-                                                                                            ) : (
-                                                                                                <Button size={'medium'}
-                                                                                                        color={'red'}
-                                                                                                        onClick={() => {
-                                                                                                            removeSource(index);
-                                                                                                        }}>
-                                                                                                    <DeleteIcon
-                                                                                                        className={
-                                                                                                            classes.RemoveSourceIcon
-                                                                                                        }
-                                                                                                    ></DeleteIcon>
-                                                                                                </Button>
-                                                                                            )
-                                                                                        }
-                                                                                    </div>
-                                                                                    {
-                                                                                        get(errors, ['sources', index, 'name', 'message']) && (
-                                                                                            <div key={`Source2-${index}`}
-                                                                                                className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                                                {get(errors, ['sources', index, 'name', 'message'])}
+                                                        {
+                                                            get(errors, ['sources', index, 'name', 'message']) && (
+                                                                <div key={`Source2-${index}`}
+                                                                     className={classes.CreateMarket__FieldBodyFieldError}>
+                                                                    {get(errors, ['sources', index, 'name', 'message'])}
 
-                                                                                            </div>
-                                                                                        )
-                                                                                    }
-                                                                                </>
-                                                                            );
-                                                                        })}
-                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <div className={classes.CreateMarket__Field}>
-                                                                <div
-                                                                    className={`${classes.CreateMarket__FieldTitle} ${classes.CreateMarket__FieldTitleLiquidity}`}>
+                                                            )
+                                                        }
+                                                    </>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <div className={classes.CreateMarket__Field}>
+                                    <div
+                                        className={`${classes.CreateMarket__FieldTitle} ${classes.CreateMarket__FieldTitleLiquidity}`}>
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
-                                                                    <span
-                                                                        className={classes.CreateMarket__FieldTitle__helper}>(available {fromWei(walletBalanceOfCollateralToken)})</span>
-                                                                </div>
-                                                                <div className={classes.CreateMarket__FieldBody}>
-                                                                    <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
-                                                                                min={1000}
-                                                                                value={getValues('liquidity') || 0}
-                                                                                onValidityUpdate={(valid) => {
-                                                                                    //setIsTradeDisabled(!valid);
-                                                                                }}
-                                                                                onChange={(e)=> {
-                                                                                    console.log("e", e);
-                                                                                    setValue("liquidity", e,{ shouldValidate: true });
-                                                                                }}/>
-                                                                </div>
-                                                                {errors.liquidity?.message && (
-                                                                    <div
-                                                                        className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                        {errors.liquidity?.message}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                        <div className={classes.CreateMarket__Section}>
-                                                            <div className={classes.CreateMarket__Field}>
-                                                                <div className={classes.CreateMarket__FieldTitle}>
-                                                                    Image <span
-                                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
-                                                                </div>
-                                                                <div className={classes.CreateMarket__FieldBodyImg}>
-                                                                    {
-                                                                        !getValues("image") && (
-                                                                            <div
-                                                                                className={classes.CreateMarket__FieldBodyImgEmpty}>
-                                                                                <div>PNG or JPG: 300x300 pixels</div>
-                                                                                <Button size={'medium'}
-                                                                                        component="label"
-                                                                                        color={'primary'}>
-                                                                                    <input accept="image/*"
-                                                                                           hidden={true}
-                                                                                           onChange={handleChangeSelectedFile}
-                                                                                           type="file"/>
-                                                                                    Upload
-                                                                                </Button>
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                    {
-                                                                        getValues("image") && (
-                                                                            <div
-                                                                                className={classes.CreateMarket__FieldBodySelected}>
-                                                                                <div
-                                                                                    className={classes.MarketImgFileWrap}>
-                                                                                    <img
-                                                                                        className={classes.MarketImgFileWrap__Img}
-                                                                                        src={getValues("image")}/>
-                                                                                </div>
-                                                                                <Button size={'medium'}
-                                                                                        component="label"
-                                                                                        color={'primary'}>
-                                                                                    <input accept="image/*"
-                                                                                           hidden={true}
-                                                                                           onChange={handleChangeSelectedFile}
-                                                                                           type="file"/>
-                                                                                    Change
-                                                                                </Button>
-                                                                            </div>
-                                                                        )
-                                                                    }
-                                                                </div>
-                                                                {errors.image?.message && (
-                                                                    <div
-                                                                        className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                        {errors.image?.message}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
+                                        <span
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {fromWei(walletBalanceOfCollateralToken)})</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBody}>
+                                        <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
+                                                    min={1000}
+                                                    value={getValues('liquidity') || 0}
+                                                    onValidityUpdate={(valid) => {
+                                                        //setIsTradeDisabled(!valid);
+                                                    }}
+                                                    onChange={(e)=> {
+                                                        console.log("e", e);
+                                                        setValue("liquidity", e,{ shouldValidate: true });
+                                                    }}/>
+                                    </div>
+                                    {(isDirty && errors.liquidity?.message) && (
+                                        <div
+                                            className={classes.CreateMarket__FieldBodyFieldError}>
+                                            {errors.liquidity?.message}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <div className={classes.CreateMarket__Field}>
+                                    <div className={classes.CreateMarket__FieldTitle}>
+                                        Image <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBodyImg}>
+                                        {
+                                            !getValues("image") && (
+                                                <div
+                                                    className={classes.CreateMarket__FieldBodyImgEmpty}>
+                                                    <div>PNG or JPG: 300x300 pixels</div>
+                                                    <Button size={'medium'}
+                                                            component="label"
+                                                            color={'primary'}>
+                                                        <input accept="image/*"
+                                                               hidden={true}
+                                                               onChange={handleChangeSelectedFile}
+                                                               type="file"/>
+                                                        Upload
+                                                    </Button>
+                                                </div>
+                                            )
+                                        }
+                                        {
+                                            getValues("image") && (
+                                                <div
+                                                    className={classes.CreateMarket__FieldBodySelected}>
+                                                    <div
+                                                        className={classes.MarketImgFileWrap}>
+                                                        <img
+                                                            className={classes.MarketImgFileWrap__Img}
+                                                            src={getValues("image")}/>
                                                     </div>
-                                                    {
-                                                        /**
-                                                         <div className={`${classes.CreateMarketBox} ${classes.CreateMarketBoxInfo}`}>
-                                                         <div>Info</div>
-                                                         <div></div>
-                                                         </div>
-                                                         */
-                                                    }
-                                                    <div className={classes.CreateBtnWrap}>
-                                                        <Button size={'large'}
-                                                                isProcessing={isCreatingMarket}
-                                                                color={'primary'}
-                                                                type={'submit'}
-                                                                fullWidth={true}>
-                                                            {
-                                                                walletAllowanceOfCollateralTokenForMarketRouter > 0 && (
-                                                                    'Create'
-                                                                )
-                                                            }
-                                                            {
-                                                                walletAllowanceOfCollateralTokenForMarketRouter <= 0 && (
-                                                                    'Approve'
-                                                                )
-                                                            }
-                                                        </Button>
-                                                    </div>
-                                                </form>
-                                                {
-                                                    isCropModalOpen && (
-                                                        <CropModal isOpen={isCropModalOpen}
-                                                                   onCrop={handleOnCrop}
-                                                                   onClose={() => setIsCropModalOpen(false)}
-                                                                   file={croppingImg}/>
-                                                    )
-                                                }
-                                            </div>
-                                        )
-                                    }
-                                </>
-                            )
+                                                    <Button size={'medium'}
+                                                            component="label"
+                                                            color={'primary'}>
+                                                        <input accept="image/*"
+                                                               hidden={true}
+                                                               onChange={handleChangeSelectedFile}
+                                                               type="file"/>
+                                                        Change
+                                                    </Button>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                    {errors.image?.message && (
+                                        <div
+                                            className={classes.CreateMarket__FieldBodyFieldError}>
+                                            {errors.image?.message}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            /**
+                             <div className={`${classes.CreateMarketBox} ${classes.CreateMarketBoxInfo}`}>
+                             <div>Info</div>
+                             <div></div>
+                             </div>
+                             */
                         }
-                    </>
-                )}
-                {!accountContext.account && (
-                    <div className={classes.ConnectWrap}>
-                        <ConnectButton/>
-                    </div>
-                )}
+                        <div className={classes.CreateBtnWrap}>
+                            <Button size={'large'}
+                                    isProcessing={isCreatingMarket}
+                                    color={'primary'}
+                                    type={'submit'}
+                                    fullWidth={true}>
+                                {
+                                    walletAllowanceOfCollateralTokenForMarketRouter > 0 && (
+                                        'Create'
+                                    )
+                                }
+                                {
+                                    walletAllowanceOfCollateralTokenForMarketRouter <= 0 && (
+                                        'Approve'
+                                    )
+                                }
+                            </Button>
+                        </div>
+                    </form>
+                    {
+                        isCropModalOpen && (
+                            <CropModal isOpen={isCropModalOpen}
+                                       onCrop={handleOnCrop}
+                                       onClose={() => setIsCropModalOpen(false)}
+                                       file={croppingImg}/>
+                        )
+                    }
+                </div>
             </div>
         </>
     );

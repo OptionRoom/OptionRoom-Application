@@ -2,40 +2,48 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     MarketCard: {
-        display: 'flex',
         padding: '24px',
-        borderRadius: '16px',
+        borderRadius: '20px',
         backgroundColor: '#FFFFFF',
         boxShadow: '0 0 20px 0 #e6edff',
-        textDecoration: 'none'
+        textDecoration: 'none',
+        display: 'block'
     },
-    AvatarWrap: {
-        width: '64px'
+    Header: {
+      display: 'flex'
+    },
+    HeaderSub: {
+      textAlign: 'right'
     },
     Avatar: {
         borderRadius: '50%',
         height: "48px",
         width: "48px",
-        marginTop: '26px',
+        //marginTop: '26px',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: 'center',
         boxShadow: '0 0 20px 0 #e6edff',
-        border: '1px solid #e6edff'
+        border: '1px solid #e6edff',
+        marginRight: 'auto'
     },
-    Details: {
-        width: 'calc(100% - 64px)'
-    },
-    Details__Header: {
-        display: 'flex',
-        marginBottom: '8px'
+    Title: {
+        color: "#212529",
+        fontSize: "18px",
+        fontWeight: 400,
+        letterSpacing: "0",
+        lineHeight: "25px",
+        marginBottom: '24px',
+        textDecoration: 'none',
+        wordBreak: 'break-all',
+        minHeight: '56px'
     },
     Cat: {
-        marginRight: 'auto',
         color: "#8293A6",
         fontSize: "12px",
         letterSpacing: "0",
-        lineHeight: "16px"
+        lineHeight: "16px",
+        marginBottom: '2px'
     },
     MarketState: {
         color: "#FFFFFF",
@@ -44,23 +52,11 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "12px",
         textAlign: "center",
-        borderRadius: "16px",
+        borderRadius: "5px",
         backgroundColor: "#8293A6",
         padding: '2px 8px'
     },
-    Title: {
-        color: "#212529",
-        fontSize: "18px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "28px",
-        marginBottom: '24px',
-        display: 'block',
-        textDecoration: 'none',
-        maxWidth: '400px',
-        wordBreak: 'break-all'
-    },
-    Details__Footer: {
+    Details: {
         display: 'flex'
     },
     Volume: {
@@ -98,12 +94,18 @@ export const useStyles = makeStyles((theme) => ({
     Option__Value: {
         borderRadius: "12px",
         backgroundColor: "#EDEFF4",
-        color: "#4E5D6D",
+        color: "#fff",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
         lineHeight: "24px",
         marginLeft: '8px',
-        padding: '0 8px'
+        padding: '0 8px',
     },
+    Option__ValueYes: {
+        background: '#86DC8B'
+    },
+    Option__ValueNo: {
+        background: '#7084FF'
+    }
 }));

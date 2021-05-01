@@ -51,7 +51,7 @@ export const convertTokensToAmount = (amount) => {
     return parseFixed(`${amount}`, 18);
 };
 
-export const ellipseAddress = (address, width = 10) => {
+export const ellipseAddress = (address, width = 4) => {
     return `${address.slice(0, width)}...${address.slice(-width)}`;
 };
 

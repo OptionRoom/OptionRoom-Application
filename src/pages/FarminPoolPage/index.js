@@ -69,12 +69,11 @@ function FarminPoolPage(props) {
 
     return (
         <>
-            <Navbar
-                title={getPageConfig(source, pool).title}
-                details={getPageConfig(source, pool).details}
-            />
-
             <div className={classes.LiquidityMiningPage}>
+                <Navbar
+                    title={getPageConfig(source, pool).title}
+                    details={getPageConfig(source, pool).details}
+                />
                 {accountContext.account && (
                     <>
                         <div className={classes.Pools}>

@@ -11,8 +11,8 @@ export const useGetMarketBuyPrices = (wallet, marketContractAddress, optionToken
     useEffect(() => {
         const init = async () => {
             setBuyPrices({
-                '0': optionTokensPercentage[0]/100,
-                '1': optionTokensPercentage[1]/100,
+                '0': optionTokensPercentage[0]/1000000,
+                '1': optionTokensPercentage[1]/1000000,
             })
         };
 

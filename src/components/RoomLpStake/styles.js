@@ -52,7 +52,6 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: '24px',
         textAlign: 'center',
         marginBottom: '15px',
-        lineHeight: "23px"
     },
     EarnCard__SubTitle: {
         color: '#6D8096',

@@ -1,7 +1,12 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    LiquidityMiningPage: {},
+    LiquidityMiningPage: {
+        [theme.breakpoints.up('md')]: {
+            padding: '50px'
+        },
+        padding: '10px'
+    },
     CourtFarmingTotalLockedValue: {
         textAlign: "center",
         fontSize: "20px",

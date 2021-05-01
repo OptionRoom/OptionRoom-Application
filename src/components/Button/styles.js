@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     root: {
-        borderRadius: '12px',
+        borderRadius: '5px',
         textTransform: 'none'
     },
     Primary: {

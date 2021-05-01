@@ -181,21 +181,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "type": "event"
         },
         {
-            "constant": true,
-            "inputs": [],
-            "name": "ORGovernance",
-            "outputs": [
-                {
-                    "internalType": "contract IORGovernance",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "constant": false,
             "inputs": [
                 {
@@ -260,21 +245,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             ],
             "payable": false,
             "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "approveVotesCount",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -376,36 +346,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "type": "function"
         },
         {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "bool",
-                    "name": "approve",
-                    "type": "bool"
-                }
-            ],
-            "name": "castGovernanceApprovalVote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "outcomeIndex",
-                    "type": "uint256"
-                }
-            ],
-            "name": "castGovernanceResolvingVote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "constant": true,
             "inputs": [],
             "name": "collateralToken",
@@ -465,21 +405,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
                     "internalType": "contract ConditionalTokens",
                     "name": "",
                     "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "createdTime",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
                 }
             ],
             "payable": false,
@@ -572,42 +497,12 @@ export const getMarketContract = (web3, marketId, wallet) => {
         {
             "constant": true,
             "inputs": [],
-            "name": "getCurrentState",
+            "name": "getConditionalTokenAddress",
             "outputs": [
                 {
-                    "internalType": "enum ORFPMarket.MarketState",
-                    "name": "yes",
-                    "type": "uint8"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "getCurrentTime",
-            "outputs": [
-                {
-                    "internalType": "uint256",
+                    "internalType": "address",
                     "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "getGovernanceVotingResults",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "governanceVotes",
-                    "type": "uint256[]"
+                    "type": "address"
                 }
             ],
             "payable": false,
@@ -627,6 +522,21 @@ export const getMarketContract = (web3, marketId, wallet) => {
             ],
             "payable": false,
             "stateMutability": "pure",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getMarketCollateralTotalSupply",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -676,32 +586,23 @@ export const getMarketContract = (web3, marketId, wallet) => {
         },
         {
             "constant": true,
-            "inputs": [],
-            "name": "getResolvingOutcome",
-            "outputs": [
+            "inputs": [
                 {
-                    "internalType": "uint256[]",
-                    "name": "indexSet",
-                    "type": "uint256[]"
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 }
             ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "getVotingPeriod",
+            "name": "getSharesPercentage",
             "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "time",
+                    "name": "",
                     "type": "uint256"
                 }
             ],
             "payable": false,
-            "stateMutability": "pure",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -726,21 +627,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
                     "type": "bool"
                 }
             ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "t",
-                    "type": "uint256"
-                }
-            ],
-            "name": "increaseTime",
-            "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
@@ -776,48 +662,18 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "type": "function"
         },
         {
-            "constant": false,
-            "inputs": [
+            "constant": true,
+            "inputs": [],
+            "name": "marketController",
+            "outputs": [
                 {
-                    "internalType": "string",
-                    "name": "_marketQuestionID",
-                    "type": "string"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_proposer",
+                    "internalType": "contract IORMarketController",
+                    "name": "",
                     "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_createdTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_participationEndTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_resolvingEndTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_governance",
-                    "type": "address"
-                },
-                {
-                    "internalType": "bytes32",
-                    "name": "_questionId",
-                    "type": "bytes32"
                 }
             ],
-            "name": "init2",
-            "outputs": [],
             "payable": false,
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -842,6 +698,21 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "minShareLiq",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -929,21 +800,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
         {
             "constant": true,
             "inputs": [],
-            "name": "participationEndTime",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
             "name": "proposer",
             "outputs": [
                 {
@@ -972,21 +828,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "type": "function"
         },
         {
-            "constant": true,
-            "inputs": [],
-            "name": "rejectVotesCount",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "constant": false,
             "inputs": [
                 {
@@ -1004,51 +845,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [],
-            "name": "resetCurrentTime",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "resolvingEndTime",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "name": "resolvingVotes",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -1072,12 +868,57 @@ export const getMarketContract = (web3, marketId, wallet) => {
             "type": "function"
         },
         {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "_marketQuestionID",
+                    "type": "string"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_proposer",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_governor",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_marketCreatedTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_marketParticipationEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "_marketResolvingEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bytes32",
+                    "name": "_questionId",
+                    "type": "bytes32"
+                }
+            ],
+            "name": "setConfig",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": true,
             "inputs": [],
             "name": "state",
             "outputs": [
                 {
-                    "internalType": "enum ORFPMarket.MarketState",
+                    "internalType": "enum ORMarketLib.MarketState",
                     "name": "",
                     "type": "uint8"
                 }
@@ -1177,21 +1018,6 @@ export const getMarketContract = (web3, marketId, wallet) => {
             ],
             "payable": false,
             "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "votingPeriod",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
             "type": "function"
         },
         {

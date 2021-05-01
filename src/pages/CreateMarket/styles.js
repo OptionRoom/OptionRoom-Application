@@ -5,10 +5,15 @@ export const useStyles = makeStyles((theme) => ({
         padding: '100px',
         textAlign: 'center'
     },
-    CreateMarketPage:{},
+    CreateMarketPage:{
+        [theme.breakpoints.up('md')]: {
+            padding: '50px'
+        },
+        padding: '10px'
+    },
     CreateMarketPage__Main:{
         maxWidth: '600px',
-        margin: '0 auto'
+        //margin: '0 auto'
     },
     CreateMarketBox:{
         borderRadius: "16px",
@@ -210,5 +215,9 @@ export const useStyles = makeStyles((theme) => ({
                 display: 'none'
             }
         }
-    }
+    },
+    ConnectWrap: {
+        padding: '100px',
+        textAlign: 'center'
+    },
 }));

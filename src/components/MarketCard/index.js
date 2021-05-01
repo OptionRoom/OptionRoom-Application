@@ -10,7 +10,7 @@ import {AccountContext} from '../../shared/AccountContextProvider';
 
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, truncateText} from "../../shared/helper";
-import {marketStates} from '../../shared/constants';
+import {marketStateColors, marketStates} from '../../shared/constants';
 import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
 
 function MarketCard(props) {
@@ -49,6 +49,14 @@ function MarketCard(props) {
         return marketStates[marketState];
     };
 
+    const getMarketStateColor = () => {
+        if (!marketState) {
+            return null;
+        }
+
+        return marketStateColors[marketState];
+    };
+
 
     useEffect(() => {
         handleInit();
@@ -64,39 +72,42 @@ function MarketCard(props) {
         });
     }, [marketContractAddress, marketTradeVolume, pricesOfBuy, marketState]);
 
-
     return (
         <Link to={`/markets/${get(market, ['id'])}`}
+              style={{
+                  borderRight: `5px solid ${getMarketStateColor()}`
+              }}
               className={classes.MarketCard}>
-            <div className={classes.AvatarWrap}>
+            <div className={classes.Header}>
                 <div className={classes.Avatar} style={{
                     backgroundImage: `url(${get(market, ['image'])})`
                 }}></div>
-            </div>
-            <div className={classes.Details}>
-                <div className={classes.Details__Header}>
-                    <div className={classes.Cat}>{get(market, ['category', 'label'])}</div>
-                    <div className={classes.MarketState}>{getMarketStateText()}</div>
+                <div className={classes.HeaderSub}>
+                    <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
+                    <div className={classes.MarketState}
+                         style={{
+                             backgroundColor: `${getMarketStateColor()}`
+                         }}>{getMarketStateText()}</div>
                 </div>
-                <h1 className={classes.Title}>
-                    {truncateText(get(market, ['title']), 100)}
-                </h1>
-                <div className={classes.Details__Footer}>
-                    <div className={classes.Volume}>
-                        <span className={classes.Volume__Title}>Volume</span>
-                        <span className={classes.Volume__Value}>{numeral(marketTradeVolume).format("$0,0.00")}</span>
+            </div>
+            <h1 className={classes.Title}>
+                {truncateText(get(market, ['title']), 100)}
+            </h1>
+            <div className={classes.Details}>
+                <div className={classes.Volume}>
+                    <span className={classes.Volume__Title}>Volume</span>
+                    <span className={classes.Volume__Value}>{numeral(marketTradeVolume).format("$0,0.00")}</span>
+                </div>
+                <div className={classes.Options}>
+                    <div className={classes.Option}>
+                        <span className={classes.Option__Title}>Yes</span>
+                        <span
+                            className={`${classes.Option__Value} ${classes.Option__ValueYes}`}>{numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}</span>
                     </div>
-                    <div className={classes.Options}>
-                        <div className={classes.Option}>
-                            <span className={classes.Option__Title}>Yes</span>
-                            <span
-                                className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'yes') || 0).format("$0,0.00")}</span>
-                        </div>
-                        <div className={classes.Option}>
-                            <span className={classes.Option__Title}>No</span>
-                            <span
-                                className={classes.Option__Value}>{numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}</span>
-                        </div>
+                    <div className={classes.Option}>
+                        <span className={classes.Option__Title}>No</span>
+                        <span
+                            className={`${classes.Option__Value} ${classes.Option__ValueNo}`}>{numeral(get(pricesOfBuy, 'no') || 0).format("$0,0.00")}</span>
                     </div>
                 </div>
             </div>

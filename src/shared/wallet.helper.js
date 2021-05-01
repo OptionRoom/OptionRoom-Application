@@ -1,5 +1,6 @@
 import Web3Modal from "web3modal";
 import Web3 from "web3";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import ConfigHelper from "./config.helper";
 
@@ -21,8 +22,15 @@ class WalletHelper {
         const init = async () => {
             this.web3Modal = new Web3Modal({
                 cacheProvider: true, // optional
-                providerOptions: {}, // required
-                disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
+                providerOptions: {
+                    walletconnect: {
+                        package: WalletConnectProvider,
+                        options: {
+                            infuraId: ConfigHelper.getInfuraAppId() // required
+                        }
+                    }
+                },
+                disableInjectedProvider: false,
             });
         }
 

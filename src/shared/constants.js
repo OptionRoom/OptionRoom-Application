@@ -24,12 +24,35 @@ export const nftImages = {
 
 export const marketStates = {
     "0": "Invalid",
-    "1": "Pending",
+    "1": "Validating",
     "2": "Rejected",
     "3": "Active",
     "4": "Inactive",
     "5": "Resolving",
     "6": "Resolved",
+    "7": "DisputePeriod",
+    "8": "ResolvingAfterDispute",
+};
+
+/**
+ * Active Market: #2ecc71
+ Pending Market: #f1c40f
+ Rejected: #c0392b
+ Inactive: #34495e
+ Resolved: #bdc3c7
+ Resolving: #f39c12
+ * @type {{"0": string, "1": string, "2": string, "3": string, "4": string, "5": string, "6": string, "7": string, "8": string}}
+ */
+export const marketStateColors = {
+    "0": "#",
+    "1": "#f1c40f",
+    "2": "#c0392b",
+    "3": "#2ecc71",
+    "4": "#34495e",
+    "5": "#f39c12",
+    "6": "#bdc3c7",
+    "7": "#bdc3c7",
+    "8": "#bdc3c7",
 };
 
 export const controlledNetworkId = 3;//"mainnet";

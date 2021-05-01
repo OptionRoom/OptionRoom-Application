@@ -5,12 +5,27 @@ export const useStyles = makeStyles((theme) => ({
         padding: '100px',
         textAlign: 'center'
     },
-    MarketsPage: {},
+    ConnectWrap: {
+        padding: '100px',
+        textAlign: 'center'
+    },
+    MarketsPage__Header: {
+        padding: '20px',
+        marginBottom: '30px',
+        background: '#fff',
+        [theme.breakpoints.up('md')]: {
+            padding: '50px 100px',
+        },
+    },
     Sidebar: {},
-    MarketDetails: {},
-    MarketDetails__Header: {
+    MarketDetails: {
+        padding: '0 20px',
+        [theme.breakpoints.up('md')]: {
+            padding: '0 100px',
+        },
+    },
+    MarketsPage__HeaderDeatils: {
         display: 'flex',
-        marginBottom: "24px",
         alignItems: 'center'
     },
     MarketDetails__HeaderAvatar: {
@@ -25,10 +40,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     Cat: {
         color: "#6D8096",
-        fontSize: "18px",
+        fontSize: "15px",
         letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "8px",
     },
     Title: {
         color: "#171D28",
@@ -220,26 +233,7 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "24px",
     },
-    MarketSidebar__AddLiquidity: {
-        textAlign: 'center',
-        marginBottom: '24px',
-        '&>button': {
-            marginRight: '10px',
-            '&:last-child': {
-                marginRight: 0,
-            }
-        }
-    },
-    MarketSidebar__AddLiquidityBtn: {
-        //height: 'auto',
-        //paddingLeft: '40px',
-        //paddingRight: '40px',
-    },
-    MarketSidebar__AddLiquidityBtnInner: {
-        flexWrap: 'wrap'
-    },
-    MarketSidebar__AddLiquidityApprove: {
-        flex: 1,
-        fontSize: '10px'
-    },
+    MarketLiquidityWidgetWrap: {
+        marginBottom: "24px",
+    }
 }));

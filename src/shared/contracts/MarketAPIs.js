@@ -1,3 +1,5 @@
+import {map, sum, sortBy} from 'lodash';
+
 import { walletHelper } from "../wallet.helper";
 import { MaxUint256, controlledNetworkId } from "../../shared/constants";
 import { getCollateralTokenContract } from "./CollateralTokenContract";
@@ -6,38 +8,17 @@ import { getMarketRouterContract } from "./MarketRouterContract";
 import { getGovernanceContract } from "./GovernanceContract";
 import { getOptionTokenContract } from "./OptionTokenContract";
 import {fromWei, toWei} from "../helper";
-import {map, sum, sortBy} from 'lodash';
+
+import {marketStates} from '../constants';
 
 const walletHelperInstance = walletHelper();
 
 const generateMarketContract = (marketId) => {
-    console.log("marketId", marketId);
     return getMarketContract(walletHelperInstance.getWeb3(), marketId);
 };
 
 class MarketAPIs {
     constructor() {
-        /**
-         demoGovernence.address (AAA0)
-         0x717aee66574a72d83b7AcfD1BB8fA5e0b0A0A64A
-         demoToken.address (AAA1)
-         0xd07002ADEdc02797D383bc9C2B8A96822FB385b5
-         condToken.address (AAA2)
-         0x10496A2d0f07c5fa2C925B756CE8da95d5c5d86F
-         factoryC.address (AAA3)
-         0x47EBe7BcA2315dd91a58050Db4C4e991cC523C87
-         */
-        /*
-            Repo:
-            demoGovernence.address (AAA0)
-0xE2527a3e890085513fDC4b7E8d97d314D9c2e81F
-demoToken.address (AAA1)
-0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37
-condToken.address (AAA2)
-0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618
-factoryC.address (AAA3)
-0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1
-         */
         this.marketRouterContract = getMarketRouterContract(
             controlledNetworkId,
             walletHelperInstance.getWeb3()
@@ -168,12 +149,21 @@ factoryC.address (AAA3)
         return result;
     }
 
+    async disputeMarket(wallet, marketId, disputeReason) {
+        return await generateMarketContract(marketId)
+            .methods
+            .disputeMarket(disputeReason)
+            .send({
+                from: wallet,
+            });
+    }
+
     async getPricesOfBuy(wallet, marketAddress) {
         const marketOutcome = await this.getMarketOptionTokensPercentage(wallet, marketAddress);
 
         return {
-            priceOfYes: parseFloat(marketOutcome[0])/100,
-            priceOfNo: parseFloat(marketOutcome[1])/100
+            priceOfYes: parseFloat(marketOutcome[0])/1000000,
+            priceOfNo: parseFloat(marketOutcome[1])/1000000
         }
     }
 
@@ -227,7 +217,7 @@ factoryC.address (AAA3)
     async getMarketState(wallet, marketId) {
         const result = await generateMarketContract(marketId)
         .methods
-            .getCurrentState()
+            .getMarketState(marketId)
             .call({
                 from: wallet,
             });
@@ -268,11 +258,65 @@ factoryC.address (AAA3)
         return result;
     }
 
+    async getWalletSharesPercentageOfMarket(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .getSharesPercentage(wallet)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getWalletVotesOnMarket(wallet, marketId, marketState) {
+        //isPendingVoter
+
+        if (marketState == 1) {
+            return await generateMarketContract(marketId)
+                .methods
+                .isPendingVoter(wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+
+        if (marketState == 5) {
+            return await generateMarketContract(marketId)
+                .methods
+                .isResolvingVoter(wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+
+        if (marketState == 7) {
+            return await generateMarketContract(marketId)
+                .methods
+                .marketDisputersInfo(wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+
+        return null;
+    }
+
     async addLiquidityToMarket(wallet, marketId, amount) {
         const result = await generateMarketContract(marketId)
             .methods
             .addLiquidity(amount)
             .send({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async getMarketMinHoldingsToDispute(wallet, marketId) {
+        const result = await generateMarketContract(marketId)
+            .methods
+            .minHoldingToDispute()
+            .call({
                 from: wallet,
             });
         return result;
@@ -308,10 +352,10 @@ factoryC.address (AAA3)
         return result;
     }
 
-    async getMarketTotalSupply(wallet, marketId) {
+    async getMarketCollateralTotalSupply(wallet, marketId) {
         return await generateMarketContract(marketId)
         .methods
-        .totalSupply()
+        .getMarketCollateralTotalSupply()
         .call({
             from: wallet,
         });
@@ -321,25 +365,27 @@ factoryC.address (AAA3)
         if(state == 1) {
             return await generateMarketContract(marketId)
                 .methods
-                .castGovernanceApprovalVote(vote)
+                .castGovernanceValidatingVote(vote)
                 .send({
                     from: wallet,
                 });
         }
 
-        return await generateMarketContract(marketId)
-            .methods
-            .castGovernanceResolvingVote(vote)
-            .send({
-                from: wallet,
-            });
+        if(state == 5) {
+            return await generateMarketContract(marketId)
+                .methods
+                .castGovernanceResolvingVote(vote)
+                .send({
+                    from: wallet,
+                });
+        }
     }
 
     async getMarketVoting(wallet, marketId, state) {
         if (state == 1) {
             return await generateMarketContract(marketId)
                 .methods
-                .getGovernanceVotingResults()
+                .getApprovingResult()
                 .call({
                     from: wallet,
                 });
@@ -353,22 +399,44 @@ factoryC.address (AAA3)
             });
     }
 
-    async didWalletVotedOnMarket(wallet, marketId, state) {
+    async withdrawMarketVote(wallet, marketId, state) {
+        if(state == 1) {
+            return await generateMarketContract(marketId)
+                .methods
+                .withdrawGovernanceValidatingVote(marketId)
+                .send({
+                    from: wallet,
+                });
+        }
+
+        if(state == 5) {
+            return await generateMarketContract(marketId)
+                .methods
+                .withdrawGovernanceResolvingVote(marketId)
+                .send({
+                    from: wallet,
+                });
+        }
+    }
+
+    async getWalletVotingOnMarket(wallet, marketId, state) {
         if (state == 1) {
             return await generateMarketContract(marketId)
                 .methods
-                .getGovernanceVotingResults()
+                .isValidatingVoter(marketId, wallet)
                 .call({
                     from: wallet,
                 });
         }
 
-        return await generateMarketContract(marketId)
-            .methods
-            .getResolvingOutcome()
-            .call({
-                from: wallet,
-            });
+        if(state == 5) {
+            return await generateMarketContract(marketId)
+                .methods
+                .isResolvingVoter(marketId, wallet)
+                .call({
+                    from: wallet,
+                });
+        }
     }
 
     //Router functions
@@ -421,30 +489,22 @@ factoryC.address (AAA3)
          Resolving, // governance voting for result
          Resolved  // can redeem
          */
-        for(let i in ["1", "3", "4", "5"]) {
+        for(let i in Object.keys(marketStates)) {
             const contracts = await this.marketRouterContract
                 .methods
-                .getMarketsQuestionIDs(i, 0, 99)
+                .getMarketsQuestionIDs(i, 0, -1)
                 .call({
                     from: wallet,
                 });
 
             const ids = {};
             for (let i = 0; i < contracts.questionsIDs.length; i++) {
-                console.log("contracts.questionsIDs[i]", contracts.questionsIDs[i]);
                 if (!contracts.questionsIDs[i]) {
                     break;
                 }
 
                 ids[contracts.questionsIDs[i]] = true;
             }
-
-/*            const data = questionsIDs.map((entry, index) => {
-               return {
-                   marketId: entry,
-                   marketAddress: contracts.markets[index],
-               }
-            });*/
 
             all = {
                 ...all,

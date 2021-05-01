@@ -22,7 +22,8 @@ function ConnectButton(props) {
                     onClick={() => {
                         accountContext.connect();
                     }}
-                    variant="contained">Connect Wallet</Button>
+                    variant="contained"
+                    size={'small'}>Connect</Button>
         </div>
     );
 }

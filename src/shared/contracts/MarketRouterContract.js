@@ -1,3 +1,5 @@
+import ConfigHelper from '../config.helper';
+
 export const getMarketRouterContract = (chainId, web3) => {
     const abi = [
         {
@@ -176,6 +178,21 @@ export const getMarketRouterContract = (chainId, web3) => {
         },
         {
             "constant": true,
+            "inputs": [],
+            "name": "getCurrentTime1",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
             "inputs": [
                 {
                     "internalType": "string",
@@ -199,19 +216,66 @@ export const getMarketRouterContract = (chainId, web3) => {
             "constant": true,
             "inputs": [
                 {
-                    "internalType": "enum ORFPMarket.MarketState",
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "getMarketCountByProposer",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
+                    "name": "marketState",
+                    "type": "uint8"
+                }
+            ],
+            "name": "getMarketCountByProposerNState",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
                     "name": "marketState",
                     "type": "uint8"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "startIndx",
+                    "name": "startIndex",
                     "type": "uint256"
                 },
                 {
-                    "internalType": "uint256",
+                    "internalType": "int256",
                     "name": "length",
-                    "type": "uint256"
+                    "type": "int256"
                 }
             ],
             "name": "getMarkets",
@@ -230,7 +294,74 @@ export const getMarketRouterContract = (chainId, web3) => {
             "constant": true,
             "inputs": [
                 {
-                    "internalType": "enum ORFPMarket.MarketState",
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "startIndex",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "int256",
+                    "name": "length",
+                    "type": "int256"
+                }
+            ],
+            "name": "getMarketsByProposer",
+            "outputs": [
+                {
+                    "internalType": "contract ORFPMarket[]",
+                    "name": "markets",
+                    "type": "address[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
+                    "name": "marketState",
+                    "type": "uint8"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "startIndex",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "int256",
+                    "name": "length",
+                    "type": "int256"
+                }
+            ],
+            "name": "getMarketsByProposerNState",
+            "outputs": [
+                {
+                    "internalType": "contract ORFPMarket[]",
+                    "name": "markets",
+                    "type": "address[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
                     "name": "marketState",
                     "type": "uint8"
                 }
@@ -251,22 +382,99 @@ export const getMarketRouterContract = (chainId, web3) => {
             "constant": true,
             "inputs": [
                 {
-                    "internalType": "enum ORFPMarket.MarketState",
+                    "internalType": "enum ORMarketLib.MarketState",
                     "name": "marketState",
                     "type": "uint8"
                 },
                 {
                     "internalType": "uint256",
-                    "name": "startIndx",
+                    "name": "startIndex",
                     "type": "uint256"
                 },
                 {
-                    "internalType": "uint256",
+                    "internalType": "int256",
                     "name": "length",
-                    "type": "uint256"
+                    "type": "int256"
                 }
             ],
             "name": "getMarketsQuestionIDs",
+            "outputs": [
+                {
+                    "internalType": "contract ORFPMarket[]",
+                    "name": "markets",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "string[]",
+                    "name": "questionsIDs",
+                    "type": "string[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "startIndex",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "int256",
+                    "name": "length",
+                    "type": "int256"
+                }
+            ],
+            "name": "getMarketsQuestionIDsByProposer",
+            "outputs": [
+                {
+                    "internalType": "contract ORFPMarket[]",
+                    "name": "markets",
+                    "type": "address[]"
+                },
+                {
+                    "internalType": "string[]",
+                    "name": "questionsIDs",
+                    "type": "string[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
+                    "name": "marketStat",
+                    "type": "uint8"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "startIndex",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "int256",
+                    "name": "length",
+                    "type": "int256"
+                }
+            ],
+            "name": "getMarketsQuestionIDsByProposerNState",
             "outputs": [
                 {
                     "internalType": "contract ORFPMarket[]",
@@ -296,21 +504,6 @@ export const getMarketRouterContract = (chainId, web3) => {
             ],
             "payable": false,
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "t",
-                    "type": "uint256"
-                }
-            ],
-            "name": "increaseTime",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -347,6 +540,36 @@ export const getMarketRouterContract = (chainId, web3) => {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "contract CentralTimeForTesting",
+                    "name": "_centralTimeForTesting",
+                    "type": "address"
+                }
+            ],
+            "name": "setCentralTimeForTesting",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "templateAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "setTemplateAddress",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -397,8 +620,8 @@ export const getMarketRouterContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1",
-        3: "0xd9d28D8c09f85872AB04626D130D1F8fC07C8aa1",
+        1: ConfigHelper.getContractsAddresses().marketRouter,
+        3: ConfigHelper.getContractsAddresses().marketRouter,
     };
 
     return new web3.eth.Contract(

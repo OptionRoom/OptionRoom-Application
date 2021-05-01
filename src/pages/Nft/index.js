@@ -243,10 +243,9 @@ function Nft() {
 
     return (
         <>
-            <Navbar title={'NFT'}
-                    details={getHeaderTxt()}/>
-
             <div className={classes.NftPage}>
+                <Navbar title={'NFT'}
+                        details={getHeaderTxt()}/>
                 {
                     accountContext.account && (
                         <>

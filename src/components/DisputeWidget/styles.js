@@ -1,13 +1,13 @@
 import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
-    VoteWidget: {
+    DisputeWidget: {
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
         boxShadow: "0 0 20px 0 #E6EDFF",
         padding: "24px",
     },
-    VoteWidget__Header: {
+    DisputeWidget__Header: {
         color: "#3F4A57",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -20,7 +20,14 @@ export const useStyles = makeStyles((theme) => ({
             fontSize: "13px"
         },
     },
-    VoteWidget__Options: {
+    DisputeWidget__Body: {
+        color: "#3F4A57",
+        marginBottom: '16px',
+        '& .MuiAlert-root': {
+            marginTop: '5px'
+        }
+    },
+    DisputeWidget__Options: {
         marginBottom: '16.5px',
         paddingBottom: '16.5px',
         borderBottom: '1px solid #EDEFF4',
@@ -35,7 +42,7 @@ export const useStyles = makeStyles((theme) => ({
             }
         }
     },
-    VoteWidget__Progress: {
+    DisputeWidget__Progress: {
         marginBottom: '23px',
         '&>div': {
             marginBottom: '16px',

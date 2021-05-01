@@ -1,3 +1,5 @@
+import ConfigHelper from "../config.helper";
+
 export const getCollateralTokenContract = (chainId, web3) => {
     const abi = [
         {
@@ -310,8 +312,8 @@ export const getCollateralTokenContract = (chainId, web3) => {
     ];
 
     const addresses = {
-        1: "0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37",
-        3: "0x604d5CE415dDbB3841bEECa9608fA5778C0b7e37",
+        1: ConfigHelper.getContractsAddresses().collateralToken,
+        3: ConfigHelper.getContractsAddresses().collateralToken,
     };
 
     return new web3.eth.Contract(

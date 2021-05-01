@@ -51,7 +51,7 @@ function VoteWidget(props) {
     const loadVote = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getMarketVoting(accountContext.account, props.marketContractAddress, props.marketState);
-
+        console.log("votes", votes);
         if(props.marketState == 1) {
             const formattedVotes = [];
             formattedVotes[0] = (parseFloat(votes[0])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
@@ -61,6 +61,18 @@ function VoteWidget(props) {
             setMarketVotes(votes);
         }
     };
+
+    const loadWalletVotes = async () => {
+        const marketAPIs = new MarketAPIs();
+        const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
+        console.log("votes", votes);
+    };
+
+    useEffect(() => {
+        if(accountContext.account && props.marketContractAddress && (props.marketState !== null && props.marketState !== undefined)) {
+            loadWalletVotes();
+        }
+    }, [accountContext.account, props.marketContractAddress, props.marketState]);
 
     useEffect(() => {
         loadVote();

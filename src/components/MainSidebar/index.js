@@ -87,33 +87,44 @@ const ClaimIcon = () => {
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
-    root: {
-        display: "flex",
-    },
-    drawer: {
-        flexShrink: 0,
-        whiteSpace: "nowrap",
-        transition: theme.transitions.create("width", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            transition: theme.transitions.create("width", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        "& $LogoIcon": {
-            display: "none",
-        },
-        "& $Logo": {
-            display: "block",
-        },
+    MainSidebar: {
+        position: 'fixed',
         width: drawerWidth,
+        top: 0,
+        left: 0,
+        height: '100vh',
+        borderRight: '2px solid rgba(133, 133, 133, 0.1)',
+        backgroundColor: 'rgb(255, 255, 255)',
+        paddingTop: '80px',
+        transition: '0.2s all',
+        zIndex: '99',
+    },
+    IsSidebarNotExpand: {
+        [theme.breakpoints.up('md')]: {
+            width: 50,
+        },
+        width: 0,
+        '& $SocialLinks': {
+            display: 'none'
+        },
+        '& $NavLink__Title': {
+            display: 'none'
+        },
+        '& $NavLinks': {
+            padding: '0'
+        },
+        '& $NavLink': {
+            borderRadius: '0 !important',
+            '& svg': {
+                width: '32px'
+            }
+        }
+    },
+    MainSidebar__IsMin:{
+        paddingTop: '15px'
     },
     NavLink__Title: {
-        marginLeft: "16px",
+        marginLeft: "10px",
         display: "flex",
         opacity: 1,
         transition: theme.transitions.create("opacity", {
@@ -130,21 +141,6 @@ const useStyles = makeStyles((theme) => ({
         background: 'red',
         borderRadius: '5px',
         color: '#fff'
-    },
-    drawerPaper: {
-        background: "#EDEFF4",
-        borderRight: "none",
-    },
-    drawerPaper___Black: {
-        background: "#000",
-        borderRight: "none",
-    },
-    toolbar: {
-        padding: "40px 24px 28px 24px",
-    },
-    content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
     },
     NavLinks: {
         padding: "0 16px 16px",
@@ -188,138 +184,17 @@ const useStyles = makeStyles((theme) => ({
             },
         },
     },
-    /**
-     root: {
-        display: 'flex',
-    },
-     drawer: {
-        width: '72px',
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        '& .MuiDrawer-paper': {
-            width: '72px',
-            transition: theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        '&:hover': {
-            '& $LogoIcon': {
-                display: 'none'
-            },
-            '& $Logo': {
-                display: 'block',
-            },
-            width: drawerWidth,
-            '& .MuiDrawer-paper': {
-                width: drawerWidth,
-            },
-            '& $NavLink__Title': {
-                display: 'block',
-                opacity: 1,
-                transition: theme.transitions.create('opacity', {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-            }
-        },
-        '& $NavLink__Title': {
-            marginLeft: '16px',
-            display: 'none',
-            opacity: 0,
-            transition: theme.transitions.create('opacity', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-
-    },
-     drawerPaper: {
-        background: '#EDEFF4',
-        borderRight: 'none'
-    },
-     drawerPaper___Black: {
-        background: '#000',
-        borderRight: 'none'
-    },
-     LogoIcon: {
-        width: '24px',
-    },
-     Logo: {
-        display: 'none'
-    },
-     toolbar: {
-        padding: '40px 24px 28px 24px',
-    },
-     content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-    },
-     NavLinks: {
-        padding: '0 16px 16px'
-    },
-     NavLink: {
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        color: '#8293A6',
-        fontSize: '14px',
-        marginBottom: '8px',
-        padding: '8px',
-        transition: '0.2s all',
-        '&:hover, &.Active': {
-            borderRadius: '8px',
-            background: '#004BFF',
-            color: '#fff',
-            '& svg': {
-                color: '#fff',
-                fill: '#fff',
-            }
-        },
-        '& svg': {
-            color: '#8293A6',
-            fill: '#8293A6',
-        }
-    },
-     */
 }));
 
-function Sidebar() {
+function MainSidebar(props) {
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     return (
-        <Drawer
-            variant={isMobile() ? "temporary" : "permanent"}
-            classes={{
-                root: classes.drawer,
-                paper: clsx(classes.drawerPaper, {
-                    [classes.drawerPaper___Black]:
-                        optionroomThemeContext.theme === "black",
-                }),
-            }}
-            anchor={"left"}
-            open={isMobile() ? optionroomThemeContext.isSidebarOpen : true}
-            onClose={
-                isMobile()
-                    ? () => {
-                          optionroomThemeContext.changeSidebarIsOpen(false);
-                      }
-                    : () => {}
-            }
-        >
-            <div className={classes.toolbar}>
-                <img
-                    src={LogoSvg}
-                    className={classes.Logo}
-                    alt={"OptionRoom logo"}
-                    width={"150px"}
-                />
-            </div>
+        <div className={clsx(classes.MainSidebar, {
+                 [classes.MainSidebar__IsMin]: props.isMinHeader,
+                 [classes.IsSidebarNotExpand]: !props.isSidebarExpand,
+             })}>
             <div className={classes.NavLinks}>
                 {[
                     {
@@ -327,11 +202,11 @@ function Sidebar() {
                         link: '/markets',
                         icon: MarketsIcon
                     },
-/*                    {
-                        title: 'Governance',
-                        link: '/governance',
-                        icon: GovernanceIcon
-                    },*/
+                    /*                    {
+                                            title: 'Governance',
+                                            link: '/governance',
+                                            icon: GovernanceIcon
+                                        },*/
                     {
                         title: "COURT Farming",
                         link: "/court-farming",
@@ -375,7 +250,7 @@ function Sidebar() {
                         key={`menut-item${index}`}
                         className={clsx(classes.NavLink, {
                             [classes.NavLink___Black]:
-                                optionroomThemeContext.theme === "black",
+                            optionroomThemeContext.theme === "black",
                         })}
                     >
                         {item.icon()}
@@ -411,8 +286,8 @@ function Sidebar() {
                     <i className="fa fa-twitter"></i>
                 </a>
             </div>
-        </Drawer>
+        </div>
     );
 }
 
-export default Sidebar;
+export default MainSidebar;

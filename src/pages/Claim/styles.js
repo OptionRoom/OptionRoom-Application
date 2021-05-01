@@ -1,7 +1,12 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    ClaimPage: {},
+    ClaimPage: {
+        [theme.breakpoints.up('md')]: {
+            padding: '50px'
+        },
+        padding: '10px'
+    },
     ClaimCard: {
         maxWidth: "600px",
         margin: "0 auto",

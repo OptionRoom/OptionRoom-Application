@@ -316,14 +316,13 @@ function CourtFarming() {
 
     return (
         <>
-            <Navbar
-                title={"COURT Farming"}
-                details={
-                    "Earn COURT tokens by providing liquidity to one of the pools on this page."
-                }
-            />
-
             <div className={classes.LiquidityMiningPage}>
+                <Navbar
+                    title={"COURT Farming"}
+                    details={
+                        "Earn COURT tokens by providing liquidity to one of the pools on this page."
+                    }
+                />
                 {accountContext.account && (
                     <>
                         {!!courtFarmingTotalLockedValue && (

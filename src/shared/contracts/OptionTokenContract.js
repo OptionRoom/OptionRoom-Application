@@ -1,3 +1,5 @@
+import ConfigHelper from "../config.helper";
+
 export const getOptionTokenContract = (chainId, web3) => {
     const abi = [
         {
@@ -819,12 +821,33 @@ export const getOptionTokenContract = (chainId, web3) => {
             "payable": false,
             "stateMutability": "view",
             "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "totalBalances",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
         }
     ];
 
     const addresses = {
-        1: "0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618",
-        3: "0x8eFDC7Bd87368DE1893CB44f72D0f8697a2A9618",
+        1: ConfigHelper.getContractsAddresses().optionToken,
+        3: ConfigHelper.getContractsAddresses().optionToken,
     };
 
     return new web3.eth.Contract(

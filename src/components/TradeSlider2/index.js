@@ -1,8 +1,55 @@
 import React from "react";
 import clsx from "clsx";
 import Slider from '@material-ui/core/Slider';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
+
+const marker = 16;
+
+const PrettoSlider = withStyles((theme) => ({
+    root: {
+        color: `${theme.palette.primary.main}`,
+        height: (marker/3),
+    },
+    thumb: {
+        height: marker,
+        width: marker,
+        backgroundColor: 'gold',
+        border: '2px solid gold',
+        marginTop: -(marker/3),
+        marginLeft: -(marker/2),
+        '&:focus, &:hover, &$active': {
+            boxShadow: 'inherit',
+        },
+    },
+    mark: {
+        width: '10px',
+        height: '10px',
+        borderRadius: '50%',
+        top: '8px',
+        transform: 'translateX(-6px)',
+        background: '#d6d6d6',
+        border: '2px solid #fff'
+    },
+    markActive: {
+        opacity: 1,
+        background: `${theme.palette.primary.main}`
+    },
+    active: {},
+    valueLabel: {
+        //left: 'calc(-50% + 4px)',
+    },
+    track: {
+        height: (marker/3),
+        borderRadius: 4,
+    },
+    rail: {
+        height: (marker/3),
+        borderRadius: 4,
+        color: '#d6d6d6',
+        opacity: 1
+    },
+}))(Slider);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
             transform: 'translate(-6.5px, -1px)',
             '&.MuiSlider-markActive': {
                 background: `${theme.palette.primary.main}`,
+                //background: `#78cbf2`,
                 opacity: '1 !important'
             }
         },
@@ -69,8 +117,8 @@ function TradeSlider2(props) {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Slider
+        <div>
+            <PrettoSlider
                 value={props.value}
                 ValueLabelComponent={ValueLabelComponent}
                 getAriaValueText={valuetext}

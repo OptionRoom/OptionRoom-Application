@@ -14,7 +14,7 @@ export const useGetFilteredMarkets = (markets, marketsContractData, searchQuery,
                         return false;
                     }
 
-                    return entry.title.toLowerCase().indexOf(searchQuery) > -1;
+                    return entry.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
                 });
             }
 
@@ -25,10 +25,12 @@ export const useGetFilteredMarkets = (markets, marketsContractData, searchQuery,
             }
 
             if (state) {
+                console.log("here");
                 //value
                 newMarkets = filter(newMarkets, (entry) => {
                     if (marketsContractData[entry.id]) {
-                        return marketsContractData[entry.id].state == state.value;
+                        console.log("marketsContractData[entry.id].state", marketsContractData[entry.id].state, state);
+                        return marketsContractData[entry.id].state == state;
                     }
 
                     return false;

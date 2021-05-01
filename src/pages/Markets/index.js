@@ -1,8 +1,8 @@
 import React, {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
-import Skeleton from "@material-ui/lab/Skeleton";
 import {Link} from "react-router-dom";
-import {filter} from 'lodash';
+import {filter, get} from 'lodash';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -30,14 +30,17 @@ function Markets() {
     const [filterDetails, setFilterDetails] = useState({
         name: '',
         category: '',
-        state: '',
+        state: {
+            value: "3",
+            label: 'Active'
+        },
         sort: {
             by: 'volume',
             direction: 'down'
         }
     });
 
-    const filteredMarkets = useGetFilteredMarkets(markets, marketsContractData, filterDetails.name, filterDetails.category, filterDetails.state, filterDetails.sort);
+    const filteredMarkets = useGetFilteredMarkets(markets, marketsContractData, filterDetails.name, filterDetails.category, get(filterDetails, ['state', 'value']), filterDetails.sort);
 
     const classes = useStyles();
 
@@ -65,127 +68,73 @@ function Markets() {
         }
     }, [accountContext.account]);
 
-    return (
-        <>
-            <Navbar
-                title={"Markets"}
-            />
-            <div className={classes.MarketsPage}>
-                {accountContext.account && (
-                    <div>
-                        <Grid container spacing={3}>
-                            {
-                                /**
-                                 <Grid item xs={3}>
-                                 <div className={classes.Sidebar}>
-                                 {
-                                        !isLoading && (
-                                            <>
-                                                <div className={classes.Sidebar__Title}>
-                                                    Categories
-                                                </div>
-                                                <div className={classes.Sidebar__Content}>
-                                                    {
-                                                        marketCategories.map((cat) => {
-                                                            return (
-                                                                <div className={classes.Cat}>
-                                                                    <div className={classes.Cat__Name}>
-                                                                        {cat.title}
-                                                                    </div>
-                                                                    {cat.count  && (
-                                                                        <div className={classes.Cat__Count}>
-                                                                            {cat.count}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })
-                                                    }
-                                                </div>
-                                            </>
-                                        )
-                                    }
-                                 {
-                                        isLoading && (
-                                            <>
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                                <Skeleton animation="wave" height={30} width="100%" />
-                                            </>
-                                        )
-                                    }
-                                 </div>
-                                 </Grid>
-                                 */
-                            }
-                            <Grid item xs={12}>
-                                <div className={classes.MarketsWrap}>
-                                    {
-                                        isLoading && (
-                                            <>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                                <Skeleton animation="wave" height={30} width="100%"/>
-                                            </>
-                                        )
-                                    }
-                                    {
-                                        !isLoading && (
-                                            <>
-                                                {
-                                                    !isWalletWhitelistedForBeta && (
-                                                        <NotWhitelisted/>
-                                                    )
-                                                }
-                                                {
-                                                    isWalletWhitelistedForBeta && (
-                                                        <>
-                                                            <div className={classes.CreateMarketLinkWrap}>
-                                                                <Link to={`/markets/create`}
-                                                                      className={classes.CreateMarketLink}>
-                                                                    <Button
-                                                                        color="primary"
-                                                                        size={'medium'}>Create new market</Button>
-                                                                </Link>
-                                                            </div>
-                                                            <MarketsFiltration filterDetails={filterDetails}
-                                                                               onFilterUpdate={(newDetails) => setFilterDetails(newDetails)}/>
-                                                            {filteredMarkets.map((entry) => {
-                                                                return (
-                                                                    <div key={`market-${entry.id}`}>
-                                                                        <MarketCard market={entry}
-                                                                                    onMarketDataLoad={(e) => {
-                                                                                        if (e && e.marketContractAddress) {
-                                                                                            marketsContractData[e.marketId] = e;
-                                                                                        }
-                                                                                    }}/>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </>
-                                                    )
-                                                }
-                                            </>
-                                        )
-                                    }
-                                </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                )}
-                {!accountContext.account && (
-                    <div className={classes.ConnectWrap}>
-                        <ConnectButton/>
-                    </div>
-                )}
+    if(!accountContext.account) {
+        return (
+            <div className={classes.ConnectWrap}>
+                <ConnectButton/>
             </div>
-        </>
+        )
+    }
+
+    if(isLoading) {
+        return (
+            <div className={classes.LoadingWrapper}>
+                <CircularProgress/>
+            </div>
+        )
+    }
+
+    if(!isWalletWhitelistedForBeta) {
+        return (
+            <NotWhitelisted/>
+        )
+    }
+
+    return (
+        <div className={classes.MarketsPage}>
+            <div className={classes.MarketsHeader}>
+                <div className={classes.MarketsContainer}>
+                    <div>
+                        <h1>Markets</h1>
+                        <p>Search, participate and create</p>
+                    </div>
+                    <Link to={`/markets/create`}
+                          className={classes.CreateMarketLink}>
+                        <Button
+                            color="primary"
+                            size={'medium'}>Create new market</Button>
+                    </Link>
+                </div>
+            </div>
+            <div className={classes.MarketsFiltrationWrap}>
+                <div className={classes.MarketsContainer}>
+                    <MarketsFiltration
+                        filterDetails={filterDetails}
+                        onFilterUpdate={(newDetails) => {
+                            console.log("newDetails", newDetails);
+                            setFilterDetails(newDetails);
+                        }}/>
+                </div>
+            </div>
+            <div className={classes.MarketsListnWrap}>
+                <div className={classes.MarketsContainer}>
+                    <div className={classes.MarketsList}>
+                        {filteredMarkets.map((entry) => {
+                            return (
+                                <div key={`market-${entry.id}`}>
+                                    <MarketCard market={entry}
+                                                onMarketDataLoad={(e) => {
+                                                    if (e && e.marketContractAddress) {
+                                                        marketsContractData[e.marketId] = e;
+                                                    }
+                                                }}/>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 
