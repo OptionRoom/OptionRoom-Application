@@ -68,7 +68,6 @@ class MarketAPIs {
             return parseFloat(entry.returnValues.investmentAmount);
         }));
 
-        console.log("buyEvents", buyEvents, sum2);
         const sellEvents = await generateMarketContract(marketId)
             .getPastEvents("FPMMSell", {
                 fromBlock: 1
@@ -149,15 +148,6 @@ class MarketAPIs {
         return result;
     }
 
-    async disputeMarket(wallet, marketId, disputeReason) {
-        return await generateMarketContract(marketId)
-            .methods
-            .disputeMarket(disputeReason)
-            .send({
-                from: wallet,
-            });
-    }
-
     async getPricesOfBuy(wallet, marketAddress) {
         const marketOutcome = await this.getMarketOptionTokensPercentage(wallet, marketAddress);
 
@@ -214,9 +204,19 @@ class MarketAPIs {
         }
     }
 
+    //Governance related
+    async disputeMarket(wallet, marketId, disputeReason) {
+        return await this.governanceContract
+            .methods
+            .disputeMarket(marketId, disputeReason)
+            .send({
+                from: wallet,
+            });
+    }
+
     async getMarketState(wallet, marketId) {
-        const result = await generateMarketContract(marketId)
-        .methods
+        const result = await this.governanceContract
+            .methods
             .getMarketState(marketId)
             .call({
                 from: wallet,
@@ -224,6 +224,112 @@ class MarketAPIs {
 
         return result;
     }
+
+    async getWalletVotesOnMarket(wallet, marketId, marketState) {
+        //isPendingVoter
+
+        if (marketState == 1) {
+            return await this.governanceContract
+                .methods
+                .isValidatingVoter(marketId, wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+
+        if (marketState == 5) {
+            return await this.governanceContract
+                .methods
+                .isResolvingVoter(marketId, wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+
+        if (marketState == 7) {
+            console.log("here2222222222222222");
+            return await this.governanceContract
+                .methods
+                .marketDisputersInfo(marketId, wallet)
+                .call({
+                    from: wallet,
+                });
+        }
+    }
+
+    async addGovernanceVoteForMarket(wallet, marketId, vote, state) {
+        if(state == 1) {
+            return await this.governanceContract
+                .methods
+                .castGovernanceValidatingVote(marketId, vote)
+                .send({
+                    from: wallet,
+                });
+        }
+
+        if(state == 5) {
+            return await this.governanceContract
+                .methods
+                .castGovernanceResolvingVote(marketId, vote)
+                .send({
+                    from: wallet,
+                });
+        }
+    }
+
+    async withdrawMarketVote(wallet, marketId, state) {
+        if(state == 1) {
+            return await this.governanceContract
+                .methods
+                .withdrawGovernanceValidatingVote(marketId)
+                .send({
+                    from: wallet,
+                });
+        }
+
+        if(state == 5) {
+            return await this.governanceContract
+                .methods
+                .withdrawGovernanceResolvingVote(marketId)
+                .send({
+                    from: wallet,
+                });
+        }
+    }
+
+    async getMarketVoting(wallet, marketId, state) {
+        return 0;
+
+        if (state == 1) {
+            return 0;
+/*            return await this.governanceContract
+                .methods
+                .getApprovingResult(marketId)
+                .call({
+                    from: wallet,
+                });*/
+        }
+
+        return await this.governanceContract
+            .methods
+            .getResolvingOutcome(marketId)
+            .call({
+                from: wallet,
+            });
+    }
+
+    async getMarketInfo(wallet, marketId, state) {
+        return await this.governanceContract
+            .methods
+            .getMarketInfo(marketId)
+            .call({
+                from: wallet,
+            });
+    }
+    /////////
+    /////////
+    /////////
+    /////////
 
     async getMarketOptionTokensPercentage(wallet, marketId) {
         const result = await generateMarketContract(marketId)
@@ -237,6 +343,7 @@ class MarketAPIs {
     }
 
     async getMarketOutcome(wallet, marketId) {
+        return 0;
         const result = await generateMarketContract(marketId)
             .methods
             .getResolvingOutcome()
@@ -269,38 +376,7 @@ class MarketAPIs {
         return result;
     }
 
-    async getWalletVotesOnMarket(wallet, marketId, marketState) {
-        //isPendingVoter
 
-        if (marketState == 1) {
-            return await generateMarketContract(marketId)
-                .methods
-                .isPendingVoter(wallet)
-                .call({
-                    from: wallet,
-                });
-        }
-
-        if (marketState == 5) {
-            return await generateMarketContract(marketId)
-                .methods
-                .isResolvingVoter(wallet)
-                .call({
-                    from: wallet,
-                });
-        }
-
-        if (marketState == 7) {
-            return await generateMarketContract(marketId)
-                .methods
-                .marketDisputersInfo(wallet)
-                .call({
-                    from: wallet,
-                });
-        }
-
-        return null;
-    }
 
     async addLiquidityToMarket(wallet, marketId, amount) {
         const result = await generateMarketContract(marketId)
@@ -361,84 +437,6 @@ class MarketAPIs {
         });
     }
 
-    async addGovernanceVoteForMarket(wallet, marketId, vote, state) {
-        if(state == 1) {
-            return await generateMarketContract(marketId)
-                .methods
-                .castGovernanceValidatingVote(vote)
-                .send({
-                    from: wallet,
-                });
-        }
-
-        if(state == 5) {
-            return await generateMarketContract(marketId)
-                .methods
-                .castGovernanceResolvingVote(vote)
-                .send({
-                    from: wallet,
-                });
-        }
-    }
-
-    async getMarketVoting(wallet, marketId, state) {
-        if (state == 1) {
-            return await generateMarketContract(marketId)
-                .methods
-                .getApprovingResult()
-                .call({
-                    from: wallet,
-                });
-        }
-
-        return await generateMarketContract(marketId)
-            .methods
-            .getResolvingOutcome()
-            .call({
-                from: wallet,
-            });
-    }
-
-    async withdrawMarketVote(wallet, marketId, state) {
-        if(state == 1) {
-            return await generateMarketContract(marketId)
-                .methods
-                .withdrawGovernanceValidatingVote(marketId)
-                .send({
-                    from: wallet,
-                });
-        }
-
-        if(state == 5) {
-            return await generateMarketContract(marketId)
-                .methods
-                .withdrawGovernanceResolvingVote(marketId)
-                .send({
-                    from: wallet,
-                });
-        }
-    }
-
-    async getWalletVotingOnMarket(wallet, marketId, state) {
-        if (state == 1) {
-            return await generateMarketContract(marketId)
-                .methods
-                .isValidatingVoter(marketId, wallet)
-                .call({
-                    from: wallet,
-                });
-        }
-
-        if(state == 5) {
-            return await generateMarketContract(marketId)
-                .methods
-                .isResolvingVoter(marketId, wallet)
-                .call({
-                    from: wallet,
-                });
-        }
-    }
-
     //Router functions
     async createMarket(wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity) {
         /**
@@ -475,6 +473,22 @@ class MarketAPIs {
                 from: wallet,
             });
         return result;
+    }
+
+    async getMarketsByState(wallet, state) {
+        const result = await this.marketRouterContract
+            .methods
+            .getMarketsQuestionIDs(state, 0, -1)
+            .call({
+                from: wallet,
+            });
+
+        const markets = {};
+        result.questionsIDs.forEach((entry, index) => {
+            markets[entry] = result.markets[index];
+        });
+
+        return markets;
     }
 
     async getAllMarketContracts(wallet) {
@@ -593,6 +607,7 @@ class MarketAPIs {
         return result;
     }
 
+    //Option token related stuff
     async getIsWalletOptionTokenApprovedForMarket(wallet, marketAddress) {
         const result = await this.optionsTokenContract
             .methods
@@ -616,7 +631,6 @@ class MarketAPIs {
     }
 
     async redeemMarketRewards(wallet, marketAddress) {
-        console.log("hello");
         const result = await this.optionsTokenContract
             .methods
             .redeem(marketAddress)
@@ -624,7 +638,6 @@ class MarketAPIs {
                 from: wallet,
             });
 
-        console.log("dd", result);
         return result;
     }
 }

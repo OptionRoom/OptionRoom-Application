@@ -16,7 +16,7 @@ function RedeemMarketRewardsWidget(props) {
 
     //Vote
     const [isProcessing, setIsProcessing] = useState(false);
-    const [marketOutcomeResult, setMarketOutcomeResult] = useState(null);
+    const [marketInfo, setMarketInfo] = useState(null);
 
     const handleRedeem = async () => {
         console.log("Dd");
@@ -32,26 +32,18 @@ function RedeemMarketRewardsWidget(props) {
         }
     };
 
-    const loadVote = async () => {
+    const loadMarketInfo = async () => {
         const marketAPIs = new MarketAPIs();
-        const outcome = await marketAPIs.getMarketVoting(accountContext.account, props.marketContractAddress, props.marketState);
-        setMarketOutcomeResult(outcome);
+        const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
+        setMarketInfo(result);
     };
 
     const getUserRewardsVal =  () => {
-        if(!marketOutcomeResult) {
-            return 0;
+        if(!marketInfo) {
+            return;
         }
 
-        if(!props.walletOptionTokensBalance || props.walletOptionTokensBalance.length === 0) {
-            return 0;
-        }
-
-        if(marketOutcomeResult[0] == marketOutcomeResult[1]) {
-            return (props.walletOptionTokensBalance[0] + props.walletOptionTokensBalance[1]) / 2;
-        }
-
-        if(marketOutcomeResult[0] > marketOutcomeResult[1]) {
+        if(marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1]) {
             return props.walletOptionTokensBalance[0];
         }
 
@@ -59,20 +51,25 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     useEffect(() => {
-        loadVote();
+        loadMarketInfo();
     }, []);
 
     return (
         <div className={classes.RedeemMarketRewardsWidget}>
             <div className={classes.RedeemMarketRewardsWidget__Header}>Redeem your rewards</div>
             <div className={classes.RedeemMarketRewardsWidget__Content}>
+                {
+                    marketInfo && (
+                        <div>The community resolved this market to {marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1] ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
+                    )
+                }
                 You have a total of {fromWei(getUserRewardsVal(), null, 5)}
             </div>
             <Button color="primary"
                     size={"large"}
                     onClick={handleRedeem}
                     isProcessing={isProcessing}
-                    isDisabled={getUserRewardsVal() === 0}
+                    isDisabled={getUserRewardsVal() == 0}
                     fullWidth={true}>Redeem</Button>
         </div>
     );

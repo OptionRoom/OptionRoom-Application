@@ -20,6 +20,7 @@ function VoteWidget(props) {
     const [voteInput, setVoteInput] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [marketVotes, setMarketVotes] = useState(null);
+    const [walletVote, setWalletVote] = useState(null);
 
     const handleVote = async () => {
         setIsProcessing(true);
@@ -30,6 +31,23 @@ function VoteWidget(props) {
         try {
             await marketApis.addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
             loadVote();
+            loadWalletVotes();
+            props.onVote && props.onVote();
+        } catch (e) {
+
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const handleWithdrawVote = async () => {
+        setIsProcessing(true);
+        const marketApis = new MarketAPIs();
+
+        try {
+            await marketApis.withdrawMarketVote(accountContext.account, props.marketContractAddress, props.marketState);
+            loadVote();
+            loadWalletVotes();
             props.onVote && props.onVote();
         } catch (e) {
 
@@ -50,22 +68,28 @@ function VoteWidget(props) {
 
     const loadVote = async () => {
         const marketAPIs = new MarketAPIs();
-        const votes = await marketAPIs.getMarketVoting(accountContext.account, props.marketContractAddress, props.marketState);
+        const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
         console.log("votes", votes);
         if(props.marketState == 1) {
+            const validatingVotesCount = votes.validatingVotesCount;
             const formattedVotes = [];
-            formattedVotes[0] = (parseFloat(votes[0])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
-            formattedVotes[1] = (parseFloat(votes[1])/(parseFloat(votes[0]) + parseFloat(votes[1]))) * 100;
+            formattedVotes[1] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+            formattedVotes[0] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
             setMarketVotes(formattedVotes);
-        } else {
-            setMarketVotes(votes);
+        } else if(props.marketState == 5) {
+            const validatingVotesCount = votes.resolvingVotesCount;
+            const formattedVotes = [];
+            formattedVotes[0] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+            formattedVotes[1] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+            setMarketVotes(formattedVotes);
         }
     };
 
     const loadWalletVotes = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
-        console.log("votes", votes);
+        console.log("loadWalletVotes", votes);
+        setWalletVote(votes);
     };
 
     useEffect(() => {
@@ -73,6 +97,20 @@ function VoteWidget(props) {
             loadWalletVotes();
         }
     }, [accountContext.account, props.marketContractAddress, props.marketState]);
+
+    const getWalletValidationTxt = () => {
+        if(!walletVote || !walletVote.selection) {
+            return;
+        }
+
+        if(props.marketState == 1) {
+            return walletVote.selection == 1 ? 'Valid': 'Invalid';
+        }
+
+        if(props.marketState == 5) {
+            return walletVote.selection == 0 ? 'Yes': 'No';
+        }
+    };
 
     useEffect(() => {
         loadVote();
@@ -98,27 +136,44 @@ function VoteWidget(props) {
                                      color={'#7084FF'}/>
                 </div>
             </div>
-            <div className={classes.VoteWidget__Options}>
-                <div className={classes.Options__Options}>
-                    {
-                        ['Yes', 'No'].map((entry) => {
-                            return (
-                                <OptionBlock isSelected={voteInput === entry.toLowerCase()}
-                                             onClick={(value) => {
-                                                 setVoteInput(value.toLowerCase());
-                                             }}
-                                             title={entry}/>
-                            )
-                        })
-                    }
-                </div>
-            </div>
-            <Button color="primary"
-                    size={"large"}
-                    onClick={handleVote}
-                    isDisabled={!voteInput}
-                    isProcessing={isProcessing}
-                    fullWidth={true}>Vote</Button>
+            {
+                (!walletVote || !walletVote.voteFlag) ? (
+                    <>
+                        <div className={classes.VoteWidget__Options}>
+                            <div className={classes.Options__Options}>
+                                {
+                                    ['Yes', 'No'].map((entry) => {
+                                        return (
+                                            <OptionBlock isSelected={voteInput === entry.toLowerCase()}
+                                                         onClick={(value) => {
+                                                             setVoteInput(value.toLowerCase());
+                                                         }}
+                                                         title={entry}/>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <Button color="primary"
+                                size={"large"}
+                                onClick={handleVote}
+                                isDisabled={!voteInput}
+                                isProcessing={isProcessing}
+                                fullWidth={true}>Vote</Button>
+                    </>
+                ) : (
+                    <>
+                        <div className={classes.VoteWidget__Options}>
+                            You voted on this market to {getWalletValidationTxt()}
+                        </div>
+                        <Button color="primary"
+                                size={"large"}
+                                onClick={handleWithdrawVote}
+                                isProcessing={isProcessing}
+                                fullWidth={true}>Withdraw</Button>
+                    </>
+                )
+            }
         </div>
     );
 }

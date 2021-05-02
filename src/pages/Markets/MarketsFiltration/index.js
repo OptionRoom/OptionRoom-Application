@@ -70,7 +70,7 @@ function MarketsFiltration(props) {
                                 return {value: entry.id, label: entry.title};
                             })}
                             classNamePrefix={'MarketsFiltration__CategoryField'}/>
-                    <Select isClearable={true}
+                    <Select isClearable={false}
                             value={get(props.filterDetails, 'state')}
                             onChange={(e) => {
                                 props.onFilterUpdate && props.onFilterUpdate({

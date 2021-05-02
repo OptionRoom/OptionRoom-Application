@@ -24,7 +24,10 @@ function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
-    const [markets, setMarkets] = useState([]);
+    const [allMarkets, setAllMarkets] = useState([]);
+    const [marketsContracts, setMarketsContracts] = useState([]);
+    const [marketsPriceOfBuy, setMarketsPriceOfBuy] = useState([]);
+    const [marketsTotalVolume, setMarketsTotalVolume] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(false);
     const [filterDetails, setFilterDetails] = useState({
@@ -40,7 +43,7 @@ function Markets() {
         }
     });
 
-    const filteredMarkets = useGetFilteredMarkets(markets, marketsContractData, filterDetails.name, filterDetails.category, get(filterDetails, ['state', 'value']), filterDetails.sort);
+    const filteredMarkets = useGetFilteredMarkets(allMarkets, marketsContracts, filterDetails.name, filterDetails.category, filterDetails.sort, marketsTotalVolume);
 
     const classes = useStyles();
 
@@ -51,15 +54,15 @@ function Markets() {
             const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
             setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
 
-            const marketApis = new MarketAPIs();
-            const createdContracts = await marketApis.getAllMarketContracts();
+            if(isWalletWhitelistedForBetaRes) {
+                const result = await getMarkets();
+                setAllMarkets(result);
+                const marketApis = new MarketAPIs();
+                const marketContracts = await marketApis.getMarketsByState(accountContext.account, filterDetails.state.value);
+                setMarketsContracts(marketContracts);
+                console.log("marketContracts", result, marketContracts);
+            }
 
-            const result = await getMarkets();
-            const filteredMarkets = filter(result, (entry) => {
-                return !!createdContracts[entry.id];
-            });
-
-            setMarkets(filteredMarkets);
             setIsLoading(false);
         };
 
@@ -67,6 +70,67 @@ function Markets() {
             init();
         }
     }, [accountContext.account]);
+
+
+    useEffect(() => {
+        const init = async () => {
+            const marketApis = new MarketAPIs();
+            const marketContracts = await marketApis.getMarketsByState(accountContext.account, filterDetails.state.value);
+            setMarketsContracts(marketContracts);
+        };
+
+        if (accountContext.account) {
+            init();
+        }
+    }, [filterDetails.state]);
+
+    useEffect(() => {
+        const init = async () => {
+            const marketApis = new MarketAPIs();
+            for(const address in marketsContracts) {
+                if(!marketsPriceOfBuy[address]) {
+                    const pricesOfBuy = await marketApis.getPricesOfBuy(accountContext.account, marketsContracts[address]);
+                    setMarketsPriceOfBuy(prevState => {
+                        return {
+                            ...prevState,
+                            [`${address}`]: {
+                                'yes': pricesOfBuy.priceOfYes,
+                                'no': pricesOfBuy.priceOfNo,
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        if (accountContext.account && marketsContracts) {
+            init();
+        }
+    }, [marketsContracts]);
+
+    useEffect(() => {
+        const init = async () => {
+            const marketAPIs = new MarketAPIs();
+            for(const address in marketsContracts) {
+                if(!marketsTotalVolume[address]) {
+                    const tradingVolume = await marketAPIs.getMarketTradingVolume(accountContext.account, marketsContracts[address]);
+                    setMarketsTotalVolume(prevState => {
+                        return {
+                            ...prevState,
+                            [`${address}`]: tradingVolume
+                        }
+                    });
+                }
+            }
+        };
+
+        if (accountContext.account && marketsContracts) {
+            init();
+        }
+    }, [marketsContracts]);
+
+    console.log("marketsPriceOfBuy", marketsPriceOfBuy);
+    console.log("marketsTotalVolume", marketsTotalVolume);
 
     if(!accountContext.account) {
         return (
@@ -111,7 +175,6 @@ function Markets() {
                     <MarketsFiltration
                         filterDetails={filterDetails}
                         onFilterUpdate={(newDetails) => {
-                            console.log("newDetails", newDetails);
                             setFilterDetails(newDetails);
                         }}/>
                 </div>
@@ -122,7 +185,12 @@ function Markets() {
                         {filteredMarkets.map((entry) => {
                             return (
                                 <div key={`market-${entry.id}`}>
-                                    <MarketCard market={entry}
+                                    <MarketCard market={{
+                                        ...entry,
+                                        state: filterDetails.state,
+                                        priceOfBuy: get(marketsPriceOfBuy, [entry.id]),
+                                        volume: get(marketsTotalVolume, [entry.id]),
+                                    }}
                                                 onMarketDataLoad={(e) => {
                                                     if (e && e.marketContractAddress) {
                                                         marketsContractData[e.marketId] = e;

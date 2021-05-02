@@ -160,7 +160,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     Size__Small: {
         height: '40px',
-        fontSize: '16px',
+        fontSize: '14px',
         fontWeight: 600,
         letterSpacing: 0,
         lineHeight: '24px',

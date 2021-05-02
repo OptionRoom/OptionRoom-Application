@@ -68,8 +68,9 @@ function Market() {
 
     const loadWalletBalanceOfCollateralToken = async () => {
         const marketApis = new MarketAPIs();
-        const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
-        setWalletBalanceOfCollateralToken(balanceOfColletralToken);
+        const result = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
+        console.log("balanceOfColletralToken", result);
+        setWalletBalanceOfCollateralToken(result);
     };
 
     const loadWalletAllowanceOfCollateralToken = async () => {
@@ -124,7 +125,8 @@ function Market() {
         const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
         const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketContractAddress);
         const walletSharesPercentageOfMarket = await marketApis.getWalletSharesPercentageOfMarket(wallet, marketContractAddress);
-
+        const votes = await marketApis.getMarketInfo(accountContext.account, marketContractAddress);
+        console.log("votes", votes);
         console.log("loadMarketContractData", {
             totalSupply: marketTotalSupply,
             state: marketState,
@@ -171,6 +173,7 @@ function Market() {
 
                 if (!market) {
                     const result = await getMarketById(marketId);
+                    console.log("result", result);
                     setMarket(result);
                 }
 
@@ -419,14 +422,18 @@ function Market() {
                         </Grid>
                         <Grid item xs={12} md={4}>
                             <div className={classes.MarketDetails__Sidebar}>
-                                <div className={classes.CreatorWidegt}>
-                                    <Alert icon={<FlareIcon fontSize="inherit" />}
-                                           style={{
-                                               borderRadius: '16px',
-                                               marginBottom: '15px'
-                                           }}
-                                           severity="info">You are the creator of this market</Alert>
-                                </div>
+                                {
+                                    (market && market.wallet == accountContext.account) && (
+                                        <div className={classes.CreatorWidegt}>
+                                            <Alert icon={<FlareIcon fontSize="inherit" />}
+                                                   style={{
+                                                       borderRadius: '16px',
+                                                       marginBottom: '15px'
+                                                   }}
+                                                   severity="info">You are the creator of this market</Alert>
+                                        </div>
+                                    )
+                                }
                                 <div className={classes.MarketLiquidityWidgetWrap}>
                                     <MarketLiquidityWidget marketState={get(marketContractData, 'state')}
                                                            marketLiquidity={get(marketContractData, 'totalSupply')}

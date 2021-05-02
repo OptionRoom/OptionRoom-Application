@@ -1,12 +1,14 @@
 import {useState, useEffect} from 'react';
 import {filter, orderBy} from 'lodash';
 
-export const useGetFilteredMarkets = (markets, marketsContractData, searchQuery, category, state, sortBy) => {
+export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, category, sortBy, marketsTotalVolume) => {
     const [filteredMarkets, setFilteredMarkets] = useState([]);
 
     useEffect(() => {
-        if (markets) {
-            let newMarkets = markets;
+        if (markets && marketsContracts) {
+            let newMarkets = filter(markets, (entry) => {
+                return !!marketsContracts[entry.id];
+            });
 
             if (searchQuery && searchQuery.trim()) {
                 newMarkets = filter(newMarkets, (entry) => {
@@ -24,27 +26,13 @@ export const useGetFilteredMarkets = (markets, marketsContractData, searchQuery,
                 });
             }
 
-            if (state) {
-                console.log("here");
-                //value
-                newMarkets = filter(newMarkets, (entry) => {
-                    if (marketsContractData[entry.id]) {
-                        console.log("marketsContractData[entry.id].state", marketsContractData[entry.id].state, state);
-                        return marketsContractData[entry.id].state == state;
-                    }
-
-                    return false;
-                });
-            }
-
             if (sortBy) {
-                console.log("sortBy", sortBy);
                 const sortDirection = sortBy.direction === 'up' ? 'asc' : 'desc';
 
                 if (sortBy.by === 'volume') {
                     newMarkets = orderBy(newMarkets, (entry) => {
-                        if (marketsContractData[entry.id]) {
-                            return marketsContractData[entry.id].tradeVolume;
+                        if (marketsTotalVolume[entry.id]) {
+                            return marketsTotalVolume[entry.id].tradeVolume;
                         }
 
                         return 0;
@@ -54,9 +42,10 @@ export const useGetFilteredMarkets = (markets, marketsContractData, searchQuery,
                 }
             }
 
+
             setFilteredMarkets(newMarkets);
         }
-    }, [markets, searchQuery, category, state, sortBy]);
+    }, [markets, marketsContracts, searchQuery, category, sortBy, marketsTotalVolume]);
 
     return filteredMarkets;
 }

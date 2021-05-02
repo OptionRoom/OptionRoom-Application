@@ -50,5 +50,36 @@ export const useStyles = makeStyles((theme) => ({
                 marginBottom: 0
             }
         }
+    },
+    Yes: {
+        display: 'inline-block',
+        borderRadius: "12px",
+        color: "#fff",
+        fontSize: "14px",
+        fontWeight: 600,
+        letterSpacing: "0",
+        lineHeight: "24px",
+        padding: '0 8px',
+        background: '#86DC8B'
+    },
+    No: {
+        display: 'inline-block',
+        borderRadius: "12px",
+        color: "#fff",
+        fontSize: "14px",
+        fontWeight: 600,
+        letterSpacing: "0",
+        lineHeight: "24px",
+        padding: '0 8px',
+        background: '#7084FF'
+    },
+    DisputeWidget__DidDisputeTxt: {
+        textAlign: 'center',
+        padding: '10px 5px',
+        background: '#e4f1ff',
+        color: "#000",
+        borderRadius: '5px',
+        marginTop: '10px',
+        boxShadow: '0 0 20px 0 #e6edff'
     }
 }));

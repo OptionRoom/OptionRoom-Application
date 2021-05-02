@@ -25,33 +25,11 @@ function MarketLiquidityWidget(props) {
     }, []);
 
     const showAddLiquiditySection = () => {
-        /**
-         *     "0": "Invalid",
-         "1": "Pending",
-         "2": "Rejected",
-         "3": "Active",
-         "4": "Inactive",
-         "5": "Resolving",
-         "6": "Resolved",
-         "7": "DisputePeriod",
-         "8": "ResolvingAfterDispute",
-         */
         return ["3"].indexOf(props.marketState) > -1;
     };
 
     const showRemoveLiquiditySection = () => {
-        /**
-         *     "0": "Invalid",
-         "1": "Pending",
-         "2": "Rejected",
-         "3": "Active",
-         "4": "Inactive",
-         "5": "Resolving",
-         "6": "Resolved",
-         "7": "DisputePeriod",
-         "8": "ResolvingAfterDispute",
-         */
-        return ["0", "2", "3", "4", "8"].indexOf(props.marketState) > -1;
+        return ["0", "2", "3", "4", "6"].indexOf(props.marketState) > -1;
     };
 
     const handleAddLiquidity = async () => {
@@ -102,7 +80,7 @@ function MarketLiquidityWidget(props) {
                                     isDisabled={props.walletAllowanceOfCollateralToken == 0}
                                     onClick={handleAddLiquidity}
                                     size={"small"}>
-                                    Add Liquidity&nbsp;
+                                    Add Liquidity
                                 </Button>
                             </div>
                         </>
@@ -118,7 +96,7 @@ function MarketLiquidityWidget(props) {
                                 color="primary"
                                 onClick={handleRemoveLiquidity}
                             >
-                                Remove liquidity&nbsp;
+                                Remove liquidity
                             </Button>
                         </div>
                     )

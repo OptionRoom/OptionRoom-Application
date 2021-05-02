@@ -34,22 +34,22 @@ const ConfigHelper = {
 
         ///New Ones
         /**
-         * demoGovernence.address (AAA0)
-
+         demoGovernence.address (AAA0)
+         0x5dA38971Bf7D81114917a0185eaC29627a3285f8
          demoToken.address (AAA1)
-
+         0x7F23Fd51dBd23bfCC4187AB7B39778f4ce655d57
          condToken.address (AAA2)
-
+         0x80B445eCf87a04a0A7B789E2b45d48E45671fAbE
          markettemplate.address (AAA4)
-         0x8246a2707c6De7fbcaf4473E5FcE605456587eee
+         0xdEa0667116A1779362B6CB0263A8685d40627F55
          factoryC.address (AAA3)
-
+         0x762A45ecA58745C478d3D6278e3C8f5dB72970b0
          */
         return {
-            marketRouter: '0xcEB72Cd2D8F25141Ef33389eF24545aE0342df02',
-            collateralToken: '0x2b777181239A2DBf471d87d702A7f94060333b02',
-            governance: '0xecE20dc9D92B9BeACC6956d9F5AD6004dEE834bA',
-            optionToken: '0x363BC44b00ed688E8361b3C4e217d0C2b57E46b5'
+            marketRouter: '0x762A45ecA58745C478d3D6278e3C8f5dB72970b0',
+            collateralToken: '0x7F23Fd51dBd23bfCC4187AB7B39778f4ce655d57',
+            governance: '0x5dA38971Bf7D81114917a0185eaC29627a3285f8',
+            optionToken: '0x80B445eCf87a04a0A7B789E2b45d48E45671fAbE'
         }
     },
 };

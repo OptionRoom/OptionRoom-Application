@@ -18,5 +18,27 @@ export const useStyles = makeStyles((theme) => ({
     },
     RedeemMarketRewardsWidget__Content: {
         marginBottom: '16px',
-    }
+    },
+    Yes: {
+        display: 'inline-block',
+        borderRadius: "12px",
+        color: "#fff",
+        fontSize: "14px",
+        fontWeight: 600,
+        letterSpacing: "0",
+        lineHeight: "24px",
+        padding: '0 8px',
+        background: '#86DC8B'
+    },
+    No: {
+        display: 'inline-block',
+        borderRadius: "12px",
+        color: "#fff",
+        fontSize: "14px",
+        fontWeight: 600,
+        letterSpacing: "0",
+        lineHeight: "24px",
+        padding: '0 8px',
+        background: '#7084FF'
+    },
 }));

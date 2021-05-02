@@ -10,6 +10,7 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
+import FlareIcon from "@material-ui/icons/Flare";
 
 
 export const useGetCanDisputeMarket = (minHoldingsToDispute, userBalances, didDisputedMarket) => {
@@ -19,31 +20,27 @@ export const useGetCanDisputeMarket = (minHoldingsToDispute, userBalances, didDi
         if(didDisputedMarket) {
             setCanDisputeMarket(false);
         } else {
-            if(minHoldingsToDispute && userBalances) {
-                if((parseFloat(userBalances[0]) + parseFloat(userBalances[1])) >= parseFloat(minHoldingsToDispute)) {
-                    setCanDisputeMarket(true);
-                } else {
-                    setCanDisputeMarket(false);
-                }
+            if(userBalances && (parseFloat(userBalances[0]) + parseFloat(userBalances[1])) > 0) {
+                setCanDisputeMarket(true);
+            } else {
+                setCanDisputeMarket(false);
             }
         }
-    }, [minHoldingsToDispute, userBalances]);
+    }, [minHoldingsToDispute, userBalances, didDisputedMarket]);
 
     return canDisputeMarket;
 };
 
-export const useGetDidDisputedMarket = (votes) => {
+export const useGetDidDisputedMarket = (walletDisputeVotes) => {
     const [didDisputedMarket, setDidDisputedMarket] = useState(null);
 
     useEffect(() => {
-        if(votes) {
-            if(votes.totalBalances > 0) {
-                setDidDisputedMarket(true);
-            } else {
-                setDidDisputedMarket(false);
-            }
+        if(walletDisputeVotes && walletDisputeVotes == 'N/A') {
+            setDidDisputedMarket(true);
+        } else {
+            setDidDisputedMarket(false);
         }
-    }, [votes]);
+    }, [walletDisputeVotes]);
 
     return didDisputedMarket;
 };
@@ -54,17 +51,22 @@ function DisputeWidget(props) {
 
     //Dispute
     const [isProcessing, setIsProcessing] = useState(false);
+    const [marketInfo, setMarketInfo] = useState(null);
     const [minHoldingsToDispute, setMinHoldingsToDispute] = useState(null);
     const [walletDisputeVotes, setWalletDisputeVotes] = useState(null);
-    const didDisputedMarket = useGetDidDisputedMarket(minHoldingsToDispute, props.walletOptionTokensBalance);
+    const didDisputedMarket = useGetDidDisputedMarket(walletDisputeVotes);
     const canDisputeMarket = useGetCanDisputeMarket(minHoldingsToDispute, props.walletOptionTokensBalance, didDisputedMarket);
+
+    const isWalletEligibleToDispute = () => {
+        return props.walletOptionTokensBalance && ((props.walletOptionTokensBalance[0] + props.walletOptionTokensBalance[1]) > 0);
+    };
 
     const handleDispute = async () => {
         setIsProcessing(true);
         const marketApis = new MarketAPIs();
 
         try {
-            await marketApis.disputeMarket(accountContext.account, props.marketContractAddress, "Hello");
+            await marketApis.disputeMarket(accountContext.account, props.marketContractAddress, "N/A");
             loadWalletVotes();
             props.onDispute && props.onDispute();
         } catch (e) {
@@ -83,14 +85,20 @@ function DisputeWidget(props) {
     const loadWalletVotes = async () => {
         const marketAPIs = new MarketAPIs();
         const result = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
-        console.log("result", result);
         setWalletDisputeVotes(result);
+    };
+
+    const loadMarketInfo = async () => {
+        const marketAPIs = new MarketAPIs();
+        const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
+        setMarketInfo(result);
     };
 
     useEffect(() => {
         if(accountContext.account && props.marketContractAddress && props.marketState == 7) {
             loadWalletVotes();
-            loadMarketMinHoldingsToDispute();
+            loadMarketInfo();
+            //loadMarketMinHoldingsToDispute();
         }
     }, [accountContext.account, props.marketContractAddress, props.marketState]);
 
@@ -100,19 +108,37 @@ function DisputeWidget(props) {
                 <div>Dispute this market</div>
             </div>
             <div className={classes.DisputeWidget__Body}>
-                <div>Do you believe that the market was resolved in a wrong outcome?</div>
                 {
-                    minHoldingsToDispute && (
-                        <Alert severity="info">To dispute this market you must hold at least {fromWei(minHoldingsToDispute)} tokens of the market options</Alert>
+                    marketInfo && (
+                        <div>The community resolved this market to {marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1] ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
+                    )
+                }
+                {
+                    isWalletEligibleToDispute() && (
+                        <div>Do you believe that the market was resolved in a wrong outcome?</div>
+                    )
+                }
+                {
+                    didDisputedMarket && (
+                        <Alert style={{
+                                   borderRadius: '16px',
+                                    marginTop: '15px',
+
+                               }}
+                               severity="info">You already applied for a dispute on this market</Alert>
                     )
                 }
             </div>
-            <Button color="primary"
-                    size={"large"}
-                    onClick={handleDispute}
-                    isDisabled={!canDisputeMarket}
-                    isProcessing={isProcessing}
-                    fullWidth={true}>Dispute</Button>
+            {
+                isWalletEligibleToDispute() && (
+                    <Button color="primary"
+                            size={"large"}
+                            onClick={handleDispute}
+                            isDisabled={didDisputedMarket}
+                            isProcessing={isProcessing}
+                            fullWidth={true}>Dispute</Button>
+                )
+            }
         </div>
     );
 }

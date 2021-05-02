@@ -57,7 +57,8 @@ export const useStyles = makeStyles((theme) => ({
         padding: '2px 8px'
     },
     Details: {
-        display: 'flex'
+        display: 'flex',
+        alignItems: 'center'
     },
     Volume: {
         marginRight: 'auto',
@@ -77,13 +78,14 @@ export const useStyles = makeStyles((theme) => ({
         marginLeft: '8px'
     },
     Options: {
-        display: 'flex'
+        //display: 'flex'
     },
     Option: {
-        marginRight: '24px',
+        textAlign: 'right'
+/*        marginRight: '24px',
         '&:last-child': {
             marginRight: '0'
-        }
+        }*/
     },
     Option__Title: {
         color: "#8293A6",
