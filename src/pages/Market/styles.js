@@ -30,13 +30,16 @@ export const useStyles = makeStyles((theme) => ({
     },
     MarketDetails__HeaderAvatar: {
         borderRadius: '50%',
-        height: "48px",
-        width: "48px",
+        height: "50px",
+        width: "50px",
         boxShadow: "0 0 20px 0 #E6EDFF",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
+        //backgroundSize: "cover",
+        //backgroundRepeat: "no-repeat",
         marginRight: '15px',
-        backgroundPosition: 'center center'
+        //backgroundPosition: 'center center'
+    },
+    MarketDetails__HeaderTitle: {
+      width: 'calc(100% - 65px)'
     },
     Cat: {
         color: "#6D8096",
@@ -49,6 +52,7 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: 600,
         letterSpacing: "0",
         lineHeight: "32px",
+        wordBreak: 'break-word'
     },
     Info: {
         padding: "24px",

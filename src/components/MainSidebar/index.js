@@ -98,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '80px',
         transition: '0.2s all',
         zIndex: '99',
+        overflow: 'hidden'
     },
     IsSidebarNotExpand: {
         [theme.breakpoints.up('md')]: {

@@ -246,11 +246,10 @@ function Market() {
                 <div className={classes.MarketsPage__Header}>
                     <div></div>
                     <div className={classes.MarketsPage__HeaderDeatils}>
-                        <div className={classes.MarketDetails__HeaderAvatar}
-                             style={{
-                                 backgroundImage: `url(${get(market, ['image'])})`
-                             }}></div>
-                        <div>
+                        <img className={classes.MarketDetails__HeaderAvatar}
+                             src={get(market, ['image'])}
+                             title={'Market image'}/>
+                        <div className={classes.MarketDetails__HeaderTitle}>
                             <div
                                 className={classes.Cat}>{get(market, ['category', 'title'])}</div>
                             <div

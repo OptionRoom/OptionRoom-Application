@@ -98,7 +98,7 @@ function MarketCard(props) {
                 </div>
             </div>
             <h1 className={classes.Title}>
-                {truncateText(get(market, ['title']), 100)}
+                {truncateText(get(market, ['title']), 60)}
             </h1>
             <div className={classes.Details}>
                 <div className={classes.Volume}>
