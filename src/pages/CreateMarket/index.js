@@ -536,14 +536,10 @@ function CreateMarket() {
                             </Button>
                         </div>
                     </form>
-                    {
-                        isCropModalOpen && (
-                            <CropModal isOpen={isCropModalOpen}
-                                       onCrop={handleOnCrop}
-                                       onClose={() => setIsCropModalOpen(false)}
-                                       file={croppingImg}/>
-                        )
-                    }
+                    <CropModal isOpen={isCropModalOpen}
+                               onCrop={handleOnCrop}
+                               onClose={() => setIsCropModalOpen(false)}
+                               file={croppingImg}/>
                 </div>
             </div>
         </>

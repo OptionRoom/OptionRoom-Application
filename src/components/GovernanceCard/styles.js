@@ -6,7 +6,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px',
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: theme.colors.boxBoxShadow,
     },
 /*    AvatarWrap: {
         width: '64px'

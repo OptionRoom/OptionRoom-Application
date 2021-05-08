@@ -7,7 +7,7 @@ export const useStyles = makeStyles((theme) => ({
     Info: {
       textAlign: 'center',
       fontSize: "20px",
-      color: "#000",
+      color: theme.colors.txtColor,
       marginBottom: "20px",
         "& span": {
           color: "#004BFF"
@@ -23,8 +23,8 @@ export const useStyles = makeStyles((theme) => ({
     ///
     EarnCard: {
         borderRadius: '16px',
-        backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        backgroundColor: theme.colors.boxBg,
+        boxShadow: theme.colors.boxBoxShadow,
         padding: '40px 16px 24px',
         marginBottom: '20px',
         [theme.breakpoints.up('md')]: {
@@ -45,7 +45,7 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 auto 40px'
     },
     EarnCard__Title: {
-        color: '#000000',
+        color: theme.colors.txtColor,
         fontWeight: 600,
         fontSize: '36px',
         letterSpacing: 0,
@@ -83,7 +83,7 @@ export const useStyles = makeStyles((theme) => ({
     IncvEarnCard: {
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: theme.colors.boxBoxShadow,
         padding: '40px 16px 24px',
         marginBottom: '20px',
         position: 'relative',

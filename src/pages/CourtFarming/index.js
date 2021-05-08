@@ -160,15 +160,6 @@ function CourtFarming() {
                 courtFramingMatterLockedValue +
                 courtFramingHtLockedValue
         );
-        /*
-        console.log(
-            "updateLockedValue",
-            courtFramingRoomLockedValue,
-            courtFramingRoomEthLpLockedValue,
-            courtFramingMatterLockedValue,
-            courtFramingHtLockedValue
-        );
-        */
     };
 
     useEffect(() => {
@@ -189,12 +180,6 @@ function CourtFarming() {
                     "CourtFarming_RoomStake",
                     toWei(roomTokenPer1000)
                 );
-                /*             console.log(
-                "roomTokenPrice",
-                roomTokenPrice,
-                roomTokenPer1000,
-                fromWei(roomTokensPerDay.incvReward)
-            ); */
 
                 let tokenPricesAndRewards = {
                     room: {

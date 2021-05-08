@@ -50,32 +50,23 @@ function TradeInput(props) {
     const classes = useStyles();
 
     const tooltipConfig = useTooltipConfig(value, min, max);
-    const [tradeInputTrackChange, setTradeInputTrackChange] = useState(null);
-    const [tradeInputPercentTrackChange, setTradeInputPercentTrackChange] = useState(null);
-    const [tradeInputPercent, setTradeInputPercent] = useState(0);
+    const [tradeVal, setTradeVal] = useState(value);
+    const [tradePercent, setTradePercent] = useState((value / parseFloat(max)) * 100);
 
     useEffect(() => {
-        const newPercent = (tradeInputTrackChange / parseFloat(max)) * 100;
-        setTradeInputPercent(newPercent);
-    }, [tradeInputTrackChange]);
-
-    useEffect(() => {
-        const newTradeInput = (max * tradeInputPercentTrackChange) / 100;
-        onChange(newTradeInput);
-    }, [tradeInputPercentTrackChange]);
-
-    useEffect(() => {
-        if(value === 0) {
-            setTradeInputPercent(0);
+        if(value != tradeVal) {
+            setTradeVal(value);
+            setTradePercent((value / parseFloat(max)) * 100);
         }
+    }, [value]);
 
-        if (value == 0 || value > max || value < min) {
+    useEffect(() => {
+        if(tooltipConfig.isOpen) {
             props.onValidityUpdate && props.onValidityUpdate(false);
         } else {
             props.onValidityUpdate && props.onValidityUpdate(true);
         }
-
-    }, [value]);
+    }, [tooltipConfig]);
 
     return (
         <div className={classes.TradeInput}>
@@ -83,22 +74,25 @@ function TradeInput(props) {
                      placement={'top'}
                      arrow
                      title={tooltipConfig.tooltip}>
-                <input value={value}
+                <input value={tradeVal}
                        className={clsx({
                            [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
                        })}
                        onChange={(e) => {
+                           setTradeVal(e.target.value);
+                           setTradePercent((e.target.value / parseFloat(max)) * 100);
                            onChange(e.target.value);
-                           setTradeInputTrackChange(e.target.value);
                        }}
                        type='number'/>
             </Tooltip>
             <div>
                 <TradeSlider2
-                    value={tradeInputPercent}
+                    value={tradePercent}
                     onChange={(e, e2) => {
-                        setTradeInputPercentTrackChange(e2);
-                        setTradeInputPercent(e2);
+                        setTradePercent(e2);
+                        const newVal = (e2 * max) / 100;
+                        setTradeVal(newVal);
+                        onChange && onChange(newVal);
                     }}
                 ></TradeSlider2>
             </div>

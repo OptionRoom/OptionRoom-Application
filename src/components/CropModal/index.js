@@ -17,16 +17,20 @@ function CropModal(props) {
     const [zoom, setZoom] = useState(1);
     const [rotate, setRotate] = useState(0);
     const [editor, setEditor] = useState(null);
+    const [isCropping, setIsCropping] = useState(false);
 
     const handleClose = () => {
         props.onClose && props.onClose();
     };
 
     const handleConfirm = async () => {
-        const img = editor.getImageScaledToCanvas().toDataURL();
-        console.log("img", img);
-        props.onCrop && props.onCrop(img);
-        handleClose();
+        setIsCropping(true);
+        setTimeout(() => {
+            const img = editor.getImageScaledToCanvas().toDataURL();
+            props.onCrop && props.onCrop(img);
+            handleClose();
+            setIsCropping(false);
+        }, 100);
     };
 
     const handleRotate = (e) => {
@@ -110,6 +114,7 @@ function CropModal(props) {
                     className={classes.MuiDialogActions__ConfirmBtn}
                     color={"primary"}
                     size={"small"}
+                    isProcessing={isCropping}
                 >
                     Confirm
                 </Button>

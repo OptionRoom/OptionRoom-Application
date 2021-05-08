@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     RedeemMarketRewardsWidget: {
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         padding: "24px",
     },
     RedeemMarketRewardsWidget__Header: {

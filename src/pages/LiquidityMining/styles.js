@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme) => ({
     Pool: {
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: theme.colors.boxBoxShadow,
         padding: '40px 16px 24px',
         //marginRight: '48px',
         width: '288px',

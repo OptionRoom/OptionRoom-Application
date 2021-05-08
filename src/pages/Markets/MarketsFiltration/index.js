@@ -3,10 +3,16 @@ import Select from "react-select";
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import {get} from 'lodash';
+import clsx from "clsx";
+import Switch from '@material-ui/core/Switch';
+import { withStyles } from '@material-ui/core/styles';
 
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../../shared/hooks';
 import {marketStates} from '../../../shared/constants';
+import SearchIcon from "@material-ui/icons/Search";
 
 function MarketsFiltration(props) {
 
@@ -43,17 +49,27 @@ function MarketsFiltration(props) {
         <div className={classes.MarketsFiltration}>
             <div className={classes.SearchWrap}>
                 <div className={classes.SearchLabel}>Search:</div>
-                <input placeholder={'Search by market name'}
-
-                       className={classes.MarketNameInput}
-                       value={get(filterDetails, 'name')}
-                       onChange={(e) => {
-                           props.onFilterUpdate && props.onFilterUpdate({
-                               ...filterDetails,
-                               name: e.target.value
-                           })
-                       }}
-                       type={'text'}/>
+                <div className={classes.MarketNameInputWrap}>
+                    <input placeholder={'Search markets'}
+                           className={classes.MarketNameInput}
+                           value={get(filterDetails, 'name')}
+                           onChange={(e) => {
+                               props.onFilterUpdate && props.onFilterUpdate({
+                                   ...filterDetails,
+                                   name: e.target.value
+                               })
+                           }}
+                           type={'text'}/>
+                    <SearchIcon className={classes.SearchIcon}/>
+                </div>
+            </div>
+            <div className={classes.TradedOnlyWrap}>
+                <div className={classes.TradedOnlyWrapLabel}>&nbsp;</div>
+                <div className={classes.TradedOnlyWrap_Input}>
+                    <Switch
+                        color="primary" onChange={()=>{}} name="checkedA" />
+                    <div>Traded only</div>
+                </div>
             </div>
             <div className={classes.FilterActions}>
                 <div className={classes.SearchLabel}>Filter By:</div>
@@ -93,30 +109,57 @@ function MarketsFiltration(props) {
                     Sort by:
                 </div>
                 <div className={classes.SearchActions}>
-                    {
-                        ["Volume", "Created"].map((entry) => {
-                            return (
-                                <div className={classes.SortBlock}
-                                     onClick={() => handleSort(entry.toLowerCase())}>
-                                    <span>{entry}</span>
-                                    {
-                                        get(filterDetails, ['sort', 'by']) === entry.toLowerCase() && (
-                                            <>
-                                                {
-                                                    get(filterDetails, ['sort', 'direction']) === 'down' ? (
-                                                        <ArrowDownwardIcon className={classes.SortBlock__Icon}/>
-                                                    ) : (
-                                                        <ArrowUpwardIcon className={classes.SortBlock__Icon}/>
-                                                    )
-                                                }
-                                            </>
-                                        )
-                                    }
+                    <div className={classes.SortBlocks}>
+                        {
+                            ["Volume", "Created"].map((entry) => {
+                                return (
+                                    <div className={clsx(classes.SortBlock, {
+                                        [classes.SortBlock__IsActive]: get(filterDetails, ['sort', 'by']) === entry.toLowerCase(),
+                                    })}
+                                         onClick={() => handleSort(entry.toLowerCase())}>
+                                        <span>{entry}</span>
+                                        {
+                                            get(filterDetails, ['sort', 'by']) === entry.toLowerCase() && (
+                                                <>
+                                                    {
+                                                        get(filterDetails, ['sort', 'direction']) === 'down' ? (
+                                                            <ArrowDownwardIcon className={classes.SortBlock__Icon}/>
+                                                        ) : (
+                                                            <ArrowUpwardIcon className={classes.SortBlock__Icon}/>
+                                                        )
+                                                    }
+                                                </>
+                                            )
+                                        }
 
-                                </div>
-                            )
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+            <div className={classes.ViewActions}>
+                <div className={classes.SearchLabel}>&nbsp;</div>
+                <div className={classes.SearchActions}>
+                    <ViewComfyIcon className={clsx({
+                        [classes.View__IsActive]: get(props.filterDetails, 'view') === 'grid',
+                    })}
+                    onClick={() => {
+                        props.onFilterUpdate && props.onFilterUpdate({
+                            ...filterDetails,
+                            view: 'grid'
                         })
-                    }
+                    }}/>
+                    <FormatListBulletedIcon className={clsx({
+                        [classes.View__IsActive]: get(props.filterDetails, 'view') === 'list',
+                    })}
+                    onClick={() => {
+                        props.onFilterUpdate && props.onFilterUpdate({
+                            ...filterDetails,
+                            view: 'list'
+                        })
+                    }}/>
                 </div>
             </div>
         </div>

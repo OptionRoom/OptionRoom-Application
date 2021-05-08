@@ -17,6 +17,22 @@ function Button(props) {
     } = props;
     const classes = useStyles();
 
+    if(props.push) {
+        return (
+            <button className={classes.pushable}
+                    disabled={isProcessing || isDisabled}
+                    {...rest}>
+                {isProcessing && (
+                    <div className={classes.Progress_StateWrap}>
+                        <CircularProgress />
+                        Processing...
+                    </div>
+                )}
+                {!isProcessing && children}
+            </button>
+        )
+    };
+
     return (
         <MuiButton
             disabled={isProcessing || isDisabled}

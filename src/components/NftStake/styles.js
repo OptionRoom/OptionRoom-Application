@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
     EarnCard: {
         borderRadius: '16px',
         backgroundColor: '#000',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: theme.colors.boxBoxShadow,
         padding: '40px 16px 24px',
         marginBottom: '35px',
         [theme.breakpoints.up('md')]: {

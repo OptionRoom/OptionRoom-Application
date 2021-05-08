@@ -1,4 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useMemo, useContext, useEffect, useState} from "react";
+import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
+import ABCWhyteMediumWoff2 from './assets/fonts/ABCWhyte-Medium.woff2';
+import ABCWhyteRegularWoff from './assets/fonts/ABCWhyte-Regular.woff';
+import ABCWhyteRegularWoff2 from './assets/fonts/ABCWhyte-Regular.woff2';
+
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
@@ -29,23 +34,27 @@ import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider"
 import { watchUserSignIn } from "./shared/firestore.service";
 import ConfigWallet from "./pages/ConfigWallet";
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: '#004BFF',
-        },
-        secondary: {
-            main: '#ccc',
-        },
-    },
-    typography: {
-        fontFamily: [
-            'Kanit',
-            'sans-serif',
-        ].join(','),
-    },
-});
+/**
+ import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
+ import ABCWhyteMediumWoff2 from './assets/fonts/ABCWhyte-Medium.woff2';
+ import ABCWhyteRegularWoff from './assets/fonts/ABCWhyte-Regular.woff';
+ import ABCWhyteRegularWoff2 from './assets/fonts/ABCWhyte-Regular.woff2';
+ * @type {{fontFamily: string, src: string, fontDisplay: string, fontStyle: string, fontWeight: number}}
+ */
+const ABCWhyte = {
+    fontFamily: 'Whyte',
+/*    fontStyle: 'normal',
+    fontDisplay: 'swap',
+    fontWeight: 400,*/
+    src: `
+    url(${ABCWhyteMediumWoff}) format('woff'),
+    url(${ABCWhyteMediumWoff2}) format('woff2'),
+    url(${ABCWhyteRegularWoff}) format('woff'),
+    url(${ABCWhyteRegularWoff2}) format('woff2'),
+  `
+};
 
+const prefersDarkMode = false;
 
 const useStyles = makeStyles((theme) => ({
     Main: {
@@ -62,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     },
     Main__Content: {
         //'padding': '24px',
-        minHeight: '100vh',
+        minHeight: 'calc(100vh - 64px)',
         [theme.breakpoints.up('md')]: {
             flexGrow: 1,
         },
@@ -82,6 +91,56 @@ function App() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isSidebarExpand, setIsSidebarExpand] = useState(true);
+
+    const lightColors = {
+        primary: '#004BFF',
+        boxBg: '#fff',
+        boxBoxShadow: "0 0 20px 0 #E6EDFF",
+        inputBg: '#FFF',
+        inputBorder: '#D2D9E1',
+        txtColor: "#000"
+    };
+
+    const darkColors = {
+        boxBg: `rgb(39, 38, 44)`,
+        boxBoxShadow: 'none',
+        inputBg: 'rgb(72, 63, 90)',
+        inputBorder: 'rgb(72, 63, 90)',
+        txtColor: "#fff"
+    };
+
+
+    const theme = useMemo(
+        () =>
+            createMuiTheme({
+                palette: {
+                    type: prefersDarkMode ? 'dark' : 'light',
+                    primary: {
+                        main: '#004BFF',
+                    },
+                    secondary: {
+                        main: '#ccc',
+                    },
+                },
+                typography: {
+                    fontFamily: [
+                        'Whyte',
+                        //'Kanit',
+                        'sans-serif',
+                    ].join(','),
+                },
+                overrides: {
+                    MuiCssBaseline: {
+                        '@global': {
+                            '@font-face': [ABCWhyte],
+                        },
+                    },
+                },
+                colors: prefersDarkMode ? darkColors : lightColors,
+                isDark: prefersDarkMode
+            }),
+        [prefersDarkMode],
+    );
 
     useEffect(() => {
         watchUserSignIn();

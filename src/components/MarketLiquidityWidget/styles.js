@@ -3,8 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 export const useStyles = makeStyles((theme) => ({
     MarketLiquidityWidget: {
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         padding: "24px",
     },
     MarketLiquidityWidget__Header: {

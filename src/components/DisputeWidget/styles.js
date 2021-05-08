@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme) => ({
     DisputeWidget: {
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         padding: "24px",
     },
     DisputeWidget__Header: {
@@ -80,6 +80,6 @@ export const useStyles = makeStyles((theme) => ({
         color: "#000",
         borderRadius: '5px',
         marginTop: '10px',
-        boxShadow: '0 0 20px 0 #e6edff'
+        boxShadow: theme.colors.boxBoxShadow
     }
 }));

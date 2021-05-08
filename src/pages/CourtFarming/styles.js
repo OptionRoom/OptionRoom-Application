@@ -10,7 +10,7 @@ export const useStyles = makeStyles((theme) => ({
     CourtFarmingTotalLockedValue: {
         textAlign: "center",
         fontSize: "20px",
-        color: "#000",
+        color: theme.colors.txtColor,
         marginBottom: "20px",
         "& span": {
             color: "#004BFF",
@@ -24,26 +24,23 @@ export const useStyles = makeStyles((theme) => ({
     },
     Pool: {
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: theme.colors.boxBg,
+        boxShadow: theme.colors.boxBoxShadow,
         padding: "40px 16px 24px",
         width: "288px",
         marginBottom: "30px",
     },
     Pool__CustomColor: {
-        /**
-         * background-image: linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%);
-         background-image: linear-gradient(180deg, #2af598 0%, #009efd 100%);
-         */
-        //backgroundImage: "linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%)",
         backgroundImage:
             "linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%)",
-        //backgroundImage: "linear-gradient(-225deg, #9EFBD3 0%, #57E9F2 48%, #45D4FB 100%)",
         "& $Pool__Action__Link button": {
             background: "#363636",
             "&:hover": {
                 background: "#ff9800",
             },
+        },
+        "& $Pool__Title": {
+            color: "#212529",
         },
     },
     Pool__IconWrap: {
@@ -76,7 +73,7 @@ export const useStyles = makeStyles((theme) => ({
         },
     },
     Pool__Title: {
-        color: "#212529",
+        color: theme.isDark ? "#fff" : "#212529",
         fontSize: "20px",
         letterSpacing: 0,
         lineHeight: "24px",

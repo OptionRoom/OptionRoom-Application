@@ -9,7 +9,7 @@ export const useStyles = makeStyles((theme) => ({
     CreateMarketBox:{
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: '24px',
         padding: '24px'
     },
@@ -145,7 +145,7 @@ export const useStyles = makeStyles((theme) => ({
         width: "96px",
         borderRadius: "8px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',

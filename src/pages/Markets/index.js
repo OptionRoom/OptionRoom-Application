@@ -17,6 +17,8 @@ import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketsFiltration from "./MarketsFiltration";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {useGetFilteredMarkets} from './hooks';
+import roomIcon from '../../assets/room.svg';
+import clsx from "clsx";
 
 const marketsContractData = {};
 
@@ -40,7 +42,8 @@ function Markets() {
         sort: {
             by: 'volume',
             direction: 'down'
-        }
+        },
+        view: 'grid'
     });
 
     const filteredMarkets = useGetFilteredMarkets(allMarkets, marketsContracts, filterDetails.name, filterDetails.category, filterDetails.sort, marketsTotalVolume);
@@ -160,13 +163,15 @@ function Markets() {
                 <div className={classes.MarketsContainer}>
                     <div>
                         <h1>Markets</h1>
+{/*
                         <p>Search, participate and create</p>
+*/}
                     </div>
                     <Link to={`/markets/create`}
                           className={classes.CreateMarketLink}>
                         <Button
                             color="primary"
-                            size={'medium'}>Create new market</Button>
+                            size={'medium'}>Create market</Button>
                     </Link>
                 </div>
             </div>
@@ -181,8 +186,10 @@ function Markets() {
             </div>
             <div className={classes.MarketsListnWrap}>
                 <div className={classes.MarketsContainer}>
-                    <div className={classes.MarketsList}>
-                        {filteredMarkets.map((entry) => {
+                    <div className={clsx(classes.MarketsList, {
+                             [classes.MarketsList__ListView]: get(filterDetails, 'view') === 'list',
+                         })}>
+                        {filteredMarkets.map((entry, index) => {
                             return (
                                 <div key={`market-${entry.id}`}>
                                     <MarketCard market={{
@@ -191,6 +198,8 @@ function Markets() {
                                         priceOfBuy: get(marketsPriceOfBuy, [entry.id]),
                                         volume: get(marketsTotalVolume, [entry.id]),
                                     }}
+                                                isListView={get(filterDetails, 'view') === 'list'}
+                                                isFeatured={index == 0}
                                                 onMarketDataLoad={(e) => {
                                                     if (e && e.marketContractAddress) {
                                                         marketsContractData[e.marketId] = e;

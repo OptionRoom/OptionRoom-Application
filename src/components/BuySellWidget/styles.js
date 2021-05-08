@@ -3,8 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 export const useStyles = makeStyles((theme) => ({
     BuySellWidget: {
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: `${theme.colors.boxBoxShadow}`,
         padding: "24px",
     },
     BuySellWidget__Nav: {
@@ -66,6 +66,9 @@ export const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         padding: "16px 0",
         borderBottom: "1px solid #EDEFF4",
+        "&:last-child": {
+            borderBottom: 'none'
+        }
     },
     BuySellWidgetInfo__RowTitle: {
         color: "#8293A6",

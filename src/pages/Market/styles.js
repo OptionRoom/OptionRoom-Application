@@ -32,7 +32,7 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: '50%',
         height: "50px",
         width: "50px",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         //backgroundSize: "cover",
         //backgroundRepeat: "no-repeat",
         marginRight: '15px',
@@ -57,8 +57,8 @@ export const useStyles = makeStyles((theme) => ({
     Info: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         display: "flex",
         marginBottom: "24px",
         justifyContent: "space-between",
@@ -81,8 +81,8 @@ export const useStyles = makeStyles((theme) => ({
     Graph: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     Graph__Header: {
@@ -129,8 +129,8 @@ export const useStyles = makeStyles((theme) => ({
     Outcome: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     Outcome__Header: {
@@ -153,8 +153,8 @@ export const useStyles = makeStyles((theme) => ({
     MarketPositions: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     MarketPositions__Header: {
@@ -197,8 +197,8 @@ export const useStyles = makeStyles((theme) => ({
     About: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        backgroundColor: `${theme.colors.boxBg}`,
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     About__Header: {

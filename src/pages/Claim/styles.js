@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme) => ({
         maxWidth: "600px",
         margin: "0 auto",
         borderRadius: "16px",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
     },
     ClaimCard__TabPanel: {
         padding: "32px 0",

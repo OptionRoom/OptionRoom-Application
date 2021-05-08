@@ -88,6 +88,8 @@ function BuySellWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
 
+    let updateTradeInputInterval = null;
+
     //Buy & Sell
     const [selectedTradeType, setSelectedTradeType] = useState('buy');
     const [tradeInput, setTradeInput] = useState(0);
@@ -178,7 +180,10 @@ function BuySellWidget(props) {
                                     setIsTradeDisabled(!valid);
                                 }}
                                 onChange={(e)=> {
-                                    setTradeInput(e);
+                                    clearTimeout(updateTradeInputInterval);
+                                    updateTradeInputInterval = setTimeout(() => {
+                                        setTradeInput(e);
+                                    }, 100);
                                 }}/>
                 </div>
             </div>

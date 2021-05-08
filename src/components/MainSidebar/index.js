@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         height: '100vh',
         borderRight: '2px solid rgba(133, 133, 133, 0.1)',
-        backgroundColor: 'rgb(255, 255, 255)',
+        backgroundColor: theme.isDark ? "rgb(39, 38, 44)" : 'rgb(255, 255, 255)',
         paddingTop: '80px',
         transition: '0.2s all',
         zIndex: '99',

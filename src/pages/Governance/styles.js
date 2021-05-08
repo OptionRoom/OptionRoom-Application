@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         display: "flex",
         marginBottom: "24px",
         justifyContent: "space-between",
@@ -47,7 +47,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     Graph__Header: {
@@ -95,7 +95,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     Outcome__Header: {
@@ -154,7 +154,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     MarketPositions__Header: {
@@ -198,7 +198,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
         borderRadius: "16px",
         backgroundColor: "#FFFFFF",
-        boxShadow: "0 0 20px 0 #E6EDFF",
+        boxShadow: theme.colors.boxBoxShadow,
         marginBottom: "24px",
     },
     About__Header: {

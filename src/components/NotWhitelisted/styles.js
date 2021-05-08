@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '50px 24px',
         borderRadius: '16px',
         backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        boxShadow: theme.colors.boxBoxShadow,
         textAlign: 'center',
         '&>div:first-child': {
             color: "#212529",

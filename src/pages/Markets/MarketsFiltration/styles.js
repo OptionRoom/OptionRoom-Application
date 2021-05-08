@@ -21,30 +21,40 @@ export const useStyles = makeStyles((theme) => ({
             width: '150px',
             borderTop: 'none',
             borderBottom: 'none',
-            borderRadius: 0,
+            borderRadius: '15px',
             outline: 'none',
             border: '1px solid #EDEFF4',
-            boxShadow: '0 0 20px 0 #e6edff',
+            boxShadow: theme.colors.boxBoxShadow,
         },
         '& .MarketsFiltration__CategoryField__control': {
-            borderRadius: '10px 0 0 10px'
+            //borderRadius: '15px',
+            marginRight: '5px'
         },
         '& .MarketsFiltration__StateField__control': {
-            borderRadius: '0 10px 10px 0'
+            //borderRadius: '15px'
         },
         '& .MarketsFiltration__CategoryField__indicator-separator, & .MarketsFiltration__StateField__indicator-separator': {
             display: 'none'
         }
     },
+    MarketNameInputWrap: {
+      position: 'relative'
+    },
+    SearchIcon: {
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      left: '5px'
+    },
     MarketNameInput: {
-        border: 'none',
+        border: '1px solid #EDEFF4',
         outline: 'none',
         fontSize: '14px',
-        padding: '5px 10px',
+        padding: '5px 10px 5px 33px',
         height: '38px',
-        borderRadius: '10px',
+        borderRadius: '15px',
         width: '100%',
-        boxShadow: '0 0 20px 0 #e6edff'
+        boxShadow: theme.colors.boxBoxShadow
     },
     FilterActions: {
         marginRight: '10px'
@@ -58,28 +68,49 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '5px'
     },
     SearchWrap: {
+        width: '200px',
+    },
+    TradedOnlyWrap: {
         marginRight: 'auto',
         width: '200px',
     },
-    SortBlock: {
+    TradedOnlyWrap_Input: {
+        display: 'flex',
+        alignItems: 'center',
+        fontWeight: 500,
+        fontSize: '12px',
+    },
+    SortBlocks: {
         background: '#fff',
+        height: '38px',
+        border: '1px solid #EDEFF4',
+        display: 'flex',
+        borderRadius: '15px',
+        overflow: 'hidden'
+    },
+    SortBlock: {
         userSelect: 'none',
         display: 'flex',
         alignItems: 'center',
         padding: '0 10px',
         cursor: 'pointer',
-        height: '38px',
-        border: '1px solid #EDEFF4',
-        boxShadow: '0 0 20px 0 #e6edff',
-        '&:first-child': {
-            borderRadius: '10px 0 0 10px'
-        },
-        '&:last-child': {
-            borderRadius: '0 10px 10px 0'
-        }
+    },
+    SortBlock__IsActive: {
+      background: theme.colors.primary,
+      color: '#fff',
+        borderRadius: '15px',
     },
     SortBlock__Icon: {
         marginLeft: '5px',
         fontSize: '16px'
+    },
+    ViewActions: {
+        marginLeft: '5px',
+        '&>div': {
+            cursor: 'pointer'
+        }
+    },
+    View__IsActive: {
+        color: theme.colors.primary
     }
 }));
