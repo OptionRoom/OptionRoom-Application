@@ -28,8 +28,8 @@ const PrettoSlider = withStyles((theme) => ({
         borderRadius: '50%',
         top: '8px',
         transform: 'translateX(-6px)',
-        background: '#d6d6d6',
-        border: '2px solid #fff'
+        background: theme.isDark ? '#000' : "#d6d6d6",
+        border: `2px solid ${theme.isDark ? 'rgb(39, 38, 44)' : "#fff"}`
     },
     markActive: {
         opacity: 1,
@@ -46,7 +46,7 @@ const PrettoSlider = withStyles((theme) => ({
     rail: {
         height: (marker/3),
         borderRadius: 4,
-        color: '#d6d6d6',
+        color: theme.isDark ? '#000' : "#d6d6d6",
         opacity: 1
     },
 }))(Slider);
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
             height: '10px',
             borderRadius: '50%',
             top: '10px',
-            background: `#d6d6d6`,
+            background: theme.isDark ? '#000' : "#d6d6d6",
             //border: `2px solid ${theme.palette.primary.main}`,
             boxSizing: 'border-box',
             transform: 'translate(-6.5px, -1px)',
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
             }
         },
         '& .MuiSlider-rail': {
-            color: '#d6d6d6'
+            color: theme.isDark ? '#000' : "#d6d6d6"
         }
     },
     margin: {

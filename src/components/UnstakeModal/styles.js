@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px 24px'
     },
     DialogTitle: {
-        color: '#06293D',
+        color: theme.isDark ? '#fff' : "#06293D",
         fontSize: '18px',
         fontWeight: 500,
         letterSpacing: 0,
@@ -32,14 +32,14 @@ export const useStyles = makeStyles((theme) => ({
     MuiDialogActions__ConfirmBtn: {
     },
     Modal__Text: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: 0,
         lineHeight: '24px',
         marginBottom: '24px'
     },
     Modal__TokensLabel: {
-        color: '#4E5D6D',
+        color: theme.isDark ? '#fff' : "#4E5D6D",
         fontSize: '14px',
         letterSpacing: 0,
         lineHeight: '24px',
@@ -48,7 +48,7 @@ export const useStyles = makeStyles((theme) => ({
     Modal__TokensLabel_Balance: {
         fontWeight: 700,
         float: 'right',
-        color: '#000'
+        color: theme.isDark ? '#fff' : "#000",
     },
     Modal__TokensInputWrap: {
         position: 'relative'

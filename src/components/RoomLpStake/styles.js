@@ -54,7 +54,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '15px',
     },
     EarnCard__SubTitle: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: 0,
         textAlign: 'center',
@@ -127,7 +127,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '8px',
     },
     IncvEarnCard__Block__Desc: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '12px',
         letterSpacing: 0,
         textAlign: 'center',

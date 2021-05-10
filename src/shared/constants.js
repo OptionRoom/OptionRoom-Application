@@ -34,6 +34,17 @@ export const marketStates = {
     "8": "ResolvingAfterDispute",
 };
 
+export const marketStatesDisplay = {
+    "0": "Invalid",
+    "1": "Validating",
+    "2": "Rejected",
+    "3": "Active",
+    "4": "Inactive",
+    "5": "Resolving",
+    "7": "Dispute",
+    "6": "Resolved",
+};
+
 /**
  * Active Market: #2ecc71
  Pending Market: #f1c40f

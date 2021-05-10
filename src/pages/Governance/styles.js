@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
     Sidebar: {},
     MarketDetails: {},
     Cat: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "18px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -223,7 +223,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "24px",
     },
     Resolution__Header: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",

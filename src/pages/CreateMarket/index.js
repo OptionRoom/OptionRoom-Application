@@ -70,12 +70,14 @@ function CreateMarket() {
         },
         resolver: joiResolver(Joi.object({
             title: Joi.string()
-                .min(3)
+                .trim()
+                .min(10)
                 .max(100)
                 .required()
                 .label('Title'),
             description: Joi.string()
-                .min(3)
+                .trim()
+                .min(100)
                 .max(4000)
                 .required()
                 .label('Description'),
@@ -83,7 +85,13 @@ function CreateMarket() {
                 .min(1)
                 .items(
                     Joi.object().keys({
-                        name: Joi.string().uri().label('Source').required()
+                        name: Joi.string()
+                            .pattern(/[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/)
+                            .label('Source')
+                            .required()
+                            .messages({
+                                'string.pattern.base': `"Source" should be a valid URL`
+                            })
                     })
                 ),
             category: Joi.any()
@@ -176,14 +184,14 @@ function CreateMarket() {
                     id: data.category.value,
                     title: data.category.label,
                 },
-                data.description,
+                data.description.trim(),
                 data.endDate.unix(),
                 resolveTimestamp,
                 collateralTokenAddress,
                 data.liquidity,
                 imageUpload,
                 sources,
-                data.title
+                data.title.trim()
             );
 
             //wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity

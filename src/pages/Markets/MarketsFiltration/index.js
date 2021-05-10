@@ -11,7 +11,7 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../../shared/hooks';
-import {marketStates} from '../../../shared/constants';
+import {marketStatesDisplay} from '../../../shared/constants';
 import SearchIcon from "@material-ui/icons/Search";
 
 function MarketsFiltration(props) {
@@ -95,10 +95,10 @@ function MarketsFiltration(props) {
                                 })
                             }}
                             placeholder={'Status'}
-                            options={Object.keys(marketStates).map((entry) => {
+                            options={Object.keys(marketStatesDisplay).map((entry) => {
                                 return {
                                     value: entry,
-                                    label: marketStates[entry]
+                                    label: marketStatesDisplay[entry]
                                 };
                             })}
                             classNamePrefix={'MarketsFiltration__StateField'}/>

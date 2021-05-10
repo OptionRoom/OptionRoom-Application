@@ -14,12 +14,12 @@ export const useStyles = makeStyles((theme) => ({
     },
     MarketIsFeatured: {
         '& $TitleBlock': {
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: theme.isDark ? 'rgba(0, 0 , 0, 0.95)' : 'rgba(255, 255, 255, 0.95)',
             padding: '10px',
             borderRadius: '5px'
         },
         '& $Details': {
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: theme.isDark ? 'rgba(0, 0 , 0, 0.95)' : 'rgba(255, 255, 255, 0.95)',
             padding: '10px',
             borderRadius: '5px'
         },
@@ -80,7 +80,7 @@ export const useStyles = makeStyles((theme) => ({
         //minHeight: '56px'
     },
     Cat: {
-        color: "#8293A6",
+        color: theme.colors.secondaryTxt,
         fontSize: "12px",
         letterSpacing: "0",
         //marginBottom: '5px',
@@ -105,14 +105,14 @@ export const useStyles = makeStyles((theme) => ({
         marginRight: 'auto',
     },
     Volume__Title: {
-        color: "#8293A6",
+        color: theme.colors.secondaryTxt,
         fontSize: "13px",
         letterSpacing: "0",
         //lineHeight: "24px",
         textTransform: 'uppercase',
     },
     Volume__Value: {
-        color: "#4E5D6D",
+        color: theme.colors.secondaryTxt,
         fontSize: "16px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -134,7 +134,7 @@ export const useStyles = makeStyles((theme) => ({
         }
     },
     Option__Title: {
-        color: "#8293A6",
+        color: theme.colors.secondaryTxt,
         fontSize: "13px",
         letterSpacing: "0",
         //lineHeight: "24px"
@@ -142,7 +142,7 @@ export const useStyles = makeStyles((theme) => ({
     Option__Value: {
         borderRadius: "12px",
         //backgroundColor: "#EDEFF4",
-        color: "#4E5D6D",
+        color: theme.colors.secondaryTxt,
         fontSize: "16px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -231,7 +231,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     Info__Title: {
         display: 'block',
-        color: "#8293A6",
+        color: theme.isDark ? "#fff" : "#8293A6",
         fontSize: "13px",
         letterSpacing: "0",
         textTransform: 'uppercase',
@@ -239,7 +239,7 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: 1
     },
     Info__Val: {
-        color: "#4E5D6D",
+        color: theme.isDark ? "#fff" : "#4E5D6D",
         fontSize: "16px",
         fontWeight: 600,
         letterSpacing: "0",

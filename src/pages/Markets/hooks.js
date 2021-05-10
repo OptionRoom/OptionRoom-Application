@@ -32,16 +32,17 @@ export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, ca
                 if (sortBy.by === 'volume') {
                     newMarkets = orderBy(newMarkets, (entry) => {
                         if (marketsTotalVolume[entry.id]) {
-                            return marketsTotalVolume[entry.id].tradeVolume;
+                            return marketsTotalVolume[entry.id];
                         }
 
                         return 0;
                     }, [sortDirection]);
                 } else if (sortBy.by === 'created') {
-                    newMarkets = orderBy(newMarkets, ["createdAt"], [sortDirection]);
+                    newMarkets = orderBy(newMarkets, (entry) => {
+                        return entry.createdAt.seconds;
+                    }, [sortDirection]);
                 }
             }
-
 
             setFilteredMarkets(newMarkets);
         }

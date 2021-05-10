@@ -18,7 +18,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px',
     },
     Total__Title: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: '0',
         lineHeight: '24px',
@@ -39,7 +39,7 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         lineHeight: '24px',
         textAlign: 'center',
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         marginBottom: '24px'
     },
     UnlockProgress__ProgressBar: {

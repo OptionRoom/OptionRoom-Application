@@ -97,7 +97,7 @@ function MarketCard(props) {
                     [
                         {
                             title: "Name",
-                            value: get(market, ['category', 'title']),
+                            value: get(market, ['title']),
                             id: "name",
                         },
                         {

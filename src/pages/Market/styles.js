@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
     LoadingWrapper: {
@@ -12,7 +12,7 @@ export const useStyles = makeStyles((theme) => ({
     MarketsPage__Header: {
         padding: '20px',
         marginBottom: '30px',
-        background: '#fff',
+        background: theme.isDark ? 'rgb(39, 38, 44)' : '#fff',
         [theme.breakpoints.up('md')]: {
             padding: '50px 100px',
         },
@@ -39,15 +39,15 @@ export const useStyles = makeStyles((theme) => ({
         //backgroundPosition: 'center center'
     },
     MarketDetails__HeaderTitle: {
-      width: 'calc(100% - 65px)'
+        width: 'calc(100% - 65px)'
     },
     Cat: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "15px",
         letterSpacing: "0",
     },
     Title: {
-        color: "#171D28",
+        color: theme.isDark ? "#fff" : "#171D28",
         fontSize: "26px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -65,14 +65,14 @@ export const useStyles = makeStyles((theme) => ({
     },
     Info__Block: {},
     Info__BlockTitle: {
-        color: "#8293A6",
+        color: theme.isDark ? "#fff" : "#8293A6",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
         marginBottom: "4px",
     },
     Info__BlockValue: {
-        color: "#4E5D6D",
+        color: theme.isDark ? "#fff" : "#4E5D6D",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -92,7 +92,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     Graph__HeaderTitle: {
         marginRight: "auto",
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -134,7 +134,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "24px",
     },
     Outcome__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -143,7 +143,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     Outcome__Details: {
         display: "flex",
-        '&>div' : {
+        '&>div': {
             width: "calc(100% - 24px)",
             "&:first-child": {
                 marginRight: "48px",
@@ -158,7 +158,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "24px",
     },
     MarketPositions__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -173,13 +173,13 @@ export const useStyles = makeStyles((theme) => ({
         padding: "16px 0",
         "& span:first-child": {
             marginRight: "auto",
-            color: "#8293A6",
+            color: theme.isDark ? "#fff" : "#8293A6",
             fontSize: "14px",
             letterSpacing: "0",
             lineHeight: "24px",
         },
         "& span:last-child": {
-            color: "#4E5D6D",
+            color: theme.isDark ? "#fff" : "#4E5D6D",
             fontSize: "14px",
             fontWeight: 600,
             letterSpacing: "0",
@@ -202,7 +202,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "24px",
     },
     About__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",
@@ -210,7 +210,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "16px",
     },
     About__Details: {
-        color: "#8293A6",
+        color: theme.isDark ? "#fff" : "#8293A6",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -219,12 +219,12 @@ export const useStyles = makeStyles((theme) => ({
     Resolution: {
         padding: "24px",
         borderRadius: "16px",
-        backgroundColor: "#E9EAFF",
+        backgroundColor: theme.isDark ? theme.colors.boxBg : "#E9EAFF",
         marginBottom: "24px",
         wordBreak: 'break-all'
     },
     Resolution__Header: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",

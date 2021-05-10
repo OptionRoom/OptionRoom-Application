@@ -19,12 +19,12 @@ export const useStyles = makeStyles((theme) => ({
         },
         '& .MarketsFiltration__CategoryField__control, & .MarketsFiltration__StateField__control': {
             width: '150px',
-            borderTop: 'none',
-            borderBottom: 'none',
-            borderRadius: '15px',
-            outline: 'none',
-            border: '1px solid #EDEFF4',
-            boxShadow: theme.colors.boxBoxShadow,
+            background: theme.isDark ? "rgb(39, 38, 44)" : "#fff",
+            border: `1px solid ${theme.isDark ? "rgb(39, 38, 44)" : '#EDEFF4'}`,
+            borderRadius: "8px",
+            '& .CreateMarket__CategoryField__indicator-separator': {
+                display: 'none'
+            }
         },
         '& .MarketsFiltration__CategoryField__control': {
             //borderRadius: '15px',
@@ -35,6 +35,16 @@ export const useStyles = makeStyles((theme) => ({
         },
         '& .MarketsFiltration__CategoryField__indicator-separator, & .MarketsFiltration__StateField__indicator-separator': {
             display: 'none'
+        },
+        '& .MarketsFiltration__CategoryField__single-value, & .MarketsFiltration__StateField__single-value': {
+            color: theme.isDark ? "#fff" :  "#000",
+        },
+        '& .MarketsFiltration__CategoryField__menu, & .MarketsFiltration__StateField__menu': {
+            background: theme.colors.inputBg,
+            color: theme.isDark ? "#fff" :  "#000",
+        },
+        '& .MarketsFiltration__CategoryField__option--is-focused, & .MarketsFiltration__StateField__option--is-focused': {
+            color: theme.isDark ? "#000" :  "#000",
         }
     },
     MarketNameInputWrap: {
@@ -47,7 +57,9 @@ export const useStyles = makeStyles((theme) => ({
       left: '5px'
     },
     MarketNameInput: {
-        border: '1px solid #EDEFF4',
+        background: theme.isDark ? "rgb(39, 38, 44)" : '#fff',
+        color: theme.isDark ? "#fff" : '#000',
+        border: `1px solid ${theme.isDark ? "rgb(39, 38, 44)" : '#EDEFF4'}`,
         outline: 'none',
         fontSize: '14px',
         padding: '5px 10px 5px 33px',
@@ -81,9 +93,10 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: '12px',
     },
     SortBlocks: {
-        background: '#fff',
+        background: theme.isDark ? "rgb(39, 38, 44)" : '#fff',
+        color: theme.isDark ? "#fff" : '#000',
+        border: `1px solid ${theme.isDark ? "rgb(39, 38, 44)" : '#EDEFF4'}`,
         height: '38px',
-        border: '1px solid #EDEFF4',
         display: 'flex',
         borderRadius: '15px',
         overflow: 'hidden'

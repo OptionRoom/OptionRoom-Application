@@ -91,6 +91,7 @@ function App() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isSidebarExpand, setIsSidebarExpand] = useState(true);
+    const [themeType, setThemeType] = useState(localStorage.getItem('optionroom_theme') || 'light');
 
     const lightColors = {
         primary: '#004BFF',
@@ -98,23 +99,25 @@ function App() {
         boxBoxShadow: "0 0 20px 0 #E6EDFF",
         inputBg: '#FFF',
         inputBorder: '#D2D9E1',
-        txtColor: "#000"
+        txtColor: "#000",
+        secondaryTxt: '#6D8096'
     };
 
     const darkColors = {
+        primary: '#004BFF',
         boxBg: `rgb(39, 38, 44)`,
         boxBoxShadow: 'none',
         inputBg: 'rgb(72, 63, 90)',
         inputBorder: 'rgb(72, 63, 90)',
-        txtColor: "#fff"
+        txtColor: "#fff",
+        secondaryTxt: '#fff'
     };
-
 
     const theme = useMemo(
         () =>
             createMuiTheme({
                 palette: {
-                    type: prefersDarkMode ? 'dark' : 'light',
+                    type: themeType,
                     primary: {
                         main: '#004BFF',
                     },
@@ -136,11 +139,16 @@ function App() {
                         },
                     },
                 },
-                colors: prefersDarkMode ? darkColors : lightColors,
-                isDark: prefersDarkMode
+                colors: themeType === 'dark' ? darkColors : lightColors,
+                isDark: themeType === 'dark'
             }),
-        [prefersDarkMode],
+        [themeType],
     );
+
+    const handleThemeTypeToggle = (theme) => {
+        localStorage.setItem('optionroom_theme', theme);
+        setThemeType(theme);
+    }
 
     useEffect(() => {
         watchUserSignIn();
@@ -176,6 +184,8 @@ function App() {
                             [classes.Main__isSidebarExpand]: !isSidebarExpand,
                         })}>
                             <MainSidebar isSidebarExpand={isSidebarExpand}
+                                         activeTheme={themeType}
+                                         onChangeTheme={handleThemeTypeToggle}
                                          isMinHeader={isMinHeader}></MainSidebar>
                             <div
                                 className={clsx(classes.Main__Content, {

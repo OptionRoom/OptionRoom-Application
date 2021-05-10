@@ -14,7 +14,7 @@ export const useStyles = makeStyles((theme) => ({
         '& >div': {
             paddingBottom: '15px',
             width: '50%',
-            color: "#2B3540",
+            color: theme.isDark ? "#fff" : "#2B3540",
             fontSize: "14px",
             fontWeight: 600,
             letterSpacing: "0",
@@ -34,7 +34,7 @@ export const useStyles = makeStyles((theme) => ({
         borderBottom: '1px solid #EDEFF4'
     },
     Options__Header: {
-        color: "#4E5D6D",
+        color: theme.isDark ? "#fff" : "#4E5D6D",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -44,7 +44,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: "16px",
     },
     BuySellWidgetAmount__Header: {
-        color: "#4E5D6D",
+        color: theme.isDark ? "#fff" : "#4E5D6D",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
@@ -71,14 +71,14 @@ export const useStyles = makeStyles((theme) => ({
         }
     },
     BuySellWidgetInfo__RowTitle: {
-        color: "#8293A6",
+        color: theme.isDark ? "#fff" : "#8293A6",
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",
         marginRight: "auto",
     },
     BuySellWidgetInfo__RowValue: {
-        color: "#4E5D6D",
+        color: theme.isDark ? "#fff" : "#4E5D6D",
         fontSize: "14px",
         fontWeight: 600,
         letterSpacing: "0",

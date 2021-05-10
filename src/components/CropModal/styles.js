@@ -15,7 +15,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px 24px'
     },
     DialogTitle: {
-        color: '#06293D',
+        color: theme.isDark ? "#fff" : '#06293D',
         fontSize: '18px',
         fontWeight: 500,
         letterSpacing: 0,

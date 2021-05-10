@@ -4,12 +4,12 @@ import RedeemMarketRewardsWidget from "./index";
 export const useStyles = makeStyles((theme) => ({
     RedeemMarketRewardsWidget: {
         borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: theme.colors.boxBg,
         boxShadow: theme.colors.boxBoxShadow,
         padding: "24px",
     },
     RedeemMarketRewardsWidget__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         letterSpacing: "0",
         lineHeight: "24px",
         marginBottom: '16px',

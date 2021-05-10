@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px 24px'
     },
     DialogTitle: {
-        color: '#06293D',
+        color: theme.isDark ? '#fff' : "#06293D",
         fontSize: '18px',
         fontWeight: 500,
         letterSpacing: 0,
@@ -25,7 +25,7 @@ export const useStyles = makeStyles((theme) => ({
     MuiDialogActions: {
         padding: '24px 24px',
         display: 'flex',
-        background: 'rgb(245, 248, 250)'
+        background: theme.isDark ? '#000' : 'rgb(245, 248, 250)'
     },
     MuiDialogActions__CancelBtn: {
         marginRight: 'auto',
@@ -41,14 +41,14 @@ export const useStyles = makeStyles((theme) => ({
         color: 'rgba(0, 0, 0, 0.26)'
     },
     Modal__Text: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: 0,
         lineHeight: '24px',
         marginBottom: '24px'
     },
     Modal__TokensLabel: {
-        color: '#4E5D6D',
+        color: theme.isDark ? "#fff" : '#4E5D6D',
         fontSize: '14px',
         letterSpacing: 0,
         lineHeight: '24px',
@@ -57,7 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     Modal__TokensLabel_Balance: {
         fontWeight: 700,
         float: 'right',
-        color: '#000'
+        color: theme.isDark ? "#fff" : '#000',
     },
     MuiDialogContent: {
         padding: '32px 24px',

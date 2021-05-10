@@ -8,7 +8,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
     },
     VoteWidget__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? '#fff' : "#3F4A57",
         letterSpacing: "0",
         lineHeight: "24px",
         marginBottom: '16px',

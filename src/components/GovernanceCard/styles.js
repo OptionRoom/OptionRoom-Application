@@ -52,7 +52,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '8px'
     },
     Description: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "14px",
         letterSpacing: "0",
         lineHeight: "24px",

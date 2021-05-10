@@ -8,14 +8,14 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
     },
     MarketLiquidityWidget__Header: {
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         letterSpacing: "0",
         lineHeight: "24px",
         marginBottom: '16px',
     },
     MarketLiquidityWidget__Info: {
         fontSize: "13px",
-        color: "#3F4A57",
+        color: theme.isDark ? "#fff" : "#3F4A57",
         marginBottom: '16px',
     },
     MarketLiquidityWidget__Actions: {

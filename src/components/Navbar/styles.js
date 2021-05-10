@@ -20,7 +20,7 @@ export const useStyles = makeStyles((theme) => ({
         color: '#fff'
     },
     Title__Details: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '18px',
         letterSpacing: 0,
         lineHeight: '24px',

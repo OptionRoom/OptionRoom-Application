@@ -61,7 +61,7 @@ export const useStyles = makeStyles((theme) => {
                 backgroundColor: theme.colors.inputBg,
                 display: 'block',
                 width: '100%',
-                color: "#99A6B7",
+                color: theme.isDark ? "#fff" : "#000",
                 fontSize: "14px",
                 letterSpacing: "0",
                 lineHeight: "14px",
@@ -133,6 +133,9 @@ export const useStyles = makeStyles((theme) => {
                 '&:last-child': {
                     marginBottom: 0,
                 }
+            },
+            '& input': {
+                background: theme.isDark ? "rgb(39, 38, 44)" : "#fff"
             }
         },
         RemoveSourceIcon: {
@@ -207,14 +210,28 @@ export const useStyles = makeStyles((theme) => {
         },
         CreateMarket__CategoryField: {
             '& .CreateMarket__CategoryField__value-container': {
-                padding: '10.5px 16px'
+                padding: '10.5px 16px',
+                '& input': {
+                    color: theme.isDark ? "#fff !important" :  "#000 !important",
+                }
             },
             '& .CreateMarket__CategoryField__control': {
+                background: theme.colors.inputBg,
                 border: "1px solid #D2D9E1",
                 borderRadius: "8px",
                 '& .CreateMarket__CategoryField__indicator-separator': {
                     display: 'none'
                 }
+            },
+            '& .CreateMarket__CategoryField__single-value': {
+                color: theme.isDark ? "#fff" :  "#000",
+            },
+            '& .CreateMarket__CategoryField__menu': {
+                background: theme.colors.inputBg,
+                color: theme.isDark ? "#fff" :  "#000",
+            },
+            '& .CreateMarket__CategoryField__option--is-focused': {
+                color: theme.isDark ? "#000" :  "#000",
             }
         },
         ConnectWrap: {

@@ -38,14 +38,14 @@ export const useStyles = makeStyles((theme) => ({
         color: "rgba(0, 0, 0, 0.26)",
     },
     Modal__Text: {
-        color: "#6D8096",
+        color: theme.colors.secondaryTxt,
         fontSize: "16px",
         letterSpacing: 0,
         lineHeight: "24px",
         marginBottom: "24px",
     },
     Modal__TokensLabel: {
-        color: "#4E5D6D",
+        color: theme.colors.secondaryTxt,
         fontSize: "14px",
         letterSpacing: 0,
         lineHeight: "24px",

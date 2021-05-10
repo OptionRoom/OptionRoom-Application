@@ -69,7 +69,7 @@ export const useStyles = makeStyles((theme) => ({
         display: 'block'
     },
     FirstNft__Note: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '14px',
         letterSpacing: 0,
         lineHeight: '24px',
@@ -157,7 +157,7 @@ export const useStyles = makeStyles((theme) => ({
         display: 'block'
     },
     UpgradeNft__Note: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '14px',
         letterSpacing: 0,
         lineHeight: '24px',
@@ -236,7 +236,7 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '8px',
     },
     EarnCard__SubTitle: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: 0,
         textAlign: 'center',
