@@ -13,8 +13,7 @@ import {
     getAddressImgUrl
 } from '../../shared/helper';
 import Button from "../Button";
-import LogoSvg from "../../assets/optionroom_logo.svg";
-import LogoMinSvg from "../../assets/room.svg";
+
 
 const getMenuCloseIcon = () => {
     return (
@@ -49,7 +48,8 @@ function MainNavbar(props) {
                 {props.isSidebarExpand ? getMenuCloseIcon() : getMenuOpenIcon()}
             </div>
             <div className={classes.Logo}>
-                <img
+                <div className={classes.LogoHolder}/>
+{/*                <img
                     src={LogoSvg}
                     className={classes.LogoImg}
                     alt={"OptionRoom logo"}
@@ -60,7 +60,7 @@ function MainNavbar(props) {
                     className={classes.LogoImgMin}
                     alt={"OptionRoom logo"}
                     width={"40px"}
-                />
+                />*/}
             </div>
             <div className={classes.Actions}>
                 {

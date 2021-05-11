@@ -1,5 +1,9 @@
 import {makeStyles} from '@material-ui/core/styles';
 
+import LogoSvg from "../../assets/optionroom_logo.svg";
+import LogoDarkSvg from "../../assets/optionroom_logo_dark.svg";
+import LogoMinSvg from "../../assets/room_new_icon.svg";
+
 export const useStyles = makeStyles((theme) => ({
     MainNavbar__MenuBtn: {
         marginRight: '15px',
@@ -26,9 +30,21 @@ export const useStyles = makeStyles((theme) => ({
     Logo:{
         marginRight: 'auto',
         userSelect: 'none',
-
     },
-    LogoImg: {
+    LogoHolder: {
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        width: '35px',
+        height: '37.59px',
+        backgroundImage: `url(${LogoMinSvg})`,
+        [theme.breakpoints.up('md')]: {
+            width: '150px',
+            height: '37.59px',
+            backgroundImage: `url(${theme.isDark ? LogoDarkSvg : LogoSvg})`
+        },
+    },
+/*    LogoImg: {
         display: 'none',
         [theme.breakpoints.up('md')]: {
             display: 'block'
@@ -39,7 +55,7 @@ export const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up('md')]: {
             display: 'none'
         },
-    },
+    },*/
     Title__Head: {
         fontSize: '28px',
         fontWeight: 600,

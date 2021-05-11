@@ -2,6 +2,7 @@ import React, {useContext} from 'react';
 import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 import {
     NavLink,
@@ -119,6 +120,10 @@ const useStyles = makeStyles((theme) => ({
             '& svg': {
                 width: '32px'
             }
+        },
+        '& $SideBottom': {
+            padding: "40px 0 28px 0",
+            justifyContent: 'center'
         }
     },
     MainSidebar__IsMin:{
@@ -207,6 +212,10 @@ const useStyles = makeStyles((theme) => ({
         '& svg': {
             fill: `${theme.colors.primary}`,
         }
+    },
+    SidebarBottomToggle: {
+        cursor: 'pointer',
+        fill: '#8293A6',
     }
 }));
 
@@ -261,7 +270,7 @@ function MainSidebar(props) {
                                             link: '/governance',
                                             icon: GovernanceIcon
                                         },*/
-/*                    {
+                    {
                         title: "COURT Farming",
                         link: "/court-farming",
                         icon: CourtStakeIcon,
@@ -285,7 +294,7 @@ function MainSidebar(props) {
                         title: "Claim",
                         link: "/claim",
                         icon: ClaimIcon,
-                    },*/
+                    },
                     /*
                         {
                             title: 'Oracle',
@@ -318,48 +327,56 @@ function MainSidebar(props) {
                 ))}
             </div>
             <div className={classes.SideBottom}>
-                <div className={classes.SocialLinks}>
-                    <a
-                        href="https://github.com/OptionRoom"
-                        rel="noreferrer"
-                        target="_blank"
-                    >
-                        <i className="fa fa-github"></i>
-                    </a>
-                    <a
-                        href="https://t.me/OptionRoom"
-                        rel="noreferrer"
-                        target="_blank"
-                    >
-                        <i className="fa fa-telegram"></i>
-                    </a>
-                    <a
-                        href="https://twitter.com/option_room"
-                        rel="noreferrer"
-                        target="_blank"
-                    >
-                        <i className="fa fa-twitter"></i>
-                    </a>
-                </div>
-                <div className={classes.LightDarkSwitch}>
-                    <div className={clsx({
-                        [classes.LightDarkSwitch__IsActive]: props.activeTheme === "light",
-                    })}
-                         onClick={()=> {
-                             props.onChangeTheme('light')
-                         }}>
-                        <LightModeIcon />
-                    </div>
-                    <span>/</span>
-                    <div className={clsx({
-                        [classes.LightDarkSwitch__IsActive]: props.activeTheme === "dark",
-                    })}
-                         onClick={()=> {
-                             props.onChangeTheme('dark')
-                         }}>
-                        <DarkModeIcon />
-                    </div>
-                </div>
+                { !props.isSidebarExpand && (
+                    <SettingsIcon className={classes.SidebarBottomToggle}
+                                  onClick={props.onToggleSidebar}/>
+                )}
+                { props.isSidebarExpand && (
+                    <>
+                        <div className={classes.SocialLinks}>
+                            <a
+                                href="https://github.com/OptionRoom"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                <i className="fa fa-github"></i>
+                            </a>
+                            <a
+                                href="https://t.me/OptionRoom"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                <i className="fa fa-telegram"></i>
+                            </a>
+                            <a
+                                href="https://twitter.com/option_room"
+                                rel="noreferrer"
+                                target="_blank"
+                            >
+                                <i className="fa fa-twitter"></i>
+                            </a>
+                        </div>
+                        <div className={classes.LightDarkSwitch}>
+                            <div className={clsx({
+                                [classes.LightDarkSwitch__IsActive]: props.activeTheme === "light",
+                            })}
+                                 onClick={()=> {
+                                     props.onChangeTheme('light')
+                                 }}>
+                                <LightModeIcon />
+                            </div>
+                            <span>/</span>
+                            <div className={clsx({
+                                [classes.LightDarkSwitch__IsActive]: props.activeTheme === "dark",
+                            })}
+                                 onClick={()=> {
+                                     props.onChangeTheme('dark')
+                                 }}>
+                                <DarkModeIcon />
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

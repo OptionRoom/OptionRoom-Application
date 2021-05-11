@@ -125,5 +125,12 @@ export const useStyles = makeStyles((theme) => ({
             margin: 0,
             borderBottom: "1px solid #f5f5f5"
         },
+    },
+    NoResultsWrap: {
+        textAlign: 'center',
+        padding: '50px',
+        '& img': {
+            maxWidth: '500px'
+        }
     }
 }));

@@ -16,6 +16,7 @@ import Button from "../../components/Button";
 import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketsFiltration from "./MarketsFiltration";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
+import NoResultsImg from "./no-results.png";
 import {useGetFilteredMarkets} from './hooks';
 import roomIcon from '../../assets/room.svg';
 import clsx from "clsx";
@@ -157,6 +158,8 @@ function Markets() {
         )
     }
 
+    console.log("filteredMarkets", JSON.stringify(filteredMarkets));
+
     return (
         <div className={classes.MarketsPage}>
             <div className={classes.MarketsHeader}>
@@ -186,30 +189,41 @@ function Markets() {
             </div>
             <div className={classes.MarketsListnWrap}>
                 <div className={classes.MarketsContainer}>
-                    <div className={clsx(classes.MarketsList, {
-                             [classes.MarketsList__ListView]: get(filterDetails, 'view') === 'list',
-                         })}>
-                        {filteredMarkets.map((entry, index) => {
-                            return (
-                                <div key={`market-${entry.id}`}>
-                                    <MarketCard market={{
-                                        ...entry,
-                                        state: filterDetails.state,
-                                        priceOfBuy: get(marketsPriceOfBuy, [entry.id]),
-                                        volume: get(marketsTotalVolume, [entry.id]),
-                                    }}
-                                                isListView={get(filterDetails, 'view') === 'list'}
-                                                isFeatured={index == 0}
-                                                onMarketDataLoad={(e) => {
-                                                    if (e && e.marketContractAddress) {
-                                                        marketsContractData[e.marketId] = e;
-                                                    }
-                                                }}/>
-                                </div>
-                            );
-                        })}
+                    {
+                        (filteredMarkets && filteredMarkets.length > 0) && (
+                            <div className={clsx(classes.MarketsList, {
+                                [classes.MarketsList__ListView]: get(filterDetails, 'view') === 'list',
+                            })}>
+                                {filteredMarkets.map((entry, index) => {
+                                    return (
+                                        <div key={`market-${entry.id}`}>
+                                            <MarketCard market={{
+                                                ...entry,
+                                                state: filterDetails.state,
+                                                priceOfBuy: get(marketsPriceOfBuy, [entry.id]),
+                                                volume: get(marketsTotalVolume, [entry.id]),
+                                            }}
+                                                        isListView={get(filterDetails, 'view') === 'list'}
+                                                        isFeatured={entry.isFeatured}
+                                                        onMarketDataLoad={(e) => {
+                                                            if (e && e.marketContractAddress) {
+                                                                marketsContractData[e.marketId] = e;
+                                                            }
+                                                        }}/>
+                                        </div>
+                                    );
+                                })}
 
-                    </div>
+                            </div>
+                        )
+                    }
+                    {
+                        (!filteredMarkets || filteredMarkets.length === 0) && (
+                            <div className={classes.NoResultsWrap}>
+                                <img src={NoResultsImg}/>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </div>

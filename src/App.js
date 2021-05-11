@@ -184,6 +184,7 @@ function App() {
                             [classes.Main__isSidebarExpand]: !isSidebarExpand,
                         })}>
                             <MainSidebar isSidebarExpand={isSidebarExpand}
+                                         onToggleSidebar={handleToggleSidebar}
                                          activeTheme={themeType}
                                          onChangeTheme={handleThemeTypeToggle}
                                          isMinHeader={isMinHeader}></MainSidebar>
