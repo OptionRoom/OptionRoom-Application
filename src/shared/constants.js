@@ -23,6 +23,6 @@ export const nftImages = {
 };
 
 //export const courtStakeUnlockTimestamp = 1620914400;
-export const courtStakeUnlockTimestamp = 1620859906;
-export const controlledNetworkId = 3;//"mainnet";
+export const courtStakeUnlockTimestamp = 1620914400;
+export const controlledNetworkId = 1;//"mainnet";
 //export const controlledNetworkId = 3;//"ropsten";

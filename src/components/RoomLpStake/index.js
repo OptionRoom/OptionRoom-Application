@@ -453,7 +453,7 @@ function RoomLpStake(props) {
                                 <Button
                                     classes={classes.EarnCard__Action__Btn}
                                     isDisabled={
-                                        ((courtStakeUnlockTimestamp * 1000) > (new Date().getTime())) /*|| (userFarmedIncvTokenBalance == 0)*/
+                                        ((courtStakeUnlockTimestamp * 1000) > (new Date().getTime())) || (userFarmedIncvTokenBalance == 0)
                                     }
                                     isProcessing={isIncvHarvestInProgress}
                                     size={"large"}
