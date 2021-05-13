@@ -20,7 +20,7 @@ function CourtStaking() {
     optionroomThemeContext.changeTheme("primary");
 
 
-    useEffect(() => {
+/*    useEffect(() => {
         let updateInfoIntervalId = null;
 
         async function init() {
@@ -35,7 +35,7 @@ function CourtStaking() {
         return () => {
             clearInterval(updateInfoIntervalId);
         };
-    }, [accountContext.chainId]);
+    }, [accountContext.chainId]);*/
 
     return (
         <>

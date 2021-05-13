@@ -50,14 +50,14 @@ function CourtVotePowerStaking(props) {
     };
 
     const handleDeposit = async () => {
-        if(allowance == 0) {
+/*        if(allowance == 0) {
             setIsApprovingCourtForPowerStake(true);
             const claimCourtAPIs = new ClaimCourtAPIs();
             await claimCourtAPIs.approveCourtForPowerStakeContract(accountContext.account);
             setAllowance(MaxUint256);
             setIsApprovingCourtForPowerStake(false);
             return;
-        }
+        }*/
 
         setIsDepositModalOpen(true);
     };
@@ -90,7 +90,8 @@ function CourtVotePowerStaking(props) {
                             isProcessing={isApprovingCourtForPowerStake}
                             onClick={handleDeposit}
                             color={'primary'}>
-                        {allowance > 0 ? "Deposit" : "Enable Deposit"}
+                        Deposit
+                        {/*{allowance > 0 ? "Deposit" : "Enable Deposit"}*/}
                     </Button>
                     <Button size={'small'}
                             isDisabled={stakeBalance == 0}
