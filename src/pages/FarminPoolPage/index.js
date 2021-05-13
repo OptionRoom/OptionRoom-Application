@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState, createRef } from "react";
+import Alert from '@material-ui/lab/Alert';
 
 import Navbar from "../../components/Navbar";
-import Button from "../../components/Button";
 import ConnectButton from "../../components/ConnectButton";
 import RoomLpStake from "../../components/RoomLpStake";
-import NftStake from "../../components/NftStake";
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
@@ -77,6 +76,18 @@ function FarminPoolPage(props) {
             <div className={classes.LiquidityMiningPage}>
                 {accountContext.account && (
                     <>
+                        {
+                            accountContext.chainId != 1 && (
+                                <Alert
+                                    elevation={6}
+                                    variant="filled"
+                                    style={{
+                                        maxWidth: '500px',
+                                        margin: '0 auto 15px'
+                                    }}
+                                    severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
+                            )
+                        }
                         <div className={classes.Pools}>
                             <RoomLpStake source={source} pool={pool} />
                         </div>

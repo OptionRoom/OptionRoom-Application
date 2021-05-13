@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Skeleton from "@material-ui/lab/Skeleton";
 import numeral from "numeral";
+import Alert from '@material-ui/lab/Alert';
 
 import Tooltip from "@material-ui/core/Tooltip";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
@@ -326,6 +327,18 @@ function CourtFarming() {
             <div className={classes.LiquidityMiningPage}>
                 {accountContext.account && (
                     <>
+                        {
+                            accountContext.chainId != 1 && (
+                                <Alert
+                                    elevation={6}
+                                    variant="filled"
+                                    style={{
+                                        maxWidth: '500px',
+                                        margin: '0 auto 15px'
+                                    }}
+                                    severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
+                            )
+                        }
                         {!!courtFarmingTotalLockedValue && (
                             <div
                                 className={classes.CourtFarmingTotalLockedValue}
