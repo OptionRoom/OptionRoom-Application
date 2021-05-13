@@ -1,6 +1,6 @@
 export const getCourtTokenContract = (chainId, web3) => {
     const ropstenContract = {
-        address: "0x6c82b5f4c06b8fb3722c24cdda066efaaf398e93",
+        address: "0x9a6C33E3507C987c72d06CE7E289d819c9280315",
         abi: [
             {
                 inputs: [],

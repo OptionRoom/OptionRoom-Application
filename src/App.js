@@ -12,6 +12,7 @@ import clsx from "clsx";
 import './App.css';
 import Sidebar from "./components/Sidebar";
 import CourtFarming from "./pages/CourtFarming";
+import CourtStaking from "./pages/CourtStaking";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import FarminPoolPage from "./pages/FarminPoolPage";
@@ -89,6 +90,9 @@ function App() {
                                 </Route>
                                 <Route path="/court-farming" exact={true}>
                                     <CourtFarming />
+                                </Route>
+                                <Route path="/governance" exact={true}>
+                                    <CourtStaking />
                                 </Route>
                                 <Route path="/nft">
                                     <Nft />

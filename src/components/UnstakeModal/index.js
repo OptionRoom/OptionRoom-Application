@@ -20,10 +20,16 @@ import {
     convertAmountToTokens,
     convertTokensToAmount,
 } from "../../shared/helper";
+import Alert from '@material-ui/lab/Alert';
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const getModalText = (type, source, pool) => {
     if (type === "nftStake") {
         return "Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake";
+    }
+
+    if (pool === "court_power_stake") {
+        return "Withdraw your COURT tokens";
     }
 
     if (source === "room" && pool === "CourtFarming_RoomStake") {
@@ -49,6 +55,14 @@ const getModalText = (type, source, pool) => {
     if (source === "matter" && pool === "CourtFarming_MatterStake") {
         return "Unstake your MATTER tokens and claim rewards";
     }
+};
+
+const getModalHeaderTxt=  (pool) => {
+    if (pool === "court_power_stake") {
+        return 'Withdraw Tokens';
+    }
+
+    return 'Unstake Tokens';
 };
 
 function UnstakeModal(props) {
@@ -100,6 +114,12 @@ function UnstakeModal(props) {
                         claim
                     );
                 }
+            } else if (pool === "court_power_stake") {
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.withdrawCourtInPowerStakeContract(
+                    accountContext.account,
+                    amountToUnstakeResult
+                );
             } else {
                 await courtAPIs.unstackeTokens(
                     accountContext.account,
@@ -159,7 +179,7 @@ function UnstakeModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    Unstake Tokens
+                    {getModalHeaderTxt(pool)}
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -200,6 +220,13 @@ function UnstakeModal(props) {
                         Max
                     </div>
                 </div>
+{/*                <Alert severity="info"
+                       style={{
+                           marginTop: '10px'
+                       }}>
+                    The Withdraw will cost you <strong>10,000 USDT</strong>
+                </Alert>*/}
+
                 {isInvalidAmountError && (
                     <div className={classes.Modal__TokensErrorHelp}>
                         {convertAmountToTokens(stakedTokensBalance) === "1.0" &&
@@ -210,15 +237,19 @@ function UnstakeModal(props) {
                             )}`}
                     </div>
                 )}
-                <div className={classes.ClaimWrap}>
-                    <Checkbox
-                        checked={claim}
-                        onChange={handleClaimChange}
-                        color="primary"
-                        inputProps={{ "aria-label": "claim rewards" }}
-                    />
-                    <span className={classes.ClaimLabel}>Claim rewards</span>
-                </div>
+                {
+                    pool != 'court_power_stake' && (
+                        <div className={classes.ClaimWrap}>
+                            <Checkbox
+                                checked={claim}
+                                onChange={handleClaimChange}
+                                color="primary"
+                                inputProps={{ "aria-label": "claim rewards" }}
+                            />
+                            <span className={classes.ClaimLabel}>Claim rewards</span>
+                        </div>
+                    )
+                }
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button

@@ -18,6 +18,7 @@ import {
     convertAmountToTokens,
     convertTokensToAmount,
 } from "../../shared/helper";
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const getModalText = (type, source, pool) => {
     if (type === "nftStake") {
@@ -26,6 +27,10 @@ const getModalText = (type, source, pool) => {
 
     if (source === "room" && pool === "CourtFarming_RoomStake") {
         return "Deposit your ROOM tokens for COURT staking";
+    }
+
+    if (pool === "court_power_stake") {
+        return "Deposit your COURT tokens to get more voting power";
     }
 
     if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
@@ -78,6 +83,12 @@ function DepositModal(props) {
                 await roomLPFarmingAPIs.stakeNftStakeContractForTire(
                     accountContext.account,
                     nftTire,
+                    tokensAmount
+                );
+            } else if(pool === 'court_power_stake') {
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.depositCourtInPowerStakeContract(
+                    accountContext.account,
                     tokensAmount
                 );
             } else {
