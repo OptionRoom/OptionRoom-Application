@@ -518,14 +518,12 @@ class CourtAPIs {
         }
 
         if (contract === "CourtFarming_HtStake") {
-            console.log("address", address);
             const result = await this.courtFarming_HtStakeContract.methods
                 .rewards(address)
                 .call({
                     from: address,
                 });
 
-            console.log("resultresultresultresult", result);
             return result;
         }
 

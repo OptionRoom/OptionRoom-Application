@@ -59,9 +59,6 @@ function PayAndClaimCourtModal(props) {
         try {
             const courtAPIs = new CourtAPIs();
             const walletBalanceOfUsdt = await courtAPIs.getAddressTokenBalance(accountContext.account, 'usdt');
-            console.log(`${walletBalanceOfUsdt} You must hold at least ${fromWei(claimCostInfo, 'mwei')} USDT, your current balance is ${fromWei(walletBalanceOfUsdt, 'mwei')}`);
-            //return ;
-            console.log(parseFloat(walletBalanceOfUsdt) < parseFloat(claimCostInfo), walletBalanceOfUsdt, claimCostInfo);
             if(parseFloat(walletBalanceOfUsdt) < parseFloat(claimCostInfo)) {
                 swal(
                     "Insufficient funds",

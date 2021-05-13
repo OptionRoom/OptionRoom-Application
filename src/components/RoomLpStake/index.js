@@ -286,7 +286,6 @@ function RoomLpStake(props) {
         const claimCourtAPIs = new ClaimCourtAPIs();
         const result = await claimCourtAPIs.getAddressUsdtAllowanceOfClaimContract(accountContext.account, pool);
         setAddressUsdtAllowanceOfClaimContract(result);
-        console.log("loadUsdtAllowanceOfClaimContract", result);
     };
 
     const updateUserFarmedTokensBalance = async () => {
@@ -299,9 +298,6 @@ function RoomLpStake(props) {
 
         if(isIncvPool()) {
             setUserFarmedIncvTokenBalance(userFarmedTokenBalance.incvReward);
-/*            if(isClaimPaypale(pool)) {
-                loadClaimCost(userFarmedTokenBalance.incvReward);
-            }*/
         } else {
             setUserFarmedTokenBalance(userFarmedTokenBalance);
         }
@@ -311,14 +307,14 @@ function RoomLpStake(props) {
         const courtAPIs = new CourtAPIs();
 
         if (isIncvPool()) {
-/*            const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
+            const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
                 accountContext.account,
                 pool
             );
 
             setStats({
                 courtPoolTotalLockedValue,
-            });*/
+            });
         } else {
             //Stats
             const roomTotalLockedValue = await getTotalValueLocked(

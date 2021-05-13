@@ -29,28 +29,24 @@ function CourtVotePowerStaking(props) {
         const claimCourtAPIs = new ClaimCourtAPIs();
         const allowance = await claimCourtAPIs.getWalletCourtAllowanceOfPowerStakeContract(accountContext.account);
         setAllowance(allowance);
-        console.log("loadWalletAllowance", allowance);
     };
 
     const loadWalletStakeBalance = async () => {
         const claimCourtAPIs = new ClaimCourtAPIs();
         const result = await claimCourtAPIs.getWalletStakedCourtInPowerStakeContract(accountContext.account);
         setStakeBalance(result);
-        console.log("loadWalletStakeBalance", result);
     };
 
     const loadWalletVotePower = async () => {
         const claimCourtAPIs = new ClaimCourtAPIs();
         const result = await claimCourtAPIs.getVotePower(accountContext.account);
         setVotePower(result);
-        console.log("loadWalletVotePower", result);
     };
 
     const loadWalletCourtBalance = async () => {
         const courtAPIs = new CourtAPIs();
         const result = await courtAPIs.getAddressTokenBalance(accountContext.account, 'court');
         setCourtTokenBalance(result);
-        console.log("loadWalletCourtBalance", result);
     };
 
     const handleDeposit = async () => {
