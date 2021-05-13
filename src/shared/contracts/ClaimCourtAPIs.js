@@ -2,17 +2,16 @@ import { walletHelper } from "../wallet.helper";
 import { getHtTokenContract } from "./HtTokenContract";
 import { getContract, getContractAddress } from "./contracts.helper";
 import { getMatterTokenContract } from "./MatterTokenContract";
-import { getCourtTokenContract } from "./CourtTokenContract";
 import { MaxUint256, controlledNetworkId } from "../../shared/constants";
 
 const walletHelperInstance = walletHelper();
 
 class ClaimCourtAPIs {
     constructor() {
-
-        this.courtTokenContract = getCourtTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
+        this.courtTokenContract = getContract(
+            56,
+            walletHelperInstance.getWeb3(),
+            'court_token'
         );
 
         this.usdtTokenContract = getContract(
@@ -44,18 +43,10 @@ class ClaimCourtAPIs {
         );
 
         this.courtPowerStakeContract =  getContract(
-            controlledNetworkId,
+            56,
             walletHelperInstance.getWeb3(),
             'court_vote_stake'
         );
-    }
-
-    async getWalletBalanceOfUsdt(address) {
-        return await this.usdtTokenContract.methods
-            .balanceOf(address)
-            .call({
-                from: address,
-            });
     }
 
     async approveUsdtForClaimContract(address, contract) {

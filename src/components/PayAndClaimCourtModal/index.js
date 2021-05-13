@@ -59,6 +59,7 @@ function PayAndClaimCourtModal(props) {
         try {
             const courtAPIs = new CourtAPIs();
             const walletBalanceOfUsdt = await courtAPIs.getAddressTokenBalance(accountContext.account, 'usdt');
+
             if(parseFloat(walletBalanceOfUsdt) < parseFloat(claimCostInfo)) {
                 swal(
                     "Insufficient funds",
