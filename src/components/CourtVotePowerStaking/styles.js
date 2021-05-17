@@ -23,12 +23,19 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '20px'
     },
     CourtVotePowerStaking_Txt2: {
-        display: 'flex',
-        alignItems: 'center',
-        '&>span': {
-            marginRight: 'auto',
+        textAlign: 'center',
+        [theme.breakpoints.up('md')]: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+        '&>div': {
             color: '#6D8096',
             fontSize: '16px',
+            marginBottom: '15px',
+            [theme.breakpoints.up('md')]: {
+                marginRight: 'auto',
+                marginBottom: '0',
+            },
         },
         '&>button': {
             marginLeft: '5px'

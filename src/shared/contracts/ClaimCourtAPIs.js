@@ -116,6 +116,18 @@ class ClaimCourtAPIs {
         }
     }
 
+    async getAddressTokenBalance(address, token) {
+        if (token === "court") {
+            const result = await this.courtTokenContract.methods
+                .balanceOf(address)
+                .call({
+                    from: address,
+                });
+
+            return result;
+        }
+    }
+
     async getVotePower(address) {
         return await this.courtPowerStakeContract.methods
             .getUserPower(address)

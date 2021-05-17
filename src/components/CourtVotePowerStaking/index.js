@@ -7,7 +7,6 @@ import DepositModal from "../DepositModal";
 import UnstakeModal from "../UnstakeModal";
 import {fromWei} from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
-import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import {MaxUint256} from "../../shared/constants";
 
@@ -44,20 +43,20 @@ function CourtVotePowerStaking(props) {
     };
 
     const loadWalletCourtBalance = async () => {
-        const courtAPIs = new CourtAPIs();
-        const result = await courtAPIs.getAddressTokenBalance(accountContext.account, 'court');
+        const claimCourtAPIs = new ClaimCourtAPIs();
+        const result = await claimCourtAPIs.getAddressTokenBalance(accountContext.account, 'court');
         setCourtTokenBalance(result);
     };
 
     const handleDeposit = async () => {
-/*        if(allowance == 0) {
+        if(allowance == 0) {
             setIsApprovingCourtForPowerStake(true);
             const claimCourtAPIs = new ClaimCourtAPIs();
             await claimCourtAPIs.approveCourtForPowerStakeContract(accountContext.account);
             setAllowance(MaxUint256);
             setIsApprovingCourtForPowerStake(false);
             return;
-        }*/
+        }
 
         setIsDepositModalOpen(true);
     };
@@ -85,13 +84,12 @@ function CourtVotePowerStaking(props) {
                     </div>
                 </div>
                 <div className={classes.CourtVotePowerStaking_Txt2}>
-                    <span>Staked COURT balance: {fromWei(stakeBalance)}</span>
+                    <div>Staked COURT balance: {fromWei(stakeBalance)}</div>
                     <Button size={'small'}
                             isProcessing={isApprovingCourtForPowerStake}
                             onClick={handleDeposit}
                             color={'primary'}>
-                        Deposit
-                        {/*{allowance > 0 ? "Deposit" : "Enable Deposit"}*/}
+                        {allowance > 0 ? "Deposit" : "Enable Deposit"}
                     </Button>
                     <Button size={'small'}
                             isDisabled={stakeBalance == 0}
