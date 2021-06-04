@@ -14,6 +14,7 @@ import { getRoomLPTokenContract } from "./RoomLPTokenContract";
 import { getTokenPriceInUsd } from "./PoolsStatsAPIs";
 import {fromWei} from '../helper';
 import { MaxUint256, controlledNetworkId } from "../../shared/constants";
+import {getContract} from "./contracts.helper";
 
 const walletHelperInstance = walletHelper();
 
@@ -68,6 +69,12 @@ class CourtAPIs {
         this.htTokenContract = getHtTokenContract(
             controlledNetworkId,
             walletHelperInstance.getWeb3()
+        );
+
+        this.usdtTokenContract = getContract(
+            controlledNetworkId,
+            walletHelperInstance.getWeb3(),
+            'usdt'
         );
     }
 
@@ -134,6 +141,16 @@ class CourtAPIs {
 
         if (token === "matter") {
             const result = await this.matterTokenContract.methods
+                .balanceOf(address)
+                .call({
+                    from: address,
+                });
+
+            return result;
+        }
+
+        if (token === "usdt") {
+            const result = await this.usdtTokenContract.methods
                 .balanceOf(address)
                 .call({
                     from: address,
@@ -586,7 +603,7 @@ class CourtAPIs {
     async claimIncvRewards(address, contract) {
         if (contract === "CourtFarming_RoomStake") {
             const result = await this.courtFarming_RoomStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -596,7 +613,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_RoomEthLpStake") {
             const result = await this.courtFarming_RoomEthLpStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -606,7 +623,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_CourtEthLpStake") {
             const result = await this.courtFarming_CourtEthLpStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -616,7 +633,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_HtStake") {
             const result = await this.courtFarming_HtStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -626,7 +643,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_MatterStake") {
             const result = await this.courtFarming_MatterStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -694,6 +711,24 @@ class CourtAPIs {
                 });
 
             return result;
+        }
+    }
+
+    async payAndClaimRewards(address, contract, amount) {
+        if (contract === "CourtFarming_HtStake") {
+            return this.courtFarming_HtStakeContract.methods
+                .stakeIncvRewards(amount)
+                .send({
+                    from: address,
+                });
+        }
+
+        if (contract === "CourtFarming_MatterStake") {
+            return this.courtFarming_MatterStakeContract.methods
+                .stakeIncvRewards(amount)
+                .send({
+                    from: address,
+                });
         }
     }
 

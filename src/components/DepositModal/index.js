@@ -25,6 +25,7 @@ import TradeInput from "../TradeInput";
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const getModalText = (type, source, pool) => {
     if (type === "Add_Market_Liquidity") {
@@ -37,6 +38,10 @@ const getModalText = (type, source, pool) => {
 
     if (source === "room" && pool === "CourtFarming_RoomStake") {
         return "Deposit your ROOM tokens for COURT staking";
+    }
+
+    if (pool === "court_power_stake") {
+        return "Deposit your COURT tokens to get more voting power";
     }
 
     if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
@@ -93,6 +98,12 @@ function DepositModal(props) {
                 await roomLPFarmingAPIs.stakeNftStakeContractForTire(
                     accountContext.account,
                     nftTire,
+                    tokensAmount
+                );
+            } else if(pool === 'court_power_stake') {
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.depositCourtInPowerStakeContract(
+                    accountContext.account,
                     tokensAmount
                 );
             } else if(type === 'Add_Market_Liquidity'){

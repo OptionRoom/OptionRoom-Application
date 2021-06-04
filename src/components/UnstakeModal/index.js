@@ -3,6 +3,7 @@ import clsx from "clsx";
 import { withStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
 import { BigNumber } from "@ethersproject/bignumber";
+import Alert from '@material-ui/lab/Alert';
 
 import Button from "../Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -24,6 +25,7 @@ import {
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import Slide from "@material-ui/core/Slide";
 import TradeInput from "../TradeInput";
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -44,6 +46,10 @@ const getModalText = (type, source, pool) => {
 
     if (type === "nftStake") {
         return "Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake";
+    }
+
+    if (pool === "court_power_stake") {
+        return "Withdraw your COURT tokens";
     }
 
     if (source === "room" && pool === "CourtFarming_RoomStake") {
@@ -69,6 +75,14 @@ const getModalText = (type, source, pool) => {
     if (source === "matter" && pool === "CourtFarming_MatterStake") {
         return "Unstake your MATTER tokens and claim rewards";
     }
+};
+
+const getModalHeaderTxt=  (pool) => {
+    if (pool === "court_power_stake") {
+        return 'Withdraw Tokens';
+    }
+
+    return 'Unstake Tokens';
 };
 
 function UnstakeModal(props) {
@@ -124,6 +138,12 @@ function UnstakeModal(props) {
             } else if (type === "market_liquidity") {
                 const marketAPIs = new MarketAPIs();
                 await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
+            } else if (pool === "court_power_stake") {
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.withdrawCourtInPowerStakeContract(
+                    accountContext.account,
+                    amountToUnstakeResult
+                );
             } else {
                 await courtAPIs.unstackeTokens(
                     accountContext.account,
@@ -185,7 +205,7 @@ function UnstakeModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    {getModalHeaderText(type)}
+                    {getModalHeaderTxt(pool)}
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -221,6 +241,36 @@ function UnstakeModal(props) {
                 </div>
                 {
                     type !== "market_liquidity" && (
+                        <div className={classes.ClaimWrap}>
+                            <Checkbox
+                                checked={claim}
+                                onChange={handleClaimChange}
+                                color="primary"
+                                inputProps={{ "aria-label": "claim rewards" }}
+                            />
+                            <span className={classes.ClaimLabel}>Claim rewards</span>
+                        </div>
+                    )
+                }
+{/*                <Alert severity="info"
+                       style={{
+                           marginTop: '10px'
+                       }}>
+                    The Withdraw will cost you <strong>10,000 USDT</strong>
+                </Alert>*/}
+
+                {isInvalidAmountError && (
+                    <div className={classes.Modal__TokensErrorHelp}>
+                        {convertAmountToTokens(stakedTokensBalance) === "1.0" &&
+                            `Invalid amount, it must be 1`}
+                        {convertAmountToTokens(stakedTokensBalance) !== "1.0" &&
+                            `Invalid amount, it must be between 1 and ${convertAmountToTokens(
+                                stakedTokensBalance
+                            )}`}
+                    </div>
+                )}
+                {
+                    pool != 'court_power_stake' && (
                         <div className={classes.ClaimWrap}>
                             <Checkbox
                                 checked={claim}

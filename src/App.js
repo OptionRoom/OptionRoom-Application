@@ -18,6 +18,7 @@ import './App.css';
 import MainSidebar from "./components/MainSidebar";
 import MainNavbar from "./components/MainNavbar";
 import CourtFarming from "./pages/CourtFarming";
+import CourtStaking from "./pages/CourtStaking";
 import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import CreateMarket from "./pages/CreateMarket";
@@ -212,6 +213,9 @@ function App() {
                                     </Route>
                                     <Route path="/court-farming" exact={true}>
                                         <CourtFarming />
+                                    </Route>
+                                    <Route path="/governance" exact={true}>
+                                        <CourtStaking />
                                     </Route>
                                     <Route path="/nft">
                                         <Nft />

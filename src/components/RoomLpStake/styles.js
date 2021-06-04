@@ -150,4 +150,12 @@ export const useStyles = makeStyles((theme) => ({
         //background: '#004BFF',
         margin: '0 auto 20px'
     },
+    EarnCard__PayNote: {
+        color: 'rgb(230 0 122)',
+        fontSize: '12px',
+        letterSpacing: 0,
+        textAlign: 'center',
+        fontWeight: 700,
+        margin: '15px 0 0 0',
+    }
 }));
