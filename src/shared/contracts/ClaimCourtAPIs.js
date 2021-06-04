@@ -79,7 +79,7 @@ class ClaimCourtAPIs {
             return await this.usdtTokenContract.methods
                 .allowance(
                     address,
-                    getContractAddress(controlledNetworkId, 'ht_court_farming_claim')
+                    getContractAddress('ht_court_farming_claim')
                 )
                 .call({
                     from: address,
@@ -90,7 +90,7 @@ class ClaimCourtAPIs {
             return await this.usdtTokenContract.methods
                 .allowance(
                     address,
-                    getContractAddress(controlledNetworkId, 'matter_court_farming_claim')
+                    getContractAddress('matter_court_farming_claim')
                 )
                 .call({
                     from: address,
