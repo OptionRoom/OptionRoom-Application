@@ -435,7 +435,6 @@ function RoomLpStake(props) {
                                     }
                                     isProcessing={isIncvHarvestInProgress}
                                     size={"large"}
-                                    fullWidth={true}
                                     color="primary"
                                     onClick={handleIncvHarvest}
                                 >
@@ -445,7 +444,8 @@ function RoomLpStake(props) {
                         </div>
                     )}
                     {!isIncvPool() && (
-                        <div className={classes.EarnCard} key={"ROOM-Earned"}>
+                        <div className={classes.EarnCard}
+                             key={"ROOM-Earned"}>
                             <div className={classes.EarnCard__Icon}>
                                 <img
                                     width={"100%"}
@@ -467,7 +467,6 @@ function RoomLpStake(props) {
                                     isDisabled={userFarmedTokenBalance == 0}
                                     isProcessing={isHarvestInProgress}
                                     size={"large"}
-                                    fullWidth={true}
                                     color="primary"
                                     onClick={handleHarvest}
                                 >
@@ -502,7 +501,6 @@ function RoomLpStake(props) {
                                     color="primary"
                                     onClick={handleApproveDepositToken}
                                     className={classes.EarnCard__Action__Btn}
-                                    fullWidth={true}
                                     isProcessing={isApproveProcessing}
                                 >
                                     Approve
@@ -554,7 +552,6 @@ function RoomLpStake(props) {
                                         className={
                                             classes.EarnCard__Action__Btn
                                         }
-                                        fullWidth={true}
                                     >
                                         Stake
                                     </Button>

@@ -1,36 +1,40 @@
 import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
-    RoomLpStake: {
-
-    },
+    RoomLpStake: {},
     Info: {
-      textAlign: 'center',
-      fontSize: "20px",
-      color: theme.colors.txtColor,
-      marginBottom: "20px",
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "18px",
+        lineHeight: "23px",
+        color: "#3D4043",
+        marginBottom: "29px",
         "& span": {
-          color: "#004BFF"
+            color: "#004BFF"
+        },
+        "&>div": {
+            marginBottom: '5px'
         }
     },
     RoomLpStake__Cards: {
         [theme.breakpoints.up('md')]: {
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            /*            alignItems: 'center',
+                        justifyContent: 'center',*/
         },
     },
     ///
     EarnCard: {
         borderRadius: '16px',
-        backgroundColor: theme.colors.boxBg,
-        boxShadow: theme.colors.boxBoxShadow,
+        backgroundColor: '#fff',
+        filter: "drop-shadow(3px 3px 0px #2E6AFA)",
+        boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
         padding: '40px 16px 24px',
         marginBottom: '20px',
         [theme.breakpoints.up('md')]: {
             width: '288px',
             marginBottom: '0',
-            marginRight: '48px',
+            marginRight: '20px',
             '&:last-child': {
                 marginRight: '0',
             },
@@ -45,25 +49,31 @@ export const useStyles = makeStyles((theme) => ({
         margin: '0 auto 40px'
     },
     EarnCard__Title: {
-        color: theme.colors.txtColor,
-        fontWeight: 600,
-        fontSize: '36px',
-        letterSpacing: 0,
-        lineHeight: '24px',
+        fontStyle: "normal",
+        fontWeight: "bold",
+        fontSize: "30px",
+        lineHeight: "38px",
+        letterSpacing: "0.01em",
+        color: "#141516",
         textAlign: 'center',
-        marginBottom: '15px',
+        marginBottom: '10px',
     },
     EarnCard__SubTitle: {
-        color: theme.colors.secondaryTxt,
-        fontSize: '16px',
-        letterSpacing: 0,
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "14px",
+        lineHeight: "18px",
+        letterSpacing: "0.01em",
+        color: "#36414B",
         textAlign: 'center',
         marginBottom: '40px',
     },
     EarnCard__SubTitleIncv: {
         fontSize: '12px',
     },
-    EarnCard__Action: {},
+    EarnCard__Action: {
+        textAlign: 'center'
+    },
     EarnCard__Action_Two: {
         display: 'flex',
         '&>button:first-child': {
@@ -102,7 +112,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     IncvEarnCard__Block: {
         padding: '20px 10px',
-       // borderRadius: '5px',
+        // borderRadius: '5px',
         '&>button': {
             width: '100%',
         },
