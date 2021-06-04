@@ -8,17 +8,9 @@ const walletHelperInstance = walletHelper();
 
 class ClaimCourtAPIs {
     constructor() {
-        this.courtTokenContract = getContract(
-            56,
-            walletHelperInstance.getWeb3(),
-            'court_token'
-        );
+        this.courtTokenContract = getContract('court_token');
 
-        this.usdtTokenContract = getContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3(),
-            'usdt'
-        );
+        this.usdtTokenContract = getContract('usdt');
 
         this.matterTokenContract = getMatterTokenContract(
             controlledNetworkId,
@@ -30,23 +22,11 @@ class ClaimCourtAPIs {
             walletHelperInstance.getWeb3()
         );
 
-        this.htClaimContract =  getContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3(),
-            'ht_court_farming_claim'
-        );
+        this.htClaimContract =  getContract('ht_court_farming_claim');
 
-        this.matterClaimContract =  getContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3(),
-            'matter_court_farming_claim'
-        );
+        this.matterClaimContract =  getContract('matter_court_farming_claim');
 
-        this.courtPowerStakeContract =  getContract(
-            56,
-            walletHelperInstance.getWeb3(),
-            'court_vote_stake'
-        );
+        this.courtPowerStakeContract =  getContract('court_vote_stake');
     }
 
     async approveUsdtForClaimContract(address, contract) {

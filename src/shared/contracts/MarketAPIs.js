@@ -1,8 +1,8 @@
 import {map, sum, sortBy} from 'lodash';
 
-import { walletHelper } from "../wallet.helper";
-import { MaxUint256, controlledNetworkId } from "../../shared/constants";
-import { getMarketContract } from "./MarketContract";
+import {walletHelper} from "../wallet.helper";
+import {MaxUint256, controlledNetworkId} from "../../shared/constants";
+import {getMarketContract} from "./MarketContract";
 import {getContract} from "./contracts.helper";
 import {fromWei, toWei} from "../helper";
 
@@ -74,12 +74,12 @@ class MarketAPIs {
                 fromBlock: 1
             });
 
-        if(!buyEvents || buyEvents.length === 0) {
+        if (!buyEvents || buyEvents.length === 0) {
             return 0;
         }
 
         const totalPrices = sum(map(buyEvents, (entry) => {
-            return parseFloat(entry.returnValues.investmentAmount)/parseFloat(entry.returnValues.outcomeTokensBought);
+            return parseFloat(entry.returnValues.investmentAmount) / parseFloat(entry.returnValues.outcomeTokensBought);
         }));
 
         /**
@@ -87,13 +87,13 @@ class MarketAPIs {
          outcomeIndex: "0"
          outcomeTokensBought: "139418017682957753621"
          */
-        return totalPrices/buyEvents.length;
+        return totalPrices / buyEvents.length;
     }
 
     async getWalletMarketBuyAndSellHistory(
         wallet,
         marketId
-        ) {
+    ) {
 
         const marketContract = generateMarketContract(marketId);
 
@@ -165,8 +165,8 @@ class MarketAPIs {
         const marketOutcome = await this.getMarketOptionTokensPercentage(wallet, marketAddress);
 
         return {
-            priceOfYes: parseFloat(marketOutcome[0])/1000000,
-            priceOfNo: parseFloat(marketOutcome[1])/1000000
+            priceOfYes: parseFloat(marketOutcome[0]) / 1000000,
+            priceOfNo: parseFloat(marketOutcome[1]) / 1000000
         }
     }
 
@@ -193,7 +193,7 @@ class MarketAPIs {
 
     async getCollateralTokensCountOfSell(wallet, marketId, sellAmount, inputIndex) {
         const result = await generateMarketContract(marketId)
-        .methods
+            .methods
             .calcSellReturnInv(sellAmount, inputIndex)
             .call({
                 from: wallet,
@@ -270,7 +270,7 @@ class MarketAPIs {
     }
 
     async addGovernanceVoteForMarket(wallet, marketId, vote, state) {
-        if(state == 1) {
+        if (state == 1) {
             return await this.marketControllerContract
                 .methods
                 .castGovernanceValidatingVote(marketId, vote)
@@ -279,7 +279,7 @@ class MarketAPIs {
                 });
         }
 
-        if(state == 5 || state == 8) {
+        if (state == 5 || state == 8) {
             return await this.marketControllerContract
                 .methods
                 .castGovernanceResolvingVote(marketId, vote)
@@ -290,7 +290,7 @@ class MarketAPIs {
     }
 
     async withdrawMarketVote(wallet, marketId, state) {
-        if(state == 1) {
+        if (state == 1) {
             return await this.marketControllerContract
                 .methods
                 .withdrawGovernanceValidatingVote(marketId)
@@ -299,7 +299,7 @@ class MarketAPIs {
                 });
         }
 
-        if(state == 5 || state == 8) {
+        if (state == 5 || state == 8) {
             return await this.marketControllerContract
                 .methods
                 .withdrawGovernanceResolvingVote(marketId)
@@ -314,12 +314,12 @@ class MarketAPIs {
 
         if (state == 1) {
             return 0;
-/*            return await this.governanceContract
-                .methods
-                .getApprovingResult(marketId)
-                .call({
-                    from: wallet,
-                });*/
+            /*            return await this.governanceContract
+                            .methods
+                            .getApprovingResult(marketId)
+                            .call({
+                                from: wallet,
+                            });*/
         }
 
         return await this.marketControllerContract
@@ -338,6 +338,7 @@ class MarketAPIs {
                 from: wallet,
             });
     }
+
     /////////
     /////////
     /////////
@@ -387,7 +388,6 @@ class MarketAPIs {
 
         return result;
     }
-
 
 
     async addLiquidityToMarket(wallet, marketId, amount) {
@@ -440,11 +440,11 @@ class MarketAPIs {
 
     async getMarketCollateralTotalSupply(wallet, marketId) {
         return await generateMarketContract(marketId)
-        .methods
-        .getMarketCollateralTotalSupply()
-        .call({
-            from: wallet,
-        });
+            .methods
+            .getMarketCollateralTotalSupply()
+            .call({
+                from: wallet,
+            });
     }
 
     //Router functions
@@ -486,7 +486,7 @@ class MarketAPIs {
          Resolving, // governance voting for result
          Resolved  // can redeem
          */
-        for(let i in Object.keys(marketStates)) {
+        for (let i in Object.keys(marketStates)) {
             const contracts = await this.marketsQueryContract
                 .methods
                 .getMarketsQuestionIDs(i, 0, -1)

@@ -71,11 +71,7 @@ class CourtAPIs {
             walletHelperInstance.getWeb3()
         );
 
-        this.usdtTokenContract = getContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3(),
-            'usdt'
-        );
+        this.usdtTokenContract = getContract('usdt');
     }
 
 

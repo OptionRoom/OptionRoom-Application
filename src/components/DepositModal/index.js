@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import clsx from "clsx";
 
-import Button from "../Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -10,6 +9,8 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import Slide from '@material-ui/core/Slide';
+
+import Button from "../Button";
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
@@ -21,11 +22,11 @@ import {
     convertTokensToAmount, fromWei,
 } from "../../shared/helper";
 import TradeInput from "../TradeInput";
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
-import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 
 const getModalText = (type, source, pool) => {
     if (type === "Add_Market_Liquidity") {

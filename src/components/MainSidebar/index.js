@@ -15,7 +15,8 @@ import {
     NftStakeIcon,
     ClaimIcon,
     LightModeIcon,
-    DarkModeIcon
+    DarkModeIcon,
+    GovernanceIcon
 } from '../../shared/icons';
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
@@ -185,13 +186,14 @@ function MainSidebar(props) {
                     {
                         title: 'Markets',
                         link: '/markets',
-                        icon: MarketsIcon
+                        icon: MarketsIcon,
+                        isNew: true
                     },
-                    /*                    {
-                                            title: 'Governance',
-                                            link: '/governance',
-                                            icon: GovernanceIcon
-                                        },*/
+                    {
+                        title: "Governance",
+                        link: "/governance",
+                        icon: GovernanceIcon,
+                    },
                     {
                         title: "COURT Farming",
                         link: "/court-farming",
@@ -241,9 +243,11 @@ function MainSidebar(props) {
                         {item.icon()}
                         <span className={classes.NavLink__Title}>
                             {item.title}
-                            {item.link === "/court-farming" && (
-                                <span className={classes.NewBadge}>new</span>
-                            )}
+                            {
+                                item.isNew && (
+                                    <span className={classes.NewBadge}>new</span>
+                                )
+                            }
                         </span>
                     </NavLink>
                 ))}

@@ -24,13 +24,13 @@ export const contractsAbis = {
         ht_court_farming_claim: htCourtFarmingClaimAbi,
         matter_court_farming_claim: matterCourtFarmingClaimAbi,
         court_vote_stake: courtVoteStakeAbi,
-        court_token_contract: courtTokenContractAbi,
+        court_token: courtTokenContractAbi,
     }
 };
 
 export const contractsAddresses = {
     default: {
-        room    : '0xc4be9C259B8f16e0f895217818fF47D737fCBcd7',
+        room: '0xc4be9C259B8f16e0f895217818fF47D737fCBcd7',
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
         market_controller: '0x90435eCdB58B2E379AB6d540555DCEf3827D8C6A',
         markets_query: '0xDcB04413858aF86d0A9Fb9697DF944B97bF96Ae4',
@@ -50,7 +50,7 @@ export const contractsAddresses = {
     },
     56: {
         court_vote_stake: '0x3bd21a6d3925c8e7f20e1eb910d01c33b412e588',
-        court_token_contract: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
+        court_token: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
     }
 };
 
