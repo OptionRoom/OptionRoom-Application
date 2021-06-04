@@ -61,7 +61,7 @@ function VoteWidget(props) {
             return 'Your participation will help to approve or reject the market';
         }
 
-        if(props.marketState == 5) {
+        if(props.marketState == 5 || props.marketState == 8) {
             return 'Your participation will help to resolve the market';
         }
     }
@@ -76,7 +76,7 @@ function VoteWidget(props) {
             formattedVotes[1] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
             formattedVotes[0] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
             setMarketVotes(formattedVotes);
-        } else if(props.marketState == 5) {
+        } else if(props.marketState == 5 || props.marketState == 8) {
             const validatingVotesCount = votes.resolvingVotesCount;
             const formattedVotes = [];
             formattedVotes[0] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
@@ -88,7 +88,7 @@ function VoteWidget(props) {
     const loadWalletVotes = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
-        console.log("loadWalletVotes", votes);
+        console.log("votes", votes);
         setWalletVote(votes);
     };
 
@@ -107,7 +107,7 @@ function VoteWidget(props) {
             return walletVote.selection == 1 ? 'Valid': 'Invalid';
         }
 
-        if(props.marketState == 5) {
+        if(props.marketState == 5 || props.marketState == 8) {
             return walletVote.selection == 0 ? 'Yes': 'No';
         }
     };
@@ -118,12 +118,10 @@ function VoteWidget(props) {
 
     return (
         <div className={classes.VoteWidget}>
-            <div className={classes.VoteWidget__Header}>
-                <div>Pick Outcome</div>
-                {!!getHeaderTxt() && (
-                    <div>{getHeaderTxt()}</div>
-                )}
-            </div>
+            <div className={classes.VoteWidget__Header}>Pick Outcome</div>
+            {!!getHeaderTxt() && (
+                <div className={classes.HeaderSubTxt}>{getHeaderTxt()}</div>
+            )}
             <div className={classes.VoteWidget__Progress}>
                 <div>
                     <OutcomeProgress title={'Yes'}

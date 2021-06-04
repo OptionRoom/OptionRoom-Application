@@ -1,242 +1,244 @@
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    MarketCard: {
-        position: 'relative',
-        overflow: 'hidden',
-        padding: '24px',
-        borderRadius: '20px',
-        backgroundColor: theme.colors.boxBg,
-        boxShadow: theme.colors.boxBoxShadow,
-        textDecoration: 'none',
-        display: 'block',
-        height: '300px'
+    MarketCard2: {
+        filter: "drop-shadow(3px 3px 0px #2E6AFA)",
+        boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
+        borderRadius: "10px",
+        background: "#fff",
+        textDecoration: "none",
+        display: "block",
     },
-    MarketIsFeatured: {
-        '& $TitleBlock': {
-            background: theme.isDark ? 'rgba(0, 0 , 0, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        '& $Details': {
-            background: theme.isDark ? 'rgba(0, 0 , 0, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        '& $Header': {
-            display: 'none'
-        }
+    MainDetails: {
+        display: "flex",
+        padding: "19px 20px 30px",
+        borderBottom: "1px solid #EDF1F5",
     },
-    Header: {
-      display: 'flex'
-    },
-    HeaderSub: {
-      textAlign: 'right'
-    },
-    Avatar: {
-        borderRadius: '50%',
-        height: "48px",
-        width: "48px",
-        //marginTop: '26px',
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: 'center',
-        boxShadow: theme.colors.boxBoxShadow,
-        border: '1px solid #e6edff',
-        marginBottom: '15px'
-    },
-    ContentWrap: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        width: '100%',
-        padding: '24px'
-    },
-    IsFeatured: {
-        display: 'inline-block',
-        background: 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)',
-        color: '#fff',
-        padding: '5px 10px',
-        borderRadius: '5px',
-        marginBottom: '5px',
-        fontSize: '12px',
-        fontWeight: 700,
-        boxShadow: theme.colors.boxBoxShadow,
-
-        //border: '1px solid #e6edff',
-    },
-    TitleBlock: {
-        marginBottom: '5px',
-    },
-    Title: {
-        color: theme.colors.txtColor,
-        fontSize: "18px",
-        fontWeight: 700,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        margin: '0',
-        textDecoration: 'none',
-        wordBreak: 'break-word',
-        //minHeight: '56px'
+    CatStateLine: {
+        marginBottom: "19px",
+        display: "flex",
+        alignItems: "center",
     },
     Cat: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "12px",
-        letterSpacing: "0",
-        //marginBottom: '5px',
-        textTransform: 'uppercase',
+        fontSize: "14px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
+        marginRight: "9px",
     },
-    MarketState: {
-        color: "#FFFFFF",
-        fontSize: "10px",
+    State: {
+        fontStyle: "normal",
         fontWeight: 500,
-        letterSpacing: "0",
-        lineHeight: "12px",
-        textAlign: "center",
-        borderRadius: "5px",
-        backgroundColor: "#8293A6",
-        padding: '2px 8px'
+        fontSize: "12px",
+        lineHeight: "15px",
+        color: "#FFFFFF",
+        background: "#27AE60",
+        padding: "2px 4px",
+        borderRadius: "9px",
     },
-    Details: {
-        display: 'flex',
-        alignItems: 'center'
+    Title: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "18px",
+        lineHeight: "23px",
+        letterSpacing: "0.01em",
+        color: "#36414B",
     },
-    Volume: {
-        marginRight: 'auto',
+    Avatar: {
+        width: "45px",
+        height: "45px",
+        borderRadius: "50%",
+        border: "2px solid #2E6AFA",
+        marginLeft: "auto",
+        padding: "2px",
+        "&>img": {
+            width: "37px",
+            height: "37px",
+            borderRadius: "50%",
+        },
+    },
+    SubDetails: {
+        padding: "25px",
+        display: "flex",
+    },
+    VolumeWrap: {
+        marginRight: "auto",
+        display: "flex",
+    },
+    VolumeIcon: {
+        width: "43px",
+        height: "43px",
+        display: "flex",
+        background: "#F2F6FA",
+        alignItems: "center",
+        marginRight: "13px",
+        borderRadius: "10px",
+        justifyContent: "center",
     },
     Volume__Title: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "13px",
-        letterSpacing: "0",
-        //lineHeight: "24px",
-        textTransform: 'uppercase',
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "14px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
     },
-    Volume__Value: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "16px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        //lineHeight: "24px",
+    Volume__Val: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "20px",
+        lineHeight: "26px",
+        letterSpacing: "0.005em",
+        color: "#36414B",
     },
-    Options: {
-        display: 'flex'
+    OptionsWrap: {
+        display: "flex",
     },
     Option: {
-        textTransform: 'uppercase',
-        //textAlign: 'right',
-        //width: '50px'
-/*        marginRight: '24px',
-        '&:last-child': {
-            marginRight: '0'
-        }*/
-        '&:first-child': {
-            marginRight: '15px'
-        }
+        width: "50%",
+        "&:first-child": {
+            marginRight: "1px",
+            "& $Option__Val": {
+                background: "rgba(46, 106, 250, 0.3)",
+                color: "#2E6AFA",
+                borderRadius: "13.5px 0px 0px 13.5px",
+            },
+        },
+        "&:last-child": {
+            "& $Option__Val": {
+                background: "rgba(235, 87, 87, 0.3)",
+                color: "#EB5757",
+                borderRadius: "0px 13.5px 13.5px 0px",
+            },
+        },
     },
     Option__Title: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "13px",
-        letterSpacing: "0",
-        //lineHeight: "24px"
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "12px",
+        lineHeight: "15px",
+        textAlign: "center",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#36414B",
+        marginBottom: "8px",
     },
-    Option__Value: {
-        borderRadius: "12px",
-        //backgroundColor: "#EDEFF4",
-        color: theme.colors.secondaryTxt,
+    Option__Val: {
+        fontStyle: "normal",
+        fontWeight: 500,
         fontSize: "16px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        //lineHeight: "24px",
+        lineHeight: "20px",
+        padding: "4px 8px",
     },
-    Option__ValueYes: {
-        //background: '#86DC8B'
-    },
-    Option__ValueNo: {
-        //background: '#7084FF'
-    },
-    smallAn: {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        background: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
-        backgroundSize: "400% 400%",
-        animation: "$myEffect 15s ease infinite",
-        height: '5px'
-    },
-    "@keyframes myEffect": {
-        "0%": {
-            backgroundPosition: '0% 50%'
+    TitleWrap:{},
+    MarketIsListView: {
+        display: "flex",
+        alignItems: "center",
+        padding: "26px",
+        "& $MainDetails": {
+            padding: 0,
+            display: "flex",
+            borderBottom: 'none',
+            marginRight: "auto",
         },
-        "50%": {
-            backgroundPosition: '100% 50%'
+        "& $TitleWrap": {
+            display: 'flex',
+            flexWrap: 'wrap'
         },
-        "100%": {
-            backgroundPosition: '0% 50%'
-        }
+        "& $CatStateLine": {
+            display: "flex",
+            alignItems: "center",
+            marginBottom: 0,
+            width: '100%'
+        },
+        "& $Cat": {},
+        "& $State": {},
+        "& $Title": {
+            marginBottom: '4px',
+            order: "-1",
+            width: '100%'
+        },
+        "& $Avatar": {
+            order: -1,
+            marginRight: "10px",
+        },
+        "& $SubDetails": {
+            display: "flex",
+            padding: 0,
+        },
+        "& $VolumeWrap": {
+            display: "flex",
+            marginRight: "48px",
+        },
+        "& $VolumeIcon": {},
+        "& $Volume__Title": {},
+        "& $Volume__Val": {},
+        "& $OptionsWrap": {},
+        "& $Option": {},
+        "& $Option__Title": {
+            marginBottom: "4px",
+        },
+        "& $Option__Val": {},
     },
-    Cat__Title: {
-        display: 'none'
-    },
-    Title__Title: {
-        display: 'none'
-    },
+    //ListView
     MarketCardList: {
-        flexWrap: 'wrap',
-        alignItems: 'center',
+        flexWrap: "wrap",
+        alignItems: "center",
         //borderRadius: '5px',
         backgroundColor: theme.colors.boxBg,
         //boxShadow: theme.colors.boxBoxShadow,
-        textDecoration: 'none',
+        textDecoration: "none",
         display: "flex",
-        padding: '10px',
-        position: 'relative'
+        padding: "10px",
+        position: "relative",
     },
     MarketCardList__IsFeatured: {
-        background: 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)',
+        background: "linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)",
         boxShadow: theme.colors.boxBoxShadow,
-        position: 'absolute',
+        position: "absolute",
         top: 0,
         left: 0,
-        width: '3px',
-        height: '100%',
-        textIndent: '-999px',
-        overflow: 'hidden'
+        width: "3px",
+        height: "100%",
+        textIndent: "-999px",
+        overflow: "hidden",
     },
     MarketCardList__Avatar: {
-        borderRadius: '50%',
+        borderRadius: "50%",
         height: "48px",
         width: "48px",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: 'center',
+        backgroundPosition: "center",
         boxShadow: theme.colors.boxBoxShadow,
-        border: '1px solid #e6edff',
-        marginRight: '10px'
+        border: "1px solid #e6edff",
+        marginRight: "10px",
     },
     MarketCardList__Info: {
         '&[data-key="name"]': {
-            width: 'calc(100% - 388px)',
-            marginRight: '10px'
+            width: "calc(100% - 388px)",
+            marginRight: "10px",
         },
         '&[data-key="category"]': {
-            width: '120px'
+            width: "120px",
         },
         '&[data-key="volume"]': {
-            width: '100px'
+            width: "100px",
         },
         '&[data-key="option"]': {
-            width: '50px'
-        }
+            width: "50px",
+        },
     },
     Info__Title: {
-        display: 'block',
+        display: "block",
         color: theme.isDark ? "#fff" : "#8293A6",
         fontSize: "13px",
         letterSpacing: "0",
-        textTransform: 'uppercase',
+        textTransform: "uppercase",
         fontWeight: 400,
-        lineHeight: 1
+        lineHeight: 1,
     },
     Info__Val: {
         color: theme.isDark ? "#fff" : "#4E5D6D",
@@ -245,6 +247,6 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         whiteSpace: "nowrap",
         overflow: "hidden",
-        textOverflow: "ellipsis"
-    }
+        textOverflow: "ellipsis",
+    },
 }));

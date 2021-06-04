@@ -1,82 +1,49 @@
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
+    MarketsPage: {
+        background: '#F6FAFF'
+    },
     LoadingWrapper: {
-        padding: '100px',
-        textAlign: 'center'
+        padding: "100px",
+        textAlign: "center",
     },
     ConnectWrap: {
-        padding: '100px',
-        textAlign: 'center'
+        padding: "100px",
+        textAlign: "center",
     },
     MarketsPage__Header: {
-        padding: '20px',
-        marginBottom: '30px',
-        background: theme.isDark ? 'rgb(39, 38, 44)' : '#fff',
-        [theme.breakpoints.up('md')]: {
-            padding: '50px 100px',
+        padding: "20px",
+        marginBottom: "30px",
+        background: theme.isDark ? "rgb(39, 38, 44)" : "#fff",
+        [theme.breakpoints.up("md")]: {
+            padding: "50px 100px",
         },
     },
     Sidebar: {},
     MarketDetails: {
-        padding: '0 20px',
-        [theme.breakpoints.up('md')]: {
-            padding: '0 100px',
+        padding: '30px 0',
+        //padding: "0 20px",
+        [theme.breakpoints.up("md")]: {
+            //padding: "0 100px",
         },
     },
     MarketsPage__HeaderDeatils: {
-        display: 'flex',
-        alignItems: 'center'
+        display: "flex",
+        alignItems: "center",
     },
     MarketDetails__HeaderAvatar: {
-        borderRadius: '50%',
+        borderRadius: "50%",
         height: "50px",
         width: "50px",
         boxShadow: theme.colors.boxBoxShadow,
         //backgroundSize: "cover",
         //backgroundRepeat: "no-repeat",
-        marginRight: '15px',
+        marginRight: "15px",
         //backgroundPosition: 'center center'
     },
     MarketDetails__HeaderTitle: {
-        width: 'calc(100% - 65px)'
-    },
-    Cat: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "15px",
-        letterSpacing: "0",
-    },
-    Title: {
-        color: theme.isDark ? "#fff" : "#171D28",
-        fontSize: "26px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "32px",
-        wordBreak: 'break-word'
-    },
-    Info: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
-        boxShadow: theme.colors.boxBoxShadow,
-        display: "flex",
-        marginBottom: "24px",
-        justifyContent: "space-between",
-    },
-    Info__Block: {},
-    Info__BlockTitle: {
-        color: theme.isDark ? "#fff" : "#8293A6",
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "4px",
-    },
-    Info__BlockValue: {
-        color: theme.isDark ? "#fff" : "#4E5D6D",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
+        width: "calc(100% - 65px)",
     },
     Graph: {
         padding: "24px",
@@ -125,119 +92,158 @@ export const useStyles = makeStyles((theme) => ({
         color: "#FFFFFF",
     },
     Graph__Deatils: {},
-
-    Outcome: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
-    },
-    Outcome__Header: {
-        color: theme.isDark ? "#fff" : "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
-    },
-    Outcome__Details: {
-        display: "flex",
-        '&>div': {
-            width: "calc(100% - 24px)",
-            "&:first-child": {
-                marginRight: "48px",
-            },
-        }
-    },
-    MarketPositions: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
-    },
-    MarketPositions__Header: {
-        color: theme.isDark ? "#fff" : "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
-    },
-    MarketPositions__Details: {},
-    MarketPosition__Block: {
-        display: "flex",
-        alignItems: "center",
-        borderBottom: "1px solid #EDEFF4",
-        padding: "16px 0",
-        "& span:first-child": {
-            marginRight: "auto",
-            color: theme.isDark ? "#fff" : "#8293A6",
-            fontSize: "14px",
-            letterSpacing: "0",
-            lineHeight: "24px",
-        },
-        "& span:last-child": {
-            color: theme.isDark ? "#fff" : "#4E5D6D",
-            fontSize: "14px",
-            fontWeight: 600,
-            letterSpacing: "0",
-            lineHeight: "24px",
-            textAlign: "right",
-        },
-        "&:first-child": {
-            paddingTop: "0",
-        },
-        "&:last-child": {
-            borderBottom: "none",
-        },
-    },
-
     About: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
+        padding: "29px 35px",
+        background: "#FFFFFF",
+        boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
+        borderRadius: "15px",
+        marginBottom: "22px",
     },
     About__Header: {
-        color: theme.isDark ? "#fff" : "#3F4A57",
+        fontStyle: "normal",
+        fontWeight: 500,
         fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
+        marginBottom: '18px'
     },
     About__Details: {
-        color: theme.isDark ? "#fff" : "#8293A6",
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "18px",
+        lineHeight: "23px",
+        color: "#36414B"
     },
-
     Resolution: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: theme.isDark ? theme.colors.boxBg : "#E9EAFF",
-        marginBottom: "24px",
-        wordBreak: 'break-all'
+        padding: "29px 35px",
+        background: "#FFFFFF",
+        boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
+        borderRadius: "15px",
+        marginBottom: "22px",
     },
     Resolution__Header: {
-        color: theme.colors.secondaryTxt,
+        fontStyle: "normal",
+        fontWeight: 500,
         fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "8px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
+        marginBottom: '18px'
     },
-    Resolution__Details: {},
+    Resolution__Details: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "18px",
+        lineHeight: "23px",
+        color: "#36414B"
+    },
     ResolutionLink: {
-        color: "#0042FF",
-        fontSize: "12px",
-        letterSpacing: "0",
-        lineHeight: "24px",
+        marginBottom: '8px',
+        '& a': {
+            textDecoration: 'none',
+            color: '#2E6AFA'
+        }
     },
-    MarketLiquidityWidgetWrap: {
-        marginBottom: "24px",
-    }
+    MarketWidgetWrap: {
+        marginBottom: "18px",
+    },
+    //New Design
+    MarketsPage__Header2: {
+        background: "#fff",
+        padding: "25px 0 45px",
+        boxShadow: "0px 4px 20px rgba(82, 104, 130, 0.05)",
+    },
+    MarketsPage__Header2Container: {
+        maxWidth: "1200px",
+        margin: "0 auto",
+    },
+    Title: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "30px",
+        lineHeight: "38px",
+        color: "#36414B",
+    },
+    Cat: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "18px",
+        lineHeight: "23px",
+        color: "#818B95",
+    },
+    Gallery: {
+        marginTop: '30px',
+        display: "flex",
+        "& img": {
+            width: "133px",
+            height: "121px",
+            borderRadius: "8px",
+        },
+    },
+    TradeVolume: {
+        marginBottom: '24px',
+        paddingBottom: '24px',
+        borderBottom: "1px solid #EAEAEA"
+    },
+    TradeVolume__Title: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "15px",
+        lineHeight: "19px",
+        color: "#818B95",
+        marginBottom: '13px'
+    },
+    TradeVolume__Details: {
+        display: 'flex',
+        alignItems: 'center',
+        '& svg': {
+            marginRight: '6px'
+        }
+    },
+    TradeVolume__DetailsVal: {
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "35px",
+        lineHeight: "26px",
+        letterSpacing: "-0.01em",
+        color: "#36414B"
+    },
+    LiqEndBlock: {
+        marginBottom: '21px',
+        display: 'flex'
+    },
+    LiqEndBlock__Icon: {
+        width: '43px',
+        height: '43px',
+        marginRight: '23px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: "10px"
+    },
+    LiqEndBlock__IconEndsAt: {
+        background: 'rgba(46, 106, 250, 0.15)'
+    },
+    LiqEndBlock__IconLiquidity: {
+        background: 'rgba(8, 181, 77, 0.15)'
+    },
+    LiqEndBlock__Details: {},
+    LiqEndBlock__DetailsTitle: {
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "15px",
+        lineHeight: "19px",
+        color: "#818B95"
+    },
+    LiqEndBlock__DetailsVal: {
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "15px",
+        lineHeight: "26px",
+        letterSpacing: "0.005em",
+        color: "#36414B"
+    },
 }));

@@ -91,7 +91,7 @@ function MarketLiquidityWidget(props) {
                         <div>
                             {!props.isWalletOptionTokenApprovedForMarket && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleRemoveLiquidity}>(approve to unlock)</div>)}
                             <Button
-                                isDisabled={!props.isWalletOptionTokenApprovedForMarket}
+                                isDisabled={false}
                                 size={"small"}
                                 color="primary"
                                 onClick={handleRemoveLiquidity}

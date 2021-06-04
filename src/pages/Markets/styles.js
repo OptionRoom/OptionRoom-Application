@@ -1,119 +1,63 @@
-import {makeStyles} from "@material-ui/core/styles";
-import FooterBg from './footer-bg.png';
+import { makeStyles } from "@material-ui/core/styles";
+import FooterBg from "./footer-bg.png";
 
 const numberOfColumns = 3;
 const marginBetweenEntries = 15;
 
-
 export const useStyles = makeStyles((theme) => ({
-    MarketsPage: {
-        paddingBottom: '50px',
-        position: 'relative',
-        backgroundImage: `url(${FooterBg})`,
-        backgroundSize: '100%',
-        backgroundPosition: "bottom center",
-        backgroundRepeat: "no-repeat",
-        minHeight: 'calc(100vh - 64px)',
-    },
-    RoomIcon: {
-        position: 'absolute',
-        bottom: '0',
-        left: '0',
-        transform: 'scale(1)'
+    LoadingWrapper: {
+        padding: "100px",
+        textAlign: "center",
     },
     ConnectWrap: {
-        padding: '100px',
-        textAlign: 'center'
+        padding: "100px",
+        textAlign: "center",
     },
-    MarketsContainer: {
-        maxWidth: '1000px',
-        margin: '0 auto',
+    MarketsPage: {
+        display: "flex",
+        background: "#f6faff",
     },
-    MarketsHeader: {
-        padding: '10px',
-        margin: '0 0 15px',
-        [theme.breakpoints.up('md')]: {
-            padding: '10px 0',
-            margin: '0 0 30px',
+    MarketsPage__Main: {
+        width: "calc(100% - 335px)",
+        padding: "40px",
+    },
+    MarketsPage__Sidebar: {
+        width: "335px",
+    },
+    MarketsPage__Header: {
+        display: "flex",
+        marginBottom: "25px",
+        alignItems: "center",
+    },
+    MarketsPage__HeaderTitle: {
+        marginRight: "auto",
+        fontSize: "30px",
+        lineHeight: "38px",
+        color: "#36414B",
+    },
+    MarketsPage__HeaderActions: {
+        display: "flex",
+        alignItems: "center",
+        "& svg": {
+            color: "#818b95",
+            marginRight: "18px",
         },
-        '& $MarketsContainer': {
-            [theme.breakpoints.up('md')]: {
-                display: 'flex',
-                alignItems: 'center',
-                '&>div': {
-                    marginRight: 'auto'
-                },
-            },
+        "&>div": {},
+        "& a": {
+            textDecoration: "none",
         },
-        background: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
-        backgroundSize: "400% 400%",
-        animation: "$myEffect 15s ease infinite",
-        //background: 'radial-gradient( circle 993px at 0.5% 50.5%,  rgba(137,171,245,0.37) 0%, rgba(245,247,252,1) 100.2% )',
-        '& h1': {
-            lineHeight: '1',
-            fontSize: '32px',
-            margin: '0',
-            color: '#fff',
-            //margin: '0 0 15px',
-            [theme.breakpoints.up('md')]: {
-                lineHeight: '1',
-                fontSize: '42px',
-                //margin: '0 0 15px',
-            },
-        },
-        '& p': {
-            lineHeight: '1',
-            fontSize: '16px',
-            margin: '0 0 15px',
-            [theme.breakpoints.up('md')]: {
-                fontSize: '24px',
-                margin: '0',
-            },
-        }
-    },
-    "@keyframes myEffect": {
-        "0%": {
-            backgroundPosition: '0% 50%'
-        },
-        "50%": {
-            backgroundPosition: '100% 50%'
-        },
-        "100%": {
-            backgroundPosition: '0% 50%'
-        }
-    },
-    CreateMarketLinkWrap: {
-        marginBottom: '16px'
-    },
-    CreateMarketLink: {
-        textDecoration: 'none',
-    },
-    LoadingWrapper: {
-        padding: '100px',
-        textAlign: 'center'
-    },
-    MarketsFiltrationWrap: {
-      marginBottom: '20px'
     },
     MarketsList: {
-        padding: '0 10px',
-        '&>div': {
-            marginBottom: `${marginBetweenEntries}px`
-        },
+        display: "flex",
+        flexWrap: "wrap",
         [theme.breakpoints.up('md')]: {
-            padding: '0',
-            display: 'flex',
-            flexWrap: 'wrap',
-            '&>div': {
-                width: `calc(${100/numberOfColumns}% - ${(marginBetweenEntries*(numberOfColumns - 1))/3}px)`,
-                marginRight: `${marginBetweenEntries}px`,
-                marginBottom: `${marginBetweenEntries}px`,
-                '&:nth-child(3n)': {
+            "&>div": {
+                width: "calc(50% - 10px)",
+                marginRight: "20px",
+                marginBottom: "20px",
+                "&:nth-child(2n)": {
                     marginRight: 0,
-                }
-            },
-            '&>div>a': {
-               // height: '100%'
+                },
             },
         },
     },
@@ -123,14 +67,6 @@ export const useStyles = makeStyles((theme) => ({
             marginBottom: 0,
             width: '100%',
             margin: 0,
-            borderBottom: "1px solid #f5f5f5"
         },
     },
-    NoResultsWrap: {
-        textAlign: 'center',
-        padding: '50px',
-        '& img': {
-            maxWidth: '500px'
-        }
-    }
 }));

@@ -67,6 +67,25 @@ export const useGetMarketTradeVolume = (wallet, marketContractAddress, optionTok
     return tradeVolume;
 };
 
+export const useGetMarketState = (wallet, marketContractAddress) => {
+    const [val, setVal] = useState(null);
+
+    useEffect(() => {
+        const init = async () => {
+            const marketAPIs = new MarketAPIs();
+            const marketState = await marketAPIs.getMarketState(wallet, marketContractAddress);
+            setVal(marketState);
+        };
+
+        if(wallet && marketContractAddress) {
+            init();
+        }
+
+    }, [wallet, marketContractAddress]);
+
+    return val;
+};
+
 export const useGetWalletBuySellPositions = (wallet, marketContractAddress, walletOptionTokensBalance) => {
     const [walletBuySellPositions, setWalletBuySellPositions] = useState({});
 
@@ -81,8 +100,6 @@ export const useGetWalletBuySellPositions = (wallet, marketContractAddress, wall
             });
 
             //investmentAmount returnAmount
-            console.log("groupedHistory", groupedHistory);
-
             if (Object.keys(groupedHistory).length > 0) {
                 Object.keys(groupedHistory).forEach((outcomeIndex) => {
                     const reducedBuys = reduce(groupedHistory[outcomeIndex], function (old, entry) {
@@ -122,4 +139,24 @@ export const useGetWalletBuySellPositions = (wallet, marketContractAddress, wall
     }, [wallet, marketContractAddress, walletOptionTokensBalance]);
 
     return walletBuySellPositions;
+}
+
+
+export const useGetMarketBuySell = (wallet, marketContractAddress, optionTokensPercentage) => {
+    const [history, setHistory] = useState({});
+
+    useEffect(() => {
+        const init = async () => {
+            const marketAPIs = new MarketAPIs();
+            const historyOfWallet = await marketAPIs.getMarketBuyAndSellHistory(wallet, marketContractAddress);
+
+            setHistory(historyOfWallet);
+        }
+
+        if(wallet && marketContractAddress) {
+            init();
+        }
+    }, [wallet, marketContractAddress, optionTokensPercentage]);
+
+    return history;
 }

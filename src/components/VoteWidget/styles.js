@@ -2,23 +2,28 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     VoteWidget: {
-        borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
-        boxShadow: theme.colors.boxBoxShadow,
-        padding: "24px",
+        background: "#FFFFFF",
+        boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
+        borderRadius: "15px",
+        padding: "29px 35px",
     },
     VoteWidget__Header: {
-        color: theme.isDark ? '#fff' : "#3F4A57",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: '16px',
-        '&>div:first-child': {
-            fontSize: "15px",
-            fontWeight: 600,
-        },
-        '&>div:last-child': {
-            fontSize: "13px"
-        },
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "14px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
+        marginBottom: '27px',
+    },
+    HeaderSubTxt: {
+        fontStyle: "normal",
+        fontWeight: 500,
+        fontSize: "14px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        marginBottom: '27px',
     },
     VoteWidget__Options: {
         marginBottom: '16.5px',

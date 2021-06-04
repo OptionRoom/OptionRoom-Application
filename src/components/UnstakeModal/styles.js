@@ -24,7 +24,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     MuiDialogActions: {
         padding: '24px 24px',
-        display: 'flex'
+        display: 'flex',
+        background: theme.isDark ? '#000' : 'rgb(245, 248, 250)'
     },
     MuiDialogActions__CancelBtn: {
         marginRight: 'auto',

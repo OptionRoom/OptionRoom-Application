@@ -19,7 +19,6 @@ function RedeemMarketRewardsWidget(props) {
     const [marketInfo, setMarketInfo] = useState(null);
 
     const handleRedeem = async () => {
-        console.log("Dd");
         setIsProcessing(true);
         const marketApis = new MarketAPIs();
         try {
@@ -39,7 +38,7 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     const getUserRewardsVal =  () => {
-        if(!marketInfo) {
+        if(!marketInfo || !props.walletOptionTokensBalance) {
             return;
         }
 
@@ -63,14 +62,19 @@ function RedeemMarketRewardsWidget(props) {
                         <div>The community resolved this market to {marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1] ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
                     )
                 }
-                You have a total of {fromWei(getUserRewardsVal(), null, 5)}
+                {
+                    getUserRewardsVal() > 0 ? `You have a total of ${fromWei(getUserRewardsVal(), null, 5)}` : null
+                }
             </div>
-            <Button color="primary"
-                    size={"large"}
-                    onClick={handleRedeem}
-                    isProcessing={isProcessing}
-                    isDisabled={getUserRewardsVal() == 0}
-                    fullWidth={true}>Redeem</Button>
+            {
+                getUserRewardsVal() > 0 && (
+                    <Button color="primary"
+                            size={"large"}
+                            onClick={handleRedeem}
+                            isProcessing={isProcessing}
+                            fullWidth={true}>Redeem</Button>
+                )
+            }
         </div>
     );
 }

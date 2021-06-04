@@ -85,7 +85,6 @@ function ConfigWallet() {
 
         try {
             const marketTimeRes = await marketApis.getMarketTime(accountContext.account, fieldValue);
-            console.log("marketTimeRes", marketTimeRes);
         } catch (e) {
 
         }

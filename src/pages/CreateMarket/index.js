@@ -22,6 +22,7 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
+import ButtonSteps from "../../components/ButtonSteps";
 
 import {walletHelper} from "../../shared/wallet.helper";
 import {
@@ -41,6 +42,7 @@ import NotWhitelisted from "../../components/NotWhitelisted";
 import CropModal from "../../components/CropModal";
 import {useGetMarketCategories} from "../../shared/hooks";
 import TradeInput from "../../components/TradeInput";
+import {getContractAddress, getWalletBalanceOfContract} from '../../shared/contracts/contracts.helper';
 import ConfigHelper from "../../shared/config.helper";
 
 const walletHelperInsatnce = walletHelper();
@@ -61,6 +63,8 @@ function CreateMarket() {
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
+    const [walletAllowanceOfRoomTokenForMarketRouter, setWalletAllowanceOfRoomTokenForMarketRouter] = useState(0);
+    const [walletRoomBalance, setWalletRoomBalance] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
 
     const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
@@ -128,6 +132,12 @@ function CreateMarket() {
 
         const walletAllowanceOfCollateralTokenForMarketRouter = await marketApis.getWalletAllowanceOfCollateralTokenForMarketRouter(accountContext.account);
         setWalletAllowanceOfCollateralTokenForMarketRouter(walletAllowanceOfCollateralTokenForMarketRouter);
+
+        const walletAllowanceOfRoomTokenForMarketRouter = await marketApis.getWalletAllowanceOfRoomTokenForMarketRouter(accountContext.account);
+        setWalletAllowanceOfRoomTokenForMarketRouter(walletAllowanceOfRoomTokenForMarketRouter);
+
+        const walletRoomBalance = await getWalletBalanceOfContract(accountContext.account, 'room');
+        setWalletRoomBalance(walletRoomBalance);
     };
 
     const loadWalletData = async () => {
@@ -153,18 +163,25 @@ function CreateMarket() {
 
     } ;
 
+    const approveStableCoin = async () => {
+        setIsCreatingMarket(true);
+        const marketApis = new MarketAPIs();
+        await marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
+        loadWalletData();
+        setIsCreatingMarket(false);
+        return;
+    };
+
+    const approveRoomToken = async () => {
+        setIsCreatingMarket(true);
+        const marketApis = new MarketAPIs();
+        await marketApis.approveRoomTokenForMarketRouter(accountContext.account);
+        loadWalletData();
+        setIsCreatingMarket(false);
+        return;
+    };
+
     const handleCreateMarket = async (data) => {
-        //return ;
-
-        if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
-            setIsCreatingMarket(true);
-            const marketApis = new MarketAPIs();
-            await marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
-            loadWalletData();
-            setIsCreatingMarket(false);
-            return;
-        }
-
 
         try {
             setIsCreatingMarket(true);
@@ -174,7 +191,7 @@ function CreateMarket() {
             const imageUpload = await uploadMarketImage(data.image);
 
             const resolveTimestamp = data.endDate.clone().add(2, 'hours').unix();
-            const collateralTokenAddress = ConfigHelper.getContractsAddresses().collateralToken;
+            const collateralTokenAddress = getContractAddress('usdt');
             const sources = data.sources.map((entry) => entry.name);
 
             //wallet, category, description, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity, image, sources, title
@@ -237,6 +254,38 @@ function CreateMarket() {
         init();
     }, [accountContext.account]);
 
+    const renderCreateBtn = () => {
+        if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
+            return (
+                <Button size={'large'}
+                        role={'button'}
+                        onClick={approveStableCoin}
+                        isProcessing={isCreatingMarket}
+                        color={'primary'}
+                        fullWidth={true}>Approve USDT</Button>
+            )
+        }
+
+        if (walletAllowanceOfRoomTokenForMarketRouter <= 0) {
+            return (
+                <Button size={'large'}
+                        role={'button'}
+                        onClick={approveRoomToken}
+                        isProcessing={isCreatingMarket}
+                        color={'primary'}
+                        fullWidth={true}>Approve ROOM</Button>
+            )
+        }
+
+        return (
+            <Button size={'large'}
+                    isProcessing={isCreatingMarket}
+                    color={'primary'}
+                    type={'submit'}
+                    fullWidth={true}>Create</Button>
+        )
+    }
+
     if(!accountContext.account) {
         return (
             <div className={classes.ConnectWrap}>
@@ -258,6 +307,27 @@ function CreateMarket() {
             <NotWhitelisted/>
         )
     }
+
+    console.log("dd", fromWei(102051673364099536673920534968071842655183253159355168956994977207100798957102));
+/*    const formButtons = [];
+
+    if(walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
+        formButtons.push((
+            <Button size={'large'}
+                    isProcessing={isCreatingMarket}
+                    color={'primary'}
+                    type={'submit'}
+                    fullWidth={true}>Approve</Button>
+        ));
+    }
+
+    formButtons.push((
+        <Button size={'large'}
+                isProcessing={isCreatingMarket}
+                color={'primary'}
+                type={'submit'}
+                fullWidth={true}>Create</Button>
+    ));*/
 
     return (
         <>
@@ -449,7 +519,6 @@ function CreateMarket() {
                                                         //setIsTradeDisabled(!valid);
                                                     }}
                                                     onChange={(e)=> {
-                                                        console.log("e", e);
                                                         setValue("liquidity", e,{ shouldValidate: true });
                                                     }}/>
                                     </div>
@@ -526,23 +595,9 @@ function CreateMarket() {
                              */
                         }
                         <div className={classes.CreateBtnWrap}>
-                            <Button size={'large'}
-                                    isProcessing={isCreatingMarket}
-                                    color={'primary'}
-                                    type={'submit'}
-                                    fullWidth={true}>
-                                {
-                                    walletAllowanceOfCollateralTokenForMarketRouter > 0 && (
-                                        'Create'
-                                    )
-                                }
-                                {
-                                    walletAllowanceOfCollateralTokenForMarketRouter <= 0 && (
-                                        'Approve'
-                                    )
-                                }
-                            </Button>
+                            {renderCreateBtn()}
                         </div>
+                        <div className={classes.CreateNote}>Creating a market costs 100ROOM, your room balance is: {fromWei(walletRoomBalance, null, 2)}</div>
                     </form>
                     <CropModal isOpen={isCropModalOpen}
                                onCrop={handleOnCrop}

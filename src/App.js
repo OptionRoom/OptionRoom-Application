@@ -127,7 +127,7 @@ function App() {
                 },
                 typography: {
                     fontFamily: [
-                        'Whyte',
+                        'Open Sans',
                         //'Kanit',
                         'sans-serif',
                     ].join(','),

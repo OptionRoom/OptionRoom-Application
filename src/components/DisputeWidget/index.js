@@ -105,7 +105,7 @@ function DisputeWidget(props) {
     return (
         <div className={classes.DisputeWidget}>
             <div className={classes.DisputeWidget__Header}>
-                <div>Dispute this market</div>
+                Dispute this market
             </div>
             <div className={classes.DisputeWidget__Body}>
                 {

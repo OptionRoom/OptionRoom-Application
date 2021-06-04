@@ -12,6 +12,10 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
+import {
+    approveContractForSpender
+} from '../../shared/contracts/contracts.helper';
+
 import TradeInput from '../../components/TradeInput';
 
 export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount, tradeType, option) => {
@@ -106,26 +110,31 @@ function BuySellWidget(props) {
 
     const startTrade = async () => {
         const tradeOption = selectedTradeOption.toLowerCase() === 'yes' ? 0 : 1;
-        const marketAPIs = new MarketAPIs();
         setIsTradeInProgress(true);
         try {
             if (selectedTradeType === 'buy') {
                 if (props.walletAllowanceOfCollateralToken == 0) {
-                    const marketAPIs = new MarketAPIs();
-                    await marketAPIs.approveCollateralTokenForMarket(accountContext.account, props.marketContractAddress);
+                    await approveContractForSpender(accountContext.account, 'usdt', 'market_controller');
                     props.onApprove && props.onApprove('CollateralToken');
                 } else {
+                    const marketAPIs = new MarketAPIs();
                     await marketAPIs.buy(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
                     props.onTrade && props.onTrade();
                 }
             } else {
-                if (props.isWalletOptionTokenApprovedForMarket) {
+                const marketAPIs = new MarketAPIs();
+                if (props.isWalletOptionTokenApprovedForMarketController && props.isWalletOptionTokenApprovedForMarket) {
                     await marketAPIs.sell(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
                     setTradeInput(0);
                     props.onTrade && props.onTrade();
                 } else {
-                    await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
-                    props.onApprove && props.onApprove('OptionToken');
+                    if(!props.isWalletOptionTokenApprovedForMarket) {
+                        await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
+                        props.onApprove && props.onApprove('OptionToken');
+                    } else {
+                        await marketAPIs.approveOptionTokenForMarketController(accountContext.account, props.marketContractAddress);
+                        props.onApprove && props.onApprove('OptionToken__Controller');
+                    }
                 }
             }
 
@@ -262,10 +271,11 @@ function BuySellWidget(props) {
                 }
                 {
                     selectedTradeType === 'sell' && (
-                        props.isWalletOptionTokenApprovedForMarket ? 'Trade' : 'Approve'
+                        props.isWalletOptionTokenApprovedForMarket ? (
+                            props.isWalletOptionTokenApprovedForMarketController ? 'Trade' : 'Approve 2'
+                        ) : 'Approve 1'
                     )
                 }
-
             </Button>
         </div>
     );

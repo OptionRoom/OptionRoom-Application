@@ -2,11 +2,8 @@ import {map, sum, sortBy} from 'lodash';
 
 import { walletHelper } from "../wallet.helper";
 import { MaxUint256, controlledNetworkId } from "../../shared/constants";
-import { getCollateralTokenContract } from "./CollateralTokenContract";
 import { getMarketContract } from "./MarketContract";
-import { getMarketRouterContract } from "./MarketRouterContract";
-import { getGovernanceContract } from "./GovernanceContract";
-import { getOptionTokenContract } from "./OptionTokenContract";
+import {getContract} from "./contracts.helper";
 import {fromWei, toWei} from "../helper";
 
 import {marketStates} from '../constants';
@@ -19,25 +16,11 @@ const generateMarketContract = (marketId) => {
 
 class MarketAPIs {
     constructor() {
-        this.marketRouterContract = getMarketRouterContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-
-        this.collateralTokenContract = getCollateralTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-
-        this.governanceContract = getGovernanceContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-
-        this.optionsTokenContract = getOptionTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
+        this.marketsQueryContract = getContract('markets_query');
+        this.marketControllerContract = getContract('market_controller');
+        this.collateralTokenContract = getContract('usdt');
+        this.optionsTokenContract = getContract('option_token');
+        this.roomTokenContract = getContract('room');
     }
 
     async buy(
@@ -47,13 +30,12 @@ class MarketAPIs {
         outcomeIndex,
         minOutcomeTokensToBuy
     ) {
-        const result = await generateMarketContract(marketId)
+        return this.marketControllerContract
             .methods
-            .buy(investmentAmount, outcomeIndex, 0)
+            .marketBuy(marketId, investmentAmount, outcomeIndex, 0)
             .send({
                 from: wallet,
             });
-        return result;
     }
 
     async getMarketTradingVolume(
@@ -115,6 +97,14 @@ class MarketAPIs {
 
         const marketContract = generateMarketContract(marketId);
 
+        const allEventsww = await marketContract
+            .getPastEvents('allEvents', {
+                filter: {
+                    buyer: wallet
+                },
+                fromBlock: 1
+            });
+
         const buyEvents = await marketContract
             .getPastEvents('FPMMBuy', {
                 filter: {
@@ -138,14 +128,37 @@ class MarketAPIs {
         return allEvents;
     }
 
+    async getMarketBuyAndSellHistory(
+        wallet,
+        marketId
+    ) {
+
+        const marketContract = generateMarketContract(marketId);
+
+        const buyEvents = await marketContract
+            .getPastEvents('FPMMBuy', {
+                fromBlock: 1
+            });
+
+        const sellEvents = await marketContract
+            .getPastEvents('FPMMSell', {
+                fromBlock: 1
+            });
+
+        let allEvents = buyEvents.concat(sellEvents);
+
+        allEvents = sortBy(allEvents, ["blockNumber", "transactionIndex"]);
+
+        return allEvents;
+    }
+
     async sell(wallet, marketId, amount, sellIndex) {
-        const result = await generateMarketContract(marketId)
+        return this.marketControllerContract
             .methods
-            .sell(amount, sellIndex)
+            .marketSell(marketId, amount, sellIndex)
             .send({
                 from: wallet,
             });
-        return result;
     }
 
     async getPricesOfBuy(wallet, marketAddress) {
@@ -206,7 +219,7 @@ class MarketAPIs {
 
     //Governance related
     async disputeMarket(wallet, marketId, disputeReason) {
-        return await this.governanceContract
+        return await this.marketControllerContract
             .methods
             .disputeMarket(marketId, disputeReason)
             .send({
@@ -215,7 +228,7 @@ class MarketAPIs {
     }
 
     async getMarketState(wallet, marketId) {
-        const result = await this.governanceContract
+        const result = await this.marketControllerContract
             .methods
             .getMarketState(marketId)
             .call({
@@ -229,7 +242,7 @@ class MarketAPIs {
         //isPendingVoter
 
         if (marketState == 1) {
-            return await this.governanceContract
+            return await this.marketControllerContract
                 .methods
                 .isValidatingVoter(marketId, wallet)
                 .call({
@@ -237,8 +250,8 @@ class MarketAPIs {
                 });
         }
 
-        if (marketState == 5) {
-            return await this.governanceContract
+        if (marketState == 5 || marketState == 8) {
+            return await this.marketControllerContract
                 .methods
                 .isResolvingVoter(marketId, wallet)
                 .call({
@@ -247,8 +260,7 @@ class MarketAPIs {
         }
 
         if (marketState == 7) {
-            console.log("here2222222222222222");
-            return await this.governanceContract
+            return await this.marketControllerContract
                 .methods
                 .marketDisputersInfo(marketId, wallet)
                 .call({
@@ -259,7 +271,7 @@ class MarketAPIs {
 
     async addGovernanceVoteForMarket(wallet, marketId, vote, state) {
         if(state == 1) {
-            return await this.governanceContract
+            return await this.marketControllerContract
                 .methods
                 .castGovernanceValidatingVote(marketId, vote)
                 .send({
@@ -267,8 +279,8 @@ class MarketAPIs {
                 });
         }
 
-        if(state == 5) {
-            return await this.governanceContract
+        if(state == 5 || state == 8) {
+            return await this.marketControllerContract
                 .methods
                 .castGovernanceResolvingVote(marketId, vote)
                 .send({
@@ -279,7 +291,7 @@ class MarketAPIs {
 
     async withdrawMarketVote(wallet, marketId, state) {
         if(state == 1) {
-            return await this.governanceContract
+            return await this.marketControllerContract
                 .methods
                 .withdrawGovernanceValidatingVote(marketId)
                 .send({
@@ -287,8 +299,8 @@ class MarketAPIs {
                 });
         }
 
-        if(state == 5) {
-            return await this.governanceContract
+        if(state == 5 || state == 8) {
+            return await this.marketControllerContract
                 .methods
                 .withdrawGovernanceResolvingVote(marketId)
                 .send({
@@ -310,7 +322,7 @@ class MarketAPIs {
                 });*/
         }
 
-        return await this.governanceContract
+        return await this.marketControllerContract
             .methods
             .getResolvingOutcome(marketId)
             .call({
@@ -319,7 +331,7 @@ class MarketAPIs {
     }
 
     async getMarketInfo(wallet, marketId, state) {
-        return await this.governanceContract
+        return await this.marketControllerContract
             .methods
             .getMarketInfo(marketId)
             .call({
@@ -379,13 +391,12 @@ class MarketAPIs {
 
 
     async addLiquidityToMarket(wallet, marketId, amount) {
-        const result = await generateMarketContract(marketId)
+        return this.marketControllerContract
             .methods
-            .addLiquidity(amount)
+            .marketAddLiquidity(marketId, amount)
             .send({
                 from: wallet,
             });
-        return result;
     }
 
     async getMarketMinHoldingsToDispute(wallet, marketId) {
@@ -399,13 +410,12 @@ class MarketAPIs {
     }
 
     async removeLiquidityFromMarket(wallet, marketId, amount) {
-        const result = await generateMarketContract(marketId)
+        return this.marketControllerContract
             .methods
-            .removeLiquidity(amount, true)
+            .marketRemoveLiquidity(marketId, amount, true)
             .send({
                 from: wallet,
             });
-        return result;
     }
 
     async increaseTime(wallet, marketId, amount) {
@@ -439,34 +449,7 @@ class MarketAPIs {
 
     //Router functions
     async createMarket(wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity) {
-        /**
-         {
-                    "internalType": "string",
-                    "name": "marketQuestionID",
-                    "type": "string"
-                },
-         {
-                    "internalType": "uint256",
-                    "name": "participationEndTime",
-                    "type": "uint256"
-                },
-         {
-                    "internalType": "uint256",
-                    "name": "resolvingEndTime",
-                    "type": "uint256"
-                },
-         {
-                    "internalType": "contract IERC20",
-                    "name": "collateralToken",
-                    "type": "address"
-                },
-         {
-                    "internalType": "uint256",
-                    "name": "initialLiq",
-                    "type": "uint256"
-                }
-         */
-        const result = await this.marketRouterContract
+        const result = await this.marketControllerContract
             .methods
             .createMarketProposal(question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity)
             .send({
@@ -476,7 +459,7 @@ class MarketAPIs {
     }
 
     async getMarketsByState(wallet, state) {
-        const result = await this.marketRouterContract
+        const result = await this.marketsQueryContract
             .methods
             .getMarketsQuestionIDs(state, 0, -1)
             .call({
@@ -504,7 +487,7 @@ class MarketAPIs {
          Resolved  // can redeem
          */
         for(let i in Object.keys(marketStates)) {
-            const contracts = await this.marketRouterContract
+            const contracts = await this.marketsQueryContract
                 .methods
                 .getMarketsQuestionIDs(i, 0, -1)
                 .call({
@@ -530,7 +513,7 @@ class MarketAPIs {
     }
 
     async getMarketById(wallet, marketId) {
-        const result = await this.marketRouterContract
+        const result = await this.marketsQueryContract
             .methods
             .getMarket(marketId)
             .call({
@@ -555,7 +538,18 @@ class MarketAPIs {
     async getWalletAllowanceOfCollateralTokenForMarketRouter(wallet) {
         const result = await this.collateralTokenContract
             .methods
-            .allowance(wallet, this.marketRouterContract._address)
+            .allowance(wallet, this.marketControllerContract._address)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async getWalletAllowanceOfRoomTokenForMarketRouter(wallet) {
+        const result = await this.roomTokenContract
+            .methods
+            .allowance(wallet, this.marketControllerContract._address)
             .call({
                 from: wallet,
             });
@@ -577,7 +571,18 @@ class MarketAPIs {
     async approveCollateralTokenForMarketRouter(wallet) {
         const result = await this.collateralTokenContract
             .methods
-            .approve(this.marketRouterContract._address, MaxUint256)
+            .approve(this.marketControllerContract._address, MaxUint256)
+            .send({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async approveRoomTokenForMarketRouter(wallet) {
+        const result = await this.roomTokenContract
+            .methods
+            .approve(this.marketControllerContract._address, MaxUint256)
             .send({
                 from: wallet,
             });
@@ -619,10 +624,32 @@ class MarketAPIs {
         return result;
     }
 
+    async getIsWalletOptionTokenApprovedForMarketController(wallet) {
+        const result = await this.optionsTokenContract
+            .methods
+            .isApprovedForAll(wallet, this.marketControllerContract._address)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
     async approveOptionTokenForMarket(wallet, marketAddress) {
         const result = await this.optionsTokenContract
             .methods
             .setApprovalForAll(marketAddress, true)
+            .send({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async approveOptionTokenForMarketController(wallet) {
+        const result = await this.optionsTokenContract
+            .methods
+            .setApprovalForAll(this.marketControllerContract._address, true)
             .send({
                 from: wallet,
             });

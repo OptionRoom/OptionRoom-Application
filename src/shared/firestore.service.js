@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConfigHelper from "./config.helper";
 
-const marketsDbName = 'markets3';
+const marketsDbName = 'markets4';
 
 const firebaseConfig = {
     apiKey: ConfigHelper.getFirebaseApiKey(),
@@ -29,12 +29,6 @@ export const signoutUser = async () => {
 
 export const watchUserSignIn =  () => {
     firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-            console.log("user", user);
-        } else {
-            // User is signed out
-            console.log("User is signed out");
-        }
     });
 };
 

@@ -184,6 +184,11 @@ export const useStyles = makeStyles((theme) => {
         CreateBtnWrap:{
             padding: '0 24px'
         },
+        CreateNote: {
+            margin: '20px 0 0',
+            textAlign: 'center',
+            color: '#222'
+        },
         CreateMarketBoxInfo: {
             '& div:first-child': {
                 color: "#3F4A57",

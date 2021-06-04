@@ -1,43 +1,51 @@
 import {makeStyles} from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    MarketsPage: {},
-    Sidebar: {},
-    Sidebar__Title: {
-        color: '#3F4A57',
-        fontsize: '14px',
-        fontWeight: 600,
-        letterSpacing: 0,
-        lineHeight: '24px',
-        marginBottom: '32px'
+    GovernanceListPage: {
+        display: 'flex',
+        background: '#f6faff'
     },
-    Sidebar__Content: {},
-    Cat: {
+    GovernanceListPage__Main: {
+        width: 'calc(100% - 335px)',
+        padding: '40px'
+    },
+    GovernanceListPage__Sidebar: {
+        width: '335px'
+    },
+    GovernanceListPage__Header: {
+        display: 'flex',
+        marginBottom: '25px',
+        alignItems: 'center',
+    },
+    GovernanceListPage__HeaderTitle: {
+        marginRight: 'auto',
+        fontSize: "30px",
+        lineHeight: "38px",
+        color: "#36414B"
+    },
+    GovernanceListPage__HeaderActions: {
         display: 'flex',
         alignItems: 'center',
-        marginBottom: '16px'
-    },
-    Cat__Name: {
-        color: '#8293A6',
-        fontsize: '14px',
-        fontWeight: 600,
-        letterSpacing: 0,
-        lineHeight: '24px',
-        marginRight: 'auto'
-    },
-    Cat__Count: {
-        height: '24px',
-        width: '40px',
-        color: '#8293A6',
-        fontSize: '14px',
-        lineHeight: '24px',
-        borderRadius: '12px',
-        backgroundColor: '#EDEFF4',
-        textAlign: 'center'
-    },
-    GovernanceList: {
+        '& svg': {
+            color: '#818b95',
+            marginRight: '18px'
+        },
         '&>div': {
-            marginBottom: '24px'
+        },
+        '& a': {
+            textDecoration: 'none'
+        }
+    },
+    GovernanceListPage__MainList: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        '&>div': {
+            width: 'calc(50% - 10px)',
+            marginRight: '20px',
+            marginBottom: '20px',
+            '&:nth-child(2n)': {
+                marginRight: 0
+            }
         }
     }
 }));

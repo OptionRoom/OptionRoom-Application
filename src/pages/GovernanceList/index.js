@@ -1,13 +1,14 @@
-import {useState, useContext, useEffect} from "react";
-import Grid from "@material-ui/core/Grid";
+import React, {useState, useContext, useEffect} from "react";
+import {Link} from "react-router-dom";
+import ViewComfyIcon from "@material-ui/icons/ViewComfy";
+import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import Navbar from "../../components/Navbar";
-import GovernanceCard from "../../components/GovernanceCard";
 import {useStyles} from "./styles";
 
+import GovernanceCard from "../../components/GovernanceCard";
 import {walletHelper} from "../../shared/wallet.helper";
 import {
     ellipseAddress,
@@ -15,7 +16,12 @@ import {
     toWei,
     fromWei,
 } from "../../shared/helper";
-
+import Button from "../../components/Button";
+import FiltrationWidget from "../../components/FiltrationWidget";
+import {
+    GridIcon,
+    ListIcon
+} from '../../shared/icons';
 const walletHelperInsatnce = walletHelper();
 
 const getNumberFromBigNumber = (bigNumber) => {
@@ -80,63 +86,51 @@ function GovernanceList() {
         },
     ];
 
+    if (!accountContext.account) {
+        return (
+            <div className={classes.ConnectWrap}>
+                <ConnectButton/>
+            </div>
+        )
+    }
+
+    /*    if(isLoading) {
+            return (
+                <div className={classes.LoadingWrapper}>
+                    <CircularProgress/>
+                </div>
+            )
+        }*/
+
     return (
         <>
-            <Navbar
-                title={"Claim"}
-                details={
-                    "Earn COURT tokens by providing liquidity to one of the pools on this page."
-                }
-            />
             <div className={classes.GovernanceListPage}>
-                {accountContext.account && (
-                    <div>
-                        <Grid container spacing={3}>
-                            <Grid item xs={3}>
-                                <div className={classes.Sidebar}>
-                                    <div className={classes.Sidebar__Title}>
-                                        Categories
-                                    </div>
-                                    <div className={classes.Sidebar__Content}>
-                                        {
-                                            cats.map((cat) => {
-                                                return (
-                                                    <div className={classes.Cat}>
-                                                        <div className={classes.Cat__Name}>
-                                                            {cat.name}
-                                                        </div>
-                                                        <div className={classes.Cat__Count}>
-                                                            {cat.count}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })
-                                        }
-                                    </div>
-                                </div>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <div className={classes.GovernanceList}>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                    <GovernanceCard/>
-                                </div>
-                            </Grid>
-                        </Grid>
+                <div className={classes.GovernanceListPage__Main}>
+                    <div className={classes.GovernanceListPage__Header}>
+                        <div className={classes.GovernanceListPage__HeaderTitle}>Governance</div>
+                        <div className={classes.GovernanceListPage__HeaderActions}>
+                            <GridIcon/>
+                            <ListIcon/>
+                            <Link to={`/markets/create`}>
+                                <Button
+                                    color="primary"
+                                    size={'medium'}>+ Create New</Button>
+                            </Link>
+                        </div>
                     </div>
-                )}
-                {!accountContext.account && (
-                    <div className={classes.ConnectWrap}>
-                        <ConnectButton/>
+                    <div className={classes.GovernanceListPage__MainList}>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
+                        <div><GovernanceCard/></div>
                     </div>
-                )}
+                </div>
+                <div className={classes.GovernanceListPage__Sidebar}>
+                    <FiltrationWidget/>
+                </div>
             </div>
         </>
     );
