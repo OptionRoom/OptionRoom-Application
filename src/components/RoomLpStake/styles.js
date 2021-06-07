@@ -42,11 +42,26 @@ export const useStyles = makeStyles((theme) => ({
         minHeight: "326px"
     },
     EarnCard__Icon: {
-        width: '64px',
-        height: '64px',
-        //borderRadius: '50%',
-        //background: '#004BFF',
-        margin: '0 auto 40px'
+        //marginBottom: "",
+        width: "87px",
+        height: "87px",
+        borderRadius: "50%",
+        background: "rgba(246, 250, 255, 0.3)",
+        border: "1px solid #C4DCFA",
+        margin: "0 auto 40px",
+        padding:'3px',
+        '&>div': {
+            background: "#EBF4FF",
+            border: "1px solid #BCD8FB",
+            display: "flex",
+            borderRadius: "50%",
+            alignItems: "center",
+            justifyContent: "center",
+            height: '100%',
+            "& img": {
+                width: "70%",
+            },
+        }
     },
     EarnCard__Title: {
         fontStyle: "normal",

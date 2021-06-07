@@ -28,6 +28,16 @@ const AccountContextProvider = (props) => {
         walletHelperInsatnce.disconnect();
     };
 
+    const isChain = (chain) => {
+        if(chain === 'main') {
+            return chainId == 1;
+        }
+
+        if(chain === 'bsc') {
+            return chainId == 56;
+        }
+    };
+
     const handleConnect = async () => {
         return walletHelperInsatnce.connect();
     };
@@ -50,6 +60,7 @@ const AccountContextProvider = (props) => {
                 networkId: networkId,
                 connect: handleConnect,
                 disconnect: handleDisconnect,
+                isChain: isChain,
             }}
         >
             {props.children}

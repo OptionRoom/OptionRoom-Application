@@ -21,6 +21,7 @@ import ConnectButton from "../ConnectButton";
 import RoomIcon from "../../assets/room-icon.png";
 import Room2Icon from "../../assets/room2.png";
 import { getTotalValueStakedInNftStakingInUsd } from "../../shared/contracts/PoolsStatsAPIs";
+import Alert from "@material-ui/lab/Alert";
 
 function NftStake(props) {
     const accountContext = useContext(AccountContext);
@@ -329,14 +330,14 @@ function NftStake(props) {
             }, 1000);
         };
 
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('main')) {
             init();
         }
 
         return () => {
             clearInterval(updateInfoIntervalId);
         };
-    }, [accountContext.account]);
+    }, [accountContext.account, accountContext.chainId]);
 
     useEffect(() => {
         let updateStakedTokensIntervalId = null;
@@ -348,14 +349,14 @@ function NftStake(props) {
             }, 1000);
         };
 
-        if (accountContext.account && userCurrentNftTire != -1) {
+        if (accountContext.account && userCurrentNftTire != -1 && accountContext.isChain('main')) {
             init();
         }
 
         return () => {
             clearInterval(updateStakedTokensIntervalId);
         };
-    }, [accountContext.account, userCurrentNftTire]);
+    }, [accountContext.account, userCurrentNftTire, accountContext.chainId]);
 
     return (
         <div className={classes.RoomLpStake}>
@@ -366,6 +367,18 @@ function NftStake(props) {
             )}
             {accountContext.account && (
                 <>
+                    {
+                        !accountContext.isChain('main') && (
+                            <Alert
+                                elevation={6}
+                                variant="filled"
+                                style={{
+                                    maxWidth: '500px',
+                                    margin: '0 auto 15px'
+                                }}
+                                severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
+                        )
+                    }
                     {isIniting && (
                         <div className={classes.IsInitingWrap}>
                             <CircularProgress />

@@ -1,31 +1,15 @@
-import { walletHelper } from "../wallet.helper";
-import { getHtTokenContract } from "./HtTokenContract";
 import { getContract, getContractAddress } from "./contracts.helper";
-import { getMatterTokenContract } from "./MatterTokenContract";
-import { MaxUint256, controlledNetworkId } from "../../shared/constants";
+import { MaxUint256 } from "../../shared/constants";
 
-const walletHelperInstance = walletHelper();
 
 class ClaimCourtAPIs {
     constructor() {
         this.courtTokenContract = getContract('court_token');
-
         this.usdtTokenContract = getContract('usdt');
-
-        this.matterTokenContract = getMatterTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-
-        this.htTokenContract = getHtTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-
+        this.matterTokenContract = getContract('MatterTokenContract');
+        this.htTokenContract =  getContract('HtTokenContract');
         this.htClaimContract =  getContract('ht_court_farming_claim');
-
         this.matterClaimContract =  getContract('matter_court_farming_claim');
-
         this.courtPowerStakeContract =  getContract('court_vote_stake');
     }
 

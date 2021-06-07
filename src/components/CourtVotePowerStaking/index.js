@@ -25,40 +25,80 @@ function CourtVotePowerStaking(props) {
     const [courtTokenBalance, setCourtTokenBalance] = useState(0);
 
     const loadWalletAllowance = async () => {
-        const claimCourtAPIs = new ClaimCourtAPIs();
-        const allowance = await claimCourtAPIs.getWalletCourtAllowanceOfPowerStakeContract(accountContext.account);
-        setAllowance(allowance);
-    };
-
-    const loadWalletStakeBalance = async () => {
-        const claimCourtAPIs = new ClaimCourtAPIs();
-        const result = await claimCourtAPIs.getWalletStakedCourtInPowerStakeContract(accountContext.account);
-        setStakeBalance(result);
-    };
-
-    const loadWalletVotePower = async () => {
-        const claimCourtAPIs = new ClaimCourtAPIs();
-        const result = await claimCourtAPIs.getVotePower(accountContext.account);
-        setVotePower(result);
-    };
-
-    const loadWalletCourtBalance = async () => {
-        const claimCourtAPIs = new ClaimCourtAPIs();
-        const result = await claimCourtAPIs.getAddressTokenBalance(accountContext.account, 'court');
-        setCourtTokenBalance(result);
-    };
-
-    const handleDeposit = async () => {
-        if(allowance == 0) {
-            setIsApprovingCourtForPowerStake(true);
-            const claimCourtAPIs = new ClaimCourtAPIs();
-            await claimCourtAPIs.approveCourtForPowerStakeContract(accountContext.account);
-            setAllowance(MaxUint256);
-            setIsApprovingCourtForPowerStake(false);
+        if(!accountContext.isChain('bsc')) {
             return;
         }
 
-        setIsDepositModalOpen(true);
+        try {
+            const claimCourtAPIs = new ClaimCourtAPIs();
+            const allowance = await claimCourtAPIs.getWalletCourtAllowanceOfPowerStakeContract(accountContext.account);
+            setAllowance(allowance);
+        } catch (e) {
+
+        }
+    };
+
+    const loadWalletStakeBalance = async () => {
+        if(!accountContext.isChain('bsc')) {
+            return;
+        }
+
+        try {
+            const claimCourtAPIs = new ClaimCourtAPIs();
+            const result = await claimCourtAPIs.getWalletStakedCourtInPowerStakeContract(accountContext.account);
+            setStakeBalance(result);
+        } catch (e) {
+
+        }
+    };
+
+    const loadWalletVotePower = async () => {
+        if(!accountContext.isChain('bsc')) {
+            return;
+        }
+
+        try {
+            const claimCourtAPIs = new ClaimCourtAPIs();
+            const result = await claimCourtAPIs.getVotePower(accountContext.account);
+            setVotePower(result);
+        } catch (e) {
+
+        }
+    };
+
+    const loadWalletCourtBalance = async () => {
+        if(!accountContext.isChain('bsc')) {
+            return;
+        }
+
+        try {
+            const claimCourtAPIs = new ClaimCourtAPIs();
+            const result = await claimCourtAPIs.getAddressTokenBalance(accountContext.account, 'court');
+            setCourtTokenBalance(result);
+        } catch (e) {
+
+        }
+    };
+
+    const handleDeposit = async () => {
+        if(!accountContext.isChain('bsc')) {
+            return;
+        }
+
+        try {
+            if(allowance == 0) {
+                setIsApprovingCourtForPowerStake(true);
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.approveCourtForPowerStakeContract(accountContext.account);
+                setAllowance(MaxUint256);
+                setIsApprovingCourtForPowerStake(false);
+                return;
+            }
+
+            setIsDepositModalOpen(true);
+        } catch (e) {
+
+        }
     };
 
     const handleOnDeposit = async () => {
@@ -68,11 +108,13 @@ function CourtVotePowerStaking(props) {
     };
 
     useEffect(() => {
-        loadWalletAllowance();
-        loadWalletStakeBalance();
-        loadWalletVotePower();
-        loadWalletCourtBalance();
-    }, []);
+        if(accountContext.account) {
+            loadWalletAllowance();
+            loadWalletStakeBalance();
+            loadWalletVotePower();
+            loadWalletCourtBalance();
+        }
+    }, [accountContext.account]);
 
     return (
         <>

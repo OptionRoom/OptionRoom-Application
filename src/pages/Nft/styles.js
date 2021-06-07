@@ -11,8 +11,8 @@ export const useStyles = makeStyles((theme) => ({
     Stats: {
         [theme.breakpoints.up('md')]: {
             position: 'absolute',
-            top: '100px',
-            left: '0',
+            top: '169px',
+            left: '49px',
         },
         maxWidth: '200px',
         padding: '20px 0',

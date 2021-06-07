@@ -119,6 +119,9 @@ export const useStyles = makeStyles((theme) => ({
             },
         }
     },
+    ClaimForm__ClaimBtnWrap: {
+      textAlign: 'center'
+    },
     ConnectWrap: {
         textAlign: "center",
         padding: "100px 0",

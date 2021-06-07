@@ -8,7 +8,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '10px'
     },
     CourtFarmingTotalLockedValue: {
-        textAlign: "center",
+        //textAlign: "center",
         fontSize: "20px",
         color: theme.colors.txtColor,
         marginBottom: "20px",
@@ -19,20 +19,25 @@ export const useStyles = makeStyles((theme) => ({
     Pools: {
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        //justifyContent: "space-evenly",
         flexWrap: "wrap",
     },
     Pool: {
-        borderRadius: "16px",
-        backgroundColor: theme.colors.boxBg,
-        boxShadow: theme.colors.boxBoxShadow,
+        filter: "drop-shadow(3px 3px 0px #2E6AFA)",
+        boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
+        borderRadius: "10px",
+        background: "#fff",
         padding: "40px 16px 24px",
         width: "288px",
         marginBottom: "30px",
+        marginRight: '20px',
+        '&:last-child': {
+            marginRight: 0
+        }
     },
     Pool__CustomColor: {
         backgroundImage:
-            "linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%)",
+            "linear-gradient(180deg, #F3F7FF 0%, #CEDDFF 100%)",
         "& $Pool__Action__Link button": {
             background: "#363636",
             "&:hover": {
@@ -44,33 +49,41 @@ export const useStyles = makeStyles((theme) => ({
         },
     },
     Pool__IconWrap: {
-        height: "128px",
+        //height: "128px",
         marginBottom: "40px",
         "& $Pool__IconWrap": {
-            width: "128px",
-            height: "128px",
+            width: "87px",
+            height: "87px",
             borderRadius: "50%",
-            background: "#E9EAFF",
+            background: "rgba(246, 250, 255, 0.3)",
+            border: "1px solid #C4DCFA",
             margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            "& img": {
-                width: "96px",
-            },
+            padding:'3px',
+            '&>div': {
+                background: "#EBF4FF",
+                border: "1px solid #BCD8FB",
+                display: "flex",
+                borderRadius: "50%",
+                alignItems: "center",
+                justifyContent: "center",
+                height: '100%',
+                "& img": {
+                    width: "70%",
+                },
+            }
         },
     },
     Pool__IconWrap__Two: {
         display: "flex",
-        alignItems: "center",
+        //alignItems: "center",
         justifyContent: "center",
-        "& $Pool__IconWrap": {
-            width: "96px",
-            height: "96px",
+/*        "& $Pool__IconWrap": {
+            width: "87px",
+            height: "87px",
             "& img": {
-                width: "72px",
+                width: "70%",
             },
-        },
+        },*/
     },
     Pool__Title: {
         color: theme.isDark ? "#fff" : "#212529",

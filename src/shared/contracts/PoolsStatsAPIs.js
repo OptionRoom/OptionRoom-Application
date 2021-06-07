@@ -1,20 +1,11 @@
 import { BigNumber } from "@ethersproject/bignumber";
 
-import Web3 from "web3";
 import { walletHelper } from "../wallet.helper";
-import { getRoomTokenContract } from "./RoomTokenContract";
-import { getRoomLPTokenContract } from "./RoomLPTokenContract";
-import { getRoomLPStakingContract } from "./RoomLPStakingContract";
-import { getNftStakeContract } from "./NftStakeContract";
-import { getNftTokenContract } from "./NftTokenContract";
-import { getWethTokenContract } from "./WethTokenContract";
-import { getTetherTokenContract } from "./TetherTokenContract";
-import { getMatterTokenContract } from "./MatterTokenContract";
-import { getCourtTokenContract } from "./CourtTokenContract";
-import { getHtTokenContract } from "./HtTokenContract";
+import {
+    getContract
+} from "./contracts.helper";
+
 import { nftTires } from "../constants";
-import { controlledNetworkId } from "../../shared/constants";
-const walletHelperInstance = walletHelper();
 
 const lpContractAddress = {
     room: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
@@ -23,23 +14,17 @@ const lpContractAddress = {
     matter: "0x6c8a55f67a7a6274d11e20bde30ee45049bdb570",
 };
 
-export const getWeb3InstanceInside = () => {
-    if(controlledNetworkId === 1) {
-        return walletHelperInstance.getWeb3();
-    }
-
-    return walletHelperInstance.getWeb3(true);
-}
-
 export const getWethPrice = async (address) => {
-    const result = await getTetherTokenContract(1, getWeb3InstanceInside())
-        .methods.balanceOf("0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852")
+    const result = await getContract('usdt')
+        .methods
+        .balanceOf("0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852")
         .call({
             from: address,
         });
 
-    const result2 = await getWethTokenContract(1, getWeb3InstanceInside())
-        .methods.balanceOf("0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852")
+    const result2 = await getContract('WethTokenContract')
+        .methods
+        .balanceOf("0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852")
         .call({
             from: address,
         });
@@ -52,8 +37,9 @@ export const getWethPrice = async (address) => {
 
 export const getRoomLpTokenValue = async (address) => {
     const totalLiquidity = await getTotalLiquidity(address);
-    const totalSupplyOfLp = await getRoomLPTokenContract(1, getWeb3InstanceInside())
-        .methods.totalSupply()
+    const totalSupplyOfLp = await getContract('RoomLPTokenContract')
+        .methods
+        .totalSupply()
         .call({
             from: address,
         });
@@ -64,8 +50,9 @@ export const getRoomLpTokenValue = async (address) => {
 export const getTotalValueLocked = async (address) => {
     const lpTokenValue = await getRoomLpTokenValue(address);
 
-    const lockedLpTokens = await getRoomLPStakingContract(1, getWeb3InstanceInside())
-        .methods.totalStaked()
+    const lockedLpTokens = await getContract('RoomLPStakingContract')
+        .methods
+        .totalStaked()
         .call({
             from: address,
         });
@@ -80,27 +67,28 @@ export const getTokenPriceInUsd = async (address, token) => {
         return lpTokenValue;
     }
 
-    const wethCountInLpContract = await getWethTokenContract(1, getWeb3InstanceInside())
-        .methods.balanceOf(lpContractAddress[token])
+    const wethCountInLpContract = await getContract('WethTokenContract')
+        .methods
+        .balanceOf(lpContractAddress[token])
         .call({
             from: address,
         });
 
     let tokenContract = null;
     if (token === "room") {
-        tokenContract = getRoomTokenContract(1, getWeb3InstanceInside());
+        tokenContract = getContract('room');
     }
 
     if (token === "court") {
-        tokenContract = getCourtTokenContract(1, getWeb3InstanceInside());
+        tokenContract = getContract('court_token');
     }
 
     if (token === "ht") {
-        tokenContract = getHtTokenContract(1, getWeb3InstanceInside());
+        tokenContract = getContract('HtTokenContract');
     }
 
     if (token === "matter") {
-        tokenContract = getMatterTokenContract(1, getWeb3InstanceInside());
+        tokenContract = getContract('MatterTokenContract');
     }
 
     const tokenCountInLpContract = await tokenContract.methods
@@ -117,13 +105,13 @@ export const getTokenPriceInUsd = async (address, token) => {
 export const getRoomTokenPrice = async (address) => {
     const wethPrice = await getWethPrice(address);
     //0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732 = Room_RoomEthLpStake
-    const ethInLpContract = await getWethTokenContract(1, getWeb3InstanceInside())
+    const ethInLpContract = await getContract('WethTokenContract')
         .methods.balanceOf("0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732")
         .call({
             from: address,
         });
 
-    const roomInLpContract = await getRoomTokenContract(1, getWeb3InstanceInside())
+    const roomInLpContract = await getContract('room')
         .methods.balanceOf("0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732")
         .call({
             from: address,
@@ -136,7 +124,7 @@ export const getRoomTokenPrice = async (address) => {
 export const getLpApy = async (address) => {
     //(40,000 * 12 * Room Price) / (LP Locked * LP Token Value) * 100
     const roomPrice = await getRoomTokenPrice(address);
-    const lockedLpTokens = await getRoomLPStakingContract(1, getWeb3InstanceInside())
+    const lockedLpTokens = await getContract('RoomLPStakingContract')
         .methods.totalStaked()
         .call({
             from: address,
@@ -170,7 +158,7 @@ export const getTotalValueStakedInNftStakingInUsd = async (address, poolId) => {
         return 20000 * 2;
     };
 
-    const result = await getNftStakeContract(1, getWeb3InstanceInside())
+    const result = await getContract('NftStakeContract')
         .methods.totalStaked(poolId)
         .call({
             from: address,
@@ -185,7 +173,7 @@ export const getTotalValueStakedInNftStakingInUsd = async (address, poolId) => {
 
 export const getTotalLiquidity = async (address) => {
     //0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732 = this.roomLPTokenContract._address
-    const ethInLpContract = await getWethTokenContract(1, getWeb3InstanceInside())
+    const ethInLpContract = await getContract('WethTokenContract')
         .methods.balanceOf("0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732")
         .call({
             from: address,
@@ -197,7 +185,7 @@ export const getTotalLiquidity = async (address) => {
 };
 
 export const getAvailableNftTokenBalanceOfTire = async (address, tire) => {
-    const result = await getNftTokenContract(1, getWeb3InstanceInside())
+    const result = await getContract('NftTokenContract')
         .methods.checkAvailableToMint(tire)
         .call({
             from: address,

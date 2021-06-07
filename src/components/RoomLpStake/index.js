@@ -113,7 +113,7 @@ function CardSkeleton(props) {
     return (
         <div>
             <div className={classes.EarnCard__Icon}>
-                <Skeleton variant="circle" width={64} height={64} />
+                <Skeleton variant="circle" width={79} height={79} />
             </div>
             <div className={classes.EarnCard__Title}>
                 <Skeleton variant="text" height={40} />
@@ -168,7 +168,7 @@ function RoomLpStake(props) {
     const initPoolData = async () => {
         try {
             const courtAPIs = new CourtAPIs();
-            const oldEvents = await courtAPIs.getRoomPastEvents(accountContext.account);
+            //const oldEvents = await courtAPIs.getRoomPastEvents(accountContext.account);
 
             const result_UserDepositTokenBalance = await courtAPIs.getAddressTokenBalance(
                 accountContext.account,
@@ -358,7 +358,7 @@ function RoomLpStake(props) {
             );
         };
 
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('main')) {
             init();
         }
 
@@ -366,7 +366,7 @@ function RoomLpStake(props) {
             clearInterval(updateInfoIntervalId);
             clearInterval(updateUserFarmedTokensBalance_IntervalId);
         };
-    }, [accountContext.account, source, pool]);
+    }, [accountContext.account, source, pool, accountContext.chainId]);
 
     return (
         <div className={classes.RoomLpStake}>
@@ -433,13 +433,15 @@ function RoomLpStake(props) {
                     {isIncvPool() && (
                         <div className={classes.EarnCard} key={"ROOM-Earned2"}>
                             <div className={classes.EarnCard__Icon}>
-                                <img
-                                    width={"100%"}
-                                    src={
-                                        getPoolConfig(source, pool)
-                                            .earnedTokenImg
-                                    }
-                                />
+                                <div>
+                                    <img
+                                        width={"100%"}
+                                        src={
+                                            getPoolConfig(source, pool)
+                                                .earnedTokenImg
+                                        }
+                                    />
+                                </div>
                             </div>
                             <div className={classes.EarnCard__Title}>
                                 {fromWei(userFarmedIncvTokenBalance, null, 5)}
@@ -472,13 +474,15 @@ function RoomLpStake(props) {
                         <div className={classes.EarnCard}
                              key={"ROOM-Earned"}>
                             <div className={classes.EarnCard__Icon}>
-                                <img
-                                    width={"100%"}
-                                    src={
-                                        getPoolConfig(source, pool)
-                                            .earnedTokenImg
-                                    }
-                                />
+                                <div>
+                                    <img
+                                        width={"100%"}
+                                        src={
+                                            getPoolConfig(source, pool)
+                                                .earnedTokenImg
+                                        }
+                                    />
+                                </div>
                             </div>
                             <div className={classes.EarnCard__Title}>
                                 {fromWei(userFarmedTokenBalance, null, 2)}
@@ -502,10 +506,12 @@ function RoomLpStake(props) {
                     )}
                     <div className={classes.EarnCard} key={"Staked-RoomLP"}>
                         <div className={classes.EarnCard__Icon}>
-                            <img
-                                width={"100%"}
-                                src={getPoolConfig(source, pool).stakeTokenImg}
-                            />
+                            <div>
+                                <img
+                                    width={"100%"}
+                                    src={getPoolConfig(source, pool).stakeTokenImg}
+                                />
+                            </div>
                         </div>
                         <div className={classes.EarnCard__Title}>
                             {fromWei(userDepositTokenStakedBalance, null, 2)}

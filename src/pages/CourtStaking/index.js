@@ -48,7 +48,7 @@ function CourtStaking() {
                     accountContext.account && (
                         <>
                             {
-                                accountContext.chainId != 56 && (
+                                !accountContext.isChain('bsc') && (
                                     <Alert
                                         elevation={6}
                                         variant="filled"

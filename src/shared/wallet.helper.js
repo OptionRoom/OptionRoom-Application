@@ -101,16 +101,8 @@ class WalletHelper {
         this.web3 = null;
     }
 
-    async getAccounts() {
-        return this.web3.eth.getAccounts();
-    }
-
-    async getNetworkId() {
-        return this.web3.eth.net.getId();
-    }
-
-    async getChainId() {
-        return this.web3.eth.net.chainId();
+    getChainId() {
+        return this.chainId;
     }
 
     getWeb3(forceMainnet) {

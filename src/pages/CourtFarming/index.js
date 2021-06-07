@@ -290,7 +290,7 @@ function CourtFarming() {
             updateInfoIntervalId = setInterval(updateLockedValue, 1000);
         };
 
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('main')) {
             init();
             initLockedValue();
         }
@@ -298,7 +298,7 @@ function CourtFarming() {
         return () => {
             clearInterval(updateInfoIntervalId);
         };
-    }, [accountContext.account]);
+    }, [accountContext.account, accountContext.chainId]);
 
     return (
         <>
@@ -312,7 +312,7 @@ function CourtFarming() {
                 {accountContext.account && (
                     <>
                         {
-                            accountContext.chainId != 1 && (
+                            !accountContext.isChain('main') && (
                                 <Alert
                                     elevation={6}
                                     variant="filled"
@@ -363,7 +363,7 @@ function CourtFarming() {
                                                     classes.Pool__IconWrap
                                                 }
                                             >
-                                                <img src={icon} />
+                                                <div><img src={icon} /></div>
                                             </div>
                                         ))}
                                     </div>

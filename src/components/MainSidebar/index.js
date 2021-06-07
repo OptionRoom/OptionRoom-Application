@@ -47,10 +47,8 @@ const useStyles = makeStyles((theme) => ({
         '& $NavLink__Title': {
             display: 'none'
         },
-        '& $NavLinks': {
-            padding: '0'
-        },
         '& $NavLink': {
+            padding: "10px 8px",
             borderRadius: '0 !important',
             '& svg': {
                 width: '32px'
@@ -92,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
         textDecoration: "none",
         color: "#8293A6",
         fontSize: "14px",
-        padding: "15px 30px",
+        padding: "10px 30px",
         transition: "0.2s all",
         position: 'relative',
         "&:hover, &.Active": {
@@ -111,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
             color: "#8293A6",
             fill: "#8293A6",
         },
-        "&::after,&::before": {
+        "&::after, &::before": {
             content: "''",
             position: "absolute",
             right: "0",
@@ -183,12 +181,12 @@ function MainSidebar(props) {
              })}>
             <div className={classes.NavLinks}>
                 {[
-                    {
+                    /*{
                         title: 'Markets',
                         link: '/markets',
                         icon: MarketsIcon,
                         isNew: true
-                    },
+                    },*/
                     {
                         title: "Governance",
                         link: "/governance",
@@ -282,7 +280,7 @@ function MainSidebar(props) {
                                 <i className="fa fa-twitter"></i>
                             </a>
                         </div>
-                        <div className={classes.LightDarkSwitch}>
+{/*                        <div className={classes.LightDarkSwitch}>
                             <div className={clsx({
                                 [classes.LightDarkSwitch__IsActive]: props.activeTheme === "light",
                             })}
@@ -300,7 +298,7 @@ function MainSidebar(props) {
                                  }}>
                                 <DarkModeIcon />
                             </div>
-                        </div>
+                        </div>*/}
                     </>
                 )}
             </div>

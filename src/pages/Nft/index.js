@@ -21,12 +21,12 @@ import {
     getTotalValueStakedInNftStakingInUsd,
     loadAllNftTokenAvilable
 } from '../../shared/contracts/PoolsStatsAPIs';
+import Alert from "@material-ui/lab/Alert";
 
 function Nft() {
     const classes = useStyles();
 
     const [isIniting, setIsIniting] = useState(true);
-    const [currentView, setCurrentView] = useState('UPGRADE');
 
     const [isRoomTokenApprovedForNftTokenContract, setIsRoomTokenApprovedForNftTokenContract] = useState(false);
     const [isApprovingRoomTokenForNftTokenContract, setIsApprovingRoomTokenForNftTokenContract] = useState(false);
@@ -34,10 +34,8 @@ function Nft() {
     const [isNftTokenApprovedForNftTokenContract, setIsNftTokenApprovedForNftTokenContract] = useState(true);
     const [isApprovingNftTokenForNftTokenContract, setIsApprovingNftTokenForNftTokenContract] = useState(false);
 
-    const [userNftTireBalance, setUserNftTireBalance] = useState({});
     const [availableNftTireBalance, setAvailableNftTireBalance] = useState({});
     const [poolStats, setPoolStats] = useState({});
-    const [userRoomTokenBalance, setUserRoomTokenBalance] = useState({});
     const [userCurrentNftTire, setUserCurrentNftTire] = useState(0);
     const [requiredRoomsForTire, setRequiredRoomsForTire] = useState(0);
     const [isUpgradingNftToken, setIsUpgradingNftToken] = useState(false);
@@ -230,7 +228,7 @@ function Nft() {
 
     useEffect(() => {
         let updateNftTireBalanceIntervalId = null;
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('main')) {
             callInit();
             clearInterval(updateNftTireBalanceIntervalId);
             updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 10000);
@@ -239,7 +237,7 @@ function Nft() {
         return (() => {
             clearInterval(updateNftTireBalanceIntervalId);
         })
-    }, [accountContext.account]);
+    }, [accountContext.account, accountContext.chainId]);
 
     return (
         <>
@@ -257,10 +255,22 @@ function Nft() {
                                 )
                             }
                             {
+                                !accountContext.isChain('main') && (
+                                    <Alert
+                                        elevation={6}
+                                        variant="filled"
+                                        style={{
+                                            maxWidth: '500px',
+                                            margin: '0 auto 15px'
+                                        }}
+                                        severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
+                                )
+                            }
+                            {
                                 !isIniting && (
                                     <>
                                         {
-                                            availableNftTireBalance && availableNftTireBalance['0'] && poolStats && poolStats['0'] && (
+                                            availableNftTireBalance && poolStats && poolStats['0'] && (
                                                 <div className={classes.Stats}>
                                                     {
                                                         nftTires.map((tire) => {
