@@ -8,11 +8,12 @@ export const useStyles = makeStyles((theme) => ({
         backgroundColor: "#FFFFFF",
         display: "flex",
         alignItems: "center",
-        padding: "16.5px",
+        padding: "8px 16.5px",
         marginBottom: '7.5px',
         transition: '0.2s all',
         '&:hover, &[data-selected="true"]': {
-            backgroundColor: '#E9EAFF',
+            backgroundColor: 'rgba(129, 139, 149, 0.1)',
+
             border: "2px solid #004BFF",
             '& $OptionBlock__Indicator': {
                 backgroundColor: '#004BFF',

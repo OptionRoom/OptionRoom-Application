@@ -44,6 +44,7 @@ const AccountContextProvider = (props) => {
 
     useEffect(() => {
         walletHelperInsatnce.on("change", (data) => {
+            console.log("data", data);
             setChainId(data.chainId);
             setNetworkId(data.networkId);
             setAccount(data.account);

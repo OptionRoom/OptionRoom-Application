@@ -61,6 +61,16 @@ class MarketAPIs {
         return (sum2 + sum3) / 1e18;
     }
 
+
+    async getMarketCreationFees(wallet) {
+        return this.marketControllerContract
+            .methods
+            .marketCreationFees()
+            .call({
+                from: wallet,
+            });
+    }
+
     async getWalletTradeOptionBuyPrice(
         wallet,
         marketId,

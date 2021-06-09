@@ -66,6 +66,7 @@ function CreateMarket() {
     const [walletAllowanceOfRoomTokenForMarketRouter, setWalletAllowanceOfRoomTokenForMarketRouter] = useState(0);
     const [walletRoomBalance, setWalletRoomBalance] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
+    const [marketCreationFees, setMarketCreationFees] = useState(0);
 
     const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
         defaultValues: {
@@ -144,12 +145,6 @@ function CreateMarket() {
         loadWalletBalanceOfCollateralToken();
     };
 
-    useEffect(() => {
-        if (accountContext.account) {
-            loadWalletData();
-        }
-    }, [accountContext.account]);
-
     const onSubmit = data => console.log(data);
 
     const handleChangeSelectedFile = (event) => {
@@ -182,6 +177,14 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async (data) => {
+        if(walletRoomBalance < marketCreationFees) {
+            swal(
+                "Insufficient funds",
+                `You must hold at least ${fromWei(marketCreationFees)} ROOM Tokens to create the market`,
+                "error"
+            );
+            return;
+        }
 
         try {
             setIsCreatingMarket(true);
@@ -244,6 +247,11 @@ function CreateMarket() {
     useEffect(() => {
         const init = async () => {
             if (accountContext.account) {
+                const marketApis = new MarketAPIs();
+                const marketCreationFees = await marketApis.getMarketCreationFees(accountContext.account);
+                setMarketCreationFees(marketCreationFees);
+
+                loadWalletData();
                 setIsLoading(true);
                 const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
                 setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
@@ -597,7 +605,7 @@ function CreateMarket() {
                         <div className={classes.CreateBtnWrap}>
                             {renderCreateBtn()}
                         </div>
-                        <div className={classes.CreateNote}>Creating a market costs 100ROOM, your room balance is: {fromWei(walletRoomBalance, null, 2)}</div>
+                        <div className={classes.CreateNote}>Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(walletRoomBalance, null, 2)}</div>
                     </form>
                     <CropModal isOpen={isCropModalOpen}
                                onCrop={handleOnCrop}

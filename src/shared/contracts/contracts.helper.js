@@ -131,6 +131,59 @@ export const contractsAddresses = {
     56: {
         court_vote_stake: '0x3bd21a6d3925c8e7f20e1eb910d01c33b412e588',
         court_token: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
+    },
+    1337: {
+        /**
+         * aaa0.address time control
+         0x8bcb66F1B339C0838ADb507e3774777e268cAf02
+         aaa1.address (AAA1DemoToken1) --> Collatreal token
+         0x9867a81Bc329ec16183609b14dcE041d2BF9F524
+         aaa2.address ConditnalToken --> Option Token
+         0xa29B19dCA9C63d884AAAd5560d58a18e997eF068
+         aaa3.address MarketControllerContract
+         0x0ab02b1699bC8ad1420f50c5Ab100d1218ff7A56
+         aaa4.address --> MarketTemplate
+         0x5042eEE35e948AA4dD244564b2B9154760C3A021
+         aaa5.address --> RewardsPrograme
+         0x87DecB1388bF851b92BCa6db6c8C443a02BA7126
+         aaa6.address --> RewardsCenter
+         0x9AE673CDbC53F07e93b4BB275dAAd060BB94bF26
+         aaa7.address --> OrGovernor
+         0xB5C87FCd10664cBa0aADa88A129487D10879CcA6
+         aaa8.address --> CourtStakeDummy
+         0xea88e2162F5442e51bb908a071A66Fe03E98Bf9a
+         aaa9.address --> MarktesQuery
+         0x390F0dBb191478DDBe4aF319ab80193FCec1B34d
+         aaa10.address --> OracelDummy, ROOM buy
+         0x4C5aBe74652d2feC570D3fE4fF53D9811023045e
+         aaa11.address --> ROOM Demo Token
+         0x7543Ff87eF161dDDa9F1d0B26792F0B98d6b5c35
+         */
+        market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
+        market_controller: '0x0ab02b1699bC8ad1420f50c5Ab100d1218ff7A56',
+        markets_query: '0x390F0dBb191478DDBe4aF319ab80193FCec1B34d',
+        option_token: '0xa29B19dCA9C63d884AAAd5560d58a18e997eF068',
+        claim_contract: '0xf57a6898f75fc8e9cbcd02f2777bd3642f1368b6',
+        usdt: '0x9867a81Bc329ec16183609b14dcE041d2BF9F524',
+        ht_court_farming_claim: '0x79dC7BBFD0c9088B0633556D292B24c6F2dAe33c',
+        matter_court_farming_claim: '0xbb5cc0913afd3218bafc350e72b16304a026b47e',
+        room: '0x7543Ff87eF161dDDa9F1d0B26792F0B98d6b5c35',
+        court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
+
+        CourtEthLpTokenContract: "0x2dddc662114499d765b3a61f63139e7aee8cc138",
+        CourtFarming_CourtEthLpStake: "0xaa0e0811ca1eb5dbdc128f2de7fff3e17b3b8feb",
+        CourtFarming_HtStakeContract: "0x56cA5FAF9F40254e093D99B6381ccce8D8d78212",
+        CourtFarming_MatterStakeContract: "0x3bF32bb284a038Fd40E6DC022fddc87F894bF148",
+        CourtFarming_RoomEthLpStakeContract: "0xFec868e10C859383a714cA71Ff2016E5d4E22664",
+        CourtFarming_RoomStake: "0x46Ea1Fc2a4beBBe9C66639F91Dbec19eD02d3a4e",
+        HtTokenContract: "0x6f259637dcd74c767781e37bc6133cd6a68aa161",
+        MarketContract: "",
+        MatterTokenContract: "0x1c9491865a1de77c5b6e19d2e6a5f1d7a6f2b25f",
+        NftStakeContract: "0xD9036755366B750AA3b0870aaec6FC3094a7F6Ac",
+        NftTokenContract: "0x8fDa42090a5AC9Dde01Fd2bA0431fE22FC72dc65",
+        RoomLPStakingContract: "0x94c238362a5217545a7e2c96fa571471265cc1bc",
+        RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
+        WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     }
 };
 

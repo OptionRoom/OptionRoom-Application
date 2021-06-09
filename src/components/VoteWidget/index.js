@@ -122,7 +122,7 @@ function VoteWidget(props) {
             {!!getHeaderTxt() && (
                 <div className={classes.HeaderSubTxt}>{getHeaderTxt()}</div>
             )}
-            <div className={classes.VoteWidget__Progress}>
+{/*            <div className={classes.VoteWidget__Progress}>
                 <div>
                     <OutcomeProgress title={'Yes'}
                                      percent={get(marketVotes, ['0'])}
@@ -133,19 +133,21 @@ function VoteWidget(props) {
                                      percent={get(marketVotes, ['1'])}
                                      color={'#7084FF'}/>
                 </div>
-            </div>
+            </div>*/}
             {
                 (!walletVote || !walletVote.voteFlag) ? (
                     <>
                         <div className={classes.VoteWidget__Options}>
                             <div className={classes.Options__Options}>
                                 {
-                                    ['Yes', 'No'].map((entry) => {
+                                    ['Yes', 'No'].map((entry, index) => {
                                         return (
-                                            <OptionBlock isSelected={voteInput === entry.toLowerCase()}
+                                            <OptionBlock value={get(marketVotes, [index]) || 0}
+                                                         isSelected={voteInput === entry.toLowerCase()}
                                                          onClick={(value) => {
                                                              setVoteInput(value.toLowerCase());
                                                          }}
+                                                         showDonut={true}
                                                          title={entry}/>
                                         )
                                     })

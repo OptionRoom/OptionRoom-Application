@@ -199,6 +199,7 @@ function Market() {
 
     //UI stuff
     const showOutcomeSection = () => {
+        return true;
         return ["3", "5", "6"].indexOf(marketState) > -1;
     };
 
@@ -230,17 +231,17 @@ function Market() {
     }
 
     const showVoteWidget = () => {
-        return true;
+        //return true;
         return (["1", "5", "8"].indexOf(marketState) > -1);
     }
 
     const showDisputeWidget = () => {
-        return true;
+        //return true;
         return (["7"].indexOf(marketState) > -1);
     }
 
     const showRedeemMarketRewardsWidget = () => {
-        return true;
+        //return true;
         return (["6"].indexOf(marketState) > -1);
     }
 

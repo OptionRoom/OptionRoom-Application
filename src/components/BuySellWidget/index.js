@@ -17,6 +17,7 @@ import {
 } from '../../shared/contracts/contracts.helper';
 
 import TradeInput from '../../components/TradeInput';
+import OrTab from "../OrTab";
 
 export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount, tradeType, option) => {
     const [buySellDetails, setBuySellDetails] = useState({
@@ -103,8 +104,9 @@ function BuySellWidget(props) {
     const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeType, selectedTradeOption);
     const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeType, selectedTradeOption === 'Yes' ? 0 : 1 , props.walletBalanceOfCollateralToken, props.walletOptionTokensBalance);
 
-    const handleChangeTradeType = (newtype) => {
-        setSelectedTradeType(newtype);
+    const handleChangeTradeType = (newType) => {
+        console.log("newType", newType);
+        setSelectedTradeType(newType);
         setTradeInput(0);
     };
 
@@ -148,14 +150,21 @@ function BuySellWidget(props) {
     return (
         <div className={classes.BuySellWidget}>
             <div className={classes.BuySellWidget__Nav}>
-                <div data-selected={selectedTradeType === 'buy' ? 'true' : 'false'}
-                     onClick={() => handleChangeTradeType('buy')}>
-                    Buy
-                </div>
-                <div data-selected={selectedTradeType === 'sell' ? 'true' : 'false'}
-                     onClick={() => handleChangeTradeType('sell')}>
-                    Sell
-                </div>
+                <OrTab tabs={[
+                    {
+                        id: 'buy',
+                        label: 'buy'
+                    },
+                    {
+                        id: 'sell',
+                        label: 'sell'
+                    }
+                ]}
+                       value={selectedTradeType}
+                       handleChange={(entry) => {
+                           handleChangeTradeType(entry);
+                       }}/>
+
             </div>
             <div className={classes.BuySellWidget__Options}>
                 <div className={classes.Options__Header}>

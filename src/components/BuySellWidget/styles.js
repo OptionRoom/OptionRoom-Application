@@ -8,25 +8,26 @@ export const useStyles = makeStyles((theme) => ({
         padding: "24px",
     },
     BuySellWidget__Nav: {
-        display: 'flex',
-        alignItems: 'center',
         marginBottom: '24px',
-        '& >div': {
-            paddingBottom: '15px',
-            width: '50%',
-            color: theme.isDark ? "#fff" : "#2B3540",
-            fontSize: "14px",
-            fontWeight: 600,
-            letterSpacing: "0",
-            lineHeight: "24px",
-            textAlign: "center",
-            borderBottom: '2px solid #EDEFF4',
-            cursor: 'pointer',
-            transition: '0.2s all',
-            '&[data-selected="true"], &:hover': {
-                borderBottom: '2px solid #0051FF',
-            }
-        }
+
+        /*        display: 'flex',
+                alignItems: 'center',
+                '& >div': {
+                    paddingBottom: '15px',
+                    width: '50%',
+                    color: theme.isDark ? "#fff" : "#2B3540",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    letterSpacing: "0",
+                    lineHeight: "24px",
+                    textAlign: "center",
+                    borderBottom: '2px solid #EDEFF4',
+                    cursor: 'pointer',
+                    transition: '0.2s all',
+                    '&[data-selected="true"], &:hover': {
+                        borderBottom: '2px solid #0051FF',
+                    }
+                }*/
     },
     BuySellWidget__Options: {
         marginBottom: '16.5px',
@@ -39,6 +40,16 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0",
         lineHeight: "24px",
         marginBottom: '8px'
+    },
+    Options__Options: {
+        display: 'flex',
+        '&>div': {
+            marginRight: '4px',
+            width: 'calc(50% - 4px)',
+            '&:last-child':{
+                marginRight: 0
+            }
+        }
     },
     BuySellWidgetAmount: {
         marginBottom: "16px",

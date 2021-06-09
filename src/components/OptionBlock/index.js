@@ -1,5 +1,6 @@
 import React from "react";
-import clsx from "clsx";
+
+import OrDonutChart from './../OrDonutChart';
 
 import { useStyles } from "./styles";
 
@@ -15,10 +16,21 @@ function OptionBlock(props) {
         <div className={classes.Options__OptionBlock}
              onClick={() => props.onClick && props.onClick(props.title)}
                 data-selected={props.isSelected ? 'true' : 'false'}>
+{/*
             <div className={classes.OptionBlock__Indicator}><div></div></div>
+*/}
             <div className={classes.OptionBlock__Title}>{props.title}</div>
             {
-                (props.value || props.value === 0) && (
+                props.showDonut && (
+                    <OrDonutChart size={'41px'}
+                                  title={`${props.value}%`}
+                                  value={props.value}
+                                  bgColor={'#D7DCE1'}
+                                  color={'#2E6AFA'}/>
+                )
+            }
+            {
+                ((props.value || props.value === 0) && !props.showDonut) && (
                     <div className={classes.OptionBlock__Value}>{props.value}</div>
                 )
             }

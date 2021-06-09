@@ -64,10 +64,14 @@ function MarketLiquidityWidget(props) {
                 Liquidity
             </div>
             <div className={classes.MarketLiquidityWidget__Info}>
-                <div>Market total
-                    liquidity: <span>{numeral(fromWei(props.marketLiquidity || 0)).format("$0,0.00")}</span></div>
-                <div>You shares in this
-                    market: <span>{numeral(props.walletSharesPercentageOfMarket / 1000000).format("0%")}</span></div>
+                <div>
+                    <div>Total Liquidity</div>
+                    <div>{numeral(fromWei(props.marketLiquidity || 0)).format("$0,0.00")}</div>
+                </div>
+                <div>
+                    <div>Your Share</div>
+                    <div>{numeral(props.walletSharesPercentageOfMarket / 1000000).format("0%")}</div>
+                </div>
             </div>
             <div className={classes.MarketLiquidityWidget__Actions}>
                 {

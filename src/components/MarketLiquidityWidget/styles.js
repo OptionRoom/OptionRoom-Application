@@ -21,6 +21,25 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "13px",
         color: theme.isDark ? "#fff" : "#3F4A57",
         marginBottom: '16px',
+        display: 'flex',
+        '&>div': {
+            width: '50%',
+            '&>div:first-child': {
+                fontStyle: "normal",
+                fontWeight: 500,
+                fontSize: "16px",
+                lineHeight: "20px",
+                color: "#818B95"
+            },
+            '&>div:last-child': {
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontSize: "20px",
+                lineHeight: "26px",
+                letterSpacing: "0.005em",
+                color: "#36414B"
+            }
+        }
     },
     MarketLiquidityWidget__Actions: {
         display: 'flex',
