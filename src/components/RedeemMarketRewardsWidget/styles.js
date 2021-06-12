@@ -3,7 +3,7 @@ import RedeemMarketRewardsWidget from "./index";
 
 export const useStyles = makeStyles((theme) => ({
     RedeemMarketRewardsWidget: {
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         padding: "29px 35px",

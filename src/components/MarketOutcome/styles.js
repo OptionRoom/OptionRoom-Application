@@ -4,7 +4,7 @@ import RedeemMarketRewardsWidget from "./index";
 export const useStyles = makeStyles((theme) => ({
     MarketOutcome: {
         padding: "29px 35px",
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         marginBottom: "22px",
@@ -40,7 +40,7 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "25px",
         lineHeight: "32px",
-        color: "#36414B"
+        color: theme.isDark ? "#fff" : "#36414B",
     }
 
 }));

@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
     MarketsPage: {
-        background: '#F6FAFF'
+        background: theme.isDark ? '#141A22' : '#F6FAFF'
     },
     LoadingWrapper: {
         padding: "100px",
@@ -15,7 +15,8 @@ export const useStyles = makeStyles((theme) => ({
     MarketsPage__Header: {
         padding: "20px",
         marginBottom: "30px",
-        background: theme.isDark ? "rgb(39, 38, 44)" : "#fff",
+        background: theme.isDark ? "#252E39" : "#fff",
+
         [theme.breakpoints.up("md")]: {
             padding: "50px 100px",
         },
@@ -94,7 +95,7 @@ export const useStyles = makeStyles((theme) => ({
     Graph__Deatils: {},
     About: {
         padding: "29px 35px",
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         marginBottom: "22px",
@@ -114,11 +115,11 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "18px",
         lineHeight: "23px",
-        color: "#36414B"
+        color: theme.isDark ? "#BFD1E1" : "#36414B"
     },
     Resolution: {
         padding: "29px 35px",
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         marginBottom: "22px",
@@ -152,7 +153,7 @@ export const useStyles = makeStyles((theme) => ({
     },
     //New Design
     MarketsPage__Header2: {
-        background: "#fff",
+        background: theme.isDark ? "#252E39" : "#fff",
         padding: "25px 0 45px",
         boxShadow: "0px 4px 20px rgba(82, 104, 130, 0.05)",
     },
@@ -165,14 +166,14 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "30px",
         lineHeight: "38px",
-        color: "#36414B",
+        color: theme.isDark ? "#fff" : "#36414B",
     },
     Cat: {
         fontStyle: "normal",
         fontWeight: "normal",
         fontSize: "18px",
         lineHeight: "23px",
-        color: "#818B95",
+        color: theme.isDark ? "#818B95" : "#818B95",
     },
     Gallery: {
         marginTop: '30px',
@@ -193,7 +194,7 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "15px",
         lineHeight: "19px",
-        color: "#818B95",
+        color: theme.isDark ? "#fff" : "#818B95",
         marginBottom: '13px'
     },
     TradeVolume__Details: {
@@ -209,7 +210,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "35px",
         lineHeight: "26px",
         letterSpacing: "-0.01em",
-        color: "#36414B"
+        color: theme.isDark ? "#fff" : "#818B95",
     },
     LiqEndBlock: {
         marginBottom: '21px',
@@ -236,7 +237,7 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "15px",
         lineHeight: "19px",
-        color: "#818B95"
+        color: theme.isDark ? "#818B95" : "#818B95",
     },
     LiqEndBlock__DetailsVal: {
         fontStyle: "normal",
@@ -244,6 +245,6 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "15px",
         lineHeight: "26px",
         letterSpacing: "0.005em",
-        color: "#36414B"
+        color: theme.isDark ? "#fff" : "#818B95",
     },
 }));

@@ -36,6 +36,8 @@ const AccountContextProvider = (props) => {
         if(chain === 'bsc') {
             return chainId == 56;
         }
+
+        return chain == chainId;
     };
 
     const handleConnect = async () => {

@@ -5,7 +5,7 @@ export const useStyles = makeStyles((theme) => ({
         filter: "drop-shadow(3px 3px 0px #2E6AFA)",
         boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
         borderRadius: "10px",
-        background: "#fff",
+        background: theme.isDark ? "#242D38" : "#fff",
         textDecoration: "none",
         display: "block",
     },
@@ -43,7 +43,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "18px",
         lineHeight: "23px",
         letterSpacing: "0.01em",
-        color: "#36414B",
+        color: theme.isDark ? "#fff" : "#36414B",
     },
     Avatar: {
         width: "45px",
@@ -70,7 +70,7 @@ export const useStyles = makeStyles((theme) => ({
         width: "43px",
         height: "43px",
         display: "flex",
-        background: "#F2F6FA",
+        background: theme.isDark ? "rgba(242, 246, 250, 0.1)" : "#F2F6FA" ,
         alignItems: "center",
         marginRight: "13px",
         borderRadius: "10px",
@@ -91,7 +91,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "20px",
         lineHeight: "26px",
         letterSpacing: "0.005em",
-        color: "#36414B",
+        color: theme.isDark ? "#fff" : "#36414B",
     },
     OptionsWrap: {
         display: "flex",
@@ -102,14 +102,14 @@ export const useStyles = makeStyles((theme) => ({
             marginRight: "1px",
             "& $Option__Val": {
                 background: "rgba(46, 106, 250, 0.3)",
-                color: "#2E6AFA",
+                color: theme.isDark ? "#fff" : "#2E6AFA",
                 borderRadius: "13.5px 0px 0px 13.5px",
             },
         },
         "&:last-child": {
             "& $Option__Val": {
                 background: "rgba(235, 87, 87, 0.3)",
-                color: "#EB5757",
+                color: theme.isDark ? "#fff" :  "#EB5757",
                 borderRadius: "0px 13.5px 13.5px 0px",
             },
         },
@@ -122,7 +122,7 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: "center",
         letterSpacing: "0.05em",
         textTransform: "uppercase",
-        color: "#36414B",
+        color: theme.isDark ? "#818B95" : "#36414B",
         marginBottom: "8px",
     },
     Option__Val: {

@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
-import Grid from "@material-ui/core/Grid";
 import { Link } from "react-router-dom";
-import { filter, get } from "lodash";
+import { get } from "lodash";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import clsx from "clsx";
+import SearchIcon from '@material-ui/icons/Search';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 
 import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import { AccountContext } from "../../shared/AccountContextProvider";
@@ -19,9 +20,7 @@ import FiltrationWidget from "../../components/FiltrationWidget";
 import Button from "../../components/Button";
 import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import NoResultsImg from "./no-results.png";
 import { useGetFilteredMarkets } from "./hooks";
-import roomIcon from "../../assets/room.svg";
 import { GridIcon, ListIcon } from "../../shared/icons";
 const marketsContractData = {};
 
@@ -36,9 +35,15 @@ function Markets() {
     const [isLoading, setIsLoading] = useState(true);
     const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] =
         useState(false);
+    const [isMinHeader, setIsMinHeader] = useState(false);
+    const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
+
     const [filterDetails, setFilterDetails] = useState({
         name: "",
-        category: "",
+        category: {
+            title: 'All',
+            id: "all"
+        },
         state: {
             id: "3",
             title: "Active",
@@ -78,6 +83,9 @@ function Markets() {
                     filterDetails.state.id
                 );
                 setMarketsContracts(marketContracts);
+
+                const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
+                console.log("marketsTradedByWallet", marketsTradedByWallet);
             }
 
             setIsLoading(false);
@@ -156,6 +164,22 @@ function Markets() {
         }
     }, [marketsContracts]);
 
+    useEffect(() => {
+
+        const handleScroll = () => {
+            if(window.scrollY > 30) {
+                setIsMinHeader(true);
+            } else {
+                setIsMinHeader(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
     if (!accountContext.account) {
         return (
             <div className={classes.ConnectWrap}>
@@ -184,8 +208,17 @@ function Markets() {
                         Markets
                     </div>
                     <div className={classes.MarketsPage__HeaderActions}>
-                        <div
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrap, classes.MarketsPage__HeaderActionsFilters)}
                             onClick={() => {
+                                setIsMarketsSidebarOpen(!isMarketsSidebarOpen);
+                            }}
+                        >
+                            <SearchIcon />
+                        </div>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                                 [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "grid",
+                             })}
+                             onClick={() => {
                                 setFilterDetails({
                                     ...filterDetails,
                                     view: "grid",
@@ -194,8 +227,10 @@ function Markets() {
                         >
                             <GridIcon />
                         </div>
-                        <div
-                            onClick={() => {
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                                [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "list",
+                            })}
+                             onClick={() => {
                                 setFilterDetails({
                                     ...filterDetails,
                                     view: "list",
@@ -204,15 +239,23 @@ function Markets() {
                         >
                             <ListIcon />
                         </div>
-
                         <Link to={`/markets/create`}>
-                            <Button color="primary" size={"medium"}>
+                            <Button color="primary"
+                                    size={"medium"}>
                                 + Create New
                             </Button>
                         </Link>
                     </div>
                 </div>
                 <div className={classes.MarketsPage__MainList}>
+                    {
+                        filteredMarkets.length == 0 && (
+                            <div className={classes.notFoundResults}>
+                                <SentimentDissatisfiedIcon/>
+                                <div>We couldn't find any markets that match your search, please try another time</div>
+                            </div>
+                        )
+                    }
                     {filteredMarkets && filteredMarkets.length > 0 && (
                         <div
                             className={clsx(classes.MarketsList, {
@@ -220,47 +263,63 @@ function Markets() {
                                     get(filterDetails, "view") === "list",
                             })}
                         >
-                            {filteredMarkets.map((entry, index) => {
-                                return (
-                                    <div key={`market-${entry.id}`}>
-                                        <MarketCard
-                                            market={{
-                                                ...entry,
-                                                state: filterDetails.state,
-                                                priceOfBuy: get(
-                                                    marketsPriceOfBuy,
-                                                    [entry.id]
-                                                ),
-                                                volume: get(
-                                                    marketsTotalVolume,
-                                                    [entry.id]
-                                                ),
-                                            }}
-                                            isListView={
-                                                get(filterDetails, "view") ===
-                                                "list"
-                                            }
-                                            isFeatured={entry.isFeatured}
-                                            onMarketDataLoad={(e) => {
-                                                if (
-                                                    e &&
-                                                    e.marketContractAddress
-                                                ) {
-                                                    marketsContractData[
-                                                        e.marketId
-                                                    ] = e;
+                            {
+                                filteredMarkets.map((entry, index) => {
+                                    return (
+                                        <div key={`market-${entry.id}`}>
+                                            <MarketCard
+                                                market={{
+                                                    ...entry,
+                                                    state: filterDetails.state,
+                                                    priceOfBuy: get(
+                                                        marketsPriceOfBuy,
+                                                        [entry.id]
+                                                    ),
+                                                    volume: get(
+                                                        marketsTotalVolume,
+                                                        [entry.id]
+                                                    ),
+                                                }}
+                                                isListView={
+                                                    get(filterDetails, "view") ===
+                                                    "list"
                                                 }
-                                            }}
-                                        />
-                                    </div>
-                                );
-                            })}
+                                                isFeatured={entry.isFeatured}
+                                                onMarketDataLoad={(e) => {
+                                                    if (
+                                                        e &&
+                                                        e.marketContractAddress
+                                                    ) {
+                                                        marketsContractData[
+                                                            e.marketId
+                                                            ] = e;
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                    );
+                                })
+                            }
                         </div>
                     )}
                 </div>
             </div>
-            <div className={classes.MarketsPage__Sidebar}>
+            {
+                /**
+                 * isMinHeader
+                 */
+            }
+            <div className={clsx(classes.MarketsPage__Sidebar, {
+                [classes.MarketsPage__Sidebar__IsMin]: isMinHeader,
+                [classes.MarketsPage__Sidebar__MobileOpen]: isMarketsSidebarOpen,
+            })}>
+{/*
+                <div className={classes.MarketsPage__SidebarOverlay}></div>
+*/}
                 <FiltrationWidget
+                    onClose={() => {
+                        setIsMarketsSidebarOpen(false);
+                    }}
                     filterDetails={filterDetails}
                     onFilterUpdate={(newDetails) => {
                         setFilterDetails(newDetails);

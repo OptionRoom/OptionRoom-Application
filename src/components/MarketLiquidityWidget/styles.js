@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     MarketLiquidityWidget: {
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         padding: "29px 35px",
@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme) => ({
                 fontSize: "20px",
                 lineHeight: "26px",
                 letterSpacing: "0.005em",
-                color: "#36414B"
+                color: theme.isDark ? "#fff" : "#36414B"
             }
         }
     },

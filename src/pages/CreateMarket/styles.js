@@ -18,7 +18,7 @@ export const useStyles = makeStyles((theme) => {
         },
         CreateMarketBox:{
             borderRadius: "16px",
-            backgroundColor: theme.colors.boxBg,
+            backgroundColor: theme.isDark ? "#242D38" : "#fff",
             boxShadow: theme.colors.boxBoxShadow,
             marginBottom: '24px',
             padding: '24px'
@@ -58,7 +58,7 @@ export const useStyles = makeStyles((theme) => {
             '& input, & textarea': {
                 border: `1px solid ${theme.colors.inputBorder}`,
                 borderRadius: "8px",
-                backgroundColor: theme.colors.inputBg,
+                backgroundColor: theme.isDark ? "#353F4D": "#EDF1F5",
                 display: 'block',
                 width: '100%',
                 color: theme.isDark ? "#fff" : "#000",
@@ -117,7 +117,7 @@ export const useStyles = makeStyles((theme) => {
         CreateMarket__Sources: {
             border: "1px solid #D2D9E1",
             borderRadius: "8px",
-            backgroundColor: theme.colors.inputBg,
+            backgroundColor: theme.isDark ? "#141A22": "#EDF1F5",
             padding: '16px',
             marginTop: '8px',
             width: '100%',
@@ -135,7 +135,7 @@ export const useStyles = makeStyles((theme) => {
                 }
             },
             '& input': {
-                background: theme.isDark ? "rgb(39, 38, 44)" : "#fff"
+                background: theme.isDark ? "#353F4D" : "#fff"
             }
         },
         RemoveSourceIcon: {
@@ -145,7 +145,7 @@ export const useStyles = makeStyles((theme) => {
         CreateMarket__FieldBodyImg: {
             border: "1px solid #D2D9E1",
             borderRadius: "8px",
-            backgroundColor: theme.colors.inputBg,
+            backgroundColor: theme.isDark ? "#353F4D": "#EDF1F5",
             padding: '16px',
         },
         CreateMarket__FieldBodyImgEmpty: {
@@ -187,7 +187,7 @@ export const useStyles = makeStyles((theme) => {
         CreateNote: {
             margin: '20px 0 0',
             textAlign: 'center',
-            color: '#222'
+            color: theme.isDark ? "#fff" : "#222",
         },
         CreateMarketBoxInfo: {
             '& div:first-child': {
@@ -211,32 +211,6 @@ export const useStyles = makeStyles((theme) => {
             },
             '& .MuiInput-underline:after, & .MuiInput-underline:before': {
                 display: 'none !important'
-            }
-        },
-        CreateMarket__CategoryField: {
-            '& .CreateMarket__CategoryField__value-container': {
-                padding: '10.5px 16px',
-                '& input': {
-                    color: theme.isDark ? "#fff !important" :  "#000 !important",
-                }
-            },
-            '& .CreateMarket__CategoryField__control': {
-                background: theme.colors.inputBg,
-                border: "1px solid #D2D9E1",
-                borderRadius: "8px",
-                '& .CreateMarket__CategoryField__indicator-separator': {
-                    display: 'none'
-                }
-            },
-            '& .CreateMarket__CategoryField__single-value': {
-                color: theme.isDark ? "#fff" :  "#000",
-            },
-            '& .CreateMarket__CategoryField__menu': {
-                background: theme.colors.inputBg,
-                color: theme.isDark ? "#fff" :  "#000",
-            },
-            '& .CreateMarket__CategoryField__option--is-focused': {
-                color: theme.isDark ? "#000" :  "#000",
             }
         },
         ConnectWrap: {

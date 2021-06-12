@@ -17,7 +17,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '0 16px',
         display: 'flex',
         alignItems: 'center',
-        backgroundColor: theme.isDark ? "rgb(39, 38, 44)" : 'rgb(255, 255, 255)',
+        backgroundColor: theme.isDark ? "#242D38" : 'rgb(255, 255, 255)',
         borderBottom: '2px solid rgba(133, 133, 133, 0.1)',
         position: 'fixed',
         width: '100%',

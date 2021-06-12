@@ -1,7 +1,7 @@
 import {map, sum, sortBy} from 'lodash';
 
 import {walletHelper} from "../wallet.helper";
-import {MaxUint256, controlledNetworkId} from "../../shared/constants";
+import {MaxUint256} from "../../shared/constants";
 import {getMarketContract} from "./MarketContract";
 import {getContract} from "./contracts.helper";
 import {fromWei, toWei} from "../helper";
@@ -41,8 +41,12 @@ class MarketAPIs {
     async getMarketTradingVolume(
         wallet,
         marketId) {
-        const buyEvents = await generateMarketContract(marketId)
-            .getPastEvents("FPMMBuy", {
+
+        const buyEvents = await this.marketControllerContract
+            .getPastEvents("MCBuy", {
+                filter: {
+                    market: marketId,
+                },
                 fromBlock: 1
             });
 
@@ -50,10 +54,14 @@ class MarketAPIs {
             return parseFloat(entry.returnValues.investmentAmount);
         }));
 
-        const sellEvents = await generateMarketContract(marketId)
-            .getPastEvents("FPMMSell", {
+        const sellEvents = await this.marketControllerContract
+            .getPastEvents("MCSell", {
+                filter: {
+                    market: marketId,
+                },
                 fromBlock: 1
             });
+
         const sum3 = sum(map(sellEvents, (entry) => {
             return parseFloat(entry.returnValues.returnAmount);
         }));
@@ -105,27 +113,19 @@ class MarketAPIs {
         marketId
     ) {
 
-        const marketContract = generateMarketContract(marketId);
-
-        const allEventsww = await marketContract
-            .getPastEvents('allEvents', {
+       const buyEvents = await this.marketControllerContract
+            .getPastEvents("MCBuy", {
                 filter: {
+                    market: marketId,
                     buyer: wallet
                 },
                 fromBlock: 1
             });
 
-        const buyEvents = await marketContract
-            .getPastEvents('FPMMBuy', {
+        const sellEvents = await this.marketControllerContract
+            .getPastEvents("MCSell", {
                 filter: {
-                    buyer: wallet
-                },
-                fromBlock: 1
-            });
-
-        const sellEvents = await marketContract
-            .getPastEvents('FPMMSell', {
-                filter: {
+                    market: marketId,
                     seller: wallet
                 },
                 fromBlock: 1
@@ -354,6 +354,17 @@ class MarketAPIs {
     /////////
     /////////
 
+    async getMarketsTradedByWallet(wallet) {
+        const result = await this.marketsQueryContract
+            .methods
+            .getMarketsByTrader(wallet, 0, -1)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
     async getMarketOptionTokensPercentage(wallet, marketId) {
         const result = await generateMarketContract(marketId)
             .methods
@@ -422,7 +433,7 @@ class MarketAPIs {
     async removeLiquidityFromMarket(wallet, marketId, amount) {
         return this.marketControllerContract
             .methods
-            .marketRemoveLiquidity(marketId, amount, true)
+            .marketRemoveLiquidity(marketId, amount, true, true)
             .send({
                 from: wallet,
             });
@@ -448,10 +459,10 @@ class MarketAPIs {
         return result;
     }
 
-    async getMarketCollateralTotalSupply(wallet, marketId) {
+    async getMarketTotalSupply(wallet, marketId) {
         return await generateMarketContract(marketId)
             .methods
-            .getMarketCollateralTotalSupply()
+            .totalSupply()
             .call({
                 from: wallet,
             });

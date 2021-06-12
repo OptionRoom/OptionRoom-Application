@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme) => ({
     ///
     EarnCard: {
         borderRadius: '16px',
-        backgroundColor: '#fff',
+        backgroundColor: theme.isDark ? "#252E39" : "#fff",
         filter: "drop-shadow(3px 3px 0px #2E6AFA)",
         boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
         padding: '40px 16px 24px',
@@ -69,7 +69,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "30px",
         lineHeight: "38px",
         letterSpacing: "0.01em",
-        color: "#141516",
+        color: theme.isDark ? "#BFD1E1" : "#141516",
         textAlign: 'center',
         marginBottom: '10px',
     },
@@ -79,7 +79,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "14px",
         lineHeight: "18px",
         letterSpacing: "0.01em",
-        color: "#36414B",
+        color: theme.isDark ? "#818B95": "#36414B",
         textAlign: 'center',
         marginBottom: '40px',
     },

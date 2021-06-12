@@ -605,8 +605,7 @@ function RoomLpStake(props) {
                         onClose={() => setIsUnstakeModalOpen(false)}
                         onUnStake={handleOnUnStake}
                         stakedTokensBalance={userDepositTokenStakedBalance}
-                        source={source}
-                        pool={pool}
+                        type={pool}
                     />
                     <PayAndClaimCourtModal
                         open={isPayAndClaimModalOpen}

@@ -56,40 +56,31 @@ export const ListIcon = () => {
 };
 export const GridIcon = () => {
     return (
-        <svg
-            width="28"
-            height="28"
-            viewBox="0 0 28 28"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M11.6667 16.3333H3.5V24.4999H11.6667V16.3333Z"
-                stroke="#2E6AFA"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <path
-                d="M24.4999 16.3333H16.3333V24.4999H24.4999V16.3333Z"
-                stroke="#2E6AFA"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <path
-                d="M11.6667 3.5H3.5V11.6667H11.6667V3.5Z"
-                stroke="#2E6AFA"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
-            <path
-                d="M24.4999 3.5H16.3333V11.6667H24.4999V3.5Z"
-                stroke="#2E6AFA"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            />
+        <svg width="28"
+             height="28"
+             viewBox="0 0 28 28"
+             fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.6667 16.3333H3.5V24.4999H11.6667V16.3333Z"
+                  stroke="#818B95"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M24.4999 16.3333H16.3333V24.4999H24.4999V16.3333Z"
+                  stroke="#818B95"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M11.6667 3.5H3.5V11.6667H11.6667V3.5Z"
+                  stroke="#818B95"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
+            <path d="M24.4999 3.5H16.3333V11.6667H24.4999V3.5Z"
+                  stroke="#818B95"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"/>
         </svg>
     );
 };

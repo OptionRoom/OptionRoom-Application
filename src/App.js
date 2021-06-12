@@ -119,10 +119,10 @@ function App() {
             createMuiTheme({
                 palette: {
                     background: {
-                        default: "#F7FAFF"
+                        default: themeType === 'dark' ? "#141A22" : "#F7FAFF"
                     },
                     text: {
-                        primary: "#36414B"
+                        primary: themeType === 'dark' ? "#818B95" : "#36414B"
                     },
                     type: themeType,
                     primary: {

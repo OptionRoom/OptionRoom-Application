@@ -125,18 +125,13 @@ function BuySellWidget(props) {
                 }
             } else {
                 const marketAPIs = new MarketAPIs();
-                if (props.isWalletOptionTokenApprovedForMarketController && props.isWalletOptionTokenApprovedForMarket) {
+                if (props.isWalletOptionTokenApprovedForMarketController) {
                     await marketAPIs.sell(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
                     setTradeInput(0);
                     props.onTrade && props.onTrade();
                 } else {
-                    if(!props.isWalletOptionTokenApprovedForMarket) {
-                        await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
-                        props.onApprove && props.onApprove('OptionToken');
-                    } else {
-                        await marketAPIs.approveOptionTokenForMarketController(accountContext.account, props.marketContractAddress);
-                        props.onApprove && props.onApprove('OptionToken__Controller');
-                    }
+                    await marketAPIs.approveOptionTokenForMarketController(accountContext.account, props.marketContractAddress);
+                    props.onApprove && props.onApprove('OptionToken__Controller');
                 }
             }
 
@@ -280,9 +275,7 @@ function BuySellWidget(props) {
                 }
                 {
                     selectedTradeType === 'sell' && (
-                        props.isWalletOptionTokenApprovedForMarket ? (
-                            props.isWalletOptionTokenApprovedForMarketController ? 'Trade' : 'Approve 2'
-                        ) : 'Approve 1'
+                        props.isWalletOptionTokenApprovedForMarketController ? 'Trade' : 'Approve Tokens'
                     )
                 }
             </Button>

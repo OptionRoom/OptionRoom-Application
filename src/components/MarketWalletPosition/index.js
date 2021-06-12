@@ -17,6 +17,7 @@ function MarketWalletPosition(props) {
     const buySellHistoryOfWallet = useGetWalletBuySellPositions(accountContext.account, props.marketContractAddress, props.walletOptionTokensBalance);
     const pricesOfBuy = useGetMarketBuyPrices(accountContext.account, props.marketContractAddress, props.optionTokensPercentage);
 
+    console.log("buySellHistoryOfWallet", buySellHistoryOfWallet);
     return (
         <div className={classes.MarketPositions}>
             <div className={classes.MarketPositionsHeader}>

@@ -152,8 +152,7 @@ function CourtVotePowerStaking(props) {
                 onClose={() => setIsUnstakeModalOpen(false)}
                 onUnStake={handleOnDeposit}
                 stakedTokensBalance={stakeBalance}
-                source={'court_power_stake'}
-                pool={'court_power_stake'}
+                type={'court_power_stake'}
             />
         </>
     );

@@ -41,6 +41,7 @@ import {
     getWalletAllowanceOfContractToSpender,
     getWalletBalanceOfContract
 } from '../../shared/contracts/contracts.helper';
+import {fromWei} from "../../shared/helper";
 
 function Market() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -121,7 +122,7 @@ function Market() {
     const loadMarketContractData = async () => {
         const wallet = accountContext.account;
         const marketApis = new MarketAPIs();
-        const marketTotalSupply = await marketApis.getMarketCollateralTotalSupply(wallet, marketContractAddress);
+        const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
         const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
         const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketContractAddress);
         const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
@@ -246,7 +247,7 @@ function Market() {
     }
 
     const showBuySellWidget = () => {
-        return true;
+        //return true;
         return (["3"].indexOf(marketState) > -1);
     }
 
@@ -289,7 +290,7 @@ function Market() {
                                                 Liquidity
                                             </div>
                                             <div className={classes.LiqEndBlock__DetailsVal}>
-                                                {numeral(marketTradeVolume).format("$0,0.00")}
+                                                {numeral(fromWei(get(marketContractData, 'totalSupply') || 0)).format("$0,0.00")}
                                             </div>
                                         </div>
                                 </div>
@@ -394,9 +395,9 @@ function Market() {
                                                             }}
                                                             onAddLiquidity={handleOnAddLiquidityComplete}
 
-                                                            isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                            isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
                                                             onApproveOptionToken={(type) => {
-                                                                setIsWalletOptionTokenApprovedForMarket(true);
+                                                                setIsWalletOptionTokenApprovedForMarketController(true);
                                                             }}
                                                             walletSharesOfMarket={get(marketContractData, 'walletSharesOfMarket')}
                                                             walletSharesPercentageOfMarket={get(marketContractData, 'walletSharesPercentageOfMarket')}

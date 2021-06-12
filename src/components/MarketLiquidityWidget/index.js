@@ -46,7 +46,7 @@ function MarketLiquidityWidget(props) {
     };
 
     const handleRemoveLiquidity = async () => {
-        if(!props.isWalletOptionTokenApprovedForMarket) {
+        if(!props.isWalletOptionTokenApprovedForMarketController) {
             setIsRemoveLiquidityInProgress(true);
             const marketAPIs = new MarketAPIs();
             await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
@@ -93,7 +93,7 @@ function MarketLiquidityWidget(props) {
                 {
                     (showRemoveLiquiditySection() && parseFloat(props.walletSharesOfMarket) > 0) && (
                         <div>
-                            {!props.isWalletOptionTokenApprovedForMarket && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleRemoveLiquidity}>(approve to unlock)</div>)}
+                            {!props.isWalletOptionTokenApprovedForMarketController && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleRemoveLiquidity}>(approve to unlock)</div>)}
                             <Button
                                 isDisabled={false}
                                 size={"small"}

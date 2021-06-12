@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme) => ({
         filter: "drop-shadow(3px 3px 0px #2E6AFA)",
         boxShadow: "0px 2px 20px rgba(95, 140, 182, 0.05)",
         borderRadius: "10px",
-        background: "#fff",
+        background: theme.isDark ? "#252E39" : "#fff",
         padding: "40px 16px 24px",
         width: "288px",
         marginBottom: "30px",
@@ -36,8 +36,7 @@ export const useStyles = makeStyles((theme) => ({
         }
     },
     Pool__CustomColor: {
-        backgroundImage:
-            "linear-gradient(180deg, #F3F7FF 0%, #CEDDFF 100%)",
+        backgroundImage: theme.isDark ? "linear-gradient(180deg, #3A4552 0%, #233D5E 100%)" : "linear-gradient(180deg, #F3F7FF 0%, #CEDDFF 100%)",
         "& $Pool__Action__Link button": {
             background: "#363636",
             "&:hover": {
@@ -45,7 +44,7 @@ export const useStyles = makeStyles((theme) => ({
             },
         },
         "& $Pool__Title": {
-            color: "#212529",
+            color: theme.isDark ? "#BFD1E1": "#212529",
         },
     },
     Pool__IconWrap: {
@@ -86,7 +85,7 @@ export const useStyles = makeStyles((theme) => ({
         },*/
     },
     Pool__Title: {
-        color: theme.isDark ? "#fff" : "#212529",
+        color: theme.isDark ? "#BFD1E1" : "#212529",
         fontSize: "20px",
         letterSpacing: 0,
         lineHeight: "24px",

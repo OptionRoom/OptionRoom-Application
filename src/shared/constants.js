@@ -94,8 +94,5 @@ export const marketStateColors = {
     "8": "#bdc3c7",
 };
 
-export const controlledNetworkId = 3;//"mainnet";
-//export const courtStakeUnlockTimestamp = 1620914400;
+
 export const courtStakeUnlockTimestamp = 1620914400;
-//export const controlledNetworkId = 1;//"mainnet";
-//export const controlledNetworkId = 3;//"ropsten";

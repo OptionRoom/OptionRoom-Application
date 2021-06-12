@@ -31,62 +31,12 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
-const getModalHeaderText = (type) => {
-    if (type === "market_liquidity") {
-        return "Remove liquidity";
-    }
-
-    return 'Unstake Tokens';
-};
-
-const getModalText = (type, source, pool) => {
-    if (type === "market_liquidity") {
-        return "Remove liquidity from market";
-    }
-
-    if (type === "nftStake") {
-        return "Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake";
-    }
-
-    if (pool === "court_power_stake") {
-        return "Withdraw your COURT tokens";
-    }
-
-    if (source === "room" && pool === "CourtFarming_RoomStake") {
-        return "Unstake your ROOM tokens and claim rewards";
-    }
-
-    if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
-        return "Unstake your ROOM/ETH LP tokens and claim rewards";
-    }
-
-    if (source === "room_eth_lp" && pool === "CourtFarming_RoomEthLpStake") {
-        return "Unstake your ROOM/ETH LP tokens and claim rewards";
-    }
-
-    if (source === "court_eth_lp" && pool === "CourtFarming_CourtEthLpStake") {
-        return "Unstake your COURT/ETH LP tokens and claim rewards";
-    }
-
-    if (source === "ht" && pool === "CourtFarming_HtStake") {
-        return "Unstake your HT tokens and claim rewards";
-    }
-
-    if (source === "matter" && pool === "CourtFarming_MatterStake") {
-        return "Unstake your MATTER tokens and claim rewards";
-    }
-};
-
-const getModalHeaderTxt=  (pool) => {
-    if (pool === "court_power_stake") {
-        return 'Withdraw Tokens';
-    }
-
-    return 'Unstake Tokens';
-};
-
 function UnstakeModal(props) {
-    const { stakedTokensBalance, type, nftTire, pool, source } = props;
+    const {
+        stakedTokensBalance,
+        type,
+        nftTire
+    } = props;
 
     const accountContext = useContext(AccountContext);
 
@@ -103,6 +53,56 @@ function UnstakeModal(props) {
 
     const handleClose = () => {
         props.onClose();
+    };
+
+    const getModalHeaderText = () => {
+        if (type === "market_liquidity") {
+            return "Remove liquidity";
+        }
+
+        if (type === "court_power_stake") {
+            return 'Withdraw Tokens';
+        }
+
+        return 'Unstake Tokens';
+    };
+
+    const getModalText = () => {
+        if (type === "market_liquidity") {
+            return "Remove liquidity from market";
+        }
+
+        if (type === "nftStake") {
+            return "Unstake your ROOM tokens. Your NFT will be withdrawn with your tokens if you unstake your whole stake";
+        }
+
+        if (type === "court_power_stake") {
+            return "Withdraw your COURT tokens";
+        }
+
+        if (type === "CourtFarming_RoomStake") {
+            return "Unstake your ROOM tokens and claim rewards";
+        }
+
+        if (type === "RoomFarming_RoomEthLpStake") {
+            return "Unstake your ROOM/ETH LP tokens and claim rewards";
+        }
+
+        if (type === "CourtFarming_RoomEthLpStake") {
+            return "Unstake your ROOM/ETH LP tokens and claim rewards";
+        }
+
+        if (type === "CourtFarming_CourtEthLpStake") {
+            return "Unstake your COURT/ETH LP tokens and claim rewards";
+        }
+
+        if (type === "CourtFarming_HtStake") {
+            return "Unstake your HT tokens and claim rewards";
+        }
+
+        if (type === "CourtFarming_MatterStake") {
+            return "Unstake your MATTER tokens and claim rewards";
+        }
     };
 
     const handleConfirm = async () => {
@@ -136,9 +136,10 @@ function UnstakeModal(props) {
                     );
                 }
             } else if (type === "market_liquidity") {
+                console.log("ddd");
                 const marketAPIs = new MarketAPIs();
                 await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
-            } else if (pool === "court_power_stake") {
+            } else if (type === "court_power_stake") {
                 const claimCourtAPIs = new ClaimCourtAPIs();
                 await claimCourtAPIs.withdrawCourtInPowerStakeContract(
                     accountContext.account,
@@ -147,7 +148,7 @@ function UnstakeModal(props) {
             } else {
                 await courtAPIs.unstackeTokens(
                     accountContext.account,
-                    pool,
+                    type,
                     amountToUnstakeResult,
                     claim
                 );
@@ -187,6 +188,16 @@ function UnstakeModal(props) {
         setClaim(event.target.checked);
     };
 
+   const claimableTypes = [
+        'CourtFarming_MatterStake',
+        'CourtFarming_HtStake',
+        'CourtFarming_CourtEthLpStake',
+        'CourtFarming_RoomEthLpStake',
+        'RoomFarming_RoomEthLpStake',
+        'CourtFarming_RoomStake',
+        'nftStake',
+    ];
+
     return (
         <Dialog
             classes={{
@@ -205,7 +216,7 @@ function UnstakeModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    {getModalHeaderTxt(pool)}
+                    {getModalHeaderText(type)}
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -220,7 +231,7 @@ function UnstakeModal(props) {
             </MuiDialogTitle>
             <MuiDialogContent className={classes.MuiDialogContent}>
                 <div className={classes.Modal__Text}>
-                    {getModalText(type, source, pool)}
+                    {getModalText(type, type)}
                 </div>
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available{" "}
@@ -239,26 +250,6 @@ function UnstakeModal(props) {
                                     setAmountToUnstake(e);
                                 }}/>
                 </div>
-                {
-                    type !== "market_liquidity" && (
-                        <div className={classes.ClaimWrap}>
-                            <Checkbox
-                                checked={claim}
-                                onChange={handleClaimChange}
-                                color="primary"
-                                inputProps={{ "aria-label": "claim rewards" }}
-                            />
-                            <span className={classes.ClaimLabel}>Claim rewards</span>
-                        </div>
-                    )
-                }
-{/*                <Alert severity="info"
-                       style={{
-                           marginTop: '10px'
-                       }}>
-                    The Withdraw will cost you <strong>10,000 USDT</strong>
-                </Alert>*/}
-
                 {isInvalidAmountError && (
                     <div className={classes.Modal__TokensErrorHelp}>
                         {convertAmountToTokens(stakedTokensBalance) === "1.0" &&
@@ -270,13 +261,13 @@ function UnstakeModal(props) {
                     </div>
                 )}
                 {
-                    pool != 'court_power_stake' && (
+                    claimableTypes.indexOf(type) > -1 && (
                         <div className={classes.ClaimWrap}>
                             <Checkbox
                                 checked={claim}
                                 onChange={handleClaimChange}
                                 color="primary"
-                                inputProps={{ "aria-label": "claim rewards" }}
+                                inputProps={{"aria-label": "claim rewards"}}
                             />
                             <span className={classes.ClaimLabel}>Claim rewards</span>
                         </div>

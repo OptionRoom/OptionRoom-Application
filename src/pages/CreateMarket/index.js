@@ -2,7 +2,6 @@ import React, {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from '@material-ui/icons/Delete';
-import Select from 'react-select'
 import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
@@ -15,6 +14,7 @@ import {useForm, useFieldArray} from "react-hook-form";
 import {joiResolver} from '@hookform/resolvers/joi';
 
 import {useStyles} from "./styles";
+import OrSelect from './../../components/OrSelect';
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
@@ -380,7 +380,7 @@ function CreateMarket() {
                                             </div>
                                             <div
                                                 className={`${classes.CreateMarket__FieldBody} ${classes.CreateMarket__CategoryField}`}>
-                                                <Select onChange={(e) => {
+                                                <OrSelect onChange={(e) => {
                                                     setValue("category", e, { shouldValidate: true });
                                                 }}
                                                         options={marketCategories.map((entry) => {
@@ -388,8 +388,7 @@ function CreateMarket() {
                                                                 value: entry.id,
                                                                 label: entry.title
                                                             };
-                                                        })}
-                                                        classNamePrefix={'CreateMarket__CategoryField'}/>
+                                                        })}/>
                                                 {errors.category?.message && (
                                                     <div
                                                         className={classes.CreateMarket__FieldBodyFieldError}>

@@ -9,7 +9,10 @@ function OrSelect(props) {
 
     const classes = useStyles();
 
-    return <Select className={clsx(className, classes.OrSelect)} {...rest} />;
+    return <Select
+        classNamePrefix={'OrSelect'}
+        className={clsx(className, classes.OrSelect)}
+        {...rest} />;
 }
 
 export default OrSelect;

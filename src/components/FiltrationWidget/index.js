@@ -13,6 +13,7 @@ import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../shared/hooks';
 import {marketStatesDisplay} from '../../shared/constants';
 import OrSwitch from '../../components/OrSwitch';
+import OrSelect from "../OrSelect";
 
 function FiltrationWidget(props) {
 
@@ -46,6 +47,9 @@ function FiltrationWidget(props) {
 
     return (
         <div className={classes.FiltrationWidget}>
+            <div className={classes.CloseWrap}>
+                <span onClick={props.onClose}>Close</span>
+            </div>
             <div className={classes.SearchSection}>
                 <div className={classes.SearchInput}>
                     <input placeholder={'Search markets'}
@@ -130,7 +134,34 @@ function FiltrationWidget(props) {
                     <div className={classes.FiltersBlock}>
                         <div className={classes.FiltersBlock__Title}>Category</div>
                         <div className={classes.FiltersBlock__Entries}>
-                            {
+                            <OrSelect
+                                value={{
+                                    value: get(filterDetails, ['category']).id,
+                                    label: get(filterDetails, ['category']).title,
+                                }}
+                                onChange={(entry) => {
+                                    props.onFilterUpdate && props.onFilterUpdate({
+                                        ...filterDetails,
+                                        category: {
+                                            title: entry.label,
+                                            id: entry.value
+                                        }
+                                    });
+                                }}
+                                options={
+                                    [
+                                        {
+                                            title: 'All',
+                                            id: "all"
+                                        },
+                                        ...marketCategories
+                                    ].map((entry) => {
+                                    return {
+                                        value: entry.id,
+                                        label: entry.title
+                                    };
+                                })}/>
+{/*                            {
                                 [
                                     {
                                         title: 'All',
@@ -154,13 +185,34 @@ function FiltrationWidget(props) {
                                         </div>
                                     )
                                 })
-                            }
+                            }*/}
                         </div>
                     </div>
                     <div className={classes.FiltersBlock}>
                         <div className={classes.FiltersBlock__Title}>State</div>
                         <div className={classes.FiltersBlock__Entries}>
-                            {
+                            <OrSelect
+                                value={{
+                                    value: get(filterDetails, ['state']).id,
+                                    label: get(filterDetails, ['state']).title,
+                                }}
+                             onChange={(entry) => {
+                                props.onFilterUpdate && props.onFilterUpdate({
+                                    ...filterDetails,
+                                    state: {
+                                        title: entry.label,
+                                        id: entry.value
+                                    }
+                                });
+                            }}
+                                menuPlacement={'top'}
+                              options={marketStatesDisplay.map((entry) => {
+                                  return {
+                                      value: entry.id,
+                                      label: entry.title
+                                  };
+                              })}/>
+{/*                            {
                                [
                                    {
                                        id: 'all',
@@ -184,7 +236,7 @@ function FiltrationWidget(props) {
                                         </div>
                                     )
                                 })
-                            }
+                            }*/}
                         </div>
                     </div>
                 </div>

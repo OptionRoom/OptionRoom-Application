@@ -20,7 +20,7 @@ export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, ca
                 });
             }
 
-            if (category) {
+            if (category && category.id != 'all') {
                 newMarkets = filter(newMarkets, (entry) => {
                     return entry.category.id == category.value;
                 });

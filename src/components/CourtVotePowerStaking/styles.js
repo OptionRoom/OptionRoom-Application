@@ -3,8 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 export const useStyles = makeStyles((theme) => ({
     CourtVotePowerStaking: {
         borderRadius: '16px',
-        backgroundColor: '#FFFFFF',
-        boxShadow: '0 0 20px 0 #E6EDFF',
+        background: theme.isDark ? "#252E39" : "#fff",
+        boxShadow: theme.isDark ? "none" : '0 0 20px 0 #E6EDFF',
         padding: '20px',
         maxWidth: '600px',
         margin: '0 auto'
@@ -13,11 +13,11 @@ export const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         '& svg': {
             fontSize: '50px',
-            color: '#000',
+            color: theme.isDark ? "#fff" : '#000',
             marginBottom: '10px'
         },
         '& div':{
-            color: '#000',
+            color: theme.isDark ? "#fff" : '#000',
             fontSize: '20px',
         },
         marginBottom: '20px'
@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme) => ({
             alignItems: 'center',
         },
         '&>div': {
-            color: '#6D8096',
+            color: theme.isDark ? "#fff" : '#6D8096',
             fontSize: '16px',
             marginBottom: '15px',
             [theme.breakpoints.up('md')]: {

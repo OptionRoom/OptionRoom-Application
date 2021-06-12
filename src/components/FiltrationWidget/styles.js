@@ -2,9 +2,18 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
     FiltrationWidget: {
-        background: "#fff",
-        minHeight: "100vh",
-        borderLeft: "2px solid rgba(133, 133, 133, 0.1)",
+        background: theme.isDark ? "#242D38" : "#fff",
+        //minHeight: "100vh",
+        //borderLeft: "2px solid rgba(133, 133, 133, 0.1)",
+    },
+    CloseWrap: {
+        padding: "10px 25px",
+        '& span': {
+          cursor: 'pointer'
+        },
+        [theme.breakpoints.up('md')]: {
+            display: 'none'
+        },
     },
     SearchSection: {
         padding: "25px",
@@ -14,13 +23,12 @@ export const useStyles = makeStyles((theme) => ({
         height: '58px',
         padding: '19px 19px 19px 47px',
         position: 'relative',
-        background: "#EDF1F5",
+        background: theme.isDark ? "#353F4D" : "#EDF1F5",
         borderRadius: "10px",
         '& input': {
-
             color: "#818B95",
             fontSize: "16px",
-            background: "#EDF1F5",
+            background: theme.isDark ? "#353F4D" : "#EDF1F5",
             fontStyle: "normal",
             fontWeight: "normal",
             lineHeight: "20px",
@@ -43,7 +51,7 @@ export const useStyles = makeStyles((theme) => ({
     SectionShow__Title: {
         fontSize: "25px",
         lineHeight: "32px",
-        color: "#36414B",
+        color: theme.isDark ? "#BFD1E1" : "#36414B",
         marginRight: "auto",
     },
     SectionShow__Actions: {
@@ -62,7 +70,7 @@ export const useStyles = makeStyles((theme) => ({
     SortBlocks: {
         display: "flex",
         alignItems: "center",
-        background: "#EDF1F5",
+        background: theme.isDark ? "#353F4C" : "#EDF1F5",
         borderRadius: "10px",
         padding: "4px",
         color: "#818B95",
@@ -82,8 +90,8 @@ export const useStyles = makeStyles((theme) => ({
         },
     },
     SortBlock__IsActive: {
-        background: "#fff",
-        color: "#2E6AFA",
+        background: theme.isDark ? "#2E6AFA" : "#fff",
+        color: theme.isDark ? "#fff" : "#2E6AFA",
     },
     SectionSort__Title: {
         fontSize: "15px",
@@ -109,7 +117,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "13px",
         lineHeight: "17px",
         textTransform: "uppercase",
-        color: "#36414B",
+        color: theme.isDark ? "#BFD1E1" : "#36414B",
         marginBottom: "21px",
     },
     FiltersBlock__Entries: {},
@@ -136,8 +144,8 @@ export const useStyles = makeStyles((theme) => ({
     CheckInput__IsActive: {
         '& $CheckInput__Indicator': {
             opacity: 1,
-            background: "#fff",
-            border: "3px solid #2E6AFA",
+            background: theme.isDark ? "#2E6AFA" : "#fff",
+            border: `3px solid ${theme.isDark ? "rgba(46, 106, 250, 0.5)" : "#2E6AFA"}`,//
         },
     },
 

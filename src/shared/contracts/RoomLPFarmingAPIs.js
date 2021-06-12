@@ -3,7 +3,7 @@ import { walletHelper } from "../wallet.helper";
 import {
     getContract
 } from "./contracts.helper";
-import {MaxUint256, controlledNetworkId} from '../../shared/constants';
+import {MaxUint256} from '../../shared/constants';
 
 const walletHelperInstance = walletHelper();
 

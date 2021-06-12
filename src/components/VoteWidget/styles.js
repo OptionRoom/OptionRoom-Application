@@ -2,7 +2,7 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     VoteWidget: {
-        background: "#FFFFFF",
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
         borderRadius: "15px",
         padding: "29px 35px",
@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme) => ({
         fontSize: "14px",
         lineHeight: "18px",
         letterSpacing: "0.05em",
-        marginBottom: '27px',
+        marginBottom: '27px'
     },
     VoteWidget__Options: {
         marginBottom: '16.5px',

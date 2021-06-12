@@ -30,11 +30,11 @@ const useStyles = makeStyles((theme) => ({
         left: 0,
         height: '100vh',
         borderRight: '2px solid rgba(133, 133, 133, 0.1)',
-        backgroundColor: theme.isDark ? "rgb(39, 38, 44)" : 'rgb(255, 255, 255)',
+        backgroundColor: theme.isDark ? "#242D38" : 'rgb(255, 255, 255)',
         paddingTop: '80px',
         transition: '0.2s all',
         zIndex: '99',
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     IsSidebarNotExpand: {
         [theme.breakpoints.up('md')]: {
@@ -280,7 +280,7 @@ function MainSidebar(props) {
                                 <i className="fa fa-twitter"></i>
                             </a>
                         </div>
-{/*                        <div className={classes.LightDarkSwitch}>
+                        <div className={classes.LightDarkSwitch}>
                             <div className={clsx({
                                 [classes.LightDarkSwitch__IsActive]: props.activeTheme === "light",
                             })}
@@ -298,7 +298,7 @@ function MainSidebar(props) {
                                  }}>
                                 <DarkModeIcon />
                             </div>
-                        </div>*/}
+                        </div>
                     </>
                 )}
             </div>

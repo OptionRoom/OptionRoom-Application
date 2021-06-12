@@ -1,6 +1,6 @@
 import { getTokenPriceInUsd } from "./PoolsStatsAPIs";
 import {fromWei} from '../helper';
-import { MaxUint256, controlledNetworkId } from "../../shared/constants";
+import { MaxUint256 } from "../../shared/constants";
 import {getContract} from "./contracts.helper";
 
 

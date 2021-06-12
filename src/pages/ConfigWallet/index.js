@@ -14,6 +14,10 @@ import {
     toWei,
     fromWei,
 } from "../../shared/helper";
+import {
+    getWalletBalanceOfContract,
+    mintRoomDemoTokenToWallet,
+} from "../../shared/contracts/contracts.helper";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Radio from "@material-ui/core/Radio";
@@ -32,13 +36,16 @@ function ConfigWallet() {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleAdd = async () => {
-
+        console.log("ddd", get(formData, ['addType']));
         try {
+
             const marketApis = new MarketAPIs();
             if(get(formData, ['addType']) === 'collateral') {
                 await marketApis.mintCollateralToken(get(formData, ['walletAddress']), toWei(get(formData, ['addInput'])));
             }
-
+            if(get(formData, ['addType']) === 'room') {
+                await mintRoomDemoTokenToWallet(get(formData, ['walletAddress']), get(formData, ['addInput']));
+            }
             setIsProcessing(true);
         } catch (e) {
             console.log("Something went wrong!", e);
@@ -69,10 +76,12 @@ function ConfigWallet() {
 
         try {
             const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(fieldValue);
+            const balanceOfRoomToken = await getWalletBalanceOfContract(fieldValue, 'room');
             setWalletBalances({
                 balanceOfCollateralToken: balanceOfColletralToken,
+                balanceOfRoomToken: balanceOfRoomToken,
             })
-            //const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(get(formData, ['walletAddress']));
+
         } catch (e) {
 
         }
@@ -146,7 +155,7 @@ function ConfigWallet() {
                                             <div className={classes.CreateMarket__FieldTitle}>Details</div>
                                             <div className={classes.CreateMarket__FieldBody}>
                                                 <div>Collateral: {fromWei(get(walletBalances, 'balanceOfCollateralToken') || 0)}</div>
-                                                <div>Voting Power: </div>
+                                                <div>ROOM: {fromWei(get(walletBalances, 'balanceOfRoomToken') || 0)}</div>
                                             </div>
                                         </div>
                                         <div className={classes.CreateMarket__Field}>
@@ -170,11 +179,11 @@ function ConfigWallet() {
                                                         labelPlacement="end"
                                                     />
                                                     <FormControlLabel
-                                                        value="voting"
+                                                        value="room"
                                                         control={
                                                             <Radio color="primary" />
                                                         }
-                                                        label="Voting power"
+                                                        label="Room"
                                                         labelPlacement="end"
                                                     />
                                                 </RadioGroup>

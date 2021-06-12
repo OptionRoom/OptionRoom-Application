@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 export const useStyles = makeStyles((theme) => ({
     BuySellWidget: {
         borderRadius: "16px",
-        backgroundColor: `${theme.colors.boxBg}`,
+        background: theme.isDark ? "#252E39" : "#fff",
         boxShadow: `${theme.colors.boxBoxShadow}`,
         padding: "24px",
     },

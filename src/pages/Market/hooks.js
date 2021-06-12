@@ -104,7 +104,7 @@ export const useGetWalletBuySellPositions = (wallet, marketContractAddress, wall
                 Object.keys(groupedHistory).forEach((outcomeIndex) => {
                     const reducedBuys = reduce(groupedHistory[outcomeIndex], function (old, entry) {
 
-                        if (entry.event === 'FPMMSell') {
+                        if (entry.event === 'MCSell') {
                             return {
                                 payingTokenAmount: old.payingTokenAmount.sub(Web3.utils.toBN(`${entry.returnValues.returnAmount}`)),
                                 averagePrice: old.averagePrice,
