@@ -78,6 +78,7 @@ function Market() {
 
     const loadWalletAllowanceOfCollateralToken = async () => {
         const balanceOfAllowanceToken = await getWalletAllowanceOfContractToSpender(accountContext.account, 'usdt', 'market_controller');
+        console.log("balanceOfAllowanceToken", balanceOfAllowanceToken);
         setWalletAllowanceOfCollateralToken(balanceOfAllowanceToken);
     };
 
@@ -394,10 +395,15 @@ function Market() {
                                                                 setWalletAllowanceOfCollateralToken(MaxUint256);
                                                             }}
                                                             onAddLiquidity={handleOnAddLiquidityComplete}
+                                                            isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
 
                                                             isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
                                                             onApproveOptionToken={(type) => {
-                                                                setIsWalletOptionTokenApprovedForMarketController(true);
+                                                                if(type === 'market') {
+                                                                    setIsWalletOptionTokenApprovedForMarket(true);
+                                                                } else if(type=== 'market_controller') {
+                                                                    setIsWalletOptionTokenApprovedForMarketController(true);
+                                                                }
                                                             }}
                                                             walletSharesOfMarket={get(marketContractData, 'walletSharesOfMarket')}
                                                             walletSharesPercentageOfMarket={get(marketContractData, 'walletSharesPercentageOfMarket')}

@@ -50,7 +50,7 @@ export const useStyles = makeStyles((theme) => ({
         }
     },
     MarketLiquidityWidget__ActionsApprove: {
-        color: `${theme.palette.primary.main}`,
+        color: theme.isDark ? "#fff" : "#36414B",
         textDecoration: 'underline',
         cursor: 'pointer'
     },

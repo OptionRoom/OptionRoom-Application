@@ -37,6 +37,10 @@ const AccountContextProvider = (props) => {
             return chainId == 56;
         }
 
+        if(chain === 'ropsten') {
+            return chainId == 3;
+        }
+
         return chain == chainId;
     };
 

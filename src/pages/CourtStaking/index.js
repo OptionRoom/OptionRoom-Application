@@ -39,14 +39,15 @@ function CourtStaking() {
 
     return (
         <>
-            <Navbar
-                title={"Governance"}
-                details={null}
-            />
+
             <div className={classes.LiquidityMiningPage}>
                 {
                     accountContext.account && (
                         <>
+                            <Navbar
+                                title={"Governance"}
+                                details={null}
+                            />
                             {
                                 !accountContext.isChain('bsc') && (
                                     <Alert

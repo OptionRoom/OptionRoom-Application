@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {filter, orderBy} from 'lodash';
 
-export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, category, sortBy, marketsTotalVolume) => {
+export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, category, sortBy, tradedOnly, marketsTotalVolume, marketsTradedByWallet) => {
     const [filteredMarkets, setFilteredMarkets] = useState([]);
 
     useEffect(() => {
@@ -9,6 +9,13 @@ export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, ca
             let newMarkets = filter(markets, (entry) => {
                 return !!marketsContracts[entry.id];
             });
+
+            if(tradedOnly) {
+                newMarkets = filter(newMarkets, (entry) => {
+                    console.log("ddd", marketsTradedByWallet.indexOf(entry.id) > -1);
+                    return marketsTradedByWallet.indexOf(entry.id) > -1;
+                });
+            }
 
             if (searchQuery && searchQuery.trim()) {
                 newMarkets = filter(newMarkets, (entry) => {
@@ -46,7 +53,7 @@ export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, ca
 
             setFilteredMarkets(newMarkets);
         }
-    }, [markets, marketsContracts, searchQuery, category, sortBy, marketsTotalVolume]);
+    }, [markets, marketsContracts, searchQuery, category, sortBy, marketsTotalVolume, tradedOnly, marketsTradedByWallet]);
 
     return filteredMarkets;
 }

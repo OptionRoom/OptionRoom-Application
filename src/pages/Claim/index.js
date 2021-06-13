@@ -183,7 +183,7 @@ function Claim() {
                 loadClaimData();
             }
 
-            if(isRewardsShown() && accountContext.isChain('1337')) {
+            if(isRewardsShown() && (accountContext.isChain('1337') || accountContext.isChain('ropsten'))) {
                 loadRewardsData();
             }
         }

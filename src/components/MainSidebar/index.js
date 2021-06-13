@@ -249,6 +249,7 @@ function MainSidebar(props) {
                         </span>
                     </NavLink>
                 ))}
+                <div style={{textAlign: 'center'}}><small>1.1</small></div>
             </div>
             <div className={classes.SideBottom}>
                 { !props.isSidebarExpand && (

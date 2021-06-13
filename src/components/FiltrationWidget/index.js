@@ -71,8 +71,15 @@ function FiltrationWidget(props) {
                 </div>
                 <div className={classes.SectionShow__Actions}>
                     <div>Traded only</div>
-                    <OrSwitch
-                            color="primary" onChange={()=>{}} name="checkedA" />
+                    <OrSwitch value={get(filterDetails, ['tradedOnly'])}
+                              color="primary"
+                              onChange={(value, value1)=> {
+                                  props.onFilterUpdate && props.onFilterUpdate({
+                                      ...filterDetails,
+                                      tradedOnly:  value1
+                                  });
+                              }}
+                              name="checkedA" />
                 </div>
             </div>
             <div className={classes.SectionSort}>

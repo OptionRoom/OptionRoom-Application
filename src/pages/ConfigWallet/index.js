@@ -217,7 +217,7 @@ function ConfigWallet() {
                             </>
                         )}
                         <hr/>
-                        <div>Increase market time</div>
+{/*                        <div>Increase market time</div>
                         <div>
                             <div>
                                 <input type={'text'}
@@ -237,7 +237,7 @@ function ConfigWallet() {
                                 Current market time:
                             </div>
                             <Button onClick={handleIncreaseMarketTime}>Confirm</Button>
-                        </div>
+                        </div>*/}
                     </div>
                 )}
                 {!accountContext.account && (

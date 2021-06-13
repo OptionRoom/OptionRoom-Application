@@ -355,9 +355,9 @@ class MarketAPIs {
     /////////
 
     async getMarketsTradedByWallet(wallet) {
-        const result = await this.marketsQueryContract
+        const result = await this.marketControllerContract
             .methods
-            .getMarketsByTrader(wallet, 0, -1)
+            .getMarketsByTrader(wallet)
             .call({
                 from: wallet,
             });

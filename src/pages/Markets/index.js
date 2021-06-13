@@ -37,6 +37,7 @@ function Markets() {
         useState(false);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
+    const [marketsTradedByWallet, setMarketsTradedByWallet] = useState([]);
 
     const [filterDetails, setFilterDetails] = useState({
         name: "",
@@ -61,7 +62,9 @@ function Markets() {
         filterDetails.name,
         filterDetails.category,
         filterDetails.sort,
-        marketsTotalVolume
+        filterDetails.tradedOnly,
+        marketsTotalVolume,
+        marketsTradedByWallet
     );
 
     const classes = useStyles();
@@ -85,7 +88,7 @@ function Markets() {
                 setMarketsContracts(marketContracts);
 
                 const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
-                console.log("marketsTradedByWallet", marketsTradedByWallet);
+                setMarketsTradedByWallet(marketsTradedByWallet);
             }
 
             setIsLoading(false);

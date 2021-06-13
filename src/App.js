@@ -88,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function App() {
+    console.log("Version", '1.1');
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     const [isMinHeader, setIsMinHeader] = useState(false);
