@@ -36,7 +36,6 @@ function ConfigWallet() {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleAdd = async () => {
-        console.log("ddd", get(formData, ['addType']));
         try {
 
             const marketApis = new MarketAPIs();

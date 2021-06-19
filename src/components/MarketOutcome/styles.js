@@ -28,19 +28,23 @@ export const useStyles = makeStyles((theme) => ({
         display: 'flex'
     },
     OutcomeBlock: {
-        marginLeft: '47px',
-        display: 'flex'
+        marginLeft: '10px',
+        display: 'flex',
+        [theme.breakpoints.up("md")]: {
+            marginLeft: '47px',
+        },
     },
     OutcomeBlock__Chart: {
         marginRight: '9px'
     },
     OutcomeBlock__Val: {
-        fontFamily: "Google Sans",
         fontStyle: "normal",
         fontWeight: "normal",
-        fontSize: "25px",
+        fontSize: "12px",
         lineHeight: "32px",
         color: theme.isDark ? "#fff" : "#36414B",
+        [theme.breakpoints.up("md")]: {
+            fontSize: "25px",
+        },
     }
-
 }));

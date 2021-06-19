@@ -18,6 +18,9 @@ import { marketStateColors, marketStates } from "../../shared/constants";
 import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
 */
 
+
+
+
 function MarketCard(props) {
     /*
     const marketAPIs = new MarketAPIs();
@@ -99,7 +102,7 @@ function MarketCard(props) {
                             {get(market, ["category", "title"])}
                         </div>
                         <div className={classes.State}>
-                            {get(market, ["category", "title"])}
+                            {get(market, ["state", "title"])}
                         </div>
                     </div>
                     <div className={classes.Title}>

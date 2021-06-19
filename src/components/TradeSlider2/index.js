@@ -107,7 +107,7 @@ function ValueLabelComponent(props) {
         <Tooltip open={open}
                  enterTouchDelay={0}
                  placement="bottom"
-                 title={value}>
+                 title={parseInt(value)}>
             {children}
         </Tooltip>
     );

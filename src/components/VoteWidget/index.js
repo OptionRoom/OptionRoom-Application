@@ -69,7 +69,6 @@ function VoteWidget(props) {
     const loadVote = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
-        console.log("votes", votes);
         if(props.marketState == 1) {
             const validatingVotesCount = votes.validatingVotesCount;
             const formattedVotes = [];
@@ -88,7 +87,6 @@ function VoteWidget(props) {
     const loadWalletVotes = async () => {
         const marketAPIs = new MarketAPIs();
         const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
-        console.log("votes", votes);
         setWalletVote(votes);
     };
 

@@ -142,7 +142,6 @@ function MarketTest() {
             });
         loadMarket();
 
-        console.log("buy", result);
         setIsBuying(false);
         return result;
     };
@@ -161,7 +160,6 @@ function MarketTest() {
                 from: accountContext.account,
             });
 
-        console.log("sell", result);
         loadMarket();
 
         setIsSelling(false);
@@ -174,7 +172,6 @@ function MarketTest() {
         });
 
         setAllAccountsDollarBalance(result);
-        console.log("getAllAccountsDollarBalance", result);
     };
 
     const getQuestionMarket = async () => {
@@ -182,7 +179,6 @@ function MarketTest() {
             from: accountContext.account,
         });
 
-        console.log("getQuestionMarket", result);
     };
 
     const getQuestion_YesNo_BalanceList = async () => {
@@ -192,7 +188,6 @@ function MarketTest() {
                 from: accountContext.account,
             });
         setMarketYesNoBalanceList(result);
-        console.log("getQuestion_YesNo_BalanceList", result);
     };
 
     const getQuestion_YesNo_Percentage = async () => {
@@ -203,7 +198,6 @@ function MarketTest() {
             });
 
         setMarketOptionsShare(result);
-        console.log("getQuestion_YesNo_Percentage", result);
     };
 
     const getQuestion_YesNo_BalancePool = async () => {
@@ -215,7 +209,6 @@ function MarketTest() {
 
         setMarketYesNoBalancePool(result);
 
-        console.log("getQuestion_YesNo_BalancePool", result);
     };
 
     const getQuestion__Account_Share_Balance = async () => {
@@ -227,7 +220,6 @@ function MarketTest() {
 
         setMarketAccountShareBalance(result);
 
-        console.log("getQuestion__Account_Share_Balance", result);
     };
 
     const getQuestion_Share_BalanceList = async () => {
@@ -238,8 +230,6 @@ function MarketTest() {
             });
 
         setMarketShareBalanceList(result);
-
-        console.log("getQuestion_Share_BalanceList", result);
     };
 
     const getAccount__Question_YesNo_Balance = async () => {
@@ -250,7 +240,6 @@ function MarketTest() {
             });
 
         setAccountYesNoBalance(result);
-        console.log("getAccount__Question_YesNo_Balance", result);
     };
 
     const getYesNoBalanceList = async () => {
@@ -258,7 +247,6 @@ function MarketTest() {
             from: accountContext.account,
         });
 
-        console.log("result", result);
     };
 
     const add__Market_Liquidity = async () => {
@@ -272,7 +260,6 @@ function MarketTest() {
             .send({
                 from: accountContext.account,
             });
-        console.log("add__Market_Liquidity", result);
         loadMarket();
 
         setIsAdd__Market_Liquidity__InProgress(false);
@@ -289,7 +276,6 @@ function MarketTest() {
             .send({
                 from: accountContext.account,
             });
-        console.log("remove__Market_Liquidity", result);
         loadMarket();
         setIsRemovingMarketAccountShareBalance(false);
     };
@@ -301,7 +287,6 @@ function MarketTest() {
             .send({
                 from: accountContext.account,
             });
-        console.log("add__Account_DollarBalance", result);
         loadMarket();
         setIsAdding__Account__DollarBalance(false);
     };
@@ -314,8 +299,6 @@ function MarketTest() {
             });
 
         setAccount__DollarBalance(result);
-
-        console.log("get__Account_DollarBalance", result);
     };
 
     const getNumberOfTokensByAmount = async () => {
@@ -331,7 +314,6 @@ function MarketTest() {
 
         setBuyTokens(result);
 
-        console.log("getNumberOfTokensByAmount", result);
     };
 
     const getAmountByNumberOfTokens = async () => {
@@ -347,7 +329,6 @@ function MarketTest() {
 
         setSellTotalPrice(result);
 
-        console.log("getAmountByNumberOfTokens", result);
     };
 
     const resolveMarket = async () => {
@@ -357,7 +338,6 @@ function MarketTest() {
             .send({
                 from: accountContext.account,
             });
-        console.log("resolveMarket", result);
         loadMarket();
         setIsResolvingMarket(false);
     };
@@ -376,7 +356,6 @@ function MarketTest() {
             });
 
         setIsCreatingMarket(false);
-        console.log("createMarket", result);
 
         return result;
     };

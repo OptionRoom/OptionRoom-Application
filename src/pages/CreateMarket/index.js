@@ -91,7 +91,7 @@ function CreateMarket() {
                 .items(
                     Joi.object().keys({
                         name: Joi.string()
-                            .pattern(/[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/)
+                            .pattern(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
                             .label('Source')
                             .required()
                             .messages({
@@ -144,8 +144,6 @@ function CreateMarket() {
     const loadWalletData = async () => {
         loadWalletBalanceOfCollateralToken();
     };
-
-    const onSubmit = data => console.log(data);
 
     const handleChangeSelectedFile = (event) => {
         setCroppingImg(event.target.files[0]);
@@ -316,7 +314,6 @@ function CreateMarket() {
         )
     }
 
-    console.log("dd", fromWei(102051673364099536673920534968071842655183253159355168956994977207100798957102));
 /*    const formButtons = [];
 
     if(walletAllowanceOfCollateralTokenForMarketRouter <= 0) {

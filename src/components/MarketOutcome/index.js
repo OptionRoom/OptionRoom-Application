@@ -56,8 +56,6 @@ function MarketOutcome(props) {
     const pricesOfBuy = useGetMarketBuyPrices(accountContext.account, props.marketContractAddress, props.optionTokensPercentage);
     const marketBuySellHistory = useGetMarketBuySell(accountContext.account, props.marketContractAddress, props.optionTokensPercentage);
 
-    console.log("pricesOfBuy", pricesOfBuy);
-    console.log("marketBuySellHistory", marketBuySellHistory);
     //Vote
     const [isProcessing, setIsProcessing] = useState(false);
 

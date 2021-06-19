@@ -100,12 +100,11 @@ function BuySellWidget(props) {
     const [tradeInput, setTradeInput] = useState(0);
     const [selectedTradeOption, setSelectedTradeOption] = useState('Yes');
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
-    const [isTradeDisabled, setIsTradeDisabled] = useState(false);
+    const [isTradeDisabled, setIsTradeDisabled] = useState(true);
     const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeType, selectedTradeOption);
     const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeType, selectedTradeOption === 'Yes' ? 0 : 1 , props.walletBalanceOfCollateralToken, props.walletOptionTokensBalance);
 
     const handleChangeTradeType = (newType) => {
-        console.log("newType", newType);
         setSelectedTradeType(newType);
         setTradeInput(0);
     };
@@ -190,13 +189,19 @@ function BuySellWidget(props) {
                                 min={0}
                                 value={tradeInput}
                                 onValidityUpdate={(valid) => {
-                                    setIsTradeDisabled(!valid);
+                                    //setIsTradeDisabled(!valid);
                                 }}
                                 onChange={(e)=> {
                                     clearTimeout(updateTradeInputInterval);
                                     updateTradeInputInterval = setTimeout(() => {
                                         setTradeInput(e);
                                     }, 100);
+
+                                    if(e == 0) {
+                                        setIsTradeDisabled(true);
+                                    } else {
+                                        setIsTradeDisabled(false);
+                                    }
                                 }}/>
                 </div>
             </div>

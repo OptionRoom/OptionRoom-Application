@@ -2,6 +2,9 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => {
     return {
+        '& textarea': {
+
+        },
         LoadingWrapper: {
             padding: '100px',
             textAlign: 'center'
@@ -64,10 +67,15 @@ export const useStyles = makeStyles((theme) => {
                 color: theme.isDark ? "#fff" : "#000",
                 fontSize: "14px",
                 letterSpacing: "0",
-                lineHeight: "14px",
+                //lineHeight: "14px",
                 padding: '16.5px',
                 outline: 'none',
-                maxWidth: '100%'
+                maxWidth: '100%',
+                fontFamily: [
+                    'Open Sans',
+                    //'Kanit',
+                    'sans-serif',
+                ].join(',')
             }
         },
         CreateMarket__FieldBodyFieldError: {

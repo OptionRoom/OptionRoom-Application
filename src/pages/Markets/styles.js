@@ -101,9 +101,12 @@ export const useStyles = makeStyles((theme) => ({
         },
     },
     MarketsList: {
-        display: "flex",
-        flexWrap: "wrap",
+        "&>div": {
+            marginBottom: "20px",
+        },
         [theme.breakpoints.up('md')]: {
+            display: "flex",
+            flexWrap: "wrap",
             "&>div": {
                 width: "calc(50% - 10px)",
                 marginRight: "20px",

@@ -136,7 +136,6 @@ function UnstakeModal(props) {
                     );
                 }
             } else if (type === "market_liquidity") {
-                console.log("ddd");
                 const marketAPIs = new MarketAPIs();
                 await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
             } else if (type === "court_power_stake") {

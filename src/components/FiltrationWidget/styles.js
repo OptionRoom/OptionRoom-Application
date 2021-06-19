@@ -93,6 +93,12 @@ export const useStyles = makeStyles((theme) => ({
         background: theme.isDark ? "#2E6AFA" : "#fff",
         color: theme.isDark ? "#fff" : "#2E6AFA",
     },
+    SortBlock__Icon:{
+        transition: '0.2s all'
+    },
+    SortBlock__IconUp:{
+        transform: 'rotate(180deg)'
+    },
     SectionSort__Title: {
         fontSize: "15px",
         lineHeight: "19px",

@@ -172,10 +172,16 @@ function DepositModal(props) {
                                 min={0}
                                 value={tokensCount}
                                 onValidityUpdate={(valid) => {
-                                    setCanTrade(valid);
+                                    //setCanTrade(valid);
                                 }}
                                 onChange={(e)=> {
                                     setTokensCount(e);
+
+                                    if(e == 0){
+                                        setCanTrade(false);
+                                    } else {
+                                        setCanTrade(true);
+                                    }
                                 }}/>
                 </div>
             </MuiDialogContent>

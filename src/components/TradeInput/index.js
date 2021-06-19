@@ -51,7 +51,7 @@ function TradeInput(props) {
 
     const tooltipConfig = useTooltipConfig(value, min, max);
     const [tradeVal, setTradeVal] = useState(value);
-    const [tradePercent, setTradePercent] = useState((value / parseFloat(max)) * 100);
+    const [tradePercent, setTradePercent] = useState(value && max ? (value / parseFloat(max)) * 100 : 0);
 
     useEffect(() => {
         if(value != tradeVal) {
@@ -90,7 +90,7 @@ function TradeInput(props) {
                     value={tradePercent}
                     onChange={(e, e2) => {
                         setTradePercent(e2);
-                        const newVal = (e2 * max) / 100;
+                        const newVal = ((e2 * max) / 100).toFixed(2);
                         setTradeVal(newVal);
                         onChange && onChange(newVal);
                     }}

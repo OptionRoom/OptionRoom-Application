@@ -141,7 +141,6 @@ function Markets() {
         }
     }, [marketsContracts]);
 
-    console.log("filterDetails", filterDetails);
     useEffect(() => {
         const init = async () => {
             const marketAPIs = new MarketAPIs();

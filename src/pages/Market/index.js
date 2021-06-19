@@ -78,7 +78,6 @@ function Market() {
 
     const loadWalletAllowanceOfCollateralToken = async () => {
         const balanceOfAllowanceToken = await getWalletAllowanceOfContractToSpender(accountContext.account, 'usdt', 'market_controller');
-        console.log("balanceOfAllowanceToken", balanceOfAllowanceToken);
         setWalletAllowanceOfCollateralToken(balanceOfAllowanceToken);
     };
 

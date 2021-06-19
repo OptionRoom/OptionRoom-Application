@@ -99,13 +99,9 @@ function FiltrationWidget(props) {
                                         {
                                             get(filterDetails, ['sort', 'by']) === entry.toLowerCase() && (
                                                 <>
-                                                    {
-                                                        get(filterDetails, ['sort', 'direction']) === 'down' ? (
-                                                            <ArrowDownwardIcon className={classes.SortBlock__Icon}/>
-                                                        ) : (
-                                                            <ArrowUpwardIcon className={classes.SortBlock__Icon}/>
-                                                        )
-                                                    }
+                                                    <ArrowDownwardIcon className={clsx(classes.SortBlock__Icon, {
+                                                                [classes.SortBlock__IconUp]: get(filterDetails, ['sort', 'direction']) === 'up',
+                                                            })}/>
                                                 </>
                                             )
                                         }
