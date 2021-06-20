@@ -129,7 +129,7 @@ function CardSkeleton(props) {
 }
 
 function RoomLpStake(props) {
-    const { source, pool } = props;
+    const { source, pool, isDepositEnabled } = props;
 
     const accountContext = useContext(AccountContext);
     const classes = useStyles();
@@ -527,7 +527,7 @@ function RoomLpStake(props) {
                             })}
                         >
                             {
-                                userDepositTokenAllowance <= 0 && (
+                                (isDepositEnabled && userDepositTokenAllowance <= 0) && (
                                     <Button
                                         size={"large"}
                                         color="primary"
@@ -555,27 +555,31 @@ function RoomLpStake(props) {
                                         >
                                             Unstake
                                         </Button>
-                                        <Button
-                                            className={
-                                                classes.EarnCard__Action__Btn_Add
-                                            }
-                                            color={"black"}
-                                            size={"large"}
-                                            onClick={() =>
-                                                setIsDepositModalOpen(true)
-                                            }
-                                        >
-                                            <AddIcon
-                                                className={
-                                                    classes.EarnCard__Action__Btn_Add__Icon
-                                                }
-                                            ></AddIcon>
-                                        </Button>
+                                        {
+                                            isDepositEnabled && (
+                                                <Button
+                                                    className={
+                                                        classes.EarnCard__Action__Btn_Add
+                                                    }
+                                                    color={"black"}
+                                                    size={"large"}
+                                                    onClick={() =>
+                                                        setIsDepositModalOpen(true)
+                                                    }
+                                                >
+                                                    <AddIcon
+                                                        className={
+                                                        classes.EarnCard__Action__Btn_Add__Icon
+                                                        }
+                                                    ></AddIcon>
+                                                </Button>
+                                            )
+                                        }
                                     </>
                                 )
                             }
                             {
-                                (userDepositTokenAllowance > 0 && userDepositTokenStakedBalance == 0)&& (
+                                (isDepositEnabled && userDepositTokenAllowance > 0 && userDepositTokenStakedBalance == 0)&& (
                                     <Button
                                         size={"large"}
                                         color="primary"

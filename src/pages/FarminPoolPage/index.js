@@ -61,7 +61,7 @@ const getPageConfig = (source, pool) => {
 
 function FarminPoolPage(props) {
     const classes = useStyles();
-    const { source, pool } = props;
+    const { source, pool, isDepositEnabled } = props;
     const accountContext = useContext(AccountContext);
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
@@ -88,7 +88,9 @@ function FarminPoolPage(props) {
                             )
                         }
                         <div className={classes.Pools}>
-                            <RoomLpStake source={source} pool={pool} />
+                            <RoomLpStake source={source}
+                            isDepositEnabled={isDepositEnabled}
+                            pool={pool} />
                         </div>
                     </>
                 )}

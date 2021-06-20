@@ -50,7 +50,7 @@ function Claim() {
     const accountContext = useContext(AccountContext);
 
     const classes = useStyles();
-    const [selectedPool, setSelectedPool] = useState('rewards');
+    const [selectedPool, setSelectedPool] = useState('private');
     const [isClaimProcessing, setIsClaimProcessing] = useState(false);
 
     const [claimInfo, setClaimInfo] = useState({
@@ -228,10 +228,10 @@ function Claim() {
             }
             <div className={classes.ClaimCard}>
                 <OrTab tabs={[
-                    {
+                    /* {
                         id: 'rewards',
                         label: 'Rewards'
-                    },
+                    }, */
                     {
                         id: 'seed',
                         label: 'Seed'

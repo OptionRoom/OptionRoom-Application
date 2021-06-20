@@ -207,6 +207,7 @@ function App() {
                                 <Switch>
                                     <Route path="/liquidity-mining">
                                         <FarminPoolPage
+                                            isDepositEnabled={true}
                                             pool={"RoomFarming_RoomEthLpStake"}
                                             source={"room_eth_lp"}
                                         />
@@ -225,24 +226,28 @@ function App() {
                                     </Route>
                                     <Route path="/court-farming/court-room">
                                         <FarminPoolPage
+                                            isDepositEnabled={false}
                                             pool={"CourtFarming_RoomStake"}
                                             source={"room"}
                                         />
                                     </Route>
                                     <Route path="/court-farming/court-roomethlp">
                                         <FarminPoolPage
+                                            isDepositEnabled={false}
                                             pool={"CourtFarming_RoomEthLpStake"}
                                             source={"room_eth_lp"}
                                         />
                                     </Route>
                                     <Route path="/court-farming/court-ht">
                                         <FarminPoolPage
+                                            isDepositEnabled={false}
                                             pool={"CourtFarming_HtStake"}
                                             source={"ht"}
                                         />
                                     </Route>
                                     <Route path="/court-farming/court-matter">
                                         <FarminPoolPage
+                                            isDepositEnabled={false}
                                             pool={"CourtFarming_MatterStake"}
                                             source={"matter"}
                                         />

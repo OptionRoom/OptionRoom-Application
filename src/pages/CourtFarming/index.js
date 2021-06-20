@@ -76,7 +76,7 @@ function CourtFarming() {
         {
             id: "ROOM_COURT",
             title: "Deposit ROOM",
-            decs: "Earn COURT",
+            decs: "Get COURT",
             link: "/court-farming/court-room",
             icons: [room_icon],
             xUnit: "5x",
@@ -84,7 +84,7 @@ function CourtFarming() {
         {
             id: "ROOM_ETH_LP_EARN_COURT",
             title: "Deposit ROOM-ETH LP",
-            decs: "Earn COURT",
+            decs: "Get COURT",
             link: "/court-farming/court-roomethlp",
             icons: [room_icon, eth_icon],
             xUnit: "7x",
@@ -92,7 +92,7 @@ function CourtFarming() {
         {
             id: "HT_COURT",
             title: "Deposit HT",
-            decs: "Earn COURT",
+            decs: "Get COURT",
             link: "/court-farming/court-ht",
             icons: [ht_icon],
             xUnit: "1x",
@@ -100,7 +100,7 @@ function CourtFarming() {
         {
             id: "MATTER_COURT",
             title: "Deposit MATTER",
-            decs: "Earn COURT",
+            decs: "Get COURT",
             link: "/court-farming/court-matter",
             icons: [matter_icon],
             xUnit: "1x",
