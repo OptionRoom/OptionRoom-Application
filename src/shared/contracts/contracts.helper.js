@@ -155,46 +155,18 @@ export const contractsAddresses = {
     56: {
         court_vote_stake: '0x3bd21a6d3925c8e7f20e1eb910d01c33b412e588',
         court_token: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
+
+        market: '0x56500442933a789FCfF289b8be7ECF3b40911cE8',
+        market_controller: '0xbE227c937B87b6562d2cB5A5fCE51931C5397B09',
+        markets_query: '0xf5637910a53379AF11237b2ef629220E79c5ECf6',
+        option_token: '0xB12045C83cEF8404A2f35d4188338503e20AE1a7',
+
+        usdt: '0x55d398326f99059ff775485246999027b3197955',
+        room: '0xAd4f86a25bbc20FfB751f2FAC312A0B4d8F88c64',
+
+        reward_program: "0xD1875886B58A83cA907A2b185915cC6ad43D9898",
     },
     1337: {
-        /**
-         set time
-         a1 config
-         a2 config
-         a3 config (marketController)
-         a4 config
-         a5 config (RewardProgram)
-         a6 config (RewardCenter)
-         a7 config (AAA7ORGovernor)
-         a8 config (AAA8CourtStake)
-         a9 config (AAA9ORMarketsQuery)
-         a10 config (AAA10OracleDummy)
-         a11 config (AAA11DemoRoom1)
-         aaa0.address time control
-         0x211dAF183c63578B0cC33B253f828fbE26ADFDf7
-         aaa1.address (AAA1DemoToken1) --> Collatreal token
-         0xD06EA4710d06ED13cB27b7413164CAB4aA5f3A2f
-         aaa2.address ConditnalToken --> Option Token
-         0xdE1f725dEC62ed6A33DE44B5C832CAee3543bBEE
-         aaa3.address MarketControllerContract
-         0xbe35e9712762D41328f536fCBEea62055fC86d66
-         aaa4.address --> MarketTemplate
-         0x5310cD9555560A7C324D6958909bDE0c7DA8F610
-         aaa5.address --> RewardsPrograme
-         0x5aee05529C22376DE324f3916EEBB293390478C6
-         aaa6.address --> RewardsCenter
-         0x5c404FA8C67CB2648fFB2bbfE8c943b4Ad06298C
-         aaa7.address --> OrGovernor
-         0xbf9F801b5e8B591488C78a68FE4A39d8bdAb5298
-         aaa8.address --> CourtStakeDummy
-         0xA77C33A4c7f7918f0861216762EEb9a96cb52C6b
-         aaa9.address --> MarktesQuery
-         0x68ee49f5D704C70094D99C13B923E78bba2EaeF8
-         aaa10.address --> OracelDummy, ROOM buy
-         0x7fD989A708c281283F29A475B323A9aBcBE34cf4
-         aaa11.address --> ROOM Demo Token
-         0xda5a76f9ba07b5D545e3028214CC1449Bf2C72Ff
-         */
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
         market_controller: '0xbe35e9712762D41328f536fCBEea62055fC86d66',
         markets_query: '0x68ee49f5D704C70094D99C13B923E78bba2EaeF8',

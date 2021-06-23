@@ -1,9 +1,11 @@
-import {useState, useEffect} from 'react';
-import {reduce, groupBy} from 'lodash';
+import { useState, useEffect } from 'react';
+import { reduce, groupBy, sum } from 'lodash';
 import Web3 from "web3";
+import moment from 'moment';
 
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {fromWei} from "../../shared/helper";
+import { fromWei } from "../../shared/helper";
+import { getDataRan } from './../../components/MarketOutcome/generate-data';
 
 export const useGetMarketBuyPrices = (wallet, marketContractAddress, optionTokensPercentage) => {
     const [buyPrices, setBuyPrices] = useState({});
@@ -11,12 +13,12 @@ export const useGetMarketBuyPrices = (wallet, marketContractAddress, optionToken
     useEffect(() => {
         const init = async () => {
             setBuyPrices({
-                '0': optionTokensPercentage[0]/1000000,
-                '1': optionTokensPercentage[1]/1000000,
+                '0': optionTokensPercentage[0] / 1000000,
+                '1': optionTokensPercentage[1] / 1000000,
             })
         };
 
-        if(wallet && marketContractAddress, optionTokensPercentage) {
+        if (wallet && marketContractAddress, optionTokensPercentage) {
             init();
         }
     }, [wallet, marketContractAddress, optionTokensPercentage]);
@@ -40,7 +42,7 @@ export const useGetMarketSellPrices = (wallet, marketContractAddress) => {
             })
         };
 
-        if(wallet && marketContractAddress) {
+        if (wallet && marketContractAddress) {
             init();
         }
     }, [wallet, marketContractAddress]);
@@ -58,7 +60,7 @@ export const useGetMarketTradeVolume = (wallet, marketContractAddress, optionTok
             setTradeVolume(tradingVolume);
         };
 
-        if(wallet && marketContractAddress) {
+        if (wallet && marketContractAddress) {
             init();
         }
 
@@ -77,7 +79,7 @@ export const useGetMarketState = (wallet, marketContractAddress) => {
             setVal(marketState);
         };
 
-        if(wallet && marketContractAddress) {
+        if (wallet && marketContractAddress) {
             init();
         }
 
@@ -133,7 +135,7 @@ export const useGetWalletBuySellPositions = (wallet, marketContractAddress, wall
             setWalletBuySellPositions(buyResult);
         }
 
-        if(wallet && marketContractAddress) {
+        if (wallet && marketContractAddress) {
             init();
         }
     }, [wallet, marketContractAddress, walletOptionTokensBalance]);
@@ -153,10 +155,52 @@ export const useGetMarketBuySell = (wallet, marketContractAddress, optionTokensP
             setHistory(historyOfWallet);
         }
 
-        if(wallet && marketContractAddress) {
+        if (wallet && marketContractAddress) {
             init();
         }
     }, [wallet, marketContractAddress, optionTokensPercentage]);
+
+    return history;
+}
+
+
+export const useGetMarketOptionsGraphItems = (wallet, marketContractAddress, timeframe) => {
+    const [history, setHistory] = useState({});
+
+    function round(date, duration, method) {
+        return moment(Math[method]((+date) / (+duration)) * (+duration)).valueOf();
+    }
+
+    useEffect(() => {
+        const init = async () => {
+            const dd = getDataRan();
+            const groubedBy = groupBy(dd, (entry) => {
+                return round(entry.returnValues.timestamp, moment.duration(1, "hours"), "ceil")
+            });
+
+            const groubedByPrice = {};
+
+            Object.keys(groubedBy).forEach((entry) => {
+                const prices = [];
+                groubedBy[entry].forEach((eventEntry) => {
+                    const price = eventEntry.returnValues.investmentAmount / eventEntry.returnValues.outcomeTokensBought;
+                    if (eventEntry.returnValues.outcomeIndex == 0) {
+                        prices.push(price);
+                    } else {
+                        prices.push(1 - price);
+                    }
+                });
+
+                groubedByPrice[entry] = sum(prices) / prices.length;
+            });
+
+            setHistory(groubedByPrice);
+        }
+
+        if (wallet && marketContractAddress && timeframe) {
+            init();
+        }
+    }, [wallet, marketContractAddress, timeframe]);
 
     return history;
 }
