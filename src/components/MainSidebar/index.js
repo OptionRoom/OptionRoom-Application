@@ -181,12 +181,12 @@ function MainSidebar(props) {
              })}>
             <div className={classes.NavLinks}>
                 {[
-                    {
+/*                     {
                         title: 'Markets',
                         link: '/markets',
                         icon: MarketsIcon,
                         isNew: true
-                    },
+                    }, */
                     {
                         title: "Governance",
                         link: "/governance",

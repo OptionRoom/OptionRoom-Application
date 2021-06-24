@@ -161,7 +161,7 @@ export const contractsAddresses = {
         markets_query: '0xf5637910a53379AF11237b2ef629220E79c5ECf6',
         option_token: '0xB12045C83cEF8404A2f35d4188338503e20AE1a7',
 
-        usdt: '0x55d398326f99059ff775485246999027b3197955',
+        usdt: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
         room: '0xAd4f86a25bbc20FfB751f2FAC312A0B4d8F88c64',
 
         reward_program: "0xD1875886B58A83cA907A2b185915cC6ad43D9898",

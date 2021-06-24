@@ -175,7 +175,7 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async (data) => {
-        if(walletRoomBalance < marketCreationFees) {
+        if(parseFloat(fromWei(walletRoomBalance)) < parseFloat(fromWei(marketCreationFees))) {
             swal(
                 "Insufficient funds",
                 `You must hold at least ${fromWei(marketCreationFees)} ROOM Tokens to create the market`,
@@ -268,7 +268,7 @@ function CreateMarket() {
                         onClick={approveStableCoin}
                         isProcessing={isCreatingMarket}
                         color={'primary'}
-                        fullWidth={true}>Approve USDT</Button>
+                        fullWidth={true}>Approve BUSD</Button>
             )
         }
 

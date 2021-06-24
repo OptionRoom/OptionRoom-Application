@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import ConfigHelper from "./config.helper";
 
-const marketsDbName = 'markets4';
+const marketsDbName = 'markets-prod';
 
 const firebaseConfig = {
     apiKey: ConfigHelper.getFirebaseApiKey(),
@@ -80,6 +80,7 @@ export const createMarket = async (wallet, category, description, endTimestamp, 
             collateralTokenAddress: collateralTokenAddress,
             initialLiquidity: initialLiquidity,
             image: image,
+            images: [image],
             sources: sources,
             title: title,
         });
