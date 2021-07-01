@@ -6,6 +6,8 @@ import clsx from "clsx";
 import SearchIcon from '@material-ui/icons/Search';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 
+import ChainAlert from '../../components/ChainAlert';
+
 import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
@@ -34,7 +36,7 @@ function Markets() {
     const [marketsTotalVolume, setMarketsTotalVolume] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] =
-        useState(false);
+        useState(true);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
     const [marketsTradedByWallet, setMarketsTradedByWallet] = useState([]);
@@ -73,11 +75,11 @@ function Markets() {
         const init = async () => {
             setIsLoading(true);
 
-            const isWalletWhitelistedForBetaRes =
+/*             const isWalletWhitelistedForBetaRes =
                 await getIfWalletIsWhitelistedForBeta(accountContext.account);
-            setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
+            setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes); */
 
-            if (isWalletWhitelistedForBetaRes) {
+            //if (isWalletWhitelistedForBetaRes) {
                 const result = await getMarkets();
                 setAllMarkets(result);
                 const marketApis = new MarketAPIs();
@@ -89,15 +91,15 @@ function Markets() {
 
                 const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
                 setMarketsTradedByWallet(marketsTradedByWallet);
-            }
+            //}
 
             setIsLoading(false);
         };
 
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('bsc')) {
             init();
         }
-    }, [accountContext.account]);
+    }, [accountContext.account, accountContext.chainId]);
 
     useEffect(() => {
         const init = async () => {
@@ -109,10 +111,10 @@ function Markets() {
             setMarketsContracts(marketContracts);
         };
 
-        if (accountContext.account) {
+        if (accountContext.account && accountContext.isChain('bsc')) {
             init();
         }
-    }, [filterDetails.state]);
+    }, [filterDetails.state, accountContext.chainId]);
 
     useEffect(() => {
         const init = async () => {
@@ -136,10 +138,10 @@ function Markets() {
             }
         };
 
-        if (accountContext.account && marketsContracts) {
+        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
             init();
         }
-    }, [marketsContracts]);
+    }, [marketsContracts, accountContext.chainId]);
 
     useEffect(() => {
         const init = async () => {
@@ -161,13 +163,12 @@ function Markets() {
             }
         };
 
-        if (accountContext.account && marketsContracts) {
+        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
             init();
         }
-    }, [marketsContracts]);
+    }, [marketsContracts, accountContext.chainId]);
 
     useEffect(() => {
-
         const handleScroll = () => {
             if(window.scrollY > 30) {
                 setIsMinHeader(true);
@@ -190,6 +191,12 @@ function Markets() {
         );
     }
 
+    if(!accountContext.isChain('bsc')) {
+        return (
+            <ChainAlert/>
+        )
+    }
+
     if (isLoading) {
         return (
             <div className={classes.LoadingWrapper}>
@@ -205,6 +212,11 @@ function Markets() {
     return (
         <div className={classes.MarketsPage}>
             <div className={classes.MarketsPage__Main}>
+                {
+                    !accountContext.isChain('bsc') && (
+                        <ChainAlert/>
+                    )
+                }
                 <div className={classes.MarketsPage__Header}>
                     <div className={classes.MarketsPage__HeaderTitle}>
                         Markets

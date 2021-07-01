@@ -124,4 +124,7 @@ export const useStyles = makeStyles((theme) => ({
             width: '100%',
         },
     },
+    ChainWrap: {
+        padding: '50px'
+    }
 }));

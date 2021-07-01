@@ -14,6 +14,7 @@ import {
     EndsAtIcon,
     LiquidityIcon,
 } from '../../shared/icons';
+import ChainAlert from '../../components/ChainAlert';
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -48,7 +49,7 @@ function Market() {
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
 
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(false);
+    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
 
     //Mrket
@@ -95,12 +96,12 @@ function Market() {
 
 
     useEffect(() => {
-        if (accountContext.account && marketContractAddress) {
+        if (accountContext.account && marketContractAddress && accountContext.isChain('bsc')) {
             loadWalletAllowanceOfOptionToken();
             loadWalletAllowanceOfCollateralToken();
             //getWalletMarketPastEvents
         }
-    }, [accountContext.account, marketContractAddress]);
+    }, [accountContext.account, marketContractAddress, accountContext.chainId]);
 
     const handleOnBuy = () => {
         loadPageDetails();
@@ -123,6 +124,7 @@ function Market() {
         const wallet = accountContext.account;
         const marketApis = new MarketAPIs();
         const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
+        const marketiquidity = await marketApis.getMarketiquidity(wallet, marketContractAddress);
         const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
         const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketContractAddress);
         const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
@@ -131,6 +133,7 @@ function Market() {
 
         setMarketContractData({
             totalSupply: marketTotalSupply,
+            marketiquidity: marketiquidity,
             optionTokensPercentage: MarketOptionTokensPercentage,
             outcome: MarketOutcome,
             walletSharesOfMarket: WalletSharesOfMarket,
@@ -140,26 +143,21 @@ function Market() {
     };
 
     useEffect(() => {
-        if (accountContext.account) {
-        }
-    }, [accountContext.account]);
-
-    useEffect(() => {
-        if (marketContractAddress) {
+        if (marketContractAddress && accountContext.isChain('bsc')) {
             loadPageDetails();
         }
-    }, [marketContractAddress]);
+    }, [marketContractAddress, accountContext.chainId]);
 
     useEffect(() => {
         const init = async () => {
             if (accountContext.account) {
                 setIsLoading(true);
-                const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
-                setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
-                if (!isWalletWhitelistedForBetaRes) {
-                    setIsLoading(false);
-                    return;
-                }
+                //const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
+                //setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
+               // if (!isWalletWhitelistedForBetaRes) {
+                //    setIsLoading(false);
+                //    return;
+                //}
 
                 if (!market) {
                     const result = await getMarketById(marketId);
@@ -181,9 +179,11 @@ function Market() {
             }
         };
 
-        init();
+        if(accountContext.isChain('bsc')) {
+            init();
+        }
 
-    }, [accountContext.account]);
+    }, [accountContext.account, accountContext.chainId]);
 
     //Liquidity stuff
 
@@ -214,6 +214,12 @@ function Market() {
             <div className={classes.ConnectWrap}>
                 <ConnectButton/>
             </div>
+        )
+    }
+
+    if(!accountContext.isChain('bsc')) {
+        return (
+            <ChainAlert/>
         )
     }
 
@@ -290,7 +296,7 @@ function Market() {
                                                 Liquidity
                                             </div>
                                             <div className={classes.LiqEndBlock__DetailsVal}>
-                                                {numeral(fromWei(get(marketContractData, 'totalSupply') || 0)).format("$0,0.00")}
+                                                {numeral(fromWei(get(marketContractData, 'marketiquidity') || 0)).format("$0,0.00")}
                                             </div>
                                         </div>
                                 </div>
@@ -385,7 +391,7 @@ function Market() {
                                     }
                                     <div className={classes.MarketWidgetWrap}>
                                         <MarketLiquidityWidget marketState={marketState}
-                                                            marketLiquidity={get(marketContractData, 'totalSupply')}
+                                                            marketLiquidity={get(marketContractData, 'marketiquidity')}
                                                             marketContractAddress={marketContractAddress}
 
                                                             walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}

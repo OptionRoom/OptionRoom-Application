@@ -30,9 +30,23 @@ export const useStyles = makeStyles((theme) => ({
     Logo:{
         marginRight: 'auto',
         userSelect: 'none',
+        position: 'relative'
+    },
+    Beta: {
+        position: 'absolute',
+        color: theme.colors.primary,
+        fontWeight: 700,
+        lineHeight: 1,
+        bottom: 0,
+        left: '100%',
+        [theme.breakpoints.up('md')]: {
+            right: 0,
+            top: 0,
+            left: 'auto'
+        },
     },
     LogoHolder: {
-        backgroundSize: 'cover',
+        backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         width: '35px',

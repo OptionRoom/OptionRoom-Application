@@ -13,6 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import {useForm, useFieldArray} from "react-hook-form";
 import {joiResolver} from '@hookform/resolvers/joi';
 
+import ChainAlert from '../../components/ChainAlert';
 import {useStyles} from "./styles";
 import OrSelect from './../../components/OrSelect';
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
@@ -55,7 +56,7 @@ function CreateMarket() {
     optionroomThemeContext.changeTheme("primary");
 
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(false);
+    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const accountContext = useContext(AccountContext);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
@@ -251,14 +252,16 @@ function CreateMarket() {
 
                 loadWalletData();
                 setIsLoading(true);
-                const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
-                setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
+                //const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
+                //setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
                 setIsLoading(false);
             }
         };
 
-        init();
-    }, [accountContext.account]);
+        if(accountContext.isChain('bsc')) {
+            init();
+        }
+    }, [accountContext.account, accountContext.chainId]);
 
     const renderCreateBtn = () => {
         if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
@@ -289,6 +292,12 @@ function CreateMarket() {
                     color={'primary'}
                     type={'submit'}
                     fullWidth={true}>Create</Button>
+        )
+    }
+
+    if(!accountContext.isChain('bsc')) {
+        return (
+            <ChainAlert/>
         )
     }
 

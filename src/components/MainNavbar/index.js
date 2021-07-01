@@ -49,6 +49,7 @@ function MainNavbar(props) {
             </div>
             <div className={classes.Logo}>
                 <div className={classes.LogoHolder}/>
+                <span className={classes.Beta}>beta</span>
 {/*                <img
                     src={LogoSvg}
                     className={classes.LogoImg}

@@ -1410,9 +1410,9 @@ function MarketOutcome(props) {
                 </div>
             </div>
             <div className={classes.MarketOutcomeBody}>
-                <LinearChart
+{/*                 <LinearChart
                     series={getSeries()}
-                />
+                /> */}
             </div>
         </div>
     );

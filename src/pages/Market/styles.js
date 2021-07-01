@@ -181,7 +181,7 @@ export const useStyles = makeStyles((theme) => ({
         display: "flex",
         "& img": {
             width: "133px",
-            height: "121px",
+            height: "133px",
             borderRadius: "8px",
         },
     },
@@ -248,4 +248,7 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: "0.005em",
         color: theme.isDark ? "#fff" : "#818B95",
     },
+    ChainWrap: {
+        padding: '50px'
+    }
 }));

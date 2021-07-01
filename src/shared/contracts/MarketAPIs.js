@@ -459,6 +459,15 @@ class MarketAPIs {
         return result;
     }
 
+    async getMarketiquidity(wallet, marketId) {
+        return await generateMarketContract(marketId)
+            .methods
+            .getMarketCollateralTotalSupply()
+            .call({
+                from: wallet,
+            });
+    }
+
     async getMarketTotalSupply(wallet, marketId) {
         return await generateMarketContract(marketId)
             .methods
