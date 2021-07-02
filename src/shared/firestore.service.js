@@ -99,6 +99,33 @@ export const getBetaWhitelist = async () => {
     return data;
 };
 
+export const getBuySellEventsOfMarket = async (marketId) => {
+    const snapshot = await db.collection('markets-buy-sell-events').where('market', '==', marketId).get();
+    const data = snapshot.docs.map(doc => {
+        return {
+            id: doc.id,
+            ...doc.data()
+        };
+    });
+
+    return data;
+};
+
+export const getBuySellEventsOfWalletOnMarket = async (marketId, wallet) => {
+    const snapshot = await db.collection('markets-buy-sell-events')
+    .where('market', '==', marketId)
+    .where('wallet', '==', wallet)
+    .get();
+    const data = snapshot.docs.map(doc => {
+        return {
+            id: doc.id,
+            ...doc.data()
+        };
+    });
+
+    return data;
+};
+
 export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
     const snapshot = await db.collection("beta-whitelist")
         .where("address", "==", wallet)

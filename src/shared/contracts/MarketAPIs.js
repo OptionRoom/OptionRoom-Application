@@ -5,6 +5,10 @@ import {MaxUint256} from "../../shared/constants";
 import {getMarketContract} from "./MarketContract";
 import {getContract} from "./contracts.helper";
 import {fromWei, toWei} from "../helper";
+import {
+    getBuySellEventsOfMarket,
+    getBuySellEventsOfWalletOnMarket
+} from '../firestore.service';
 
 import {marketStates} from '../constants';
 
@@ -13,6 +17,8 @@ const walletHelperInstance = walletHelper();
 const generateMarketContract = (marketId) => {
     return getMarketContract(walletHelperInstance.getWeb3(), marketId);
 };
+
+const fromBlock = 8762783 - 4000;
 
 class MarketAPIs {
     constructor() {
@@ -42,7 +48,15 @@ class MarketAPIs {
         wallet,
         marketId) {
 
-        const buyEvents = await this.marketControllerContract
+        const buySellEvents = await getBuySellEventsOfMarket(marketId);
+
+        const sum3 = sum(map(buySellEvents, (entry) => {
+            return entry.event == 'MCBuy' ? parseFloat(entry.returnValues.investmentAmount) : parseFloat(entry.returnValues.returnAmount);
+        }));
+
+        /**
+         *
+                 const buyEvents = await this.marketControllerContract
             .getPastEvents("MCBuy", {
                 filter: {
                     market: marketId,
@@ -67,6 +81,9 @@ class MarketAPIs {
         }));
 
         return (sum2 + sum3) / 1e18;
+         */
+
+        return sum3 / 1e18;
     }
 
 
@@ -89,7 +106,7 @@ class MarketAPIs {
                     buyer: wallet,
                     outcomeIndex: 0
                 },
-                fromBlock: 1
+                fromBlock: fromBlock
             });
 
         if (!buyEvents || buyEvents.length === 0) {
@@ -113,13 +130,15 @@ class MarketAPIs {
         marketId
     ) {
 
-       const buyEvents = await this.marketControllerContract
+        const events = await getBuySellEventsOfWalletOnMarket(marketId, wallet);
+
+/*        const buyEvents = await this.marketControllerContract
             .getPastEvents("MCBuy", {
                 filter: {
                     market: marketId,
                     buyer: wallet
                 },
-                fromBlock: 1
+                fromBlock: fromBlock
             });
 
         const sellEvents = await this.marketControllerContract
@@ -128,12 +147,13 @@ class MarketAPIs {
                     market: marketId,
                     seller: wallet
                 },
-                fromBlock: 1
-            });
+                fromBlock: fromBlock
+            }); */
 
-        let allEvents = buyEvents.concat(sellEvents);
 
-        allEvents = sortBy(allEvents, ["blockNumber", "transactionIndex"]);
+        const allEvents = sortBy(events, (entry) => {
+            return entry.returnValues.timestamp;
+        });
 
         return allEvents;
     }
@@ -147,12 +167,12 @@ class MarketAPIs {
 
         const buyEvents = await marketContract
             .getPastEvents('FPMMBuy', {
-                fromBlock: 1
+                fromBlock: fromBlock
             });
 
         const sellEvents = await marketContract
             .getPastEvents('FPMMSell', {
-                fromBlock: 1
+                fromBlock: fromBlock
             });
 
         let allEvents = buyEvents.concat(sellEvents);

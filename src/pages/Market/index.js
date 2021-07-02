@@ -172,7 +172,6 @@ function Market() {
                     const marketApis = new MarketAPIs();
                     const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, marketId);
                     setMarketContractAddress(marketContractAddressVal);
-                    console.log("marketContractAddress", marketContractAddressVal);
                 } else {
                     loadPageDetails();
                 }
@@ -256,8 +255,6 @@ function Market() {
         //return true;
         return (["3"].indexOf(marketState) > -1);
     }
-
-    console.log("marketState", marketState);
 
     return (
         <>

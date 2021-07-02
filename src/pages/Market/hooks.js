@@ -6,6 +6,7 @@ import moment from 'moment';
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import { fromWei } from "../../shared/helper";
 import { getDataRan } from './../../components/MarketOutcome/generate-data';
+import {getBuySellEventsOfMarket} from '../../shared/firestore.service';
 
 export const useGetMarketBuyPrices = (wallet, marketContractAddress, optionTokensPercentage) => {
     const [buyPrices, setBuyPrices] = useState({});
@@ -173,9 +174,9 @@ export const useGetMarketOptionsGraphItems = (wallet, marketContractAddress, tim
 
     useEffect(() => {
         const init = async () => {
-            const dd = getDataRan();
+            const dd = await getBuySellEventsOfMarket(marketContractAddress);
             const groubedBy = groupBy(dd, (entry) => {
-                return round(entry.returnValues.timestamp, moment.duration(1, "hours"), "ceil")
+                return round(parseInt(entry.returnValues.timestamp * 1000), moment.duration(1, "hours"), "ceil")
             });
 
             const groubedByPrice = {};
@@ -183,7 +184,13 @@ export const useGetMarketOptionsGraphItems = (wallet, marketContractAddress, tim
             Object.keys(groubedBy).forEach((entry) => {
                 const prices = [];
                 groubedBy[entry].forEach((eventEntry) => {
-                    const price = eventEntry.returnValues.investmentAmount / eventEntry.returnValues.outcomeTokensBought;
+                    let price = 0;
+                    if(eventEntry.event === 'MCBuy') {
+                        price = parseFloat(eventEntry.returnValues.investmentAmount) / parseFloat(eventEntry.returnValues.outcomeTokensBought);
+                    } else {
+                        price = parseFloat(eventEntry.returnValues.returnAmount) / parseFloat(eventEntry.returnValues.outcomeTokensSold);
+                    }
+
                     if (eventEntry.returnValues.outcomeIndex == 0) {
                         prices.push(price);
                     } else {
