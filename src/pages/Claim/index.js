@@ -25,7 +25,7 @@ import OrTab from "../../components/OrTab";
 import {
     MoneyIcon
 } from '../../shared/icons';
-import {fromWei} from "../../shared/helper";
+import {fromWei, getItemFromLocalStorage, storeItemInLocalStorage} from "../../shared/helper";
 import ClaimAPIs from './../../shared/contracts/ClaimAPIs';
 import Alert from "@material-ui/lab/Alert";
 
@@ -43,6 +43,7 @@ const BorderLinearProgress = withStyles((theme) => ({
     },
 }))(LinearProgress);
 
+const SELECTED_POOL_NAME = "selectedClaimPool";
 
 function Claim() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -50,7 +51,7 @@ function Claim() {
     const accountContext = useContext(AccountContext);
 
     const classes = useStyles();
-    const [selectedPool, setSelectedPool] = useState('private');
+    const [selectedPool, setSelectedPool] = useState(getItemFromLocalStorage(SELECTED_POOL_NAME) || 'rewards');
     const [isClaimProcessing, setIsClaimProcessing] = useState(false);
 
     const [claimInfo, setClaimInfo] = useState({
@@ -85,6 +86,7 @@ function Claim() {
     });
 
     const handleChange = (newValue) => {
+        storeItemInLocalStorage(SELECTED_POOL_NAME, newValue);
         setSelectedPool(newValue);
     };
 
@@ -331,7 +333,7 @@ function Claim() {
                                                 parseFloat(fromWei(validationRewards.rewardsCanClaim)),
                                                 parseFloat(fromWei(resolveRewards.rewardsCanClaim)),
                                                 parseFloat(fromWei(tradeRewards.rewardsCanClaim))
-                                            ])
+                                            ]).toFixed(2)
                                         }</span>
                                         </div>
                                     </div>
@@ -349,9 +351,9 @@ function Claim() {
                                             <TableBody>
                                                 <TableRow key={'pool1'}>
                                                     <TableCell component="th" scope="row">Validation</TableCell>
-                                                    <TableCell align="right">{fromWei(validationRewards.claimedRewards)}</TableCell>
-                                                    <TableCell align="right">{fromWei(validationRewards.todayExpectedReward)}</TableCell>
-                                                    <TableCell align="right">{fromWei(validationRewards.rewardsCanClaim)}</TableCell>
+                                                    <TableCell align="right">{fromWei(validationRewards.claimedRewards, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(validationRewards.todayExpectedReward, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(validationRewards.rewardsCanClaim, null, 2)}</TableCell>
                                                     <TableCell align="right">
                                                         <Button
                                                             onClick={()=> handleClaimRewards('validation')}
@@ -368,9 +370,9 @@ function Claim() {
                                                 </TableRow>
                                                 <TableRow key={'pool2'}>
                                                     <TableCell component="th" scope="row">Resolve</TableCell>
-                                                    <TableCell align="right">{fromWei(resolveRewards.claimedRewards)}</TableCell>
-                                                    <TableCell align="right">{fromWei(resolveRewards.todayExpectedReward)}</TableCell>
-                                                    <TableCell align="right">{fromWei(resolveRewards.rewardsCanClaim)}</TableCell>
+                                                    <TableCell align="right">{fromWei(resolveRewards.claimedRewards, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(resolveRewards.todayExpectedReward, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(resolveRewards.rewardsCanClaim, null, 2)}</TableCell>
                                                     <TableCell align="right">
                                                         <Button
                                                             onClick={()=> handleClaimRewards('resolve')}
@@ -387,9 +389,9 @@ function Claim() {
                                                 </TableRow>
                                                 <TableRow key={'pool3'}>
                                                     <TableCell component="th" scope="row">Trade</TableCell>
-                                                    <TableCell align="right">{fromWei(tradeRewards.claimedRewards)}</TableCell>
-                                                    <TableCell align="right">{fromWei(tradeRewards.todayExpectedReward)}</TableCell>
-                                                    <TableCell align="right">{fromWei(tradeRewards.rewardsCanClaim)}</TableCell>
+                                                    <TableCell align="right">{fromWei(tradeRewards.claimedRewards, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(tradeRewards.todayExpectedReward, null, 2)}</TableCell>
+                                                    <TableCell align="right">{fromWei(tradeRewards.rewardsCanClaim, null, 2)}</TableCell>
                                                     <TableCell align="right">
                                                         <Button
                                                             onClick={()=> handleClaimRewards('trade')}
