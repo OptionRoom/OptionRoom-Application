@@ -9,6 +9,7 @@ import DepositModal from "../DepositModal";
 import UnstakeModal from "../UnstakeModal";
 import {fromWei} from "../../shared/helper";
 import MarketAPIs from '../../shared/contracts/MarketAPIs';
+import ClaimAPIs from '../../shared/contracts/ClaimAPIs';
 
 function MarketLiquidityWidget(props) {
     const classes = useStyles();
@@ -20,9 +21,20 @@ function MarketLiquidityWidget(props) {
     const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
     const [isAddLiquidityInProgress, setIsAddLiquidityInProgress] = useState(false);
     const [isRemoveLiquidityInProgress, setIsRemoveLiquidityInProgress] = useState(false);
+    const [marketLiqRewards, setMarketLiqRewards] = useState(null);
+    const [isClaimingLpRewards, setIsClaimingLpRewards] = useState(false);
+
+    const loadMarketLiqRewards = async () => {
+        const claimAPIs = new ClaimAPIs();
+        const rewards = await claimAPIs.getMarketLiqRewards(accountContext.account, props.marketContractAddress);
+        setMarketLiqRewards(rewards);
+    }
 
     useEffect(() => {
-    }, []);
+        if(props.marketContractAddress) {
+            loadMarketLiqRewards();
+        }
+    }, [props.marketContractAddress]);
 
     const showAddLiquiditySection = () => {
         return ["3"].indexOf(props.marketState) > -1;
@@ -30,6 +42,10 @@ function MarketLiquidityWidget(props) {
 
     const showRemoveLiquiditySection = () => {
         return ["0", "2", "3", "4", "6"].indexOf(props.marketState) > -1;
+    };
+
+    const showClaimLpRewards = () => {
+        return marketLiqRewards && (marketLiqRewards.claimedRewards > 0 || marketLiqRewards.pendingRewards > 0);
     };
 
     const handleAddLiquidity = async () => {
@@ -56,6 +72,19 @@ function MarketLiquidityWidget(props) {
         }
 
         setIsRemoveLiquidityModalOpen(true);
+    };
+
+    const handleClaimLpRewards = async () => {
+        try {
+            setIsClaimingLpRewards(true);
+            const claimAPIs = new ClaimAPIs();
+            await claimAPIs.claimMarketLiqRewards(accountContext.account, props.marketContractAddress);
+            loadMarketLiqRewards();
+        } catch (e) {
+
+        } finally {
+            setIsClaimingLpRewards(false);
+        }
     };
 
     return (
@@ -106,6 +135,31 @@ function MarketLiquidityWidget(props) {
                     )
                 }
             </div>
+            {
+                showClaimLpRewards() && (
+                    <div className={classes.LiquidityRewards}>
+                        <div>
+                            <div>
+                                <div>Claimed rewards</div>
+                                <div>{numeral(fromWei(marketLiqRewards.claimedRewards || 0)).format("$0,0.00")}</div>
+                            </div>
+                            <div>
+                                <div>Claimable rewards</div>
+                                <div>{numeral(fromWei(marketLiqRewards.pendingRewards || 0)).format("$0,0.00")}</div>
+                            </div>
+                        </div>
+                        <Button
+                            isDisabled={parseFloat(fromWei(marketLiqRewards.pendingRewards || 0)) < 0.01}
+                            isProcessing={isClaimingLpRewards}
+                            size={"small"}
+                            color="primary"
+                            onClick={handleClaimLpRewards}
+                        >
+                            Claim Rewards
+                        </Button>
+                    </div>
+                )
+            }
             <DepositModal open={isDepositModalOpen}
                           onClose={() => setIsDepositModalOpen(false)}
                           onStake={() => {

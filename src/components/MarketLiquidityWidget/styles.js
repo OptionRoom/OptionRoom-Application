@@ -54,15 +54,43 @@ export const useStyles = makeStyles((theme) => ({
         textDecoration: 'underline',
         cursor: 'pointer'
     },
-/*    RemoveLiquidity__One: {
-        borderRadius: '15px'
+    LiquidityRewards: {
+        paddingTop: '20px',
+        marginTop: '20px',
+        borderTop: '1px solid #EDEFF4',
+        '&>div:first-child': {
+            display: 'flex',
+            alignItems: 'center',
+            '&>div': {
+                width: '50%',
+                '&>div:first-child': {
+                    fontStyle: "normal",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    lineHeight: "20px",
+                    color: "#818B95"
+                },
+                '&>div:last-child': {
+                    fontStyle: "normal",
+                    fontWeight: "normal",
+                    fontSize: "20px",
+                    lineHeight: "26px",
+                    letterSpacing: "0.005em",
+                    color: theme.isDark ? "#fff" : "#36414B"
+                }
+            },
+            marginBottom: '15px',
+        }
     },
-    RemoveLiquidity__Two: {
-        width: '80%',
-        borderRadius: '15px 0 0 15px'
-    },
-    AddLiquidity__Two: {
-        width: '20%',
-        borderRadius: '0 15px 15px 0'
-    }*/
+    /*    RemoveLiquidity__One: {
+            borderRadius: '15px'
+        },
+        RemoveLiquidity__Two: {
+            width: '80%',
+            borderRadius: '15px 0 0 15px'
+        },
+        AddLiquidity__Two: {
+            width: '20%',
+            borderRadius: '0 15px 15px 0'
+        }*/
 }));

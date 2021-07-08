@@ -192,7 +192,7 @@ function CreateMarket() {
             const marketApis = new MarketAPIs();
             const imageUpload = await uploadMarketImage(data.image);
 
-            const resolveTimestamp = data.endDate.clone().add(2, 'hours').unix();
+            const resolveTimestamp = data.endDate.clone().add(24, 'hours').unix();
             const collateralTokenAddress = getContractAddress('usdt');
             const sources = data.sources.map((entry) => entry.name);
 

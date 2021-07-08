@@ -76,6 +76,28 @@ class ClaimAPIs {
                 from: address,
             });
     }
+
+    async getMarketLiqRewards(wallet, marketAddress) {
+        const result = await this.rewardProgramContract
+            .methods
+            .getLPReward(marketAddress, wallet)
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
+    async claimMarketLiqRewards(wallet, marketAddress) {
+        const result = await this.rewardProgramContract
+            .methods
+            .claimLPReward(marketAddress)
+            .send({
+                from: wallet,
+            });
+
+        return result;
+    }
 }
 
 export default ClaimAPIs;

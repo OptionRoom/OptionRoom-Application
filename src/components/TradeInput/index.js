@@ -90,7 +90,7 @@ function TradeInput(props) {
                     value={tradePercent}
                     onChange={(e, e2) => {
                         setTradePercent(e2);
-                        const newVal = ((e2 * max) / 100).toFixed(2);
+                        const newVal = ((e2 * max) / 100);
                         setTradeVal(newVal);
                         onChange && onChange(newVal);
                     }}
