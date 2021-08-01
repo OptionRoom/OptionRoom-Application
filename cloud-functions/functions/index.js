@@ -80,8 +80,9 @@ exports.auth = functions.https.onRequest((req, res) => {
 });
 
 
-exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun((context) => {
+exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun(async (context) => {
     const callInit = async () => {
+        let syncedEventsCount = 0;
         const web3 = new Web3(new Web3.providers.HttpProvider(
             `https://bsc-dataseed1.ninicoin.io/`
         ));
@@ -1860,7 +1861,7 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun((contex
                 }
             ]
             ,
-            '0xbE227c937B87b6562d2cB5A5fCE51931C5397B09'
+            '0xC3B6D447D5d8869e4Eb1423bA5B8d0d6aFD7B6f6'
         );
 
         const callEvents = async (currentBlockNumber) => {
@@ -1875,11 +1876,18 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun((contex
             if (buyEvents && buyEvents.length > 0) {
                 for (let entry of buyEvents) {
                     const entryParsed = JSON.parse(JSON.stringify(entry));
-                    await db.collection('markets-buy-sell-events').add({
-                        ...entryParsed,
-                        market: entryParsed.returnValues.market,
-                        wallet: entryParsed.returnValues.buyer,
-                    });
+                    const docsThere = await db.collection('markets-buy-sell-events')
+                    .where('transactionHash', '==', entryParsed.transactionHash)
+                    .get();
+                    if(docsThere.docs.length === 0) {
+                        await db.collection('markets-buy-sell-events').add({
+                            ...entryParsed,
+                            market: entryParsed.returnValues.market,
+                            wallet: entryParsed.returnValues.buyer,
+                            createdAt: new Date().getTime()
+                        });
+                        syncedEventsCount +=1;
+                    }
                 }
             }
 
@@ -1889,11 +1897,18 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun((contex
             if (sellEvents && sellEvents.length > 0) {
                 for (let entry of sellEvents) {
                     const entryParsed = JSON.parse(JSON.stringify(entry));
-                    await db.collection('markets-buy-sell-events').add({
-                        ...entryParsed,
-                        market: entryParsed.returnValues.market,
-                        wallet: entryParsed.returnValues.seller,
-                    });
+                    const docsThere = await db.collection('markets-buy-sell-events')
+                                            .where('transactionHash', '==', entryParsed.transactionHash)
+                                            .get();
+                    if(docsThere.docs.length === 0) {
+                        await db.collection('markets-buy-sell-events').add({
+                            ...entryParsed,
+                            market: entryParsed.returnValues.market,
+                            wallet: entryParsed.returnValues.seller,
+                            createdAt: new Date().getTime()
+                        });
+                        syncedEventsCount +=1;
+                    }
                 }
             }
         }
@@ -1910,10 +1925,10 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 3 mins').onRun((contex
             }
         }
 
-        functions.logger.log(`End sync of block ${latestSyncedBlockNumber} new block is ${currentBlockNumber}`);
+        functions.logger.log(`End sync of block ${latestSyncedBlockNumber} new block is ${currentBlockNumber}, synced events count is ${syncedEventsCount}`);
 
         await db.collection("general").doc(generalDb.id).update({ buySellBlockNumber: currentBlockNumber });
     }
 
-    callInit();
+    return await callInit();
 });

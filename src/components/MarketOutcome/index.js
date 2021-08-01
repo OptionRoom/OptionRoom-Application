@@ -106,7 +106,7 @@ function MarketOutcome(props) {
 
     const loadMarketInfo = async () => {
 
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         //const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
     };
 

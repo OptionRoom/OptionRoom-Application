@@ -83,6 +83,8 @@ export const createMarket = async (wallet, category, description, endTimestamp, 
             images: [image],
             sources: sources,
             title: title,
+            type: 'market',
+            version: '2.0'
         });
 };
 
@@ -138,8 +140,10 @@ export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
     return false;
 };
 
-export const getMarkets = async () => {
-    const snapshot = await db.collection(marketsDbName).get();
+export const getMarkets = async (v1) => {
+    const snapshot = await db.collection(marketsDbName)
+        .where("version", "==", v1 ? '1.0' : '2.0')
+        .get();
     return snapshot.docs.map(doc => {
         return {
             id: doc.id,

@@ -19,7 +19,7 @@ import {
 import TradeInput from '../../components/TradeInput';
 import OrTab from "../OrTab";
 
-export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount, tradeType, option) => {
+export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount, tradeType, option, marketVersion) => {
     const [buySellDetails, setBuySellDetails] = useState({
         averagePrice: 0,
         estShares: 0,
@@ -29,7 +29,7 @@ export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount
     useEffect(() => {
         const init = async () => {
             const optionIndex = option.toLowerCase() === 'yes' ? 0 : 1;
-            const marketApis = new MarketAPIs();
+            const marketApis = new MarketAPIs(marketVersion);
             if(tradeType === 'buy') {
                 const numberOfBoughtTokens = await marketApis.getOptionTokensCountOfBuy(
                     wallet,
@@ -101,7 +101,7 @@ function BuySellWidget(props) {
     const [selectedTradeOption, setSelectedTradeOption] = useState('Yes');
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
     const [isTradeDisabled, setIsTradeDisabled] = useState(true);
-    const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeType, selectedTradeOption);
+    const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeType, selectedTradeOption, props.marketVersion);
     const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeType, selectedTradeOption === 'Yes' ? 0 : 1 , props.walletBalanceOfCollateralToken, props.walletOptionTokensBalance);
 
     const handleChangeTradeType = (newType) => {
@@ -118,12 +118,12 @@ function BuySellWidget(props) {
                     await approveContractForSpender(accountContext.account, 'usdt', 'market_controller');
                     props.onApprove && props.onApprove('CollateralToken');
                 } else {
-                    const marketAPIs = new MarketAPIs();
+                    const marketAPIs = new MarketAPIs(props.marketVersion);
                     await marketAPIs.buy(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
                     props.onTrade && props.onTrade();
                 }
             } else {
-                const marketAPIs = new MarketAPIs();
+                const marketAPIs = new MarketAPIs(props.marketVersion);
                 if (props.isWalletOptionTokenApprovedForMarketController) {
                     await marketAPIs.sell(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
                     setTradeInput(0);

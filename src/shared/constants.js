@@ -22,6 +22,14 @@ export const nftImages = {
     4: 'https://s3.amazonaws.com/www.optionroom.finance/nfts/citadel.jpg',
 };
 
+export const nftNames = {
+    0: 'Fallen Oracle.',
+    1: 'Room',
+    2: 'Echeleon',
+    3: 'pyramid',
+    4: 'Citadel',
+};
+
 export const marketStates = {
     "0": "Invalid",
     "1": "Validating",
@@ -35,6 +43,10 @@ export const marketStates = {
 };
 
 export const marketStatesDisplay = [
+    {
+        id: 'all',
+        title: 'All',
+    },
     {
         id: '0',
         title: 'Invalid',
@@ -70,6 +82,11 @@ export const marketStatesDisplay = [
     {
         id: '6',
         title: 'Resolved',
+    },
+    {
+        id: '9',
+        title: 'Force Resolved',
+        hide: false
     }
 ];
 

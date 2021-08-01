@@ -12,7 +12,7 @@ export const useGetFilteredMarkets = (markets, marketsContracts, searchQuery, ca
 
             if(tradedOnly) {
                 newMarkets = filter(newMarkets, (entry) => {
-                    return marketsTradedByWallet.indexOf(entry.id) > -1;
+                    return marketsTradedByWallet.indexOf(marketsContracts[entry.id]) > -1;
                 });
             }
 

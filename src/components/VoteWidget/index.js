@@ -24,7 +24,7 @@ function VoteWidget(props) {
 
     const handleVote = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(props.marketVersion);
 
         const voteVal = voteInput.toLowerCase() === 'yes' ? (props.marketState == 1 ? true : 0) : (props.marketState == 1 ? false : 1);
 
@@ -42,7 +42,7 @@ function VoteWidget(props) {
 
     const handleWithdrawVote = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(props.marketVersion);
 
         try {
             await marketApis.withdrawMarketVote(accountContext.account, props.marketContractAddress, props.marketState);
@@ -67,7 +67,7 @@ function VoteWidget(props) {
     }
 
     const loadVote = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
         if(props.marketState == 1) {
             const validatingVotesCount = votes.validatingVotesCount;
@@ -85,7 +85,7 @@ function VoteWidget(props) {
     };
 
     const loadWalletVotes = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
         setWalletVote(votes);
     };

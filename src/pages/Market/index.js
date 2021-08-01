@@ -54,13 +54,12 @@ function Market() {
 
     //Mrket
     const [market, setMarket] = useState(null);
+    const [marketVersion, setMarketVersion] = useState(null);
     const {marketId} = useParams();
     const [marketContractAddress, setMarketContractAddress] = useState(null);
     const marketState = useGetMarketState(accountContext.account, marketContractAddress);
     const [marketContractData, setMarketContractData] = useState({});
     const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
-
-
 
     const classes = useStyles();
 
@@ -83,7 +82,7 @@ function Market() {
     };
 
     const loadWalletAllowanceOfOptionToken = async () => {
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(marketVersion);
         const isWalletOptionTokenApprovedForMarketRes = await marketApis.getIsWalletOptionTokenApprovedForMarket(accountContext.account, marketContractAddress);
         const isWalletOptionTokenApprovedForMarketController = await marketApis.getIsWalletOptionTokenApprovedForMarketController(accountContext.account);
         setIsWalletOptionTokenApprovedForMarket(isWalletOptionTokenApprovedForMarketRes);
@@ -122,7 +121,7 @@ function Market() {
 
     const loadMarketContractData = async () => {
         const wallet = accountContext.account;
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(marketVersion);
         const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
         const marketiquidity = await marketApis.getMarketiquidity(wallet, marketContractAddress);
         const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
@@ -151,17 +150,14 @@ function Market() {
     useEffect(() => {
         const init = async () => {
             if (accountContext.account) {
+                let marketVersion = market && market.version;
                 setIsLoading(true);
-                //const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
-                //setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
-               // if (!isWalletWhitelistedForBetaRes) {
-                //    setIsLoading(false);
-                //    return;
-                //}
 
                 if (!market) {
                     const result = await getMarketById(marketId);
+                    marketVersion = result.version;
                     setMarket(result);
+                    setMarketVersion(marketVersion);
                 }
 
                 setIsLoading(false);
@@ -169,7 +165,7 @@ function Market() {
                 loadWalletData();
 
                 if (!marketContractAddress) {
-                    const marketApis = new MarketAPIs();
+                    const marketApis = new MarketAPIs(marketVersion);
                     const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, marketId);
                     setMarketContractAddress(marketContractAddressVal);
                 } else {
@@ -199,7 +195,6 @@ function Market() {
 
     //UI stuff
     const showOutcomeSection = () => {
-        return true;
         return ["3", "5", "6"].indexOf(marketState) > -1;
     };
 
@@ -248,7 +243,7 @@ function Market() {
 
     const showRedeemMarketRewardsWidget = () => {
         //return true;
-        return (["6"].indexOf(marketState) > -1);
+        return (["6", "9"].indexOf(marketState) > -1);
     }
 
     const showBuySellWidget = () => {
@@ -340,11 +335,13 @@ function Market() {
                                     {
                                         showOutcomeSection() && (
                                             <MarketOutcome marketState={marketState}
+                                                           marketVersion={marketVersion}
                                                            optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
                                                            marketContractAddress={marketContractAddress}/>
                                         )
                                     }
                                     <MarketWalletPosition marketState={marketState}
+                                                          marketVersion={marketVersion}
                                                           optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
                                                           walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
                                                           marketContractAddress={marketContractAddress}/>
@@ -386,8 +383,21 @@ function Market() {
                                             </div>
                                         )
                                     }
+                                    {
+                                        (market && market.version == '1.0') && (
+                                            <div className={classes.CreatorWidegt}>
+                                                <Alert icon={<FlareIcon fontSize="inherit" />}
+                                                       style={{
+                                                           borderRadius: '16px',
+                                                           marginBottom: '15px'
+                                                       }}
+                                                       severity="info">This is an archived market. V1.0</Alert>
+                                            </div>
+                                        )
+                                    }
                                     <div className={classes.MarketWidgetWrap}>
                                         <MarketLiquidityWidget marketState={marketState}
+                                                               marketVersion={marketVersion}
                                                             marketLiquidity={get(marketContractData, 'marketiquidity')}
                                                             marketContractAddress={marketContractAddress}
 
@@ -418,6 +428,7 @@ function Market() {
                                             <div className={classes.MarketWidgetWrap}>
                                                 <VoteWidget
                                                     marketState={marketState}
+                                                    marketVersion={marketVersion}
                                                     marketContractAddress={marketContractAddress}/>
                                             </div>
                                         )
@@ -428,6 +439,7 @@ function Market() {
                                                 <DisputeWidget
                                                     walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
                                                     marketState={marketState}
+                                                    marketVersion={marketVersion}
                                                     onDispute={handleOnDispute}
                                                     marketContractAddress={marketContractAddress}/>
                                             </div>
@@ -438,6 +450,7 @@ function Market() {
                                             <div className={classes.MarketWidgetWrap}>
                                                 <RedeemMarketRewardsWidget
                                                     marketState={marketState}
+                                                    marketVersion={marketVersion}
                                                     walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
                                                     onRedeem={handleOnRedeem}
                                                     marketContractAddress={marketContractAddress}/>
@@ -448,6 +461,7 @@ function Market() {
                                         showBuySellWidget() && (
                                             <div className={classes.MarketWidgetWrap}>
                                                 <BuySellWidget pricesOfBuy={pricesOfBuy}
+                                                               marketVersion={marketVersion}
                                                                onTrade={handleOnBuy}
                                                                onApprove={(type) => {
                                                                    if (type == 'CollateralToken') {

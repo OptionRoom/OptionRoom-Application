@@ -21,12 +21,13 @@ function MarketLiquidityWidget(props) {
     const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
     const [isAddLiquidityInProgress, setIsAddLiquidityInProgress] = useState(false);
     const [isRemoveLiquidityInProgress, setIsRemoveLiquidityInProgress] = useState(false);
-    const [marketLiqRewards, setMarketLiqRewards] = useState(null);
+    const [marketLiqRewards, setMarketLiqRewards] = useState({});
     const [isClaimingLpRewards, setIsClaimingLpRewards] = useState(false);
 
     const loadMarketLiqRewards = async () => {
         const claimAPIs = new ClaimAPIs();
         const rewards = await claimAPIs.getMarketLiqRewards(accountContext.account, props.marketContractAddress);
+        console.log("loadMarketLiqRewards", rewards);
         setMarketLiqRewards(rewards);
     }
 
@@ -41,7 +42,7 @@ function MarketLiquidityWidget(props) {
     };
 
     const showRemoveLiquiditySection = () => {
-        return ["0", "2", "3", "4", "6"].indexOf(props.marketState) > -1;
+        return ["0", "2", "3", "4", "6", "9"].indexOf(props.marketState) > -1;
     };
 
     const showClaimLpRewards = () => {
@@ -51,7 +52,7 @@ function MarketLiquidityWidget(props) {
     const handleAddLiquidity = async () => {
         if(props.walletAllowanceOfCollateralToken == 0) {
             setIsAddLiquidityInProgress(true);
-            const marketAPIs = new MarketAPIs();
+            const marketAPIs = new MarketAPIs(props.marketVersion);
             await marketAPIs.approveCollateralTokenForMarketRouter(accountContext.account);
             props.onApproveCollateralToken && props.onApproveCollateralToken();
             setIsAddLiquidityInProgress(false);
@@ -64,7 +65,7 @@ function MarketLiquidityWidget(props) {
     const handleRemoveLiquidity = async () => {
         if(!props.isWalletOptionTokenApprovedForMarket) {
             setIsRemoveLiquidityInProgress(true);
-            const marketAPIs = new MarketAPIs();
+            const marketAPIs = new MarketAPIs(props.marketVersion);
             await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
             props.onApproveOptionToken && props.onApproveOptionToken('market');
             setIsRemoveLiquidityInProgress(false);

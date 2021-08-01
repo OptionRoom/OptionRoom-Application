@@ -1,4 +1,4 @@
-import {map, sum, sortBy} from 'lodash';
+import {map, sum, sortBy, uniqBy} from 'lodash';
 
 import {walletHelper} from "../wallet.helper";
 import {MaxUint256} from "../../shared/constants";
@@ -10,7 +10,7 @@ import {
     getBuySellEventsOfWalletOnMarket
 } from '../firestore.service';
 
-import {marketStates} from '../constants';
+import {marketStates, marketStatesDisplay} from '../constants';
 
 const walletHelperInstance = walletHelper();
 
@@ -21,11 +21,11 @@ const generateMarketContract = (marketId) => {
 const fromBlock = 8762783 - 4000;
 
 class MarketAPIs {
-    constructor() {
-        this.marketsQueryContract = getContract('markets_query');
-        this.marketControllerContract = getContract('market_controller');
+    constructor(version) {
+        this.marketsQueryContract = getContract(version === '1.0' ? 'markets_queryv1' : 'markets_query');
+        this.marketControllerContract = getContract(version === '1.0' ? 'market_controllerv1' :  'market_controller');
         this.collateralTokenContract = getContract('usdt');
-        this.optionsTokenContract = getContract('option_token');
+        this.optionsTokenContract = getContract(version === '1.0' ? 'option_tokenv1' :  'option_token');
         this.roomTokenContract = getContract('room');
     }
 
@@ -47,9 +47,10 @@ class MarketAPIs {
     async getMarketTradingVolume(
         wallet,
         marketId) {
-
-        const buySellEvents = await getBuySellEventsOfMarket(marketId);
-
+        let buySellEvents = await getBuySellEventsOfMarket(marketId);
+        buySellEvents = uniqBy(buySellEvents, (entry) => {
+            return entry.transactionHash;
+        });
         const sum3 = sum(map(buySellEvents, (entry) => {
             return entry.event == 'MCBuy' ? parseFloat(entry.returnValues.investmentAmount) : parseFloat(entry.returnValues.returnAmount);
         }));
@@ -509,17 +510,37 @@ class MarketAPIs {
     }
 
     async getMarketsByState(wallet, state) {
-        const result = await this.marketsQueryContract
-            .methods
-            .getMarketsQuestionIDs(state, 0, -1)
-            .call({
-                from: wallet,
-            });
+        let result = {};
+        if(state != 'all') {
+            result = await this.marketsQueryContract
+                .methods
+                .getMarketsQuestionIDs(state, 0, -1)
+                .call({
+                    from: wallet,
+                });
+        } else {
+            for (let marketSatetEntry in marketStatesDisplay) {
+                if(marketStatesDisplay[marketSatetEntry].id != 'all') {
+                    const re1 = await this.marketsQueryContract
+                        .methods
+                        .getMarketsQuestionIDs(marketStatesDisplay[marketSatetEntry].id, 0, -1)
+                        .call({
+                            from: wallet,
+                        });
+                    result.markets = result.markets || [];
+                    result.questionsIDs = result.questionsIDs || [];
+                    result.markets = result.markets.concat(re1.markets);
+                    result.questionsIDs = result.questionsIDs.concat(re1.questionsIDs);
+                }
+            }
+        }
 
         const markets = {};
-        result.questionsIDs.forEach((entry, index) => {
-            markets[entry] = result.markets[index];
-        });
+        if(result && result.questionsIDs) {
+            result.questionsIDs.forEach((entry, index) => {
+                markets[entry] = result.markets[index];
+            });
+        }
 
         return markets;
     }

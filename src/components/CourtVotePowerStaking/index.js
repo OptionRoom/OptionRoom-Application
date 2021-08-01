@@ -122,11 +122,11 @@ function CourtVotePowerStaking(props) {
                 <div className={classes.CourtVotePowerStaking_Txt}>
                     <HowToVoteIcon/>
                     <div>
-                        Your voting power is: {fromWei(votePower)}
+                        Your voting power is: {fromWei(votePower, null, 2)}
                     </div>
                 </div>
                 <div className={classes.CourtVotePowerStaking_Txt2}>
-                    <div>Staked COURT balance: {fromWei(stakeBalance)}</div>
+                    <div>Staked COURT balance: {fromWei(stakeBalance, null, 2)}</div>
                     <Button size={'small'}
                             isProcessing={isApprovingCourtForPowerStake}
                             onClick={handleDeposit}

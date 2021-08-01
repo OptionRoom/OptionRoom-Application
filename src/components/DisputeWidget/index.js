@@ -63,7 +63,7 @@ function DisputeWidget(props) {
 
     const handleDispute = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(props.marketVersion);
 
         try {
             await marketApis.disputeMarket(accountContext.account, props.marketContractAddress, "N/A");
@@ -77,19 +77,19 @@ function DisputeWidget(props) {
     };
 
     const loadMarketMinHoldingsToDispute = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const result = await marketAPIs.getMarketMinHoldingsToDispute(accountContext.account, props.marketContractAddress);
         setMinHoldingsToDispute(result);
     };
 
     const loadWalletVotes = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const result = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
         setWalletDisputeVotes(result);
     };
 
     const loadMarketInfo = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
         setMarketInfo(result);
     };
@@ -110,7 +110,7 @@ function DisputeWidget(props) {
             <div className={classes.DisputeWidget__Body}>
                 {
                     marketInfo && (
-                        <div>The community resolved this market to {marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1] ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
+                        <div>The community resolved this market to {parseFloat(marketInfo.resolvingVotesCount[0]) > parseFloat(marketInfo.resolvingVotesCount[1]) ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
                     )
                 }
                 {

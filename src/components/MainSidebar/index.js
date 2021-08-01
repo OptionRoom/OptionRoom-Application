@@ -181,12 +181,18 @@ function MainSidebar(props) {
              })}>
             <div className={classes.NavLinks}>
                 {[
-                    {
+/*                     {
+                        title: 'Status',
+                        link: '/status',
+                        icon: MarketsIcon,
+                        isNew: true
+                    }, */
+/*                    {
                         title: 'Markets',
                         link: '/markets',
                         icon: MarketsIcon,
                         isNew: true
-                    },
+                    },*/
                     {
                         title: "Governance",
                         link: "/governance",
@@ -197,16 +203,16 @@ function MainSidebar(props) {
                         link: "/court-farming",
                         icon: CourtStakeIcon,
                     },
-                    {
+/*                    {
                         title: "Liquidity Farming",
                         link: "/liquidity-mining",
                         icon: LiquiditySidebarIcon,
-                    },
-                    {
+                    },*/
+/*                     {
                         title: "Get NFTs",
                         link: "/nft",
                         icon: NftIcon,
-                    },
+                    }, */
                     {
                         title: "NFT Staking",
                         link: "/nft-stake",
@@ -216,18 +222,7 @@ function MainSidebar(props) {
                         title: "Claim",
                         link: "/claim",
                         icon: ClaimIcon,
-                    },
-                    /*
-                        {
-                            title: 'Oracle',
-                            link: '/oracle',
-                            icon: OracleIcon
-                        },
-                        {
-                            title: 'Docs',
-                            link: '/docs',
-                            icon: DocsIcon
-                        },*/
+                    }
                 ].map((item, index) => (
                     <NavLink
                         to={item.link}

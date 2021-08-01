@@ -20,7 +20,7 @@ function RedeemMarketRewardsWidget(props) {
 
     const handleRedeem = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs();
+        const marketApis = new MarketAPIs(props.marketVersion);
         try {
             await marketApis.redeemMarketRewards(accountContext.account, props.marketContractAddress);
             props.onRedeem && props.onRedeem();
@@ -32,7 +32,7 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     const loadMarketInfo = async () => {
-        const marketAPIs = new MarketAPIs();
+        const marketAPIs = new MarketAPIs(props.marketVersion);
         const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
         setMarketInfo(result);
     };

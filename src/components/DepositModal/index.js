@@ -108,7 +108,7 @@ function DepositModal(props) {
                     tokensAmount
                 );
             } else if(type === 'Add_Market_Liquidity'){
-                const marketAPIs = new MarketAPIs();
+                const marketAPIs = new MarketAPIs(props.marketVersion);
                 await marketAPIs.addLiquidityToMarket(accountContext.account, props.marketContractId, tokensAmount);
             } else {
                 await courtAPIs.stackeTokens(

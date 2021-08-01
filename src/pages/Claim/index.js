@@ -181,11 +181,8 @@ function Claim() {
 
     useEffect(() => {
         if (accountContext.account) {
-            if(isRoomTokensShown() && accountContext.isChain('main')) {
+            if(accountContext.isChain('bsc')) {
                 loadClaimData();
-            }
-
-            if(isRewardsShown() && (accountContext.isChain('1337') || accountContext.isChain('ropsten') || accountContext.isChain('bsc'))) {
                 loadRewardsData();
             }
         }
@@ -217,19 +214,7 @@ function Claim() {
                 }
             />
             {
-                (!accountContext.isChain('main') && isRoomTokensShown()) && (
-                    <Alert
-                        elevation={6}
-                        variant="filled"
-                        style={{
-                            maxWidth: '500px',
-                            margin: '0 auto 15px'
-                        }}
-                        severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
-                )
-            }
-            {
-                (!accountContext.isChain('bsc') && isRewardsShown()) && (
+                (!accountContext.isChain('bsc')) && (
                     <Alert
                         elevation={6}
                         variant="filled"
@@ -274,7 +259,7 @@ function Claim() {
                                         <div className={classes.UnlockProgress__Title}>
                                             <div>Unlock in progress</div>
                                             <div className={classes.UnlockProgress__Value}>
-                                                {(claimInfo.totalUnlockedPercent * 100)}%
+                                                {(claimInfo.totalUnlockedPercent * 100).toFixed(2)}%
                                             </div>
                                         </div>
                                         <div className={classes.UnlockProgress__ProgressBar}>

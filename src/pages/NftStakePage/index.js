@@ -9,7 +9,7 @@ import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvide
 function NftStakePage() {
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme('black');
+    //optionroomThemeContext.changeTheme('black');
 
     return (
         <>

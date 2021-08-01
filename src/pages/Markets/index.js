@@ -48,8 +48,8 @@ function Markets() {
             id: "all"
         },
         state: {
-            id: "3",
-            title: "Active",
+            id: "all",
+            title: "All",
         },
         sort: {
             by: "volume",
@@ -80,7 +80,7 @@ function Markets() {
             setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes); */
 
             //if (isWalletWhitelistedForBetaRes) {
-                const result = await getMarkets();
+                const result = await getMarkets(false);
                 setAllMarkets(result);
                 const marketApis = new MarketAPIs();
                 const marketContracts = await marketApis.getMarketsByState(

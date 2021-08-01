@@ -35,6 +35,15 @@ class ClaimCourtAPIs {
                     from: address,
                 });
         }
+
+        return this.usdtTokenContract.methods
+            .approve(
+                getContractAddress(contract),
+                MaxUint256
+            )
+            .send({
+                from: address,
+            });
     }
 
     async getAddressUsdtAllowanceOfClaimContract(address, contract) {
@@ -60,6 +69,15 @@ class ClaimCourtAPIs {
                     from: address,
                 });
         }
+
+        return await this.usdtTokenContract.methods
+            .allowance(
+                address,
+                getContractAddress(contract)
+            )
+            .call({
+                from: address,
+            });
     }
 
     async getCostOfCourtClaim(address, amount, contract) {

@@ -21,7 +21,7 @@ class WalletHelper {
 
         const init = async () => {
             this.web3Modal = new Web3Modal({
-                //cacheProvider: true, // optional
+                cacheProvider: true, // optional
                 providerOptions: {
                     walletconnect: {
                         package: WalletConnectProvider,

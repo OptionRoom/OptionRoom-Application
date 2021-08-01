@@ -209,7 +209,7 @@ function FiltrationWidget(props) {
                                 });
                             }}
                                 menuPlacement={'top'}
-                              options={marketStatesDisplay.map((entry) => {
+                              options={marketStatesDisplay.filter(entry => !entry.hide).map((entry) => {
                                   return {
                                       value: entry.id,
                                       label: entry.title

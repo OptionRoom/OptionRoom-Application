@@ -10,6 +10,9 @@ import courtVoteStakeAbi from './court_vote_power_stake.abi.json';
 import courtTokenContractAbi from './court_token_contract.abi.json';
 import claimContractAbi from './claim_contract.abi.json';
 import rewardProgramAbi from './reward_program.abi.json';
+import CourtFarming_NoRoomStakeMatterAbi from './CourtFarming_NoRoomStakeMatter.abi.json';
+import CourtFarming_NoRoomStakeHTAbi from './CourtFarming_NoRoomStakeHT.abi.json';
+import CourtFarming_RoomStakeNewAbi from './CourtFarming_RoomStakeNew.abi.json';
 
 /////
 /////d
@@ -47,7 +50,6 @@ export const contractsAbis = {
         court_token: courtTokenContractAbi,
         reward_program: rewardProgramAbi,
 
-
         CourtEthLpTokenContract: CourtEthLpTokenContractAbi,
         CourtFarming_CourtEthLpStake: CourtFarming_CourtEthLpStakeAbi,
         CourtFarming_HtStakeContract: CourtFarming_HtStakeContractAbi,
@@ -61,6 +63,14 @@ export const contractsAbis = {
         RoomLPStakingContract: RoomLPStakingContractAbi,
         RoomLPTokenContract: RoomLPTokenContractAbi,
         WethTokenContract: WethTokenContractAbi,
+        CourtFarming_NoRoomStakeMatter: CourtFarming_NoRoomStakeMatterAbi,
+        CourtFarming_NoRoomStakeHT: CourtFarming_NoRoomStakeHTAbi,
+        CourtFarming_RoomStakeNew: CourtFarming_RoomStakeNewAbi,
+
+        //V1 ABI
+        market_controllerv1: marketControllerAbi,
+        markets_queryv1: marketsQueryAbi,
+        option_tokenv1: optionTokenAbi,
     }
 };
 
@@ -153,18 +163,28 @@ export const contractsAddresses = {
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     },
     56: {
-        court_vote_stake: '0x3bd21a6d3925c8e7f20e1eb910d01c33b412e588',
-        court_token: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
+        claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',
+        NftStakeContract: "0xC9479115fb35397f2fA15036894344a428d71016",
 
-        market: '0x56500442933a789FCfF289b8be7ECF3b40911cE8',
-        market_controller: '0xbE227c937B87b6562d2cB5A5fCE51931C5397B09',
-        markets_query: '0xf5637910a53379AF11237b2ef629220E79c5ECf6',
-        option_token: '0xB12045C83cEF8404A2f35d4188338503e20AE1a7',
+        court_vote_stake: '0xf59834831339141c727Fa7B5d0FCA16551EA4b8c',
+        court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
+
+        market: '0x01102801C1556239e9EE7eE12194e9a138e7a5da',
+        market_controller: '0xC3B6D447D5d8869e4Eb1423bA5B8d0d6aFD7B6f6',
+        markets_query: '0x84287DD628f72Ce344524Dc31F9aD953BA42cD63',
+        option_token: '0xB081caDb3f6Da14a22Fa0E1cFDb94e2561CC1C05',
 
         usdt: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
-        room: '0xAd4f86a25bbc20FfB751f2FAC312A0B4d8F88c64',
+        room: '0x3C45A24d36Ab6fc1925533C1F57bC7e1b6fbA8a4',
 
-        reward_program: "0xD1875886B58A83cA907A2b185915cC6ad43D9898",
+        reward_program: "0xe0FAf75284Fb81E51d97573c05B157dEF17442d9",
+
+        market_controllerv1: '0xbE227c937B87b6562d2cB5A5fCE51931C5397B09',
+        markets_queryv1: '0xf5637910a53379AF11237b2ef629220E79c5ECf6',
+        option_tokenv1: '0xB12045C83cEF8404A2f35d4188338503e20AE1a7',
+        CourtFarming_NoRoomStakeMatter: '0xd45F3536DA6e796292b1ED1531Cf3f2Cd6CA1F32',
+        CourtFarming_NoRoomStakeHT: '0xD3e1934c96763227639B9CD678722dc1534626C2',
+        CourtFarming_RoomStakeNew: '0xcc8273b90d2b8dd557462b0935a5945040e35c87',
     },
     1337: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',

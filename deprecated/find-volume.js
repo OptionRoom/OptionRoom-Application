@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const admin = require('firebase-admin');
-const serviceAccount = require('./service-account.json');
+const serviceAccount = require('../cloud-functions/functions/service-account.json');
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });

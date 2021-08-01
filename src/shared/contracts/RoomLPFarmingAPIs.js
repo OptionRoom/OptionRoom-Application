@@ -170,6 +170,18 @@ class RoomLPFarmingAPIs {
         return result;
     }
 
+    async exitNftStakePool(address, tire) {
+        const result = await this.nftStakeContract
+            .methods
+            .exit(tire)
+            .send({
+                from: address
+            });
+
+
+        return result;
+    }
+
     async getUserNftStakeRewardsBalanceOfTire(address, tire) {
         const result = await this.nftStakeContract
             .methods

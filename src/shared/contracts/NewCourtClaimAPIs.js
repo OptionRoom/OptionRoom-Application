@@ -2,22 +2,80 @@ import { getContract, getContractAddress } from "./contracts.helper";
 import { MaxUint256 } from "../../shared/constants";
 
 
-class ClaimCourtAPIs {
+class NewCourtClaimAPIs {
     constructor() {
-        this.courtTokenContract = getContract('court_token');
+        this.CourtFarming_NoRoomStakeMatter = getContract('CourtFarming_NoRoomStakeMatter');
+        this.CourtFarming_NoRoomStakeHT = getContract('CourtFarming_NoRoomStakeHT');
+        this.CourtFarming_RoomStakeNew = getContract('CourtFarming_RoomStakeNew');
         this.usdtTokenContract = getContract('usdt');
-        this.matterTokenContract = getContract('MatterTokenContract');
-        this.htTokenContract =  getContract('HtTokenContract');
-        this.htClaimContract =  getContract('ht_court_farming_claim');
-        this.matterClaimContract =  getContract('matter_court_farming_claim');
-        this.courtPowerStakeContract =  getContract('court_vote_stake');
+    }
+
+    async getClaimInfo(address, contract) {
+        if(contract === 'CourtFarming_NoRoomStakeMatter') {
+            const claimInfo = await this.CourtFarming_NoRoomStakeMatter.methods
+                .getClaimInfo(
+                    address
+                )
+                .call({
+                    from: address,
+                });
+
+            const claimCost = await this.CourtFarming_NoRoomStakeMatter.methods
+                .claimFeePerCourt(
+                )
+                .call({
+                    from: address,
+                });
+
+            return {
+                ...claimInfo,
+                claimCost: claimCost
+            };
+        }
+
+        if(contract === 'CourtFarming_NoRoomStakeHT') {
+            const claimInfo = await this.CourtFarming_NoRoomStakeHT.methods
+                .getClaimInfo(
+                    address
+                )
+                .call({
+                    from: address,
+                });
+
+            const claimCost = await this.CourtFarming_NoRoomStakeHT.methods
+                .claimFeePerCourt(
+                )
+                .call({
+                    from: address,
+                });
+
+            return {
+                ...claimInfo,
+                claimCost: claimCost
+            };
+        }
+
+        if(contract === 'CourtFarming_RoomStakeNew') {
+            const claimInfo = await this.CourtFarming_RoomStakeNew.methods
+                .getClaimInfo(
+                    address
+                )
+                .call({
+                    from: address,
+                });
+
+            return {
+                ...claimInfo,
+                claimCost: 0
+            };
+        }
     }
 
     async approveUsdtForClaimContract(address, contract) {
-        if(contract === 'matter_court_farming_claim') {
+        if(contract === 'CourtFarming_NoRoomStakeMatter') {
             return await this.usdtTokenContract.methods
                 .approve(
-                    this.matterClaimContract._address,
+                    this.CourtFarming_NoRoomStakeMatter._address,
                     MaxUint256
                 )
                 .send({
@@ -25,10 +83,10 @@ class ClaimCourtAPIs {
                 });
         }
 
-        if(contract === 'ht_court_farming_claim') {
+        if(contract === 'CourtFarming_NoRoomStakeHT') {
             return await this.usdtTokenContract.methods
                 .approve(
-                    this.htClaimContract._address,
+                    this.CourtFarming_NoRoomStakeHT._address,
                     MaxUint256
                 )
                 .send({
@@ -39,22 +97,22 @@ class ClaimCourtAPIs {
 
     async getAddressUsdtAllowanceOfClaimContract(address, contract) {
         //"CourtFarming_HtStake", "CourtFarming_MatterStake"
-        if(contract === 'CourtFarming_HtStake') {
+        if(contract === 'CourtFarming_NoRoomStakeMatter') {
             return await this.usdtTokenContract.methods
                 .allowance(
                     address,
-                    getContractAddress('ht_court_farming_claim')
+                    getContractAddress('CourtFarming_NoRoomStakeMatter')
                 )
                 .call({
                     from: address,
                 });
         }
 
-        if(contract === 'CourtFarming_MatterStake') {
+        if(contract === 'CourtFarming_NoRoomStakeHT') {
             return await this.usdtTokenContract.methods
                 .allowance(
                     address,
-                    getContractAddress('matter_court_farming_claim')
+                    getContractAddress('CourtFarming_NoRoomStakeHT')
                 )
                 .call({
                     from: address,
@@ -62,89 +120,25 @@ class ClaimCourtAPIs {
         }
     }
 
-    async getCostOfCourtClaim(address, amount, contract) {
-        if(contract === 'CourtFarming_HtStake') {
-            return await this.htClaimContract.methods
-                .getRequiredAmount(amount)
-                .call({
-                    from: address,
-                });
-        }
-
-        if(contract === 'CourtFarming_MatterStake') {
-            return await this.matterClaimContract.methods
-                .getRequiredAmount(amount)
-                .call({
-                    from: address,
-                });
-        }
-    }
-
-    async getAddressTokenBalance(address, token) {
-        if (token === "court") {
-            const result = await this.courtTokenContract.methods
-                .balanceOf(address)
-                .call({
-                    from: address,
-                });
-
-            return result;
-        }
-    }
-
-    async getVotePower(address) {
-        return await this.courtPowerStakeContract.methods
-            .getUserPower(address)
-            .call({
-                from: address,
-            });
-    }
-
-    async getWalletCourtAllowanceOfPowerStakeContract(address) {
-        return await this.courtTokenContract.methods
-            .allowance(
-                address,
-                this.courtPowerStakeContract._address
-            )
-            .call({
-                from: address,
-            });
-    }
-
-    async getWalletStakedCourtInPowerStakeContract(address) {
-        return await this.courtPowerStakeContract.methods
-            .stakedPerUser(address)
-            .call({
-                from: address,
-            });
-    }
-
-    async approveCourtForPowerStakeContract(address) {
-        return await this.courtTokenContract.methods
-            .approve(
-                this.courtPowerStakeContract._address,
-                MaxUint256
-            )
+    async claimCourt(address, contract, amount) {
+        if(contract === 'CourtFarming_RoomStakeNew') {
+            return getContract(contract)
+            .methods
+            .claimAll()
             .send({
                 from: address,
             });
-    }
+        }
 
-    async depositCourtInPowerStakeContract(address, amount) {
-        return await this.courtPowerStakeContract.methods
-            .deposit(amount)
-            .send({
-                from: address,
-            });
-    }
-
-    async withdrawCourtInPowerStakeContract(address, amount) {
-        return await this.courtPowerStakeContract.methods
-            .withdraw(amount)
+        return getContract(contract)
+            .methods
+            .claim(
+                amount
+            )
             .send({
                 from: address,
             });
     }
 }
 
-export default ClaimCourtAPIs;
+export default NewCourtClaimAPIs;

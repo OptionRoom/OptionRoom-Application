@@ -26,6 +26,8 @@ import FarminPoolPage from "./pages/FarminPoolPage";
 import Claim from "./pages/Claim";
 import MarketTest from "./pages/MarketTest";
 import Markets from "./pages/Markets";
+import MarketsV1 from "./pages/MarketsV1";
+import Status from "./pages/Status";
 import Market from "./pages/Market";
 import Governance from "./pages/Governance";
 import GovernanceList from "./pages/GovernanceList";
@@ -205,7 +207,7 @@ function App() {
                                 })}
                             >
                                 <Switch>
-                                    <Route path="/liquidity-mining">
+                                <Route path="/liquidity-mining">
                                         <FarminPoolPage
                                             isDepositEnabled={true}
                                             pool={"RoomFarming_RoomEthLpStake"}
@@ -258,6 +260,9 @@ function App() {
                                     <Route path="/market-test">
                                         <MarketTest />
                                     </Route>
+                                    <Route path="/status" exact={true}>
+                                        <Status />
+                                    </Route>
                                     <Route path="/markets" exact={true}>
                                         <Markets />
                                     </Route>
@@ -267,7 +272,10 @@ function App() {
                                     <Route path="/markets/:marketId">
                                         <Market />
                                     </Route>
-                                    <Route path="/governance" exact={true}>
+                                    <Route path="/markets-v1">
+                                        <MarketsV1 />
+                                    </Route>
+{/*                                    <Route path="/governance" exact={true}>
                                         <GovernanceList />
                                     </Route>
                                     <Route path="/governance/:governanceId">
@@ -275,9 +283,9 @@ function App() {
                                     </Route>
                                     <Route path="/config-wallet">
                                         <ConfigWallet />
-                                    </Route>
+                                    </Route>*/}
                                     <Route exact path="/">
-                                        <Redirect to="/court-farming" />
+                                        <Redirect to="/governance" />
                                     </Route>
                                 </Switch>
                             </div>
