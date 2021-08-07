@@ -1,5 +1,11 @@
 [
     {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -143,6 +149,12 @@
                 "internalType": "uint256",
                 "name": "outcomeTokensBought",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
             }
         ],
         "name": "MCBuy",
@@ -179,6 +191,12 @@
                 "indexed": false,
                 "internalType": "uint256",
                 "name": "outcomeTokensSold",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
                 "type": "uint256"
             }
         ],
@@ -485,21 +503,6 @@
     },
     {
         "constant": true,
-        "inputs": [],
-        "name": "getCurrentTime1",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
         "inputs": [
             {
                 "internalType": "address",
@@ -514,6 +517,11 @@
                     {
                         "internalType": "uint256",
                         "name": "createdTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "validatingEndTime",
                         "type": "uint256"
                     },
                     {
@@ -1387,36 +1395,6 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_centralTimeForTesting",
-                "type": "address"
-            }
-        ],
-        "name": "setCentralTimeAddressForTesting",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "internalType": "contract CentralTimeForTesting",
-                "name": "_centralTimeForTesting",
-                "type": "address"
-            }
-        ],
-        "name": "setCentralTimeForTesting",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "internalType": "address",
                 "name": "token",
                 "type": "address"
             },
@@ -1542,7 +1520,7 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "neefees",
+                "name": "newfees",
                 "type": "uint256"
             }
         ],
@@ -1586,12 +1564,72 @@
         "constant": false,
         "inputs": [
             {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketParticipationEndTime",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
                 "internalType": "uint256",
                 "name": "p",
                 "type": "uint256"
             }
         ],
         "name": "setMarketReCastResolvingPeriod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketResolvingEndTime",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketValidatingEndTime",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1711,7 +1749,7 @@
                 "type": "address"
             }
         ],
-        "name": "transfeerGovernor",
+        "name": "transferGovernor",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1726,7 +1764,7 @@
                 "type": "address"
             }
         ],
-        "name": "transfeerGuardian",
+        "name": "transferGuardian",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",

@@ -25,7 +25,7 @@ import {
 
 import { timeConverter } from "../../shared/helper";
 
-import room_eth_lp_staking from "../../assets/room_eth_lp_staking.png";
+import room_eth_lp_staking from "../../assets/room_bnb_lp_staking.png";
 import ht_icon from "../../assets/ht_icon.png";
 import matter_icon from "../../assets/matter_icon.png";
 import room_icon from "../../assets/room.svg";
@@ -82,7 +82,7 @@ const getPoolConfig = (source, pool) => {
     if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
         return {
             earnedTokenName: "ROOM Earned",
-            stakeTokenTitle: "Stake ROOM/ETH LP",
+            stakeTokenTitle: "Stake ROOM/BNB LP",
             earnedTokenImg: room_icon,
             stakeTokenImg: room_eth_lp_staking,
         };
@@ -91,7 +91,7 @@ const getPoolConfig = (source, pool) => {
     if (source === "room_eth_lp" && pool === "CourtFarming_RoomEthLpStake") {
         return {
             earnedTokenName: "COURT Earned",
-            stakeTokenTitle: "Stake ROOM/ETH LP",
+            stakeTokenTitle: "Stake ROOM/BNB LP",
             earnedTokenImg: courtTokenIconImg,
             stakeTokenImg: room_eth_lp_staking,
         };
@@ -307,7 +307,7 @@ function RoomLpStake(props) {
     const updateInfo = async () => {
         const courtAPIs = new CourtAPIs();
 
-        if (isIncvPool()) {
+/*         if (isIncvPool()) {
             const courtPoolTotalLockedValue = await courtAPIs.getContractLockedValue(
                 accountContext.account,
                 pool
@@ -330,7 +330,7 @@ function RoomLpStake(props) {
                 roomTotalLiquidity,
                 roomApy,
             });
-        }
+        } */
     };
 
     useEffect(() => {
@@ -358,7 +358,7 @@ function RoomLpStake(props) {
             );
         };
 
-        if (accountContext.account && accountContext.isChain('main')) {
+        if (accountContext.account && accountContext.isChain('bsc')) {
             init();
         }
 

@@ -7,6 +7,7 @@ class NewCourtClaimAPIs {
         this.CourtFarming_NoRoomStakeMatter = getContract('CourtFarming_NoRoomStakeMatter');
         this.CourtFarming_NoRoomStakeHT = getContract('CourtFarming_NoRoomStakeHT');
         this.CourtFarming_RoomStakeNew = getContract('CourtFarming_RoomStakeNew');
+        this.CourtFarming_RoomBNBLP = getContract('CourtFarming_RoomLPStake');
         this.usdtTokenContract = getContract('usdt');
     }
 
@@ -57,6 +58,21 @@ class NewCourtClaimAPIs {
 
         if(contract === 'CourtFarming_RoomStakeNew') {
             const claimInfo = await this.CourtFarming_RoomStakeNew.methods
+                .getClaimInfo(
+                    address
+                )
+                .call({
+                    from: address,
+                });
+
+            return {
+                ...claimInfo,
+                claimCost: 0
+            };
+        }
+
+        if(contract === 'CourtFarming_RoomLPStake') {
+            const claimInfo = await this.CourtFarming_RoomBNBLP.methods
                 .getClaimInfo(
                     address
                 )
@@ -121,7 +137,7 @@ class NewCourtClaimAPIs {
     }
 
     async claimCourt(address, contract, amount) {
-        if(contract === 'CourtFarming_RoomStakeNew') {
+        if(['CourtFarming_RoomStakeNew', 'CourtFarming_RoomLPStake'].indexOf(contract) > -1) {
             return getContract(contract)
             .methods
             .claimAll()

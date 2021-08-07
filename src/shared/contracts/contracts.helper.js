@@ -66,6 +66,7 @@ export const contractsAbis = {
         CourtFarming_NoRoomStakeMatter: CourtFarming_NoRoomStakeMatterAbi,
         CourtFarming_NoRoomStakeHT: CourtFarming_NoRoomStakeHTAbi,
         CourtFarming_RoomStakeNew: CourtFarming_RoomStakeNewAbi,
+        CourtFarming_RoomLPStake: CourtFarming_RoomStakeNewAbi,
 
         //V1 ABI
         market_controllerv1: marketControllerAbi,
@@ -164,7 +165,7 @@ export const contractsAddresses = {
     },
     56: {
         claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',
-        NftStakeContract: "0xC9479115fb35397f2fA15036894344a428d71016",
+        NftStakeContract: "0x1B161D12DC0bBEF6B28640F9D10F0f43f44885BA",
 
         court_vote_stake: '0xf59834831339141c727Fa7B5d0FCA16551EA4b8c',
         court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
@@ -185,6 +186,10 @@ export const contractsAddresses = {
         CourtFarming_NoRoomStakeMatter: '0xd45F3536DA6e796292b1ED1531Cf3f2Cd6CA1F32',
         CourtFarming_NoRoomStakeHT: '0xD3e1934c96763227639B9CD678722dc1534626C2',
         CourtFarming_RoomStakeNew: '0xcc8273b90d2b8dd557462b0935a5945040e35c87',
+        CourtFarming_RoomLPStake: '0x497364aAdF12C594E5A5E9C2A76FdDad9261EF15',
+
+        RoomLPStakingContract: "0x082A88370DF7355071532680EF129491236a5f37",
+        RoomLPTokenContract: "0x84d15c02acd9fb9e0266d4075e7207db11a15cb3",
     },
     1337: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',

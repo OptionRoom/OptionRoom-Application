@@ -76,7 +76,7 @@ function FarminPoolPage(props) {
                 {accountContext.account && (
                     <>
                         {
-                            accountContext.chainId != 1 && (
+                            !accountContext.isChain('bsc') && (
                                 <Alert
                                     elevation={6}
                                     variant="filled"
@@ -84,7 +84,7 @@ function FarminPoolPage(props) {
                                         maxWidth: '500px',
                                         margin: '0 auto 15px'
                                     }}
-                                    severity="error">Unsupported chain, supported chains are: 1 (Ethereum Mainnet)</Alert>
+                                    severity="error">Unsupported chain, supported chains are: 56 (Smart Chain)</Alert>
                             )
                         }
                         <div className={classes.Pools}>

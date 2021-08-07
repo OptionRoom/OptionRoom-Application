@@ -88,7 +88,6 @@ function Markets() {
                     filterDetails.state.id
                 );
                 setMarketsContracts(marketContracts);
-
                 const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
                 setMarketsTradedByWallet(marketsTradedByWallet);
             //}
@@ -282,6 +281,7 @@ function Markets() {
                                     return (
                                         <div key={`market-${entry.id}`}>
                                             <MarketCard
+                                                marketContractAddress={marketsContracts && marketsContracts[entry.id]}
                                                 market={{
                                                     ...entry,
                                                     state: filterDetails.state,

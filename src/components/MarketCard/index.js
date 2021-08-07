@@ -2,16 +2,14 @@ import React, { useEffect } from "react";
 import clsx from "clsx";
 import { get } from "lodash";
 import numeral from "numeral";
-/*
 import {useState, useContext} from 'react';
-*/
+
 import { Link } from "react-router-dom";
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import {VolumeIcon} from '../../shared/icons';
-/*
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-*/
+
 import { fromWei, truncateText } from "../../shared/helper";
 import { marketStateColors, marketStates } from "../../shared/constants";
 /*
@@ -23,15 +21,17 @@ import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
 
 function MarketCard(props) {
     /*
-    const marketAPIs = new MarketAPIs();
+
 */
 
     const classes = useStyles();
     const { market } = props;
-    /*    const [pricesOfBuy, setPricesOfBuy] = useState(0);
+    const accountContext = useContext(AccountContext);
     const [marketState, setMarketState] = useState(null);
+    /*    const [pricesOfBuy, setPricesOfBuy] = useState(0);
+
     const [marketContractAddress, setMarketContractAddress] = useState(null);
-    const accountContext = useContext(AccountContext);*/
+    */
     //const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress);
 
     const handleInit = async () => {
@@ -44,23 +44,25 @@ function MarketCard(props) {
             'yes': pricesOfBuy.priceOfYes,
             'no': pricesOfBuy.priceOfNo,
         });*/
-        /*        const marketContractInState = await marketAPIs.getMarketState(accountContext.account, marketContractAddress);
-        setMarketState(marketContractInState);*/
+        const marketAPIs = new MarketAPIs();
+        const marketContractInState = await marketAPIs.getMarketState(accountContext.account, props.marketContractAddress);
+        console.log("marketContractInState", marketContractInState);
+        setMarketState(marketContractInState);
     };
 
     const getMarketStateText = () => {
-        if (!get(props, ["market", "state"])) {
+        if (!marketState) {
             return null;
         }
 
-        return marketStates[get(props, ["market", "state", "value"])];
+        return marketStates[marketState];
     };
 
     const getMarketStateColor = () => {
-        if (!get(props, ["market", "state"])) {
+        if (!marketState) {
             return null;
         }
-        return marketStateColors[get(props, ["market", "state", "value"])];
+        return marketStateColors[marketState];
     };
 
     useEffect(() => {
@@ -101,8 +103,13 @@ function MarketCard(props) {
                         <div className={classes.Cat}>
                             {get(market, ["category", "title"])}
                         </div>
-                        <div className={classes.State}>
-                            {get(market, ["state", "title"])}
+                        <div className={classes.State}
+                             style={
+                                {
+                                    backgroundColor: getMarketStateColor()
+                                }
+                             }>
+                            {getMarketStateText()}
                         </div>
                     </div>
                     <div className={classes.Title}>

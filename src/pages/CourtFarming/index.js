@@ -56,7 +56,8 @@ const oldStakeContractsById = {
 const newStakeContractsById = {
     "HT_COURT": "CourtFarming_NoRoomStakeHT",
     "MATTER_COURT": "CourtFarming_NoRoomStakeMatter",
-    "ROOM_COURT": "CourtFarming_RoomStakeNew"
+    "ROOM_COURT": "CourtFarming_RoomStakeNew",
+    "ROOM_BNB_LP_COURT": "CourtFarming_RoomLPStake"
 };
 
 function CourtFarmingPool(props) {
@@ -91,7 +92,7 @@ function CourtFarmingPool(props) {
     const handleClaimCourt = async () => {
         setIsWithdrawingTokens(true);
 
-        if(props.entryId === "ROOM_COURT") {
+        if(["ROOM_COURT", "ROOM_BNB_LP_COURT"].indexOf(props.entryId) > -1) {
             try {
                 const newCourtClaimAPIs = new NewCourtClaimAPIs();
                 await newCourtClaimAPIs.claimCourt(accountContext.account, newStakeContractsById[props.entryId], claimInfo.courtAmount);
@@ -206,7 +207,7 @@ function CourtFarmingPool(props) {
                 accountContext.isChain('bsc') && (
                     <>
                         <div>
-                            <span>{props.entryId === "ROOM_COURT" ? fromWei(claimInfo.roomAmount || 0, null, 2) : 'N/A'}</span>
+                            <span>{["ROOM_COURT", 'ROOM_BNB_LP_COURT'].indexOf(props.entryId) > -1 ? fromWei(claimInfo.roomAmount || 0, null, 2) : 'N/A'}</span>
                         </div>
                         <div>
                             <span>{fromWei(claimInfo.courtAmount || 0, null, 2)}</span>
@@ -220,7 +221,7 @@ function CourtFarmingPool(props) {
                                         color="primary"
                                         onClick={handleClaimCourt}
                                     >
-                                        {props.entryId != "ROOM_COURT" ? (usdtAllowanceForClaim == 0 ? 'Un-lock to claim': 'Claim') : 'Withdraw & Claim'}
+                                        {["ROOM_COURT", 'ROOM_BNB_LP_COURT'].indexOf(props.entryId) === -1 ? (usdtAllowanceForClaim == 0 ? 'Un-lock to claim': 'Claim') : 'Withdraw & Claim'}
                                     </Button>
                                 )
                             }
@@ -246,14 +247,13 @@ function CourtFarming() {
             link: "/court-farming/court-room",
             xUnit: "5x",
         },
-/*        {
-            id: "ROOM_ETH_LP_EARN_COURT",
-            title: "Deposit ROOM-ETH LP",
+        {
+            id: "ROOM_BNB_LP_COURT",
+            title: "ROOM-BNB LP",
             decs: "Get COURT",
             link: "/court-farming/court-roomethlp",
-            icons: [room_icon, eth_icon],
             xUnit: "7x",
-        },*/
+        },
         {
             id: "HT_COURT",
             title: "HT",
@@ -314,7 +314,7 @@ function CourtFarming() {
                             {
                                 pools
                                 .filter((entry) => {
-                                    if(entry.id === 'ROOM_COURT' && !accountContext.isChain('bsc')){
+                                    if(["ROOM_COURT", "ROOM_BNB_LP_COURT"].indexOf(entry.id) > -1 && !accountContext.isChain('bsc')){
                                         return false;
                                     }
 

@@ -187,12 +187,12 @@ function MainSidebar(props) {
                         icon: MarketsIcon,
                         isNew: true
                     }, */
-/*                    {
+                    {
                         title: 'Markets',
                         link: '/markets',
                         icon: MarketsIcon,
                         isNew: true
-                    },*/
+                    },
                     {
                         title: "Governance",
                         link: "/governance",
@@ -203,11 +203,11 @@ function MainSidebar(props) {
                         link: "/court-farming",
                         icon: CourtStakeIcon,
                     },
-/*                    {
+                    {
                         title: "Liquidity Farming",
                         link: "/liquidity-mining",
                         icon: LiquiditySidebarIcon,
-                    },*/
+                    },
 /*                     {
                         title: "Get NFTs",
                         link: "/nft",
