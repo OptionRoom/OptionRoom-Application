@@ -6,7 +6,7 @@ const marginBetweenEntries = 15;
 
 export const useStyles = makeStyles((theme) => ({
     LoadingWrapper: {
-        padding: "100px",
+        padding: "100px 0",
         textAlign: "center",
     },
     ConnectWrap: {

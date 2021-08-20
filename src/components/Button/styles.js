@@ -165,6 +165,12 @@ export const useStyles = makeStyles((theme) => ({
         letterSpacing: 0,
         lineHeight: '24px',
     },
+    Size__Xs: {
+        fontSize: '12px',
+        fontWeight: 600,
+        letterSpacing: 0,
+        height: '20px'
+    },
     Progress_StateWrap: {
         display: 'flex',
         alignItems: 'center'

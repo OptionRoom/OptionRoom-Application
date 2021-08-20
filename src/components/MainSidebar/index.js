@@ -222,7 +222,12 @@ function MainSidebar(props) {
                         title: "Claim",
                         link: "/claim",
                         icon: ClaimIcon,
-                    }
+                    },
+                    {
+                        title: 'Markets (V1)',
+                        link: '/markets-v1',
+                        icon: MarketsIcon,
+                    },
                 ].map((item, index) => (
                     <NavLink
                         to={item.link}

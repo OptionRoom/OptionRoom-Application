@@ -43,6 +43,7 @@ import {
     getWalletBalanceOfContract
 } from '../../shared/contracts/contracts.helper';
 import {fromWei} from "../../shared/helper";
+import OrLoader from "../../components/OrLoader";
 
 function Market() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -220,7 +221,8 @@ function Market() {
     if(isLoading) {
         return (
             <div className={classes.LoadingWrapper}>
-                <CircularProgress/>
+                <OrLoader width={400}
+                          height={400}/>
             </div>
         )
     }

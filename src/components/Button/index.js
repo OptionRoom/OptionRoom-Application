@@ -54,6 +54,7 @@ function Button(props) {
                 [classes.Size__Medium]: size === "medium",
                 [classes.Size__Large]: size === "large",
                 [classes.Size__Small]: size === "small",
+                [classes.Size__Xs]: size === "xs",
             })}
             variant={"contained"}
             {...rest}

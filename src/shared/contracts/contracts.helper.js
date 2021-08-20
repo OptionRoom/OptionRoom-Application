@@ -1,5 +1,6 @@
 import marketAbi from './market.abi';
 import marketControllerAbi from './market-controller.abi';
+import marketControllerV1Abi from './market-controllerv1.abi';
 import marketsQueryAbi from './markets-query.abi';
 import optionTokenAbi from './option-token.abi';
 import usdtAbi from './usdt.abi';
@@ -69,7 +70,7 @@ export const contractsAbis = {
         CourtFarming_RoomLPStake: CourtFarming_RoomStakeNewAbi,
 
         //V1 ABI
-        market_controllerv1: marketControllerAbi,
+        market_controllerv1: marketControllerV1Abi,
         markets_queryv1: marketsQueryAbi,
         option_tokenv1: optionTokenAbi,
     }
@@ -167,7 +168,7 @@ export const contractsAddresses = {
         claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',
         NftStakeContract: "0x1B161D12DC0bBEF6B28640F9D10F0f43f44885BA",
 
-        court_vote_stake: '0xf59834831339141c727Fa7B5d0FCA16551EA4b8c',
+        court_vote_stake: '0x20e88cb035870fcf1ff31bf0bc6949f89ba062f0',
         court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
 
         market: '0x01102801C1556239e9EE7eE12194e9a138e7a5da',

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { get } from "lodash";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import clsx from "clsx";
 import SearchIcon from '@material-ui/icons/Search';
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
@@ -24,6 +23,7 @@ import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import { useGetFilteredMarkets } from "./hooks";
 import { GridIcon, ListIcon } from "../../shared/icons";
+import OrLoader from "../../components/OrLoader";
 const marketsContractData = {};
 
 function Markets() {
@@ -199,7 +199,8 @@ function Markets() {
     if (isLoading) {
         return (
             <div className={classes.LoadingWrapper}>
-                <CircularProgress />
+                <OrLoader width={400}
+                          height={400}/>
             </div>
         );
     }
