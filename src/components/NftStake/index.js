@@ -96,7 +96,7 @@ function NftStake(props) {
             accountContext.account,
             nftTire,
             get(userCurrentNftTire, [nftTire, 'stake']),
-            true
+            parseFloat(get(userCurrentNftTire, [nftTire, 'rewards'])) > 0 ? true : false
         );
 
         loadUserStakingAndRewards();
