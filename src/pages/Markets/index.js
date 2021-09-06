@@ -107,6 +107,8 @@ function Markets() {
                 accountContext.account,
                 filterDetails.state.id
             );
+
+            console.log("marketContracts", marketContracts);
             setMarketsContracts(marketContracts);
         };
 
@@ -142,7 +144,7 @@ function Markets() {
         }
     }, [marketsContracts, accountContext.chainId]);
 
-    useEffect(() => {
+/*     useEffect(() => {
         const init = async () => {
             const marketAPIs = new MarketAPIs();
             for (const address in marketsContracts) {
@@ -165,7 +167,7 @@ function Markets() {
         if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
             init();
         }
-    }, [marketsContracts, accountContext.chainId]);
+    }, [marketsContracts, accountContext.chainId]); */
 
     useEffect(() => {
         const handleScroll = () => {
@@ -290,10 +292,7 @@ function Markets() {
                                                         marketsPriceOfBuy,
                                                         [entry.id]
                                                     ),
-                                                    volume: get(
-                                                        marketsTotalVolume,
-                                                        [entry.id]
-                                                    ),
+                                                    volume: entry.tradeVolume,
                                                 }}
                                                 isListView={
                                                     get(filterDetails, "view") ===

@@ -60,8 +60,8 @@ function Market() {
     const [marketContractAddress, setMarketContractAddress] = useState(null);
     const marketState = useGetMarketState(accountContext.account, marketContractAddress);
     const [marketContractData, setMarketContractData] = useState({});
-    const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
-
+/*     const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
+ */
     const classes = useStyles();
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
@@ -275,7 +275,7 @@ function Market() {
                                             <div className={classes.TradeVolume__Details}>
                                                 <TradeVolumeIcon/>
                                                 <div className={classes.TradeVolume__DetailsVal}>
-                                                    {numeral(marketTradeVolume).format("$0,0.00")}
+                                                    {numeral((get(market, ['tradeVolume']) || 0)).format("$0,0.00")}
                                                 </div>
                                             </div>
                                         </div>

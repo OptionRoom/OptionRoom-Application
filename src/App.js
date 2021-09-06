@@ -285,7 +285,7 @@ function App() {
                                         <ConfigWallet />
                                     </Route>*/}
                                     <Route exact path="/">
-                                        <Redirect to="/governance" />
+                                        <Redirect to="/markets" />
                                     </Route>
                                 </Switch>
                             </div>

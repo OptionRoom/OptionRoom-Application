@@ -84,7 +84,9 @@ export const createMarket = async (wallet, category, description, endTimestamp, 
             sources: sources,
             title: title,
             type: 'market',
-            version: '2.0'
+            version: '2.0',
+            tradeVolume: 0,
+            isBlocked: false
         });
 };
 

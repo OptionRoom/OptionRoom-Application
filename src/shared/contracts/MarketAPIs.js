@@ -222,6 +222,17 @@ class MarketAPIs {
         return result;
     }
 
+    async getMarketQuestionIdByMarketAddress(wallet, marketAddress) {
+        const result = await generateMarketContract(marketAddress)
+            .methods
+            .getMarketQuestionID()
+            .call({
+                from: wallet,
+            });
+
+        return result;
+    }
+
     async getCollateralTokensCountOfSell(wallet, marketId, sellAmount, inputIndex) {
         const result = await generateMarketContract(marketId)
             .methods
@@ -452,9 +463,20 @@ class MarketAPIs {
     }
 
     async removeLiquidityFromMarket(wallet, marketId, amount) {
+        const marketsDontSupportWithdrawFees = [
+            '0x902e2083446FeB52AB1558A6E9068266232F2073',
+            '0x1e5383bA8ecA45b0B08347b7D9a6213dA6202ED6',
+            '0xA90D8f060AE6a74c12AE6Bdbd04135B34ee46952',
+            '0x64A8013D58C9f8D0C2ea5B7aaeaF30f736de6E14',
+            '0x5377a9CbE8E8E32FE1296844b86be32889bC2639',
+            '0x141a92f2Ab34CCA0fec2E615B8D13d847438B529',
+        ];
+
+        const withdrawFees = marketsDontSupportWithdrawFees.indexOf(marketId) === -1 ? true : false;
+
         return this.marketControllerContract
             .methods
-            .marketRemoveLiquidity(marketId, amount, true, true)
+            .marketRemoveLiquidity(marketId, amount, true, withdrawFees)
             .send({
                 from: wallet,
             });
