@@ -213,14 +213,16 @@ function CreateMarket() {
                 data.title.trim()
             );
 
-            //wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity
+            //wallet, question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources
             const newMarketContract = await marketApis.createMarket(
                 accountContext.account,
+                data.title.trim(),
                 createdMarket.id,
                 data.endDate.unix(),
                 resolveTimestamp,
                 collateralTokenAddress,
-                toWei(data.liquidity)
+                toWei(data.liquidity),
+                JSON.stringify(sources)
             );
 
             //Redirect to market page after creation

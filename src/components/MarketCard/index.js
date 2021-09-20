@@ -20,33 +20,14 @@ import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
 
 
 function MarketCard(props) {
-    /*
-
-*/
-
     const classes = useStyles();
     const { market } = props;
     const accountContext = useContext(AccountContext);
     const [marketState, setMarketState] = useState(null);
-    /*    const [pricesOfBuy, setPricesOfBuy] = useState(0);
-
-    const [marketContractAddress, setMarketContractAddress] = useState(null);
-    */
-    //const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress);
 
     const handleInit = async () => {
-        //marketId, buyAmount, outcomeIndex
-        /*const marketContractAddress = await marketAPIs.getMarketById(accountContext.account, get(market, ['id']));
-        setMarketContractAddress(marketContractAddress);
-
-        const pricesOfBuy = await marketAPIs.getPricesOfBuy(accountContext.account, marketContractAddress);
-        setPricesOfBuy({
-            'yes': pricesOfBuy.priceOfYes,
-            'no': pricesOfBuy.priceOfNo,
-        });*/
         const marketAPIs = new MarketAPIs();
         const marketContractInState = await marketAPIs.getMarketState(accountContext.account, props.marketContractAddress);
-        console.log("marketContractInState", marketContractInState);
         setMarketState(marketContractInState);
     };
 
@@ -68,16 +49,6 @@ function MarketCard(props) {
     useEffect(() => {
         handleInit();
     }, []);
-
-    /*    useEffect(() => {
-        props.onMarketDataLoad && props.onMarketDataLoad({
-            tradeVolume: marketTradeVolume,
-            pricesOfBuy: pricesOfBuy,
-            state: marketState,
-            marketContractAddress: marketContractAddress,
-            marketId: get(market, ['id']),
-        });
-    }, [marketContractAddress, marketTradeVolume, pricesOfBuy, marketState]);*/
 
     return (
         <Link

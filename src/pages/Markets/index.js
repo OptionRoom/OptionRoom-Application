@@ -14,7 +14,6 @@ import MarketCard from "../../components/MarketCard";
 import { useStyles } from "./styles";
 import {
     getMarkets,
-    getIfWalletIsWhitelistedForBeta,
 } from "../../shared/firestore.service";
 import FiltrationWidget from "../../components/FiltrationWidget";
 
@@ -74,24 +73,16 @@ function Markets() {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-
-/*             const isWalletWhitelistedForBetaRes =
-                await getIfWalletIsWhitelistedForBeta(accountContext.account);
-            setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes); */
-
-            //if (isWalletWhitelistedForBetaRes) {
-                const result = await getMarkets(false);
-                setAllMarkets(result);
-                const marketApis = new MarketAPIs();
-                const marketContracts = await marketApis.getMarketsByState(
-                    accountContext.account,
-                    filterDetails.state.id
-                );
-                setMarketsContracts(marketContracts);
-                const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
-                setMarketsTradedByWallet(marketsTradedByWallet);
-            //}
-
+            const result = await getMarkets(false);
+            setAllMarkets(result);
+            const marketApis = new MarketAPIs();
+            const marketContracts = await marketApis.getMarketsByState(
+                accountContext.account,
+                filterDetails.state.id
+            );
+            setMarketsContracts(marketContracts);
+            const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
+            setMarketsTradedByWallet(marketsTradedByWallet);
             setIsLoading(false);
         };
 
@@ -108,7 +99,6 @@ function Markets() {
                 filterDetails.state.id
             );
 
-            console.log("marketContracts", marketContracts);
             setMarketsContracts(marketContracts);
         };
 
@@ -143,31 +133,6 @@ function Markets() {
             init();
         }
     }, [marketsContracts, accountContext.chainId]);
-
-/*     useEffect(() => {
-        const init = async () => {
-            const marketAPIs = new MarketAPIs();
-            for (const address in marketsContracts) {
-                if (!marketsTotalVolume[address]) {
-                    const tradingVolume =
-                        await marketAPIs.getMarketTradingVolume(
-                            accountContext.account,
-                            marketsContracts[address]
-                        );
-                    setMarketsTotalVolume((prevState) => {
-                        return {
-                            ...prevState,
-                            [`${address}`]: tradingVolume,
-                        };
-                    });
-                }
-            }
-        };
-
-        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [marketsContracts, accountContext.chainId]); */
 
     useEffect(() => {
         const handleScroll = () => {
@@ -287,7 +252,6 @@ function Markets() {
                                                 marketContractAddress={marketsContracts && marketsContracts[entry.id]}
                                                 market={{
                                                     ...entry,
-                                                    state: filterDetails.state,
                                                     priceOfBuy: get(
                                                         marketsPriceOfBuy,
                                                         [entry.id]
@@ -318,18 +282,10 @@ function Markets() {
                     )}
                 </div>
             </div>
-            {
-                /**
-                 * isMinHeader
-                 */
-            }
             <div className={clsx(classes.MarketsPage__Sidebar, {
                 [classes.MarketsPage__Sidebar__IsMin]: isMinHeader,
                 [classes.MarketsPage__Sidebar__MobileOpen]: isMarketsSidebarOpen,
             })}>
-{/*
-                <div className={classes.MarketsPage__SidebarOverlay}></div>
-*/}
                 <FiltrationWidget
                     onClose={() => {
                         setIsMarketsSidebarOpen(false);

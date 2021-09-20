@@ -521,10 +521,11 @@ class MarketAPIs {
     }
 
     //Router functions
-    async createMarket(wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity) {
+    //(string memory question, string memory marketMetadatasID, uint256 participationEndTime, uint256 resolvingEndTime, IERC20 collateralToken, uint256 initialLiq, string memory resolveResources)
+    async createMarket(wallet, question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources) {
         const result = await this.marketControllerContract
             .methods
-            .createMarketProposal(question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity)
+            .createMarketProposal(question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources)
             .send({
                 from: wallet,
             });
