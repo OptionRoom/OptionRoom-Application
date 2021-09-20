@@ -173,6 +173,7 @@ function BuySellWidget(props) {
                                              isSelected={selectedTradeOption === entry}
                                              onClick={(value) => setSelectedTradeOption(value)}
                                              title={entry}
+                                             showValueInChoice={true}
                                              value={averagePrice}/>
                             )
                         })

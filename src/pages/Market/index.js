@@ -168,6 +168,8 @@ function Market() {
                 if (!marketContractAddress) {
                     const marketApis = new MarketAPIs(marketVersion);
                     const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, marketId);
+                    console.log("marketContractAddressVal", marketContractAddressVal);
+
                     setMarketContractAddress(marketContractAddressVal);
                 } else {
                     loadPageDetails();
@@ -431,6 +433,7 @@ function Market() {
                                                 <VoteWidget
                                                     marketState={marketState}
                                                     marketVersion={marketVersion}
+                                                    showDonutOnOptionBlock={true}
                                                     marketContractAddress={marketContractAddress}/>
                                             </div>
                                         )

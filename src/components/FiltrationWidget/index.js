@@ -18,7 +18,10 @@ import OrSelect from "../OrSelect";
 function FiltrationWidget(props) {
 
     const classes = useStyles();
-    const {filterDetails} = props;
+    const {
+        filterDetails,
+        type
+    } = props;
 
     const marketCategories = useGetMarketCategories();
 
@@ -42,8 +45,66 @@ function FiltrationWidget(props) {
                 direction: 'down'
             }
         });
-
     };
+
+    const getCategoriesOptions = () => {
+        if(type === 'proposal') {
+            return props.categories ? [
+                {
+                    title: 'All',
+                    id: "all"
+                },
+                ...props.categories.map((entry) => {
+                    return {
+                        title: entry,
+                        id: entry
+                    };
+                })
+            ] : [];
+        }
+
+        return [
+            {
+                title: 'All',
+                id: "all"
+            },
+            ...marketCategories
+        ];
+    };
+
+    const getSortOptions = ()=> {
+        if(type === 'proposal') {
+            return ["Posted", "Ends"];
+        }
+
+        return ["Volume", "Created"];
+    }
+
+    const getStateOptions = ()=> {
+        if(type === 'proposal') {
+            return [
+                {
+                    value: 'all',
+                    label: 'All',
+                },
+                {
+                    value: 'active',
+                    label: 'Active'
+                },
+                {
+                    value: 'ended',
+                    label: 'Ended'
+                }
+            ]
+        }
+
+        return marketStatesDisplay.filter(entry => !entry.hide).map((entry) => {
+            return {
+                value: entry.id,
+                label: entry.title
+            };
+        });
+    }
 
     return (
         <div className={classes.FiltrationWidget}>
@@ -52,7 +113,7 @@ function FiltrationWidget(props) {
             </div>
             <div className={classes.SearchSection}>
                 <div className={classes.SearchInput}>
-                    <input placeholder={'Search markets'}
+                    <input placeholder={type === 'proposal' ? 'Search proposals' : 'Search markets'}
                             className={classes.MarketNameInput}
                             value={get(filterDetails, 'name')}
                             onChange={(e) => {
@@ -65,23 +126,27 @@ function FiltrationWidget(props) {
                     <SearchIcon className={classes.SearchIcon}/>
                 </div>
             </div>
-            <div className={classes.SectionShow}>
-                <div className={classes.SectionShow__Title}>
-                    Show
-                </div>
-                <div className={classes.SectionShow__Actions}>
-                    <div>Traded only</div>
-                    <OrSwitch value={get(filterDetails, ['tradedOnly'])}
-                              color="primary"
-                              onChange={(value, value1)=> {
-                                  props.onFilterUpdate && props.onFilterUpdate({
-                                      ...filterDetails,
-                                      tradedOnly:  value1
-                                  });
-                              }}
-                              name="checkedA" />
-                </div>
-            </div>
+            {
+                type != 'proposal' && (
+                    <div className={classes.SectionShow}>
+                        <div className={classes.SectionShow__Title}>
+                            Show
+                        </div>
+                        <div className={classes.SectionShow__Actions}>
+                            <div>Traded only</div>
+                            <OrSwitch value={get(filterDetails, ['tradedOnly'])}
+                                      color="primary"
+                                      onChange={(value, value1)=> {
+                                          props.onFilterUpdate && props.onFilterUpdate({
+                                              ...filterDetails,
+                                              tradedOnly:  value1
+                                          });
+                                      }}
+                                      name="checkedA" />
+                        </div>
+                    </div>
+                )
+            }
             <div className={classes.SectionSort}>
                 <div className={classes.SectionSort__Title}>
                     Sort by
@@ -89,7 +154,7 @@ function FiltrationWidget(props) {
                 <div className={classes.SectionSort__Actions}>
                     <div className={classes.SortBlocks}>
                         {
-                            ["Volume", "Created"].map((entry) => {
+                            getSortOptions().map((entry) => {
                                 return (
                                     <div className={clsx(classes.SortBlock, {
                                         [classes.SortBlock__IsActive]: get(filterDetails, ['sort', 'by']) === entry.toLowerCase(),
@@ -118,22 +183,6 @@ function FiltrationWidget(props) {
                     Filters
                 </div>
                 <div className={classes.SectionShow__Body}>
-{/*                     <div className={classes.FiltersBlock}>
-                        <div className={classes.FiltersBlock__Title}>Category</div>
-                        <div className={classes.FiltersBlock__Entries}>
-                            <input placeholder={'Search markets'}
-                                   className={classes.MarketNameInput}
-                                   value={get(filterDetails, 'name')}
-                                   onChange={(e) => {
-                                       props.onFilterUpdate && props.onFilterUpdate({
-                                           ...filterDetails,
-                                           name: e.target.value
-                                       })
-                                   }}
-                                   type={'text'}/>
-                            <SearchIcon className={classes.SearchIcon}/>
-                        </div>
-                    </div> */}
                     <div className={classes.FiltersBlock}>
                         <div className={classes.FiltersBlock__Title}>Category</div>
                         <div className={classes.FiltersBlock__Entries}>
@@ -152,43 +201,13 @@ function FiltrationWidget(props) {
                                     });
                                 }}
                                 options={
-                                    [
-                                        {
-                                            title: 'All',
-                                            id: "all"
-                                        },
-                                        ...marketCategories
-                                    ].map((entry) => {
+                                    getCategoriesOptions()
+                                        .map((entry) => {
                                     return {
                                         value: entry.id,
                                         label: entry.title
                                     };
                                 })}/>
-{/*                            {
-                                [
-                                    {
-                                        title: 'All',
-                                        id: "all"
-                                    },
-                                    ...marketCategories
-                                ].map((entry) => {
-                                    return (
-                                        <div className={clsx(classes.CheckInput, {
-                                                [classes.CheckInput__IsActive]: get(filterDetails, ['category', 'id']) === entry.id,
-                                            })}
-                                            onClick={()=> {
-                                                props.onFilterUpdate && props.onFilterUpdate({
-                                                    ...filterDetails,
-                                                    category: entry
-                                                })
-                                            }}
-                                             key={`category-${entry.id}`}>
-                                            <div className={classes.CheckInput__Indicator}></div>
-                                            <div className={classes.CheckInput__Title}>{entry.title}</div>
-                                        </div>
-                                    )
-                                })
-                            }*/}
                         </div>
                     </div>
                     <div className={classes.FiltersBlock}>
@@ -209,37 +228,7 @@ function FiltrationWidget(props) {
                                 });
                             }}
                                 menuPlacement={'top'}
-                              options={marketStatesDisplay.filter(entry => !entry.hide).map((entry) => {
-                                  return {
-                                      value: entry.id,
-                                      label: entry.title
-                                  };
-                              })}/>
-{/*                            {
-                               [
-                                   {
-                                       id: 'all',
-                                       title: 'All'
-                                   },
-                                   ...marketStatesDisplay
-                               ].map((entry) => {
-                                    return (
-                                        <div key={`state-${entry.id}`}
-                                            onClick={()=> {
-                                                props.onFilterUpdate && props.onFilterUpdate({
-                                                    ...filterDetails,
-                                                    state: entry
-                                                })
-                                            }}
-                                            className={clsx(classes.CheckInput, {
-                                                [classes.CheckInput__IsActive]: get(filterDetails, ['state', 'id']) === entry.id,
-                                            })}>
-                                            <div className={classes.CheckInput__Indicator}></div>
-                                            <div className={classes.CheckInput__Title}>{entry.title}</div>
-                                        </div>
-                                    )
-                                })
-                            }*/}
+                              options={getStateOptions()}/>
                         </div>
                     </div>
                 </div>

@@ -1,139 +1,239 @@
-import React, {useState, useContext, useEffect} from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { get } from "lodash";
+import clsx from "clsx";
+import SearchIcon from '@material-ui/icons/Search';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 import {Link} from "react-router-dom";
-import ViewComfyIcon from "@material-ui/icons/ViewComfy";
-import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
 
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
-import {AccountContext} from "../../shared/AccountContextProvider";
+import ChainAlert from '../../components/ChainAlert';
+
+import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
+import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import {useStyles} from "./styles";
+import { useStyles } from "./styles";
+import FiltrationWidget from "../../components/FiltrationWidget";
 
 import GovernanceCard from "../../components/GovernanceCard";
-import {walletHelper} from "../../shared/wallet.helper";
-import {
-    ellipseAddress,
-    getAddressImgUrl,
-    toWei,
-    fromWei,
-} from "../../shared/helper";
-import Button from "../../components/Button";
-import FiltrationWidget from "../../components/FiltrationWidget";
-import {
-    GridIcon,
-    ListIcon
-} from '../../shared/icons';
-const walletHelperInsatnce = walletHelper();
+import OracleApis from "../../shared/contracts/OracleApis";
+import { GridIcon, ListIcon } from "../../shared/icons";
+import OrLoader from "../../components/OrLoader";
+import CourtVotePowerStaking2 from "../../components/CourtVotePowerStaking2";
+import {useGetFilteredProposals} from "./hooks";
 
-const getNumberFromBigNumber = (bigNumber) => {
-    return fromWei(bigNumber, "ether", 2);
-};
+const supportedChains = ['ropsten'];
 
-const getBigNumberFromNumber = (number) => {
-    return toWei(number, "ether");
-};
-
-function GovernanceList() {
+function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [isMinHeader, setIsMinHeader] = useState(false);
+    const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
+    const [markets, setMarkets] = useState([]);
+    const [allCategories, setAllCategories] = useState([]);
+
+    const [filterDetails, setFilterDetails] = useState({
+        name: "",
+        category: {
+            title: 'All',
+            id: "all"
+        },
+        state: {
+            id: "all",
+            title: "All",
+        },
+        sort: {
+            by: "posted",
+            direction: "down",
+        },
+        view: "grid",
+    });
+
+    //(markets, searchQuery, category, state, sortBy)
+    const filteredProposals = useGetFilteredProposals(markets, filterDetails.name, filterDetails.category, filterDetails.state, filterDetails.sort);
 
     const classes = useStyles();
 
+    const isChainSupported = () => {
+        let isSupported = false;
+        supportedChains.forEach((entry) => {
+            if(accountContext.isChain(entry)) {
+                isSupported = true;
+            }
+        });
+
+        return isSupported;
+    };
+
     useEffect(() => {
+        const init = async () => {
+            const oracleApis = new OracleApis();
 
-    }, [accountContext.account]);
+            setIsLoading(true);
+            const dd22 = await oracleApis.createQuestion(accountContext.account);
+            const allCategories = await oracleApis.getAllCategories(accountContext.account);
+            let marketsResult = await oracleApis.getAllQuestions(accountContext.account);
+            marketsResult = marketsResult.map((entry) => {
+                return {
+                    ...entry,
+                    cats: entry.categoriesIndices.map((entry) => {
+                        return allCategories[entry];
+                    })
+                };
+            });
 
-    const cats = [
-        {
-            name: 'All',
-            count: '2',
-        },
-        {
-            name: 'Business',
-            count: '3',
-        },
-        {
-            name: 'Coronavirus',
-            count: '99',
-        },
-        {
-            name: 'Crypto',
-            count: '105',
-        },
-        {
-            name: 'NFTs',
-            count: '78',
-        },
-        {
-            name: 'Pop Culture',
-            count: '2',
-        },
-        {
-            name: 'Science',
-            count: '1',
-        },
-        {
-            name: 'Sports',
-            count: '65',
-        },
-        {
-            name: 'Tech',
-            count: '75',
-        },
-        {
-            name: 'US Current Affairs',
-            count: '82',
-        },
-    ];
+            console.log("marketsResult", marketsResult);
+            setMarkets(marketsResult);
+            setAllCategories(allCategories);
+            setIsLoading(false);
+        };
+
+        if (accountContext.account && isChainSupported()) {
+            init();
+        }
+    }, [accountContext.account, accountContext.chainId]);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if(window.scrollY > 30) {
+                setIsMinHeader(true);
+            } else {
+                setIsMinHeader(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
     if (!accountContext.account) {
         return (
             <div className={classes.ConnectWrap}>
-                <ConnectButton/>
+                <ConnectButton />
             </div>
+        );
+    }
+
+    if(!isChainSupported()) {
+        return (
+            <ChainAlert supportedChain={supportedChains.join(', ')}/>
         )
     }
 
-    /*    if(isLoading) {
-            return (
-                <div className={classes.LoadingWrapper}>
-                    <CircularProgress/>
-                </div>
-            )
-        }*/
+    if (isLoading) {
+        return (
+            <div className={classes.LoadingWrapper}>
+                <OrLoader width={400}
+                          height={400}/>
+            </div>
+        );
+    }
 
     return (
-        <>
-            <div className={classes.GovernanceListPage}>
-                <div className={classes.GovernanceListPage__Main}>
-                    <div className={classes.GovernanceListPage__Header}>
-                        <div className={classes.GovernanceListPage__HeaderTitle}>Governance</div>
-                        <div className={classes.GovernanceListPage__HeaderActions}>
-                            <GridIcon/>
-                            <ListIcon/>
-                            <Link to={`/markets/create`}>
-                                <Button
-                                    color="primary"
-                                    size={'medium'}>+ Create New</Button>
-                            </Link>
+        <div className={classes.MarketsPage}>
+            <div className={classes.MarketsPage__Main}>
+                <CourtVotePowerStaking2/>
+                <div className={classes.MarketsPage__Header}>
+                    <div className={classes.MarketsPage__HeaderTitle}>
+                        Proposals
+                    </div>
+                    <div className={classes.MarketsPage__HeaderActions}>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrap, classes.MarketsPage__HeaderActionsFilters)}
+                             onClick={() => {
+                                 setIsMarketsSidebarOpen(!isMarketsSidebarOpen);
+                             }}
+                        >
+                            <SearchIcon />
+                        </div>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                            [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "grid",
+                        })}
+                             onClick={() => {
+                                 setFilterDetails({
+                                     ...filterDetails,
+                                     view: "grid",
+                                 });
+                             }}
+                        >
+                            <GridIcon />
+                        </div>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                            [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "list",
+                        })}
+                             onClick={() => {
+                                 setFilterDetails({
+                                     ...filterDetails,
+                                     view: "list",
+                                 });
+                             }}
+                        >
+                            <ListIcon />
                         </div>
                     </div>
-                    <div className={classes.GovernanceListPage__MainList}>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                    </div>
                 </div>
-                <div className={classes.GovernanceListPage__Sidebar}>
-                    <FiltrationWidget/>
+                <div className={classes.MarketsPage__MainList}>
+                    {
+                        filteredProposals.length == 0 && (
+                            <div className={classes.notFoundResults}>
+                                <SentimentDissatisfiedIcon/>
+                                <div>We couldn't find any markets that match your search, please try another time</div>
+                            </div>
+                        )
+                    }
+                    {filteredProposals && filteredProposals.length > 0 && (
+                        <div
+                            className={clsx(classes.MarketsList, {
+                                [classes.MarketsList__ListView]:
+                                get(filterDetails, "view") === "list",
+                            })}
+                        >
+                            {
+                                filteredProposals.map((entry, index) => {
+                                    return (
+                                        <div key={`market-${entry.qid}`}>
+                                            <Link
+                                                to={`/governance/${entry.qid}`}
+                                            >
+                                                <GovernanceCard proposal={entry}/>
+                                            </Link>
+                                        </div>
+                                    );
+                                })
+                            }
+                        </div>
+                    )}
                 </div>
             </div>
-        </>
+            {
+                /**
+                 * isMinHeader
+                 */
+            }
+            <div className={clsx(classes.MarketsPage__Sidebar, {
+                [classes.MarketsPage__Sidebar__IsMin]: isMinHeader,
+                [classes.MarketsPage__Sidebar__MobileOpen]: isMarketsSidebarOpen,
+            })}>
+                {/*
+                <div className={classes.MarketsPage__SidebarOverlay}></div>
+*/}
+                <FiltrationWidget
+                    onClose={() => {
+                        setIsMarketsSidebarOpen(false);
+                    }}
+                    filterDetails={filterDetails}
+                    onFilterUpdate={(newDetails) => {
+                        console.log("newDetails", newDetails);
+                        setFilterDetails(newDetails);
+                    }}
+                    type={'proposal'}
+                    categories={allCategories}
+                />
+            </div>
+        </div>
     );
 }
 
-export default GovernanceList;
+export default Markets;

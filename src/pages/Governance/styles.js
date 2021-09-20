@@ -1,7 +1,9 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
-    MarketsPage: {},
+    ProposalPage: {
+        margin: "0 auto", padding: "50px 15px", maxWidth: "1200px"
+    },
     Sidebar: {},
     MarketDetails: {},
     Cat: {
@@ -19,221 +21,36 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "32px",
         marginBottom: "24px",
     },
-    Info: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: theme.colors.boxBoxShadow,
-        display: "flex",
-        marginBottom: "24px",
-        justifyContent: "space-between",
-    },
-    Info__Block: {},
-    Info__BlockTitle: {
-        color: "#8293A6",
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "4px",
-    },
-    Info__BlockValue: {
-        color: "#4E5D6D",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-    },
-    Graph: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
-    },
-    Graph__Header: {
-        display: "flex",
-        alignItems: "center",
-        marginBottom: "16px",
-    },
-    Graph__HeaderTitle: {
-        marginRight: "auto",
-        color: "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-    },
-    Graph__HeaderNav: {
-        display: "flex",
-        alignItems: "center",
-    },
-    Graph__HeaderNavOption: {
-        fontSize: "14px",
-        fontWeight: 500,
-        letterSpacing: "0",
-        lineHeight: "32px",
-        textAlign: "center",
-        borderRadius: "8px",
-        backgroundColor: "#EDEFF4",
-        padding: "0 12px",
-        marginLeft: "8px",
-        color: "#8293A6",
-        transition: "0.2s all",
-        cursor: "pointer",
-        "&:hover": {
-            backgroundColor: "#004BFF",
-            color: "#FFFFFF",
-        },
-    },
-    Graph__HeaderNavOption__Selected: {
-        backgroundColor: "#004BFF",
-        color: "#FFFFFF",
-    },
-    Graph__Deatils: {},
-
-    Outcome: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
-    },
-    Outcome__Header: {
-        color: "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
-    },
-    Outcome__Details: {
-        display: "flex",
-    },
-    OutcomeOption: {
-        width: "calc(100% - 24px)",
-        "&:first-child": {
-            marginRight: "48px",
-        },
-    },
-    OutcomeOption__Header: {
-        display: "flex",
-        alignItems: "center",
-        marginBottom: "16px",
-        span: {
-            fontSize: "14px",
-            letterSpacing: "0",
-            lineHeight: "24px",
-        },
-        "& span:first-child": {
-            marginRight: "auto",
-            color: "#8293A6",
-            fontSize: "14px",
-            letterSpacing: "0",
-            lineHeight: "24px",
-        },
-        "& span:last-child": {
-            color: "#4E5D6D",
-            fontWeight: 600,
-        },
-    },
-    OutcomeOption__Value: {
-        height: "16px",
-        borderRadius: "8px",
-        position: "relative",
-        backgroundColor: "#EDEFF4",
-        "& div": {
-            position: "absolute",
-            top: "0",
-            left: "0",
-            height: "16px",
-            borderRadius: "8px",
-        },
-    },
-
-    MarketPositions: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
-    },
-    MarketPositions__Header: {
-        color: "#3F4A57",
-        fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
-    },
-    MarketPositions__Details: {},
-    MarketPosition__Block: {
-        display: "flex",
-        alignItems: "center",
-        borderBottom: "1px solid #EDEFF4",
-        padding: "16px 0",
-        "& span:first-child": {
-            marginRight: "auto",
-            color: "#8293A6",
-            fontSize: "14px",
-            letterSpacing: "0",
-            lineHeight: "24px",
-        },
-        "& span:last-child": {
-            color: "#4E5D6D",
-            fontSize: "14px",
-            fontWeight: 600,
-            letterSpacing: "0",
-            lineHeight: "24px",
-            textAlign: "right",
-        },
-        "&:first-child": {
-            paddingTop: "0",
-        },
-        "&:last-child": {
-            borderBottom: "none",
-        },
-    },
-
     About: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#FFFFFF",
-        boxShadow: theme.colors.boxBoxShadow,
-        marginBottom: "24px",
+        padding: "29px 35px",
+        background: theme.isDark ? "#252E39" : "#fff",
+        boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
+        borderRadius: "15px",
+        marginBottom: "22px",
     },
     About__Header: {
-        color: "#3F4A57",
+        fontStyle: "normal",
+        fontWeight: 500,
         fontSize: "14px",
-        fontWeight: 600,
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "16px",
+        lineHeight: "18px",
+        letterSpacing: "0.05em",
+        textTransform: "uppercase",
+        color: "#818B95",
+        marginBottom: '18px'
     },
     About__Details: {
-        color: "#8293A6",
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: "18px",
+        lineHeight: "23px",
+        color: theme.isDark ? "#BFD1E1" : "#36414B"
     },
-
-    Resolution: {
-        padding: "24px",
-        borderRadius: "16px",
-        backgroundColor: "#E9EAFF",
-        marginBottom: "24px",
+    LoadingWrapper: {
+        padding: "100px 0",
+        textAlign: "center",
     },
-    Resolution__Header: {
-        color: theme.colors.secondaryTxt,
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: "8px",
-    },
-    Resolution__Details: {},
-    ResolutionLink: {
-        color: "#0042FF",
-        fontSize: "12px",
-        letterSpacing: "0",
-        lineHeight: "24px",
+    ConnectWrap: {
+        padding: "100px",
+        textAlign: "center",
     },
 }));

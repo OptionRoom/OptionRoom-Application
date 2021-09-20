@@ -217,9 +217,9 @@ function App() {
                                     <Route path="/court-farming" exact={true}>
                                         <CourtFarming />
                                     </Route>
-                                    <Route path="/governance" exact={true}>
+{/*                                    <Route path="/governance" exact={true}>
                                         <CourtStaking />
-                                    </Route>
+                                    </Route>*/}
                                     <Route path="/nft">
                                         <Nft />
                                     </Route>
@@ -275,9 +275,13 @@ function App() {
                                     <Route path="/markets-v1">
                                         <MarketsV1 />
                                     </Route>
-{/*                                    <Route path="/governance" exact={true}>
+                                    <Route path="/governance/:governanceId">
+                                        <Governance />
+                                    </Route>
+                                    <Route path="/governance" exact={true}>
                                         <GovernanceList />
                                     </Route>
+{/*
                                     <Route path="/governance/:governanceId">
                                         <Governance />
                                     </Route>

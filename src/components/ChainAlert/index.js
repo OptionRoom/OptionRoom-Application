@@ -16,7 +16,7 @@ function ChainAlert(props) {
                     margin: '0 auto 15px'
                 }}
                 severity="error">
-                Unsupported chain, supported chains are: 56 (BSC). How? check <a href="https://docs.binance.org/smart-chain/wallet/metamask.html" target="_blank">here</a>
+                Unsupported chain, supported chains are: {props.supportedChain || '56 (BSC)'}. How? check <a href="https://docs.binance.org/smart-chain/wallet/metamask.html" target="_blank">here</a>
             </Alert>
         </div>
     );

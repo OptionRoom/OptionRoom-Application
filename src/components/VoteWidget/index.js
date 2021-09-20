@@ -9,6 +9,8 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
+import OracleApis from "../../shared/contracts/OracleApis";
+import clsx from "clsx";
 
 
 
@@ -21,17 +23,28 @@ function VoteWidget(props) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [marketVotes, setMarketVotes] = useState(null);
     const [walletVote, setWalletVote] = useState(null);
+    const [proposal, setProposal] = useState(null);
 
     const handleVote = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs(props.marketVersion);
 
-        const voteVal = voteInput.toLowerCase() === 'yes' ? (props.marketState == 1 ? true : 0) : (props.marketState == 1 ? false : 1);
 
         try {
-            await marketApis.addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
+            if(props.type === 'proposal') {
+                const oracleApis = new OracleApis();
+                await oracleApis.vote(accountContext.account, props.marketContractAddress, voteInput);
+            } else {
+                let voteVal = voteInput;
+                if(props.marketState == 1) {
+                    voteVal = voteInput === 0 ? true : false;
+                }
+                const marketApis = new MarketAPIs(props.marketVersion);
+                await marketApis.addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
+            }
+
             loadVote();
             loadWalletVotes();
+
             props.onVote && props.onVote();
         } catch (e) {
 
@@ -67,27 +80,50 @@ function VoteWidget(props) {
     }
 
     const loadVote = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
-        if(props.marketState == 1) {
-            const validatingVotesCount = votes.validatingVotesCount;
+        if(props.type === 'proposal') {
+            const oracleApis = new OracleApis();
+            const question = await oracleApis.getQuestionInfo(accountContext.account, props.marketContractAddress);
+            setProposal(question);
+            console.log("question", question);
             const formattedVotes = [];
-            formattedVotes[1] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-            formattedVotes[0] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+            let totalVotes = 0;
+            question.votesCounts.forEach((e) => {
+                totalVotes += e;
+            });
+            question.votesCounts.forEach((e, index) => {
+                formattedVotes[index] = e/totalVotes;
+            });
+
             setMarketVotes(formattedVotes);
-        } else if(props.marketState == 5 || props.marketState == 8) {
-            const validatingVotesCount = votes.resolvingVotesCount;
-            const formattedVotes = [];
-            formattedVotes[0] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-            formattedVotes[1] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-            setMarketVotes(formattedVotes);
+        } else {
+            const marketAPIs = new MarketAPIs(props.marketVersion);
+            const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
+            if(props.marketState == 1) {
+                const validatingVotesCount = votes.validatingVotesCount;
+                const formattedVotes = [];
+                formattedVotes[1] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+                formattedVotes[0] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+                setMarketVotes(formattedVotes);
+            } else if(props.marketState == 5 || props.marketState == 8) {
+                const validatingVotesCount = votes.resolvingVotesCount;
+                const formattedVotes = [];
+                formattedVotes[0] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+                formattedVotes[1] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+                setMarketVotes(formattedVotes);
+            }
         }
     };
 
     const loadWalletVotes = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
-        setWalletVote(votes);
+        if(props.type === 'proposal') {
+            const oracleApis = new OracleApis();
+            const votes = await oracleApis.getVoteCheck(accountContext.account, props.marketContractAddress);
+            setWalletVote(votes);
+        } else {
+            const marketAPIs = new MarketAPIs(props.marketVersion);
+            const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
+            setWalletVote(votes);
+        }
     };
 
     useEffect(() => {
@@ -110,6 +146,38 @@ function VoteWidget(props) {
         }
     };
 
+    const getOptions = () => {
+        if(props.type === 'proposal') {
+            return (proposal && proposal.choices) || [];
+        } else {
+            return ['Yes', 'No'];
+        }
+    };
+
+    const showVoteAction = () => {
+        if(props.type === 'proposal') {
+            return proposal && ((new Date(proposal.endTime * 1000).getTime()) > new Date().getTime());
+        } else {
+            return (!walletVote || !walletVote.voteFlag);
+        }
+    };
+
+    const showVotedSection = () => {
+        if(props.type === 'proposal') {
+
+        } else {
+            return walletVote && walletVote.voteFlag;
+        }
+    };
+
+    const showWithdrawVoteSection = () => {
+        if(props.type === 'proposal') {
+            return false;
+        }
+
+        return true;
+    };
+
     useEffect(() => {
         loadVote();
     }, []);
@@ -120,32 +188,40 @@ function VoteWidget(props) {
             {!!getHeaderTxt() && (
                 <div className={classes.HeaderSubTxt}>{getHeaderTxt()}</div>
             )}
-{/*            <div className={classes.VoteWidget__Progress}>
-                <div>
-                    <OutcomeProgress title={'Yes'}
-                                     percent={get(marketVotes, ['0'])}
-                                     color={'#86DC8B'}/>
-                </div>
-                <div>
-                    <OutcomeProgress title={'No'}
-                                     percent={get(marketVotes, ['1'])}
-                                     color={'#7084FF'}/>
-                </div>
-            </div>*/}
             {
-                (!walletVote || !walletVote.voteFlag) ? (
+                props.showProgressPercentage && (
+                    <div className={classes.VoteWidget__Progress}>
+                        {
+                            getOptions().map((e, index) => {
+                                return (
+                                    <div key={`option-${index}`}>
+                                        <OutcomeProgress title={e}
+                                                         percent={get(marketVotes, [index])}
+                                                         color={'#86DC8B'}/>
+                                    </div>
+                                );
+                            })
+                        }
+                    </div>
+                )
+            }
+            {
+                showVoteAction() && (
                     <>
                         <div className={classes.VoteWidget__Options}>
-                            <div className={classes.Options__Options}>
+                            <div className={clsx(classes.Options__Options, {
+                                     [classes.Options__OptionsMarket] : props.type !== 'proposal',
+                                 })}>
                                 {
-                                    ['Yes', 'No'].map((entry, index) => {
+                                    getOptions().map((entry, index) => {
                                         return (
                                             <OptionBlock value={get(marketVotes, [index]) || 0}
-                                                         isSelected={voteInput === entry.toLowerCase()}
+                                                         isSelected={voteInput === index}
                                                          onClick={(value) => {
-                                                             setVoteInput(value.toLowerCase());
+                                                             setVoteInput(index);
                                                          }}
-                                                         showDonut={true}
+                                                         showDonut={props.showDonutOnOptionBlock}
+                                                         showValueInChoice={false}
                                                          title={entry}/>
                                         )
                                     })
@@ -155,20 +231,27 @@ function VoteWidget(props) {
                         <Button color="primary"
                                 size={"large"}
                                 onClick={handleVote}
-                                isDisabled={!voteInput}
+                                isDisabled={voteInput === null}
                                 isProcessing={isProcessing}
                                 fullWidth={true}>Vote</Button>
                     </>
-                ) : (
+                )
+            }
+            {
+                showVotedSection() && (
                     <>
                         <div className={classes.VoteWidget__Options}>
                             You voted on this market to {getWalletValidationTxt()}
                         </div>
-                        <Button color="primary"
-                                size={"large"}
-                                onClick={handleWithdrawVote}
-                                isProcessing={isProcessing}
-                                fullWidth={true}>Withdraw</Button>
+                        {
+                            showWithdrawVoteSection() && (
+                                <Button color="primary"
+                                        size={"large"}
+                                        onClick={handleWithdrawVote}
+                                        isProcessing={isProcessing}
+                                        fullWidth={true}>Withdraw</Button>
+                            )
+                        }
                     </>
                 )
             }

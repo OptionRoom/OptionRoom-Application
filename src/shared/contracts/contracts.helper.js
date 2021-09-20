@@ -31,6 +31,7 @@ import NftTokenContractAbi from './NftTokenContract.abi.json';
 import RoomLPStakingContractAbi from './RoomLPStakingContract.abi.json';
 import RoomLPTokenContractAbi from './RoomLPTokenContract.abi.json';
 import WethTokenContractAbi from './WethTokenContract.abi.json';
+import OROracleInfoContractAbi from './OROracleInfo.abi.json';
 
 
 import {walletHelper} from "../wallet.helper";
@@ -68,6 +69,7 @@ export const contractsAbis = {
         CourtFarming_NoRoomStakeHT: CourtFarming_NoRoomStakeHTAbi,
         CourtFarming_RoomStakeNew: CourtFarming_RoomStakeNewAbi,
         CourtFarming_RoomLPStake: CourtFarming_RoomStakeNewAbi,
+        OROracleInfo: OROracleInfoContractAbi,
 
         //V1 ABI
         market_controllerv1: marketControllerV1Abi,
@@ -148,6 +150,7 @@ export const contractsAddresses = {
         room: '0x0A335B9D44D99ddb15bD90f0F1f0604b1C7f6756',
         court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
         reward_program: "0x6553c63A5762134f9d65bF1Ad90c676FEee635d5",
+        OROracleInfo: "0x22a5d2F7481122d882a95fC01a4dE8ccbcB9e9f8",
 
         CourtEthLpTokenContract: "0x2dddc662114499d765b3a61f63139e7aee8cc138",
         CourtFarming_CourtEthLpStake: "0xaa0e0811ca1eb5dbdc128f2de7fff3e17b3b8feb",
