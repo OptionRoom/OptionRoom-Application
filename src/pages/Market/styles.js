@@ -115,7 +115,8 @@ export const useStyles = makeStyles((theme) => ({
         fontWeight: "normal",
         fontSize: "18px",
         lineHeight: "23px",
-        color: theme.isDark ? "#BFD1E1" : "#36414B"
+        color: theme.isDark ? "#BFD1E1" : "#36414B",
+        wordBreak: 'break-word'
     },
     Resolution: {
         padding: "29px 35px",

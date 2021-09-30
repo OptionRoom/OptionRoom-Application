@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
     LoadingWrapper: {
-        padding: "100px",
+        //padding: "100px",
         textAlign: "center",
     },
     ConnectWrap: {
@@ -61,5 +61,31 @@ export const useStyles = makeStyles((theme) => ({
         '& button': {
             marginLeft: '5px'
         }
+    },
+    VersionSelector: {
+        padding: 0,
+        margin: '0 0 20px',
+        listStyle: 'none',
+        display: 'flex',
+        '&>li': {
+            background: '#fff',
+            padding: '5px 20px',
+            cursor: 'pointer',
+            transition: '0.2s all',
+            '&:first-child': {
+                borderRadius: '5px 0 0 5px',
+            },
+            '&:last-child': {
+                borderRadius: '0 5px 5px 0',
+            },
+            '&:hover': {
+                color: '#fff',
+                background: theme.colors.primary
+            },
+        }
+    },
+    ActiveVersion: {
+        color: '#fff !important',
+        background: `${theme.colors.primary} !important`
     }
 }));

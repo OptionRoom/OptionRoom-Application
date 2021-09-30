@@ -178,7 +178,7 @@ export const contractsAddresses = {
         court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
 
         market: '0x01102801C1556239e9EE7eE12194e9a138e7a5da',
-        market_controller: '0xC3B6D447D5d8869e4Eb1423bA5B8d0d6aFD7B6f6',
+        market_controller: '0x0E47EFC671ba2FA8950Efb9085dEF125e43c64f0',
         markets_query: '0x84287DD628f72Ce344524Dc31F9aD953BA42cD63',
         option_token: '0xB081caDb3f6Da14a22Fa0E1cFDb94e2561CC1C05',
 

@@ -18,12 +18,15 @@ import {
 import FiltrationWidget from "../../components/FiltrationWidget";
 
 import Button from "../../components/Button";
-import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import { useGetFilteredMarkets } from "./hooks";
+import {
+    useGetFilteredMarkets,
+    useGetMarketsContractsPricesOfBuy,
+    useGetMarketsContractsState,
+    useGetMarketsContractsInfo
+} from "./hooks";
 import { GridIcon, ListIcon } from "../../shared/icons";
 import OrLoader from "../../components/OrLoader";
-const marketsContractData = {};
 
 function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -31,11 +34,12 @@ function Markets() {
     const accountContext = useContext(AccountContext);
     const [allMarkets, setAllMarkets] = useState([]);
     const [marketsContracts, setMarketsContracts] = useState([]);
-    const [marketsPriceOfBuy, setMarketsPriceOfBuy] = useState([]);
-    const [marketsTotalVolume, setMarketsTotalVolume] = useState([]);
+
+    const marketsContractsInfo = useGetMarketsContractsInfo(accountContext.account, marketsContracts);
+    const marketsContractsState = useGetMarketsContractsState(accountContext.account, marketsContracts);
+    const marketsPriceOfBuy = useGetMarketsContractsPricesOfBuy(accountContext.account, marketsContracts);
+
     const [isLoading, setIsLoading] = useState(true);
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] =
-        useState(true);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
     const [marketsTradedByWallet, setMarketsTradedByWallet] = useState([]);
@@ -58,13 +62,11 @@ function Markets() {
     });
 
     const filteredMarkets = useGetFilteredMarkets(
-        allMarkets,
         marketsContracts,
         filterDetails.name,
         filterDetails.category,
         filterDetails.sort,
         filterDetails.tradedOnly,
-        marketsTotalVolume,
         marketsTradedByWallet
     );
 
@@ -73,66 +75,25 @@ function Markets() {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-            const result = await getMarkets(false);
-            setAllMarkets(result);
+
             const marketApis = new MarketAPIs();
-            const marketContracts = await marketApis.getMarketsByState(
+            const marketContracts = await marketApis.getAllMarkets(
                 accountContext.account,
-                filterDetails.state.id
+                true,
+                true,
+                true,
+                true
             );
             setMarketsContracts(marketContracts);
+            setIsLoading(false);
             const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
             setMarketsTradedByWallet(marketsTradedByWallet);
-            setIsLoading(false);
         };
 
         if (accountContext.account && accountContext.isChain('bsc')) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
-
-    useEffect(() => {
-        const init = async () => {
-            const marketApis = new MarketAPIs();
-            const marketContracts = await marketApis.getMarketsByState(
-                accountContext.account,
-                filterDetails.state.id
-            );
-
-            setMarketsContracts(marketContracts);
-        };
-
-        if (accountContext.account && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [filterDetails.state, accountContext.chainId]);
-
-    useEffect(() => {
-        const init = async () => {
-            const marketApis = new MarketAPIs();
-            for (const address in marketsContracts) {
-                if (!marketsPriceOfBuy[address]) {
-                    const pricesOfBuy = await marketApis.getPricesOfBuy(
-                        accountContext.account,
-                        marketsContracts[address]
-                    );
-                    setMarketsPriceOfBuy((prevState) => {
-                        return {
-                            ...prevState,
-                            [`${address}`]: {
-                                yes: pricesOfBuy.priceOfYes,
-                                no: pricesOfBuy.priceOfNo,
-                            },
-                        };
-                    });
-                }
-            }
-        };
-
-        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [marketsContracts, accountContext.chainId]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -170,10 +131,6 @@ function Markets() {
                           height={400}/>
             </div>
         );
-    }
-
-    if (!isWalletWhitelistedForBeta) {
-        return <NotWhitelisted />;
     }
 
     return (
@@ -247,32 +204,13 @@ function Markets() {
                             {
                                 filteredMarkets.map((entry, index) => {
                                     return (
-                                        <div key={`market-${entry.id}`}>
+                                        <div key={`market-${entry.address}`}>
                                             <MarketCard
-                                                marketContractAddress={marketsContracts && marketsContracts[entry.id]}
-                                                market={{
-                                                    ...entry,
-                                                    priceOfBuy: get(
-                                                        marketsPriceOfBuy,
-                                                        [entry.id]
-                                                    ),
-                                                    volume: entry.tradeVolume,
-                                                }}
+                                                market={entry}
                                                 isListView={
-                                                    get(filterDetails, "view") ===
-                                                    "list"
+                                                    get(filterDetails, "view") === "list"
                                                 }
-                                                isFeatured={entry.isFeatured}
-                                                onMarketDataLoad={(e) => {
-                                                    if (
-                                                        e &&
-                                                        e.marketContractAddress
-                                                    ) {
-                                                        marketsContractData[
-                                                            e.marketId
-                                                            ] = e;
-                                                    }
-                                                }}
+                                                isFeatured={get(entry, ['dbData', 'isFeatured'], false)}
                                             />
                                         </div>
                                     );

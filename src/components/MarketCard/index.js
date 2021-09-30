@@ -2,61 +2,41 @@ import React, { useEffect } from "react";
 import clsx from "clsx";
 import { get } from "lodash";
 import numeral from "numeral";
-import {useState, useContext} from 'react';
 
 import { Link } from "react-router-dom";
 import { useStyles } from "./styles";
-import { AccountContext } from "../../shared/AccountContextProvider";
 import {VolumeIcon} from '../../shared/icons';
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
 
 import { fromWei, truncateText } from "../../shared/helper";
 import { marketStateColors, marketStates } from "../../shared/constants";
-/*
-import {useGetMarketTradeVolume} from "../../pages/Market/hooks";
-*/
-
-
 
 
 function MarketCard(props) {
     const classes = useStyles();
     const { market } = props;
-    const accountContext = useContext(AccountContext);
-    const [marketState, setMarketState] = useState(null);
-
-    const handleInit = async () => {
-        const marketAPIs = new MarketAPIs();
-        const marketContractInState = await marketAPIs.getMarketState(accountContext.account, props.marketContractAddress);
-        setMarketState(marketContractInState);
-    };
 
     const getMarketStateText = () => {
-        if (!marketState) {
+        if (!get(market, ["state"])) {
             return null;
         }
 
-        return marketStates[marketState];
+        return marketStates[get(market, ["state"])];
     };
 
     const getMarketStateColor = () => {
-        if (!marketState) {
+        if (!get(market, ["state"])) {
             return null;
         }
-        return marketStateColors[marketState];
+        return marketStateColors[get(market, ["state"])];
     };
-
-    useEffect(() => {
-        handleInit();
-    }, []);
 
     return (
         <Link
-            to={`/markets/${get(market, ["id"])}`}
+            to={`/markets/${get(market, ["address"])}`}
             style={
                 props.isFeatured
                     ? {
-                          backgroundImage: `url(${get(market, ["image"])})`,
+                          backgroundImage: `url(${get(market, ["dbData", "image"])})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           backgroundRepeat: "no-repeat",
@@ -72,7 +52,7 @@ function MarketCard(props) {
                 <div className={classes.TitleWrap}>
                     <div className={classes.CatStateLine}>
                         <div className={classes.Cat}>
-                            {get(market, ["category", "title"])}
+                            {get(market, ["dbData", "category", "title"])}
                         </div>
                         <div className={classes.State}
                              style={
@@ -84,13 +64,13 @@ function MarketCard(props) {
                         </div>
                     </div>
                     <div className={classes.Title}>
-                        {truncateText(get(market, ["title"]), 60)}
+                        {truncateText(get(market, ["info", "question"]), 60)}
                     </div>
                 </div>
                 <div
                     className={classes.Avatar}
                 >
-                    <img src={get(market, ["image"])}/>
+                    <img src={get(market, ["dbData", "image"])}/>
                 </div>
             </div>
             <div className={classes.SubDetails}>
@@ -101,9 +81,7 @@ function MarketCard(props) {
                     <div>
                         <div className={classes.Volume__Title}>Volume</div>
                         <div className={classes.Volume__Val}>
-                            {numeral(
-                                get(props, ["market", "volume"]) || 0
-                            ).format("$0,0.00")}
+                            {numeral(get(market, ["dbData", "tradeVolume"], 0)).format("$0,0.00")}
                         </div>
                     </div>
                 </div>
@@ -112,7 +90,7 @@ function MarketCard(props) {
                         <div className={classes.Option__Title}>YES</div>
                         <div className={classes.Option__Val}>
                             {numeral(
-                                get(props, ["market", "priceOfBuy", "yes"]) || 0
+                                get(market, ["pricesOfBuy", "yes"], 0)
                             ).format("$0,0.00")}
                         </div>
                     </div>
@@ -120,7 +98,7 @@ function MarketCard(props) {
                         <div className={classes.Option__Title}>NO</div>
                         <div className={classes.Option__Val}>
                             {numeral(
-                                get(props, ["market", "priceOfBuy", "no"]) || 0
+                                get(market, ["pricesOfBuy", "no"], 0)
                             ).format("$0,0.00")}
                         </div>
                     </div>

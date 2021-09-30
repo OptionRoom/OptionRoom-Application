@@ -224,7 +224,7 @@ function MainSidebar(props) {
                         icon: ClaimIcon,
                     },
                     {
-                        title: 'Markets (V1)',
+                        title: 'Markets (Archived)',
                         link: '/markets-v1',
                         icon: MarketsIcon,
                     },

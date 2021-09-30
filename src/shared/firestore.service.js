@@ -142,9 +142,9 @@ export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
     return false;
 };
 
-export const getMarkets = async (v1) => {
+export const getMarkets = async (version) => {
     const snapshot = await db.collection(marketsDbName)
-        .where("version", "==", v1 ? '1.0' : '2.0')
+        .where("version", "==", version)
         .get();
     return snapshot.docs.map(doc => {
         return {
