@@ -29,7 +29,7 @@ class OracleAPIs {
     async createQuestion(wallet) {
         const result = await this.oracleInfoContract
             .methods
-            .createQuestion('Is Naser a hero 1?', ["Yes", "No", "Absolutely No"], toWei(1), (Math.floor(Date.now() / 1000) + (100 * 60)), 0, '0x000000000000000000000000000000000000dead', 0, [1], 'This is a test question')
+            .createQuestion('Is Naser a hero 1?', ["Yes", "No", "Absolutely No"], toWei(1), (Math.floor(Date.now() / 1000) + (100 * 60)), 0, '0x0000000000000000000000000000000000000000', 0, [1], 'This is a test question')
             .send({
                 from: wallet,
             });
