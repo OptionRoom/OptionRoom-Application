@@ -71,19 +71,18 @@ function Markets() {
             const oracleApis = new OracleApis();
 
             setIsLoading(true);
-            const dd22 = await oracleApis.createQuestion(accountContext.account);
             const allCategories = await oracleApis.getAllCategories(accountContext.account);
             let marketsResult = await oracleApis.getAllQuestions(accountContext.account);
             marketsResult = marketsResult.map((entry) => {
                 return {
                     ...entry,
-                    cats: entry.categoriesIndices.map((entry) => {
-                        return allCategories[entry];
+                    cats: entry.categoriesIndices.map((entry1) => {
+                        return allCategories[parseInt(entry1) - 1];
                     })
                 };
             });
 
-            console.log("marketsResult", marketsResult);
+            console.log("marketsResult", allCategories);
             setMarkets(marketsResult);
             setAllCategories(allCategories);
             setIsLoading(false);

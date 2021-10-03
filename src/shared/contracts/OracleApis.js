@@ -29,7 +29,7 @@ class OracleAPIs {
     async createQuestion(wallet) {
         const result = await this.oracleInfoContract
             .methods
-            .createQuestion('Is Naser a hero 1?', ["Yes", "No", "Absolutely No"], toWei(1), (Math.floor(Date.now() / 1000) + (100 * 60)), 0, '0x0000000000000000000000000000000000000000', 0, [1], 'This is a test question')
+            .createQuestion('Is Naser a hero 2?', ["Yes", "No", "Absolutely No"], toWei(0), (Math.floor(Date.now() / 1000) + (100 * 60)), 0, '0x0000000000000000000000000000000000000000', 0, [1], 'This is a test question 2')
             .send({
                 from: wallet,
             });
@@ -37,10 +37,9 @@ class OracleAPIs {
     }
 
     async vote(wallet, questionId, choice) {
-        console.log("wallet, questionId, choice", wallet, questionId, choice);
         const result = await this.oracleInfoContract
             .methods
-            .vote(toWei(questionId), choice)
+            .vote(questionId, choice)
             .send({
                 from: wallet,
             });
@@ -51,6 +50,16 @@ class OracleAPIs {
         const result = await this.oracleInfoContract
             .methods
             .voteCheck(questionId, wallet)
+            .call({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async getUserVote(wallet, questionId) {
+        const result = await this.oracleInfoContract
+            .methods
+            .getUserVote(questionId, wallet)
             .call({
                 from: wallet,
             });

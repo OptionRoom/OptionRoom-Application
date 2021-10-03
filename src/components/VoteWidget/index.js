@@ -83,15 +83,15 @@ function VoteWidget(props) {
         if(props.type === 'proposal') {
             const oracleApis = new OracleApis();
             const question = await oracleApis.getQuestionInfo(accountContext.account, props.marketContractAddress);
-            setProposal(question);
             console.log("question", question);
+            setProposal(question);
             const formattedVotes = [];
             let totalVotes = 0;
             question.votesCounts.forEach((e) => {
-                totalVotes += e;
+                totalVotes += parseInt(e);
             });
             question.votesCounts.forEach((e, index) => {
-                formattedVotes[index] = e/totalVotes;
+                formattedVotes[index] = (parseInt(e)/totalVotes) * 100;
             });
 
             setMarketVotes(formattedVotes);
@@ -117,7 +117,8 @@ function VoteWidget(props) {
     const loadWalletVotes = async () => {
         if(props.type === 'proposal') {
             const oracleApis = new OracleApis();
-            const votes = await oracleApis.getVoteCheck(accountContext.account, props.marketContractAddress);
+            const votes = await oracleApis.getUserVote(accountContext.account, props.marketContractAddress);
+            console.log("votes", votes);
             setWalletVote(votes);
         } else {
             const marketAPIs = new MarketAPIs(props.marketVersion);
@@ -133,6 +134,10 @@ function VoteWidget(props) {
     }, [accountContext.account, props.marketContractAddress, props.marketState]);
 
     const getWalletValidationTxt = () => {
+        if(props.type === 'proposal') {
+            return get(proposal, ['choices', get(walletVote, ['choice'])]);
+        }
+
         if(!walletVote || !walletVote.selection) {
             return;
         }
@@ -156,7 +161,7 @@ function VoteWidget(props) {
 
     const showVoteAction = () => {
         if(props.type === 'proposal') {
-            return proposal && ((new Date(proposal.endTime * 1000).getTime()) > new Date().getTime());
+            return proposal && ((new Date(proposal.endTime * 1000).getTime()) > new Date().getTime()) && (!walletVote || !walletVote.voteFlag);
         } else {
             return (!walletVote || !walletVote.voteFlag);
         }
@@ -164,7 +169,7 @@ function VoteWidget(props) {
 
     const showVotedSection = () => {
         if(props.type === 'proposal') {
-
+            return get(walletVote, ['voteFlag']) === true;
         } else {
             return walletVote && walletVote.voteFlag;
         }
@@ -241,7 +246,7 @@ function VoteWidget(props) {
                 showVotedSection() && (
                     <>
                         <div className={classes.VoteWidget__Options}>
-                            You voted on this market to {getWalletValidationTxt()}
+                            You voted on this {props.type === 'proposal' ? 'proposal' : 'market'} to <strong>{getWalletValidationTxt()}</strong>
                         </div>
                         {
                             showWithdrawVoteSection() && (
