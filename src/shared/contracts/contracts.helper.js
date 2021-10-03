@@ -153,7 +153,7 @@ export const contractsAddresses = {
         matter_court_farming_claim: '0xbb5cc0913afd3218bafc350e72b16304a026b47e',
         room: '0x0A335B9D44D99ddb15bD90f0F1f0604b1C7f6756',
         court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
-        reward_program: "0x6553c63A5762134f9d65bF1Ad90c676FEee635d5",
+        reward_program: "0x924a0f72f5fcee64632011fa6d5bc9284e31fd0b",
 
         CourtEthLpTokenContract: "0x2dddc662114499d765b3a61f63139e7aee8cc138",
         CourtFarming_CourtEthLpStake: "0xaa0e0811ca1eb5dbdc128f2de7fff3e17b3b8feb",
