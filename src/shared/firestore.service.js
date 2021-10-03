@@ -84,7 +84,7 @@ export const createMarket = async (wallet, category, description, endTimestamp, 
             sources: sources,
             title: title,
             type: 'market',
-            version: '2.0',
+            version: '3.0',
             tradeVolume: 0,
             isBlocked: false
         });
@@ -142,9 +142,9 @@ export const getIfWalletIsWhitelistedForBeta = async (wallet) => {
     return false;
 };
 
-export const getMarkets = async (v1) => {
+export const getMarkets = async (version) => {
     const snapshot = await db.collection(marketsDbName)
-        .where("version", "==", v1 ? '1.0' : '2.0')
+        .where("version", "==", version)
         .get();
     return snapshot.docs.map(doc => {
         return {

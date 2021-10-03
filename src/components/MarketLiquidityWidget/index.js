@@ -27,7 +27,6 @@ function MarketLiquidityWidget(props) {
     const loadMarketLiqRewards = async () => {
         const claimAPIs = new ClaimAPIs();
         const rewards = await claimAPIs.getMarketLiqRewards(accountContext.account, props.marketContractAddress);
-        console.log("loadMarketLiqRewards", rewards);
         setMarketLiqRewards(rewards);
     }
 

@@ -206,6 +206,36 @@
     {
         "constant": true,
         "inputs": [],
+        "name": "FeeProposer",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "FeeProtocol",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
         "name": "RP",
         "outputs": [
             {
@@ -278,12 +308,7 @@
         "inputs": [
             {
                 "internalType": "string",
-                "name": "question",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "marketMetadatasID",
+                "name": "marketQuestionID",
                 "type": "string"
             },
             {
@@ -305,11 +330,6 @@
                 "internalType": "uint256",
                 "name": "initialLiq",
                 "type": "uint256"
-            },
-            {
-                "internalType": "string",
-                "name": "resolveResources",
-                "type": "string"
             }
         ],
         "name": "createMarketProposal",
@@ -378,36 +398,6 @@
         "constant": true,
         "inputs": [],
         "name": "feeMarketLP",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "feeProposer",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "feeProtocol",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -573,21 +563,6 @@
                         "internalType": "bool",
                         "name": "disputedFlag",
                         "type": "bool"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "question",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "metaDataID",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resolveResorces",
-                        "type": "string"
                     }
                 ],
                 "internalType": "struct ORMarketController.MarketInfo",
@@ -698,21 +673,6 @@
                 "internalType": "uint256[2]",
                 "name": "",
                 "type": "uint256[2]"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "getVersion",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
             }
         ],
         "payable": false,
@@ -1263,77 +1223,6 @@
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "name": "marketsInfo",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "createdTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "validatingEndTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "participationEndTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "resolvingEndTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "lastResolvingVoteTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "lastDisputeResolvingVoteTime",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "disputeTotalBalances",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "disputedFlag",
-                "type": "bool"
-            },
-            {
-                "internalType": "string",
-                "name": "question",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "metaDataID",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "resolveResorces",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
             },
             {
                 "internalType": "uint256",
@@ -1399,36 +1288,6 @@
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "minMarketParticipationPeriod",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "minMarketResolvingPeriod",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
             }
         ],
         "payable": false,
@@ -1520,6 +1379,21 @@
         "constant": false,
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "setBuyRoomThreshold",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "token",
                 "type": "address"
@@ -1541,16 +1415,26 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "newAddress",
+                "name": "conditionalTokensAddress",
                 "type": "address"
-            },
-            {
-                "internalType": "uint8",
-                "name": "compID",
-                "type": "uint8"
             }
         ],
-        "name": "setCompAddress",
+        "name": "setConditionalToken",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "t",
+                "type": "uint256"
+            }
+        ],
+        "name": "setDisputeThreshold",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1568,14 +1452,109 @@
                 "internalType": "uint256",
                 "name": "denominator",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "feeID",
-                "type": "uint8"
             }
         ],
-        "name": "setFeeByFeeID",
+        "name": "setFeeMarketLP",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "numerator",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "denominator",
+                "type": "uint256"
+            }
+        ],
+        "name": "setFeeProposer",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "numerator",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "denominator",
+                "type": "uint256"
+            }
+        ],
+        "name": "setFeeProtocol",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "orGovernorAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setIORGoverner",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "newfees",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketCreationFees",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "p",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketDisputePeriod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "minLiq",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketMinShareLiq",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1593,14 +1572,9 @@
                 "internalType": "uint256",
                 "name": "time",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "optionID",
-                "type": "uint8"
             }
         ],
-        "name": "setMarketTimeByOptionID",
+        "name": "setMarketParticipationEndTime",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1611,16 +1585,141 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "newValue",
+                "name": "p",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "optionID",
-                "type": "uint8"
             }
         ],
-        "name": "setMarketsConfig",
+        "name": "setMarketReCastResolvingPeriod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketResolvingEndTime",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketValidatingEndTime",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "p",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMarketValidatingPeriod",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setRewardCenter",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "rewardProgramAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setRewardProgram",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "roomAddres",
+                "type": "address"
+            }
+        ],
+        "name": "setRoomAddress",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setRoomoracleAddress",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "templateAddress",
+                "type": "address"
+            }
+        ],
+        "name": "setTemplateAddress",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",
@@ -1635,7 +1734,7 @@
                 "type": "bool"
             }
         ],
-        "name": "setPenaltyOnWrongResolving",
+        "name": "setpenaltyOnWrongResolving",
         "outputs": [],
         "payable": false,
         "stateMutability": "nonpayable",

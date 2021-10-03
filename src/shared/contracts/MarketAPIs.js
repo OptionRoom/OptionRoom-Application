@@ -1,4 +1,4 @@
-import {map, sum, sortBy, uniqBy} from 'lodash';
+import {map, sum, sortBy, uniqBy, find} from 'lodash';
 
 import {walletHelper} from "../wallet.helper";
 import {MaxUint256} from "../../shared/constants";
@@ -7,7 +7,8 @@ import {getContract} from "./contracts.helper";
 import {fromWei, toWei} from "../helper";
 import {
     getBuySellEventsOfMarket,
-    getBuySellEventsOfWalletOnMarket
+    getBuySellEventsOfWalletOnMarket,
+    getMarkets
 } from '../firestore.service';
 
 import {marketStates, marketStatesDisplay} from '../constants';
@@ -55,35 +56,6 @@ class MarketAPIs {
             return entry.event == 'MCBuy' ? parseFloat(entry.returnValues.investmentAmount) : parseFloat(entry.returnValues.returnAmount);
         }));
 
-        /**
-         *
-                 const buyEvents = await this.marketControllerContract
-            .getPastEvents("MCBuy", {
-                filter: {
-                    market: marketId,
-                },
-                fromBlock: 1
-            });
-
-        const sum2 = sum(map(buyEvents, (entry) => {
-            return parseFloat(entry.returnValues.investmentAmount);
-        }));
-
-        const sellEvents = await this.marketControllerContract
-            .getPastEvents("MCSell", {
-                filter: {
-                    market: marketId,
-                },
-                fromBlock: 1
-            });
-
-        const sum3 = sum(map(sellEvents, (entry) => {
-            return parseFloat(entry.returnValues.returnAmount);
-        }));
-
-        return (sum2 + sum3) / 1e18;
-         */
-
         return sum3 / 1e18;
     }
 
@@ -118,11 +90,6 @@ class MarketAPIs {
             return parseFloat(entry.returnValues.investmentAmount) / parseFloat(entry.returnValues.outcomeTokensBought);
         }));
 
-        /**
-         * investmentAmount: "100000000000000000000"
-         outcomeIndex: "0"
-         outcomeTokensBought: "139418017682957753621"
-         */
         return totalPrices / buyEvents.length;
     }
 
@@ -132,26 +99,6 @@ class MarketAPIs {
     ) {
 
         const events = await getBuySellEventsOfWalletOnMarket(marketId, wallet);
-
-/*        const buyEvents = await this.marketControllerContract
-            .getPastEvents("MCBuy", {
-                filter: {
-                    market: marketId,
-                    buyer: wallet
-                },
-                fromBlock: fromBlock
-            });
-
-        const sellEvents = await this.marketControllerContract
-            .getPastEvents("MCSell", {
-                filter: {
-                    market: marketId,
-                    seller: wallet
-                },
-                fromBlock: fromBlock
-            }); */
-
-
         const allEvents = sortBy(events, (entry) => {
             return entry.returnValues.timestamp;
         });
@@ -352,16 +299,9 @@ class MarketAPIs {
     }
 
     async getMarketVoting(wallet, marketId, state) {
-        return 0;
 
         if (state == 1) {
             return 0;
-            /*            return await this.governanceContract
-                            .methods
-                            .getApprovingResult(marketId)
-                            .call({
-                                from: wallet,
-                            });*/
         }
 
         return await this.marketControllerContract
@@ -372,7 +312,7 @@ class MarketAPIs {
             });
     }
 
-    async getMarketInfo(wallet, marketId, state) {
+    async getMarketInfo(wallet, marketId) {
         return await this.marketControllerContract
             .methods
             .getMarketInfo(marketId)
@@ -380,11 +320,6 @@ class MarketAPIs {
                 from: wallet,
             });
     }
-
-    /////////
-    /////////
-    /////////
-    /////////
 
     async getMarketsTradedByWallet(wallet) {
         const result = await this.marketControllerContract
@@ -521,14 +456,63 @@ class MarketAPIs {
     }
 
     //Router functions
-    async createMarket(wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity) {
+    //(string memory question, string memory marketMetadatasID, uint256 participationEndTime, uint256 resolvingEndTime, IERC20 collateralToken, uint256 initialLiq, string memory resolveResources)
+    async createMarket(wallet, question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources) {
         const result = await this.marketControllerContract
             .methods
-            .createMarketProposal(question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity)
+            .createMarketProposal(question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources)
             .send({
                 from: wallet,
             });
         return result;
+    }
+
+    async getAllMarkets(wallet, withInfo, withState, withPricesOfBuy, withDbData) {
+        const result = await this.marketControllerContract
+            .methods
+            .getAllMarkets()
+            .call({
+                from: wallet,
+            });
+
+        let markets = result.map((e) => {
+            return {
+                address: e,
+            }
+        });
+
+        if(withInfo) {
+            for(const m of markets) {
+                const marketInfo = await this.getMarketInfo(wallet, m.address);
+                m.info = marketInfo;
+            }
+        }
+
+        if(withState) {
+            for(const m of markets) {
+                const state = await this.getMarketState(wallet, m.address);
+                m.state = state;
+            }
+        }
+
+        if(withState) {
+            for(const m of markets) {
+                const marketPricesOfBuy = await this.getPricesOfBuy(wallet, m.address);
+                m.pricesOfBuy = {
+                    yes: marketPricesOfBuy.priceOfYes,
+                    no: marketPricesOfBuy.priceOfNo,
+                };
+            }
+        }
+
+        if(withDbData) {
+            const result = await getMarkets('3.0');
+            for(const m of markets) {
+                m.dbData = find(result, {'id': m.info.metaDataID});
+            }
+        }
+
+        return markets;
     }
 
     async getMarketsByState(wallet, state) {
@@ -570,15 +554,6 @@ class MarketAPIs {
     async getAllMarketContracts(wallet) {
         let all = [];
 
-        /**
-         Invalid,
-         Pending, // governance voting for validation
-         Rejected,
-         Active,
-         Inactive,
-         Resolving, // governance voting for result
-         Resolved  // can redeem
-         */
         for (let i in Object.keys(marketStates)) {
             const contracts = await this.marketsQueryContract
                 .methods

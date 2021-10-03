@@ -49,20 +49,19 @@ function Market() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const classes = useStyles();
 
     const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
 
     //Mrket
-    const [market, setMarket] = useState(null);
+    const [marketInfo, setMarketInfo] = useState(null);
+    const [marketDb, setMarketDb] = useState(null);
     const [marketVersion, setMarketVersion] = useState(null);
     const {marketId} = useParams();
-    const [marketContractAddress, setMarketContractAddress] = useState(null);
+    const [marketContractAddress, setMarketContractAddress] = useState(marketId);
     const marketState = useGetMarketState(accountContext.account, marketContractAddress);
     const [marketContractData, setMarketContractData] = useState({});
-/*     const marketTradeVolume = useGetMarketTradeVolume(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
- */
-    const classes = useStyles();
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralToken, setWalletAllowanceOfCollateralToken] = useState(0);
@@ -92,16 +91,9 @@ function Market() {
 
     const loadWalletData = async () => {
         loadWalletBalanceOfCollateralToken();
+        loadWalletAllowanceOfOptionToken();
+        loadWalletAllowanceOfCollateralToken();
     };
-
-
-    useEffect(() => {
-        if (accountContext.account && marketContractAddress && accountContext.isChain('bsc')) {
-            loadWalletAllowanceOfOptionToken();
-            loadWalletAllowanceOfCollateralToken();
-            //getWalletMarketPastEvents
-        }
-    }, [accountContext.account, marketContractAddress, accountContext.chainId]);
 
     const handleOnBuy = () => {
         loadPageDetails();
@@ -143,49 +135,36 @@ function Market() {
     };
 
     useEffect(() => {
-        if (marketContractAddress && accountContext.isChain('bsc')) {
-            loadPageDetails();
-        }
-    }, [marketContractAddress, accountContext.chainId]);
-
-    useEffect(() => {
         const init = async () => {
-            if (accountContext.account) {
-                let marketVersion = market && market.version;
-                setIsLoading(true);
+            setIsLoading(true);
 
-                if (!market) {
-                    const result = await getMarketById(marketId);
-                    marketVersion = result.version;
-                    setMarket(result);
-                    setMarketVersion(marketVersion);
-                }
+            let marketInfoDetail = marketInfo;
 
-                setIsLoading(false);
-
-                loadWalletData();
-
-                if (!marketContractAddress) {
-                    const marketApis = new MarketAPIs(marketVersion);
-                    const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, marketId);
-                    console.log("marketContractAddressVal", marketContractAddressVal);
-
-                    setMarketContractAddress(marketContractAddressVal);
-                } else {
-                    loadPageDetails();
-                }
+            if (!marketInfoDetail) {
+                const marketApis = new MarketAPIs();
+                marketInfoDetail = await marketApis.getMarketInfo(accountContext.account, marketContractAddress);
+                setMarketInfo(marketInfoDetail);
             }
+
+            if (!marketDb) {
+                const result = await getMarketById(marketInfoDetail.metaDataID);
+                setMarketDb(result);
+                setMarketVersion(result.version);
+            }
+
+            setIsLoading(false);
+
+            loadWalletData();
+            loadPageDetails();
         };
 
-        if(accountContext.isChain('bsc')) {
+        if(accountContext.isChain('bsc') && accountContext.account) {
             init();
         }
 
     }, [accountContext.account, accountContext.chainId]);
 
     //Liquidity stuff
-
-
     const handleOnAddLiquidityComplete = () => {
         loadWalletBalanceOfCollateralToken();
         loadPageDetails();
@@ -262,10 +241,10 @@ function Market() {
                     <div className={classes.MarketsPage__Header2Container}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={8}>
-                                <div className={classes.Title}>{get(market, 'title')}</div>
-                                <div className={classes.Cat}>{get(market, ['category', 'title'])}</div>
+                                <div className={classes.Title}>{get(marketInfo, 'question')}</div>
+                                <div className={classes.Cat}>{get(marketDb, ['category', 'title'])}</div>
                                 <div className={classes.Gallery}>
-                                    <img src={get(market, ['image'])}
+                                    <img src={get(marketDb, ['image'])}
                                          alt={'Market'}/>
                                 </div>
                             </Grid>
@@ -277,7 +256,7 @@ function Market() {
                                             <div className={classes.TradeVolume__Details}>
                                                 <TradeVolumeIcon/>
                                                 <div className={classes.TradeVolume__DetailsVal}>
-                                                    {numeral((get(market, ['tradeVolume']) || 0)).format("$0,0.00")}
+                                                    {numeral((get(marketDb, ['tradeVolume']) || 0)).format("$0,0.00")}
                                                 </div>
                                             </div>
                                         </div>
@@ -305,7 +284,7 @@ function Market() {
                                             Market Ends
                                         </div>
                                         <div className={classes.LiqEndBlock__DetailsVal}>
-                                            {moment(get(market, 'endTimestamp') * 1000).format('MMMM Do YYYY, h:mm a')}
+                                            {moment(get(marketInfo, 'participationEndTime') * 1000).format('MMMM Do YYYY, h:mm a')}
                                         </div>
                                     </div>
                                 </div>
@@ -354,14 +333,14 @@ function Market() {
                                             About
                                         </div>
                                         <div
-                                            className={classes.About__Details}>{get(market, 'description')}</div>
+                                            className={classes.About__Details}>{get(marketDb, 'description')}</div>
                                     </div>
                                     <div className={classes.Resolution}>
                                         <div className={classes.Resolution__Header}>
                                             Resolution Source
                                         </div>
                                         <div className={classes.Resolution__Details}>
-                                            {get(market, 'sources') && get(market, 'sources').map((entry) => {
+                                            {get(marketDb, 'sources') && get(marketDb, 'sources').map((entry) => {
                                                 return (
                                                     <div className={classes.ResolutionLink}>
                                                         <a href={entry}
@@ -376,7 +355,7 @@ function Market() {
                             <Grid item xs={12} md={4}>
                                 <div className={classes.MarketDetails__Sidebar}>
                                     {
-                                        (market && market.wallet == accountContext.account) && (
+                                        (marketDb && marketDb.wallet == accountContext.account) && (
                                             <div className={classes.CreatorWidegt}>
                                                 <Alert icon={<FlareIcon fontSize="inherit" />}
                                                     style={{
@@ -384,18 +363,6 @@ function Market() {
                                                         marginBottom: '15px'
                                                     }}
                                                     severity="info">You are the creator of this market</Alert>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        (market && market.version == '1.0') && (
-                                            <div className={classes.CreatorWidegt}>
-                                                <Alert icon={<FlareIcon fontSize="inherit" />}
-                                                       style={{
-                                                           borderRadius: '16px',
-                                                           marginBottom: '15px'
-                                                       }}
-                                                       severity="info">This is an archived market. V1.0</Alert>
                                             </div>
                                         )
                                     }
