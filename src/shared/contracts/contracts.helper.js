@@ -177,7 +177,7 @@ export const contractsAddresses = {
         claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',
         NftStakeContract: "0x1B161D12DC0bBEF6B28640F9D10F0f43f44885BA",
 
-        court_vote_stake: '0x20e88cb035870fcf1ff31bf0bc6949f89ba062f0',
+        court_vote_stake: '0x92Ca8A811B70bDb0dec6FA3b17912AEA1Fe8ed55',
         court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
 
         market: '0x01102801C1556239e9EE7eE12194e9a138e7a5da',
