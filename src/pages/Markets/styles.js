@@ -126,5 +126,18 @@ export const useStyles = makeStyles((theme) => ({
     },
     ChainWrap: {
         padding: '50px'
+    },
+    QuickFilters: {
+        display: 'flex',
+        marginBottom: '15px',
+        '&>div': {
+            marginRight: "10px",
+            fontSize: "14px",
+            cursor: "pointer",
+            userSelect: "none"
+        }
+    },
+    QuickFilters__IsActive: {
+        color: theme.colors.primary
     }
 }));

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import clsx from "clsx";
 import { get } from "lodash";
 import numeral from "numeral";
+import Countdown from 'react-countdown';
 
 import { Link } from "react-router-dom";
 import { useStyles } from "./styles";
@@ -29,6 +30,80 @@ function MarketCard(props) {
         }
         return marketStateColors[get(market, ["state"])];
     };
+
+    const getVoeteHeadline = () => {
+        if (!get(market, ["state"])) {
+            return null;
+        }
+
+        const marketStates = {
+            "0": "N/A",
+            "1": "Validating ends in",
+            "2": "N/A",
+            "3": "Market ends in",
+            "4": "N/A",
+            "5": "Resolving ends in",
+            "6": "N/A",
+            "7": "Disputing ends in",
+            "8": "N/A",
+        };
+
+        return marketStates[get(market, ["state"])];
+    };
+
+    const renderer = ({ days, hours, minutes, seconds, completed }) => {
+        if (!get(market, ["state"]) || ["0", "2", "4", "6", "8"].indexOf(get(market, ["state"])) > -1) {
+            return null;
+        }
+
+        if (completed) {
+            // Render a completed state
+            return <span>You are good to go!</span>;
+        } else {
+            // Render a countdown
+            return (
+                <div className={classes.CounterWrapper}>
+                    <div>{getVoeteHeadline()}</div>
+                    <div className={classes.CounterWrapperInner}>
+                        <div>
+                            <span>{days}</span>
+                            <span>days</span>
+                        </div>
+                        <div>
+                            <span>{hours}</span>
+                            <span>hours</span>
+                        </div>
+                        <div>
+                            <span>{minutes}</span>
+                            <span>minutes</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    };
+
+    const getCountDownEndTime = () => {
+        if (!get(market, ["state"]) || ["0", "2", "4", "6", "8"].indexOf(get(market, ["state"])) > -1) {
+            return Date.now();
+        }
+
+        if(get(market, ["state"]) == 1) {
+            return parseInt(market.validatingEndTime) * 1000;
+        }
+
+        if(get(market, ["state"]) == 3) {
+            return parseInt(market.participationEndTime) * 1000;
+        }
+
+        if(get(market, ["state"]) == 5) {
+            return parseInt(market.resolvingEndTime) * 1000;
+        }
+
+        if(get(market, ["state"]) == 7) {
+            return parseInt(market.lastDisputeResolvingVoteTime) * 1000;
+        }
+    }
 
     return (
         <Link
@@ -104,6 +179,16 @@ function MarketCard(props) {
                     </div>
                 </div>
             </div>
+            {
+                !props.isListView && (
+                    <div className={classes.Countdown}>
+                        <Countdown
+                            date={getCountDownEndTime()}
+                            renderer={renderer}
+                        />
+                    </div>
+                )
+            }
         </Link>
     );
 }

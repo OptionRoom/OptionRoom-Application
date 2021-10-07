@@ -11,6 +11,7 @@ import {AccountContext} from "../../shared/AccountContextProvider";
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
+import {ChainNetworks} from "../../shared/constants";
 
 function CourtStaking() {
     const classes = useStyles();
@@ -49,7 +50,7 @@ function CourtStaking() {
                                 details={null}
                             />
                             {
-                                !accountContext.isChain('bsc') && (
+                                !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                                     <Alert
                                         elevation={6}
                                         variant="filled"

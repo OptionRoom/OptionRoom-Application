@@ -34,6 +34,14 @@ export const useStyles = makeStyles((theme) => ({
         '&:first-child': {
           marginRight: '15px'
         },
-        width: "40px", height: "40px", padding: "0", minWidth: "0"
+        height: "40px",
+        padding: "0",
+        minWidth: "40px"
+    },
+    ActionBtn__StakeEnable: {
+        fontSize: '12px',
+    },
+    ActionBtnHelper: {
+        margin: '0 15px'
     }
 }));

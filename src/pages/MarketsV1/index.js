@@ -16,6 +16,7 @@ import MarketV1APIs from '../../shared/contracts/MarketV1APIs';
 import {fromWei, toWei, truncateText} from "../../shared/helper";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import clsx from "clsx";
+import {ChainNetworks} from "../../shared/constants";
 
 function MarketCard(props) {
     const classes = useStyles();
@@ -179,7 +180,7 @@ function MarketsV1() {
             loadActiveMarkets();
         };
 
-        if (accountContext.account && accountContext.isChain('bsc')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
@@ -196,7 +197,7 @@ function MarketsV1() {
         );
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )

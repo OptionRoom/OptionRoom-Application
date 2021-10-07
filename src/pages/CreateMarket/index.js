@@ -45,6 +45,7 @@ import {useGetMarketCategories} from "../../shared/hooks";
 import TradeInput from "../../components/TradeInput";
 import {getContractAddress, getWalletBalanceOfContract} from '../../shared/contracts/contracts.helper';
 import ConfigHelper from "../../shared/config.helper";
+import {ChainNetworks, GovernanceTypes} from "../../shared/constants";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -60,7 +61,7 @@ function CreateMarket() {
     const [isLoading, setIsLoading] = useState(true);
     const accountContext = useContext(AccountContext);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
-    const marketCategories = useGetMarketCategories();
+    const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET);
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
@@ -260,7 +261,7 @@ function CreateMarket() {
             }
         };
 
-        if(accountContext.isChain('bsc')) {
+        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
@@ -297,7 +298,7 @@ function CreateMarket() {
         )
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )

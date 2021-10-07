@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 import {filter, orderBy, get} from 'lodash';
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 
-export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, sortBy, tradedOnly, marketsTradedByWallet) => {
+export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, sortBy, tradedOnly, state, marketsTradedByWallet) => {
     const [filteredMarkets, setFilteredMarkets] = useState([]);
 
     useEffect(() => {
@@ -27,6 +27,13 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
                 });
             }
 
+            if (state && state != 'all') {
+                newMarkets = filter(newMarkets, (entry) => {
+                    return get(entry, ['state']) == state;
+                });
+            }
+
+
             if (sortBy) {
                 const sortDirection = sortBy.direction === 'up' ? 'asc' : 'desc';
 
@@ -43,7 +50,7 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
 
             setFilteredMarkets(newMarkets);
         }
-    }, [marketsContracts, searchQuery, category, sortBy, tradedOnly, marketsTradedByWallet]);
+    }, [marketsContracts, searchQuery, category, sortBy, tradedOnly, state, marketsTradedByWallet]);
 
     return filteredMarkets;
 }

@@ -8,6 +8,7 @@ export const useStyles = makeStyles((theme) => ({
         background: theme.isDark ? "#242D38" : "#fff",
         textDecoration: "none",
         display: "block",
+        overflow: 'hidden'
     },
     MainDetails: {
         display: "flex",
@@ -57,6 +58,11 @@ export const useStyles = makeStyles((theme) => ({
             height: "37px",
             borderRadius: "50%",
         },
+    },
+    Countdown: {
+        padding: "25px 25px 25px",
+        display: "flex",
+        background: theme.isDark ? "rgba(242, 246, 250, 0.1)" : "#f2f6fa7a" ,
     },
     SubDetails: {
         padding: "25px",
@@ -249,4 +255,25 @@ export const useStyles = makeStyles((theme) => ({
         overflow: "hidden",
         textOverflow: "ellipsis",
     },
+    CounterWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+        color: '#36414B',
+        width: '100%',
+        '&>div:first-child': {
+            marginRight: 'auto'
+        }
+    },
+    CounterWrapperInner: {
+        display: 'flex',
+        alignItems: 'center',
+        color: '#36414B',
+        '&>div': {
+            marginRight: '10px'
+        },
+        '&>div>span:first-child': {
+            fontSize: '20px',
+            marginRight: '2px'
+        }
+    }
 }));

@@ -8,7 +8,7 @@ import UnstakeModal from "../UnstakeModal";
 import {fromWei} from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 import {AccountContext} from "../../shared/AccountContextProvider";
-import {MaxUint256} from "../../shared/constants";
+import {ChainNetworks, MaxUint256} from "../../shared/constants";
 
 function CourtVotePowerStaking2(props) {
     const {
@@ -25,7 +25,7 @@ function CourtVotePowerStaking2(props) {
     const [courtTokenBalance, setCourtTokenBalance] = useState(0);
 
     const loadWalletAllowance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -39,7 +39,7 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletStakeBalance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -53,7 +53,7 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletVotePower = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -67,7 +67,7 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletCourtBalance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -81,7 +81,7 @@ function CourtVotePowerStaking2(props) {
     };
 
     const handleDeposit = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -97,7 +97,7 @@ function CourtVotePowerStaking2(props) {
 
             setIsDepositModalOpen(true);
         } catch (e) {
-
+            setIsApprovingCourtForPowerStake(false);
         }
     };
 
@@ -121,7 +121,7 @@ function CourtVotePowerStaking2(props) {
             <div className={classes.CourtVotePowerStaking}>
                 <div className={classes.InfoWrap}>
                     <div className={classes.InfoBlock}>
-                        <span>Stacked COURT</span>
+                        <span>Staked COURT</span>
                         <span>{fromWei(stakeBalance, null, 2)}</span>
                     </div>
                     <div className={classes.InfoBlock}>
@@ -131,11 +131,13 @@ function CourtVotePowerStaking2(props) {
                 </div>
                 <div className={classes.Actions}>
                     <Button size={'small'}
-                            className={classes.ActionBtn}
+                            className={clsx(classes.ActionBtn, {
+                                [classes.ActionBtn__StakeEnable]: allowance <=0
+                            })}
                             isProcessing={isApprovingCourtForPowerStake}
                             onClick={handleDeposit}
                             color={'primary'}>
-                        {allowance > 0 ? "+" : "Enable +"}
+                        {allowance > 0 ? "+" : <span className={classes.ActionBtnHelper}>Enable Stake</span>}
                     </Button>
                     <Button size={'small'}
                             isDisabled={stakeBalance == 0}

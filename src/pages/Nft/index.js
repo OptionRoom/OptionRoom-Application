@@ -16,7 +16,7 @@ import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvide
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import {convertAmountToTokens} from "../../shared/helper";
 import ConnectButton from "../../components/ConnectButton";
-import {nftTires, nftImages, allOfTires} from '../../shared/constants';
+import {nftTires, nftImages, allOfTires, ChainNetworks} from '../../shared/constants';
 import {
     getTotalValueStakedInNftStakingInUsd,
     loadAllNftTokenAvilable
@@ -228,7 +228,7 @@ function Nft() {
 
     useEffect(() => {
         let updateNftTireBalanceIntervalId = null;
-        if (accountContext.account && accountContext.isChain('main')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.MAIN)) {
             callInit();
             clearInterval(updateNftTireBalanceIntervalId);
             updateNftTireBalanceIntervalId = setInterval(updateNftTireBalance, 10000);
@@ -255,7 +255,7 @@ function Nft() {
                                 )
                             }
                             {
-                                !accountContext.isChain('main') && (
+                                !accountContext.isChain(ChainNetworks.MAIN) && (
                                     <Alert
                                         elevation={6}
                                         variant="filled"

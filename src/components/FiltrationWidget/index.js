@@ -1,19 +1,16 @@
-import React, {useState} from "react";
-import Select from "react-select";
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import React, {useContext, useState} from "react";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import {get} from 'lodash';
 import clsx from "clsx";
-import { withStyles } from '@material-ui/core/styles';
 import {SearchIcon} from "../../shared/icons";
 
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+
 import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../shared/hooks';
-import {marketStatesDisplay} from '../../shared/constants';
+import {marketStatesDisplay, GovernanceTypes, FiltrationWidgetTypes} from '../../shared/constants';
 import OrSwitch from '../../components/OrSwitch';
 import OrSelect from "../OrSelect";
+import {AccountContext} from "../../shared/AccountContextProvider";
 
 function FiltrationWidget(props) {
 
@@ -22,8 +19,9 @@ function FiltrationWidget(props) {
         filterDetails,
         type
     } = props;
+    const accountContext = useContext(AccountContext);
 
-    const marketCategories = useGetMarketCategories();
+    const marketCategories = useGetMarketCategories(get(filterDetails, ['type', 'id']), accountContext.account);
 
     const handleSort = (entry) => {
         if (get(filterDetails, ['sort', 'by']) === entry) {
@@ -48,62 +46,73 @@ function FiltrationWidget(props) {
     };
 
     const getCategoriesOptions = () => {
-        if(type === 'proposal') {
-            return props.categories ? [
+        if(FiltrationWidgetTypes.MARKETS === type || (get(filterDetails, ['type', 'id']) === GovernanceTypes.MARKET)) {
+            return [
                 {
                     title: 'All',
                     id: "all"
                 },
-                ...props.categories.map((entry) => {
-                    return {
-                        title: entry,
-                        id: entry
-                    };
-                })
-            ] : [];
+                ...marketCategories
+            ];
         }
 
-        return [
+        return marketCategories ? [
             {
                 title: 'All',
                 id: "all"
             },
-            ...marketCategories
-        ];
+            ...marketCategories.map((entry) => {
+                return {
+                    title: entry,
+                    id: entry
+                };
+            })
+        ] : [];
     };
 
     const getSortOptions = ()=> {
-        if(type === 'proposal') {
-            return ["Posted", "Ends"];
+        if(FiltrationWidgetTypes.MARKETS === type) {
+            return ["Volume", "Created"];
         }
 
-        return ["Volume", "Created"];
+        if(type === GovernanceTypes.ORACLE) {
+            return ["Posted", "Ends"];
+        }
     }
 
     const getStateOptions = ()=> {
-        if(type === 'proposal') {
-            return [
-                {
-                    value: 'all',
-                    label: 'All',
-                },
-                {
-                    value: 'active',
-                    label: 'Active'
-                },
-                {
-                    value: 'ended',
-                    label: 'Ended'
-                }
-            ]
+        if(FiltrationWidgetTypes.MARKETS === type) {
+            return marketStatesDisplay.filter(entry => entry.showInMarketsFilterWidget).map((entry) => {
+                return {
+                    value: entry.id,
+                    label: entry.title
+                };
+            });
         }
 
-        return marketStatesDisplay.filter(entry => !entry.hide).map((entry) => {
-            return {
-                value: entry.id,
-                label: entry.title
-            };
-        });
+        if(get(filterDetails, ['type', 'id']) === GovernanceTypes.MARKET) {
+            return marketStatesDisplay.filter(entry => entry.showInGovernanceFilterWidget).map((entry) => {
+                return {
+                    value: entry.id,
+                    label: entry.title
+                };
+            });
+        }
+
+        return [
+            {
+                value: 'all',
+                label: 'All',
+            },
+            {
+                value: 'active',
+                label: 'Active'
+            },
+            {
+                value: 'ended',
+                label: 'Ended'
+            }
+        ];
     }
 
     return (
@@ -113,7 +122,7 @@ function FiltrationWidget(props) {
             </div>
             <div className={classes.SearchSection}>
                 <div className={classes.SearchInput}>
-                    <input placeholder={type === 'proposal' ? 'Search proposals' : 'Search markets'}
+                    <input placeholder={type === GovernanceTypes.ORACLE ? 'Search proposals' : 'Search markets'}
                             className={classes.MarketNameInput}
                             value={get(filterDetails, 'name')}
                             onChange={(e) => {
@@ -127,7 +136,7 @@ function FiltrationWidget(props) {
                 </div>
             </div>
             {
-                type != 'proposal' && (
+                type == FiltrationWidgetTypes.MARKETS && (
                     <div className={classes.SectionShow}>
                         <div className={classes.SectionShow__Title}>
                             Show
@@ -183,6 +192,39 @@ function FiltrationWidget(props) {
                     Filters
                 </div>
                 <div className={classes.SectionShow__Body}>
+                    {
+                        [FiltrationWidgetTypes.GOVERNANCE].indexOf(type) > -1 && (
+                            <div className={classes.FiltersBlock}>
+                                <div className={classes.FiltersBlock__Title}>Type</div>
+                                <div className={classes.FiltersBlock__Entries}>
+                                    <OrSelect
+                                        value={{
+                                            value: get(filterDetails, ['type']).id,
+                                            label: get(filterDetails, ['type']).title,
+                                        }}
+                                        onChange={(entry) => {
+                                            props.onFilterUpdate && props.onFilterUpdate({
+                                                ...filterDetails,
+                                                type: {
+                                                    title: entry.label,
+                                                    id: entry.value
+                                                }
+                                            });
+                                        }}
+                                        options={[
+                                            {
+                                                value: GovernanceTypes.MARKET,
+                                                label: 'Markets'
+                                            },
+                                            {
+                                                value: GovernanceTypes.ORACLE,
+                                                label: 'Oracle'
+                                            }
+                                        ]}/>
+                                </div>
+                            </div>
+                        )
+                    }
                     <div className={classes.FiltersBlock}>
                         <div className={classes.FiltersBlock__Title}>Category</div>
                         <div className={classes.FiltersBlock__Entries}>

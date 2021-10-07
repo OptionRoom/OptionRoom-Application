@@ -73,17 +73,7 @@ export const useStyles = makeStyles((theme) => ({
             textDecoration: "none",
         },
     },
-    notFoundResults: {
-        textAlign: 'center',
-        padding: '15px',
-        '& svg': {
-            fontSize: '60px',
-            marginBottom: '15px'
-        },
-        '& div': {
-            fontSize: '16px'
-        }
-    },
+
     MarketsPage__HeaderActionsFilters: {
         [theme.breakpoints.up('md')]: {
             display: 'none'
@@ -100,34 +90,7 @@ export const useStyles = makeStyles((theme) => ({
             stroke: "#2E6AFA",
         },
     },
-    MarketsList: {
-        "&>div": {
-            marginBottom: "20px",
-            '&>a': {
-                textDecoration: 'none'
-            }
-        },
-        [theme.breakpoints.up('md')]: {
-            display: "flex",
-            flexWrap: "wrap",
-            "&>div": {
-                width: "calc(50% - 10px)",
-                marginRight: "20px",
-                marginBottom: "20px",
-                "&:nth-child(2n)": {
-                    marginRight: 0,
-                },
-            },
-        },
-    },
-    MarketsList__ListView: {
-        display: 'block',
-        '&>div': {
-            margin: '0 0 15px',
-            width: '100%',
 
-        },
-    },
     ChainWrap: {
         padding: '50px'
     }

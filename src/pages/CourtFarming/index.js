@@ -26,7 +26,7 @@ import {
     saveRoiOfCourt,
 } from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
-import {MaxUint256} from "../../shared/constants";
+import {ChainNetworks, MaxUint256} from "../../shared/constants";
 
 const useStylesBootstrap = makeStyles((theme) => ({
     arrow: {
@@ -163,7 +163,7 @@ function CourtFarmingPool(props) {
     useEffect(() => {
 
         const init = async () => {
-            if(accountContext.isChain('main')) {
+            if(accountContext.isChain(ChainNetworks.MAIN)) {
                 const courtAPIs = new CourtAPIs();
 
                 const htTokensCount = await courtAPIs.getAddressStakeBalance(
@@ -172,7 +172,7 @@ function CourtFarmingPool(props) {
                 );
                 setDepositedTokens(htTokensCount);
 
-            } else if(accountContext.isChain('bsc')) {
+            } else if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
                 loadClaimInfo();
             }
         };
@@ -189,7 +189,7 @@ function CourtFarmingPool(props) {
         <div className={classes.PoolWrap}>
             <div>{props.entryTitle}</div>
             {
-                accountContext.isChain('main') && (
+                accountContext.isChain(ChainNetworks.MAIN) && (
                     <div>
                         <span>{fromWei(depositedTokens, null, 2)}</span>
                         <Button
@@ -204,7 +204,7 @@ function CourtFarmingPool(props) {
                 )
             }
             {
-                accountContext.isChain('bsc') && (
+                accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                     <>
                         <div>
                             <span>{["ROOM_COURT", 'ROOM_BNB_LP_COURT'].indexOf(props.entryId) > -1 ? fromWei(claimInfo.roomAmount || 0, null, 2) : 'N/A'}</span>
@@ -297,7 +297,7 @@ function CourtFarming() {
                             <div className={classes.PoolsTitle}>
                                 <div>Pool</div>
                                 {
-                                    accountContext.isChain('bsc') && (
+                                    accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                                         <>
                                             <div>Deposited Tokens</div>
                                             <div>COURT</div>
@@ -306,7 +306,7 @@ function CourtFarming() {
                                     )
                                 }
                                 {
-                                    accountContext.isChain('main') && (
+                                    accountContext.isChain(ChainNetworks.MAIN) && (
                                         <div>Deposited Tokens</div>
                                     )
                                 }
@@ -314,7 +314,7 @@ function CourtFarming() {
                             {
                                 pools
                                 .filter((entry) => {
-                                    if(["ROOM_COURT", "ROOM_BNB_LP_COURT"].indexOf(entry.id) > -1 && !accountContext.isChain('bsc')){
+                                    if(["ROOM_COURT", "ROOM_BNB_LP_COURT"].indexOf(entry.id) > -1 && !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)){
                                         return false;
                                     }
 

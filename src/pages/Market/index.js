@@ -27,10 +27,11 @@ import MarketLiquidityWidget from "../../components/MarketLiquidityWidget";
 import RedeemMarketRewardsWidget from "../../components/RedeemMarketRewardsWidget";
 import MarketOutcome from "../../components/MarketOutcome";
 import MarketWalletPosition from "../../components/MarketWalletPosition";
+import MarketStateWidget from "../../components/MarketStateWidget";
 
 import {getIfWalletIsWhitelistedForBeta, getMarketById} from "../../shared/firestore.service";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {MaxUint256} from '../../shared/constants';
+import {ChainNetworks, MaxUint256} from '../../shared/constants';
 
 import {
     useGetMarketBuyPrices,
@@ -158,7 +159,7 @@ function Market() {
             loadPageDetails();
         };
 
-        if(accountContext.isChain('bsc') && accountContext.account) {
+        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && accountContext.account) {
             init();
         }
 
@@ -193,7 +194,7 @@ function Market() {
         )
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )
@@ -366,6 +367,10 @@ function Market() {
                                             </div>
                                         )
                                     }
+                                    <div className={classes.MarketWidgetWrap}>
+                                        <MarketStateWidget marketInfo={marketInfo}
+                                                           state={marketState}/>
+                                    </div>
                                     <div className={classes.MarketWidgetWrap}>
                                         <MarketLiquidityWidget marketState={marketState}
                                                                marketVersion={marketVersion}

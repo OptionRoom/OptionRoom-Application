@@ -11,7 +11,7 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../../shared/hooks';
-import {marketStatesDisplay} from '../../../shared/constants';
+import {GovernanceTypes, marketStatesDisplay} from '../../../shared/constants';
 import SearchIcon from "@material-ui/icons/Search";
 
 function MarketsFiltration(props) {
@@ -19,7 +19,7 @@ function MarketsFiltration(props) {
     const classes = useStyles();
     const {filterDetails} = props;
 
-    const marketCategories = useGetMarketCategories();
+    const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET);
 
     const handleSort = (entry) => {
 

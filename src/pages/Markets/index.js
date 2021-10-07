@@ -27,6 +27,7 @@ import {
 } from "./hooks";
 import { GridIcon, ListIcon } from "../../shared/icons";
 import OrLoader from "../../components/OrLoader";
+import {marketStatesDisplay, ChainNetworks, FiltrationWidgetTypes} from "../../shared/constants";
 
 function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -67,10 +68,15 @@ function Markets() {
         filterDetails.category,
         filterDetails.sort,
         filterDetails.tradedOnly,
+        filterDetails.state.id,
         marketsTradedByWallet
     );
 
     const classes = useStyles();
+
+    const getStateOptions = ()=> {
+        return marketStatesDisplay.filter(entry => entry.showInMarketsQuickFilter);
+    }
 
     useEffect(() => {
         const init = async () => {
@@ -90,7 +96,7 @@ function Markets() {
             setMarketsTradedByWallet(marketsTradedByWallet);
         };
 
-        if (accountContext.account && accountContext.isChain('bsc')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
@@ -118,7 +124,7 @@ function Markets() {
         );
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )
@@ -137,7 +143,7 @@ function Markets() {
         <div className={classes.MarketsPage}>
             <div className={classes.MarketsPage__Main}>
                 {
-                    !accountContext.isChain('bsc') && (
+                    !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                         <ChainAlert/>
                     )
                 }
@@ -184,6 +190,23 @@ function Markets() {
                             </Button>
                         </Link>
                     </div>
+                </div>
+                <div className={classes.QuickFilters}>
+                    {
+                        getStateOptions().map((entry) => {
+                            return (
+                                <div className={clsx({
+                                    [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id
+                                })}
+                                onClick={() => {
+                                    setFilterDetails({
+                                        ...filterDetails,
+                                        state: entry
+                                    });
+                                }}>{entry.title}</div>
+                            );
+                        })
+                    }
                 </div>
                 <div className={classes.MarketsPage__MainList}>
                     {
@@ -232,6 +255,7 @@ function Markets() {
                     onFilterUpdate={(newDetails) => {
                         setFilterDetails(newDetails);
                     }}
+                    type={FiltrationWidgetTypes.MARKETS}
                 />
             </div>
         </div>
