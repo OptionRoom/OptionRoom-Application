@@ -126,7 +126,7 @@ function Markets() {
                         )
                     }
                     {
-                        filterDetails.type.id === GovernanceTypes.MARKET_GOVERNANCE && (
+                        filterDetails.type.id === GovernanceTypes.MARKET && (
                             <GovernanceMarket filterDetails={filterDetails}/>
                         )
                     }

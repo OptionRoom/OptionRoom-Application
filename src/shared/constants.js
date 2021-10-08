@@ -54,45 +54,56 @@ export const marketStatesDisplay = [
         id: '3',
         title: 'Active',
         showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '0',
         title: 'Invalid',
-        showInMarketsFilterWidget: true
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '1',
         title: 'Validating',
-        showInMarketsQuickFilter: false,
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
         showInGovernanceFilterWidget: true
     },
     {
         id: '2',
         title: 'Rejected',
-        showInMarketsFilterWidget: true
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
 
     {
         id: '4',
         title: 'Inactive',
-        showInMarketsFilterWidget: true
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '5',
         title: 'Resolving',
-        showInMarketsQuickFilter: false,
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
         showInGovernanceFilterWidget: true
     },
     {
         id: '7',
         title: 'Dispute',
-        showInMarketsQuickFilter: false,
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
         showInGovernanceFilterWidget: true
     },
     {
         id: '8',
         title: 'Resolve Again',
+        showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
         showInGovernanceFilterWidget: true
     },
@@ -100,13 +111,16 @@ export const marketStatesDisplay = [
         id: '6',
         title: 'Resolved',
         showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '9',
         title: 'Force Resolved',
         hide: false,
-        showInMarketsFilterWidget: true
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     }
 ];
 

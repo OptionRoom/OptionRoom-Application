@@ -28,5 +28,8 @@ export const useStyles = makeStyles((theme) => ({
                 marginRight: '5px',
             }
         }
+    },
+    MarketsLink: {
+        color: theme.colors.primary
     }
 }));

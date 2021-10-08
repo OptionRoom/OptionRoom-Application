@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import {get} from 'lodash';
 import clsx from "clsx";
@@ -11,6 +11,8 @@ import {marketStatesDisplay, GovernanceTypes, FiltrationWidgetTypes} from '../..
 import OrSwitch from '../../components/OrSwitch';
 import OrSelect from "../OrSelect";
 import {AccountContext} from "../../shared/AccountContextProvider";
+import {getMarketCategories} from "../../shared/firestore.service";
+import OracleApis from "../../shared/contracts/OracleApis";
 
 function FiltrationWidget(props) {
 
@@ -21,7 +23,54 @@ function FiltrationWidget(props) {
     } = props;
     const accountContext = useContext(AccountContext);
 
-    const marketCategories = useGetMarketCategories(get(filterDetails, ['type', 'id']), accountContext.account);
+    const [marketCategories, setMarketCategories] = useState([]);
+
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const selectedFilterType = get(filterDetails, ['type', 'id']);
+                if (FiltrationWidgetTypes.MARKETS === type || selectedFilterType == GovernanceTypes.MARKET) {
+                    let cats = await getMarketCategories();
+                    cats =
+                        [{
+                            label: 'All',
+                            value: "all"
+                        },
+                            ...cats]
+                            .map((entry) => {
+                                return {
+                                    value: entry.id,
+                                    label: entry.title
+                                };
+                            });
+
+                    setMarketCategories(cats);
+                    return;
+                }
+
+                if(selectedFilterType == GovernanceTypes.ORACLE) {
+                    const oracleApis = new OracleApis();
+                    const allCategories = await oracleApis.getAllCategories(accountContext.account);
+                    setMarketCategories([
+                        {
+                            label: 'All',
+                            value: "all"
+                        },
+                        ...allCategories.map((entry) => {
+                            return {
+                                label: entry,
+                                value: entry
+                            };
+                        })
+                    ]);
+                }
+            } catch (e) {
+
+            }
+        }
+
+        init();
+    }, [get(filterDetails, ['type', 'id'])]);
 
     const handleSort = (entry) => {
         if (get(filterDetails, ['sort', 'by']) === entry) {
@@ -45,39 +94,25 @@ function FiltrationWidget(props) {
         });
     };
 
-    const getCategoriesOptions = () => {
-        if(FiltrationWidgetTypes.MARKETS === type || (get(filterDetails, ['type', 'id']) === GovernanceTypes.MARKET)) {
-            return [
-                {
-                    title: 'All',
-                    id: "all"
-                },
-                ...marketCategories
-            ];
-        }
-
-        return marketCategories ? [
-            {
-                title: 'All',
-                id: "all"
-            },
-            ...marketCategories.map((entry) => {
-                return {
-                    title: entry,
-                    id: entry
-                };
-            })
-        ] : [];
-    };
-
     const getSortOptions = ()=> {
         if(FiltrationWidgetTypes.MARKETS === type) {
             return ["Volume", "Created"];
         }
 
-        if(type === GovernanceTypes.ORACLE) {
+        const selectedFilterType = get(filterDetails, ['type', 'id']);
+        if(selectedFilterType === GovernanceTypes.ORACLE) {
             return ["Posted", "Ends"];
         }
+
+        if(selectedFilterType === GovernanceTypes.SURVEY) {
+            return ["Posted", "Ends"];
+        }
+
+        if(selectedFilterType === GovernanceTypes.GOVERNANCE) {
+            return ["Posted", "Ends"];
+        }
+
+        return ["Volume", "Created"];
     }
 
     const getStateOptions = ()=> {
@@ -113,7 +148,27 @@ function FiltrationWidget(props) {
                 label: 'Ended'
             }
         ];
-    }
+    };
+
+    const getSearchPlaceholder = () => {
+        if(type === FiltrationWidgetTypes.GOVERNANCE) {
+            const selectedFilterType = get(filterDetails, ['type', 'id']);
+
+            if(selectedFilterType === GovernanceTypes.ORACLE) {
+                return 'Search Oracel requests';
+            }
+
+            if(selectedFilterType === GovernanceTypes.SURVEY) {
+                return 'Search survey requests';
+            }
+
+            if(selectedFilterType === GovernanceTypes.GOVERNANCE) {
+                return 'Search governance requests';
+            }
+        }
+
+        return 'Search markets';
+    };
 
     return (
         <div className={classes.FiltrationWidget}>
@@ -122,7 +177,7 @@ function FiltrationWidget(props) {
             </div>
             <div className={classes.SearchSection}>
                 <div className={classes.SearchInput}>
-                    <input placeholder={type === GovernanceTypes.ORACLE ? 'Search proposals' : 'Search markets'}
+                    <input placeholder={getSearchPlaceholder()}
                             className={classes.MarketNameInput}
                             value={get(filterDetails, 'name')}
                             onChange={(e) => {
@@ -242,14 +297,7 @@ function FiltrationWidget(props) {
                                         }
                                     });
                                 }}
-                                options={
-                                    getCategoriesOptions()
-                                        .map((entry) => {
-                                    return {
-                                        value: entry.id,
-                                        label: entry.title
-                                    };
-                                })}/>
+                                options={marketCategories}/>
                         </div>
                     </div>
                     <div className={classes.FiltersBlock}>
