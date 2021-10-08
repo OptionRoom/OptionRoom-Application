@@ -69,6 +69,7 @@ function CreateMarket() {
     const [walletRoomBalance, setWalletRoomBalance] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
     const [marketCreationFees, setMarketCreationFees] = useState(0);
+    const [marketMinLiq, setMarketMinLiq] = useState(1000);
 
     const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
         defaultValues: {
@@ -108,7 +109,7 @@ function CreateMarket() {
                 .required()
                 .label('End date'),
             liquidity: Joi.number()
-                .min(1000)
+                .min(marketMinLiq)
                 .max(parseFloat(walletBalanceOfCollateralToken ? fromWei(walletBalanceOfCollateralToken) : 0))
                 .required()
                 .label('Liquidity'),
@@ -226,8 +227,10 @@ function CreateMarket() {
                 JSON.stringify(sources)
             );
 
+            const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, createdMarket.id);
+
             //Redirect to market page after creation
-            history.push(`/markets/${createdMarket.id}`);
+            history.push(`/markets/${marketContractAddressVal}`);
         } catch (e) {
             console.log("Something went wrong!", e);
         } finally {
@@ -251,12 +254,10 @@ function CreateMarket() {
             if (accountContext.account) {
                 const marketApis = new MarketAPIs();
                 const marketCreationFees = await marketApis.getMarketCreationFees(accountContext.account);
+                const getMarketMinShareLiq = await marketApis.getMarketMinShareLiq(accountContext.account);
+                setMarketMinLiq(parseFloat(fromWei(getMarketMinShareLiq)));
                 setMarketCreationFees(marketCreationFees);
-
                 loadWalletData();
-                setIsLoading(true);
-                //const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
-                //setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
                 setIsLoading(false);
             }
         };
@@ -529,7 +530,7 @@ function CreateMarket() {
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
                                         <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
-                                                    min={1000}
+                                                    min={marketMinLiq}
                                                     value={getValues('liquidity') || 0}
                                                     onValidityUpdate={(valid) => {
                                                         //setIsTradeDisabled(!valid);

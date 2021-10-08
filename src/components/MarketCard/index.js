@@ -89,19 +89,19 @@ function MarketCard(props) {
         }
 
         if(get(market, ["state"]) == 1) {
-            return parseInt(market.validatingEndTime) * 1000;
+            return parseInt(market.info.validatingEndTime) * 1000;
         }
 
         if(get(market, ["state"]) == 3) {
-            return parseInt(market.participationEndTime) * 1000;
+            return parseInt(market.info.participationEndTime) * 1000;
         }
 
         if(get(market, ["state"]) == 5) {
-            return parseInt(market.resolvingEndTime) * 1000;
+            return parseInt(market.info.resolvingEndTime) * 1000;
         }
 
         if(get(market, ["state"]) == 7) {
-            return parseInt(market.lastDisputeResolvingVoteTime) * 1000;
+            return parseInt(market.info.lastDisputeResolvingVoteTime) * 1000;
         }
     }
 

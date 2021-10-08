@@ -69,6 +69,15 @@ class MarketAPIs {
             });
     }
 
+    async getMarketMinShareLiq(wallet) {
+        return this.marketControllerContract
+            .methods
+            .marketMinShareLiq()
+            .call({
+                from: wallet,
+            });
+    }
+
     async getWalletTradeOptionBuyPrice(
         wallet,
         marketId,

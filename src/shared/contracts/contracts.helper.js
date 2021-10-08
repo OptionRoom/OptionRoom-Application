@@ -181,14 +181,14 @@ export const contractsAddresses = {
         court_token: '0xEb804aE530Ed9D351374E865c110ed5ce172Cea0',
 
         market: '0x01102801C1556239e9EE7eE12194e9a138e7a5da',
-        market_controller: '0x0E47EFC671ba2FA8950Efb9085dEF125e43c64f0',
-        markets_query: '0x84287DD628f72Ce344524Dc31F9aD953BA42cD63',
-        option_token: '0xB081caDb3f6Da14a22Fa0E1cFDb94e2561CC1C05',
+        market_controller: '0x39cF7F5fc12309fB8E6cC5Ea53798CE962269edD',
+        markets_query: '0xEa9864eE83e3D386c0d7FDDE35157E6621D9cC71',
+        option_token: '0xfD8cb055567BCb6a39FA5142142021981fa0D7bC',
 
         usdt: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
         room: '0x3C45A24d36Ab6fc1925533C1F57bC7e1b6fbA8a4',
 
-        reward_program: "0xe0FAf75284Fb81E51d97573c05B157dEF17442d9",
+        reward_program: "0x759AC111645C17F1388886dA3520725f9467f728",
 
         market_controllerv1: '0xbE227c937B87b6562d2cB5A5fCE51931C5397B09',
         market_controllerv2: '0xC3B6D447D5d8869e4Eb1423bA5B8d0d6aFD7B6f6',
