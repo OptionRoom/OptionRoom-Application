@@ -89,6 +89,13 @@ function MarketCard(props) {
         }
     };
 
+    const getRewards = () => {
+        const the0rewards = parseFloat(fromWei(walletOptionTokensBalance[0], null, 5))/2;
+        const the1rewards = parseFloat(fromWei(walletOptionTokensBalance[1], null, 5))/2;
+
+        return the0rewards + the1rewards;
+    };
+
     return (
       <div className={classes.MarketCard}>
           <div className={classes.AvatarTitle}>
@@ -126,7 +133,7 @@ function MarketCard(props) {
               <div className={classes.BlockTitle}>Your Rewards</div>
               <div className={classes.BlockValActions}>
                   <div className={classes.BlockVal}>
-                      {numeral(fromWei((walletOptionTokensBalance[0] + walletOptionTokensBalance[1]) / 2, null, 5)).format("$0,0.00")}
+                      {numeral(getRewards()).format("$0,0.00")}
                   </div>
                   {
                       ((parseFloat(walletOptionTokensBalance[0]) + parseFloat(walletOptionTokensBalance[1])) > 0) && (

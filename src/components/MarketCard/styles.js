@@ -258,7 +258,7 @@ export const useStyles = makeStyles((theme) => ({
     CounterWrapper: {
         display: 'flex',
         alignItems: 'center',
-        color: '#36414B',
+        color: theme.isDark ? '#fff' : '#36414B',
         width: '100%',
         '&>div:first-child': {
             marginRight: 'auto'
@@ -267,7 +267,7 @@ export const useStyles = makeStyles((theme) => ({
     CounterWrapperInner: {
         display: 'flex',
         alignItems: 'center',
-        color: '#36414B',
+        color: theme.isDark ? '#fff' : '#36414B',
         '&>div': {
             marginRight: '10px'
         },

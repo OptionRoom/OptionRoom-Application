@@ -1758,7 +1758,7 @@ exports.getMarketControllerContract = function (web3) {
         }
     ];
 
-    const marketController = new web3.eth.Contract(marketControllerAbi,'0xC3B6D447D5d8869e4Eb1423bA5B8d0d6aFD7B6f6');
+    const marketController = new web3.eth.Contract(marketControllerAbi,'0x39cF7F5fc12309fB8E6cC5Ea53798CE962269edD');
 
     return marketController;
 }
@@ -2335,7 +2335,7 @@ exports.getMarketQueryContract = function (web3) {
         }
     ];
 
-    return new web3.eth.Contract(contractAbi,'0x84287DD628f72Ce344524Dc31F9aD953BA42cD63');
+    return new web3.eth.Contract(contractAbi,'0xEa9864eE83e3D386c0d7FDDE35157E6621D9cC71');
 }
 
 exports.getMarketContract = function(web3, marketAddress){
