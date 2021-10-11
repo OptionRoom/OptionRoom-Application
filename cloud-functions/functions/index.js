@@ -83,7 +83,7 @@ exports.auth = functions.https.onRequest((req, res) => {
 });
 
 
-exports.syncBuyAndSell = functions.pubsub.schedule('* * * * *').onRun(async (context) => {
+exports.syncBuyAndSell = functions.pubsub.schedule('every 2 minutes').onRun(async (context) => {
 
     const maxBlockCount = 2000;
 
@@ -107,7 +107,7 @@ exports.syncBuyAndSell = functions.pubsub.schedule('* * * * *').onRun(async (con
 
         const getMarkets = async () => {
             const snapshot = await db.collection(marketsDbName)
-                .where("version", "==", '2.0')
+                .where("version", "==", '3.0')
                 .get();
             return snapshot.docs.map(doc => {
                 return {
@@ -149,13 +149,12 @@ exports.syncBuyAndSell = functions.pubsub.schedule('* * * * *').onRun(async (con
         }
 
         const getMarketQuestionIdByMarketAddress = async (marketAddress) => {
-            const marketContract = contractsWeb3.getMarketContract(web3, marketAddress);
-            const result = await marketContract
+            const result = await marketController
                 .methods
-                .getMarketQuestionID()
+                .getMarketInfo(marketAddress)
                 .call();
 
-            return result;
+            return result.metaDataID;
         }
 
         const updateMarketTradeVolumeTemp = async (marketAddress, val) => {

@@ -207,36 +207,6 @@ exports.getMarketControllerContract = function (web3) {
         {
             "constant": true,
             "inputs": [],
-            "name": "FeeProposer",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "FeeProtocol",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
             "name": "RP",
             "outputs": [
                 {
@@ -265,6 +235,97 @@ exports.getMarketControllerContract = function (web3) {
             "type": "function"
         },
         {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint8",
+                    "name": "outcomeIndex",
+                    "type": "uint8"
+                }
+            ],
+            "name": "castGovernanceResolvingVote",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "validationFlag",
+                    "type": "bool"
+                }
+            ],
+            "name": "castGovernanceValidatingVote",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "question",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "marketMetadatasID",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "participationEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "resolvingEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "contract IERC20",
+                    "name": "collateralToken",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "initialLiq",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "resolveResources",
+                    "type": "string"
+                }
+            ],
+            "name": "createMarketProposal",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": true,
             "inputs": [],
             "name": "ct",
@@ -277,6 +338,26 @@ exports.getMarketControllerContract = function (web3) {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "string",
+                    "name": "disputeReason",
+                    "type": "string"
+                }
+            ],
+            "name": "disputeMarket",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -311,6 +392,36 @@ exports.getMarketControllerContract = function (web3) {
         },
         {
             "constant": true,
+            "inputs": [],
+            "name": "feeProposer",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "feeProtocol",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -324,6 +435,32 @@ exports.getMarketControllerContract = function (web3) {
                     "internalType": "contract ORFPMarket",
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "getAccountInfo",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "canVote",
+                    "type": "bool"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "votePower",
+                    "type": "uint256"
                 }
             ],
             "payable": false,
@@ -354,6 +491,229 @@ exports.getMarketControllerContract = function (web3) {
                     "internalType": "uint256",
                     "name": "",
                     "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getCurrentTime",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "getMarketInfo",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "createdTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "validatingEndTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "participationEndTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "resolvingEndTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "lastResolvingVoteTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "lastDisputeResolvingVoteTime",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "disputeTotalBalances",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256[2]",
+                            "name": "validatingVotesCount",
+                            "type": "uint256[2]"
+                        },
+                        {
+                            "internalType": "uint256[2]",
+                            "name": "resolvingVotesCount",
+                            "type": "uint256[2]"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "disputedFlag",
+                            "type": "bool"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "question",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "metaDataID",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "resolveResorces",
+                            "type": "string"
+                        }
+                    ],
+                    "internalType": "struct ORMarketController.MarketInfo",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "getMarketState",
+            "outputs": [
+                {
+                    "internalType": "enum ORMarketLib.MarketState",
+                    "name": "",
+                    "type": "uint8"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "trader",
+                    "type": "address"
+                }
+            ],
+            "name": "getMarketsByTrader",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "trader",
+                    "type": "address"
+                }
+            ],
+            "name": "getMarketsCountByTrader",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "getResolvingOutcome",
+            "outputs": [
+                {
+                    "internalType": "uint256[]",
+                    "name": "indexSet",
+                    "type": "uint256[]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "getResolvingVotesCount",
+            "outputs": [
+                {
+                    "internalType": "uint256[2]",
+                    "name": "",
+                    "type": "uint256[2]"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "getVersion",
+            "outputs": [
+                {
+                    "internalType": "uint8",
+                    "name": "",
+                    "type": "uint8"
                 }
             ],
             "payable": false,
@@ -403,6 +763,152 @@ exports.getMarketControllerContract = function (web3) {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "isResolvingVoter",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "power",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "voteFlag",
+                            "type": "bool"
+                        },
+                        {
+                            "internalType": "uint8",
+                            "name": "selection",
+                            "type": "uint8"
+                        },
+                        {
+                            "internalType": "uint8",
+                            "name": "insertedFlag",
+                            "type": "uint8"
+                        }
+                    ],
+                    "internalType": "struct ORMarketController.MarketVotersInfo",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "isValidatingVoter",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "uint256",
+                            "name": "power",
+                            "type": "uint256"
+                        },
+                        {
+                            "internalType": "bool",
+                            "name": "voteFlag",
+                            "type": "bool"
+                        },
+                        {
+                            "internalType": "uint8",
+                            "name": "selection",
+                            "type": "uint8"
+                        },
+                        {
+                            "internalType": "uint8",
+                            "name": "insertedFlag",
+                            "type": "uint8"
+                        }
+                    ],
+                    "internalType": "struct ORMarketController.MarketVotersInfo",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "market",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "marketAddLiquidity",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "market",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "investmentAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "outcomeIndex",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "minOutcomeTokensToBu",
+                    "type": "uint256"
+                }
+            ],
+            "name": "marketBuy",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -518,6 +1024,36 @@ exports.getMarketControllerContract = function (web3) {
             "type": "function"
         },
         {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "market",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "sharesAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "autoMerg",
+                    "type": "bool"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "withdrawFees",
+                    "type": "bool"
+                }
+            ],
+            "name": "marketRemoveLiquidity",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "constant": true,
             "inputs": [
                 {
@@ -582,6 +1118,46 @@ exports.getMarketControllerContract = function (web3) {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "market",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "index",
+                    "type": "uint256"
+                }
+            ],
+            "name": "marketSell",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "market",
+                    "type": "address"
+                }
+            ],
+            "name": "marketStop",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -688,6 +1264,77 @@ exports.getMarketControllerContract = function (web3) {
                     "internalType": "address",
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "name": "marketsInfo",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "createdTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "validatingEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "participationEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "resolvingEndTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "lastResolvingVoteTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "lastDisputeResolvingVoteTime",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "disputeTotalBalances",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "disputedFlag",
+                    "type": "bool"
+                },
+                {
+                    "internalType": "string",
+                    "name": "question",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "metaDataID",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "resolveResorces",
+                    "type": "string"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
                 },
                 {
                     "internalType": "uint256",
@@ -762,6 +1409,36 @@ exports.getMarketControllerContract = function (web3) {
         {
             "constant": true,
             "inputs": [],
+            "name": "minMarketParticipationPeriod",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
+            "name": "minMarketResolvingPeriod",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "payable": false,
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": true,
+            "inputs": [],
             "name": "orGovernor",
             "outputs": [
                 {
@@ -772,6 +1449,21 @@ exports.getMarketControllerContract = function (web3) {
             ],
             "payable": false,
             "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                }
+            ],
+            "name": "payoutsAction",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -830,6 +1522,131 @@ exports.getMarketControllerContract = function (web3) {
             "inputs": [
                 {
                     "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                },
+                {
+                    "internalType": "bool",
+                    "name": "allowdFlag",
+                    "type": "bool"
+                }
+            ],
+            "name": "setCollateralAllowed",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint8",
+                    "name": "compID",
+                    "type": "uint8"
+                }
+            ],
+            "name": "setCompAddress",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "numerator",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "denominator",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint8",
+                    "name": "feeID",
+                    "type": "uint8"
+                }
+            ],
+            "name": "setFeeByFeeID",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "marketAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "time",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint8",
+                    "name": "optionID",
+                    "type": "uint8"
+                }
+            ],
+            "name": "setMarketTimeByOptionID",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "newValue",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint8",
+                    "name": "optionID",
+                    "type": "uint8"
+                }
+            ],
+            "name": "setMarketsConfig",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "bool",
+                    "name": "plentyFlag",
+                    "type": "bool"
+                }
+            ],
+            "name": "setPenaltyOnWrongResolving",
+            "outputs": [],
+            "payable": false,
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "constant": false,
+            "inputs": [
+                {
+                    "internalType": "address",
                     "name": "newGovernorAddress",
                     "type": "address"
                 }
@@ -860,113 +1677,16 @@ exports.getMarketControllerContract = function (web3) {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "payoutsAction",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "getAccountInfo",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "canVote",
-                    "type": "bool"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "votePower",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "getMarketState",
-            "outputs": [
-                {
-                    "internalType": "enum ORMarketLib.MarketState",
-                    "name": "",
-                    "type": "uint8"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
+                    "name": "erc20Address",
                     "type": "address"
                 },
                 {
-                    "internalType": "bool",
-                    "name": "validationFlag",
-                    "type": "bool"
-                }
-            ],
-            "name": "castGovernanceValidatingVote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
                     "internalType": "address",
-                    "name": "marketAddress",
+                    "name": "to",
                     "type": "address"
                 }
             ],
-            "name": "withdrawGovernanceValidatingVote",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint8",
-                    "name": "outcomeIndex",
-                    "type": "uint8"
-                }
-            ],
-            "name": "castGovernanceResolvingVote",
+            "name": "withdrawFees",
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
@@ -994,771 +1714,17 @@ exports.getMarketControllerContract = function (web3) {
                     "internalType": "address",
                     "name": "marketAddress",
                     "type": "address"
-                },
-                {
-                    "internalType": "string",
-                    "name": "disputeReason",
-                    "type": "string"
                 }
             ],
-            "name": "disputeMarket",
+            "name": "withdrawGovernanceValidatingVote",
             "outputs": [],
             "payable": false,
             "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "isValidatingVoter",
-            "outputs": [
-                {
-                    "components": [
-                        {
-                            "internalType": "uint256",
-                            "name": "power",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "bool",
-                            "name": "voteFlag",
-                            "type": "bool"
-                        },
-                        {
-                            "internalType": "uint8",
-                            "name": "selection",
-                            "type": "uint8"
-                        },
-                        {
-                            "internalType": "uint8",
-                            "name": "insertedFlag",
-                            "type": "uint8"
-                        }
-                    ],
-                    "internalType": "struct ORMarketController.MarketVotersInfo",
-                    "name": "",
-                    "type": "tuple"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "isResolvingVoter",
-            "outputs": [
-                {
-                    "components": [
-                        {
-                            "internalType": "uint256",
-                            "name": "power",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "bool",
-                            "name": "voteFlag",
-                            "type": "bool"
-                        },
-                        {
-                            "internalType": "uint8",
-                            "name": "selection",
-                            "type": "uint8"
-                        },
-                        {
-                            "internalType": "uint8",
-                            "name": "insertedFlag",
-                            "type": "uint8"
-                        }
-                    ],
-                    "internalType": "struct ORMarketController.MarketVotersInfo",
-                    "name": "",
-                    "type": "tuple"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "getResolvingVotesCount",
-            "outputs": [
-                {
-                    "internalType": "uint256[2]",
-                    "name": "",
-                    "type": "uint256[2]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "getResolvingOutcome",
-            "outputs": [
-                {
-                    "internalType": "uint256[]",
-                    "name": "indexSet",
-                    "type": "uint256[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "marketAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "getMarketInfo",
-            "outputs": [
-                {
-                    "components": [
-                        {
-                            "internalType": "uint256",
-                            "name": "createdTime",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "participationEndTime",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "resolvingEndTime",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "lastResolvingVoteTime",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "lastDisputeResolvingVoteTime",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256",
-                            "name": "disputeTotalBalances",
-                            "type": "uint256"
-                        },
-                        {
-                            "internalType": "uint256[2]",
-                            "name": "validatingVotesCount",
-                            "type": "uint256[2]"
-                        },
-                        {
-                            "internalType": "uint256[2]",
-                            "name": "resolvingVotesCount",
-                            "type": "uint256[2]"
-                        },
-                        {
-                            "internalType": "bool",
-                            "name": "disputedFlag",
-                            "type": "bool"
-                        }
-                    ],
-                    "internalType": "struct ORMarketController.MarketInfo",
-                    "name": "",
-                    "type": "tuple"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "marketQuestionID",
-                    "type": "string"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "participationEndTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "resolvingEndTime",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "contract IERC20",
-                    "name": "collateralToken",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "initialLiq",
-                    "type": "uint256"
-                }
-            ],
-            "name": "createMarketProposal",
-            "outputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "market",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "marketAddLiquidity",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "market",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "sharesAmount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "autoMerg",
-                    "type": "bool"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "withdrawFees",
-                    "type": "bool"
-                }
-            ],
-            "name": "marketRemoveLiquidity",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "market",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "investmentAmount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "outcomeIndex",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "minOutcomeTokensToBu",
-                    "type": "uint256"
-                }
-            ],
-            "name": "marketBuy",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "market",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "index",
-                    "type": "uint256"
-                }
-            ],
-            "name": "marketSell",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "erc20Address",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                }
-            ],
-            "name": "withdrawFees",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "trader",
-                    "type": "address"
-                }
-            ],
-            "name": "getMarketsCountByTrader",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "trader",
-                    "type": "address"
-                }
-            ],
-            "name": "getMarketsByTrader",
-            "outputs": [
-                {
-                    "internalType": "address[]",
-                    "name": "",
-                    "type": "address[]"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "templateAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setTemplateAddress",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "orGovernorAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setIORGoverner",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "rewardProgramAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setRewardProgram",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "conditionalTokensAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setConditionalToken",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setRoomoracleAddress",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newAddress",
-                    "type": "address"
-                }
-            ],
-            "name": "setRewardCenter",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "roomAddres",
-                    "type": "address"
-                }
-            ],
-            "name": "setRoomAddress",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "newfees",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setMarketCreationFees",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "minLiq",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setMarketMinShareLiq",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "p",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setMarketValidatingPeriod",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "p",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setMarketDisputePeriod",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "p",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setMarketReCastResolvingPeriod",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "t",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setDisputeThreshold",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "numerator",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "denominator",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setFeeMarketLP",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "numerator",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "denominator",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setFeeProtocol",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "numerator",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "denominator",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setFeeProposer",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "bool",
-                    "name": "plentyFlag",
-                    "type": "bool"
-                }
-            ],
-            "name": "setpenaltyOnWrongResolving",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "bool",
-                    "name": "allowdFlag",
-                    "type": "bool"
-                }
-            ],
-            "name": "setCollateralAllowed",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "market",
-                    "type": "address"
-                }
-            ],
-            "name": "marketStop",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": false,
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "value",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setBuyRoomThreshold",
-            "outputs": [],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "constant": true,
-            "inputs": [],
-            "name": "getCurrentTime",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "payable": false,
-            "stateMutability": "view",
             "type": "function"
         }
     ];
 
-    const marketController = new web3.eth.Contract(marketControllerAbi,'0x39cF7F5fc12309fB8E6cC5Ea53798CE962269edD');
+    const marketController = new web3.eth.Contract(marketControllerAbi, '0x39cF7F5fc12309fB8E6cC5Ea53798CE962269edD');
 
     return marketController;
 }
@@ -2335,10 +2301,10 @@ exports.getMarketQueryContract = function (web3) {
         }
     ];
 
-    return new web3.eth.Contract(contractAbi,'0xEa9864eE83e3D386c0d7FDDE35157E6621D9cC71');
+    return new web3.eth.Contract(contractAbi, '0xEa9864eE83e3D386c0d7FDDE35157E6621D9cC71');
 }
 
-exports.getMarketContract = function(web3, marketAddress){
+exports.getMarketContract = function (web3, marketAddress) {
     const abi = [
         {
             "anonymous": false,
