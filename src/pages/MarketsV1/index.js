@@ -90,10 +90,10 @@ function MarketCard(props) {
     };
 
     const getRewards = () => {
-        const the0rewards = parseFloat(fromWei(walletOptionTokensBalance[0], null, 5))/2;
-        const the1rewards = parseFloat(fromWei(walletOptionTokensBalance[1], null, 5))/2;
+        const the0rewards = parseFloat(fromWei(walletOptionTokensBalance[0]))/2;
+        const the1rewards = parseFloat(fromWei(walletOptionTokensBalance[1]))/2;
 
-        return the0rewards + the1rewards;
+        return (the0rewards + the1rewards).toFixed(2);
     };
 
     return (
@@ -136,7 +136,7 @@ function MarketCard(props) {
                       {numeral(getRewards()).format("$0,0.00")}
                   </div>
                   {
-                      ((parseFloat(walletOptionTokensBalance[0]) + parseFloat(walletOptionTokensBalance[1])) > 0) && (
+                      (getRewards() > 0) && (
                           <div className={classes.BlockActions}>
                               <Button color={'primary'}
                                       size={'xs'}
@@ -154,13 +154,33 @@ function MarketCard(props) {
 function MarketsV1() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
+    const classes = useStyles();
+
+/*     return (
+        <div className={classes.ComingSoonWrap}>
+            <h1>This page is under maintenance</h1>
+            <p>Follow us here: <a
+                href="https://t.me/OptionRoom"
+                rel="noreferrer"
+                target="_blank"
+            >
+                <i className="fa fa-telegram"></i>
+            </a>
+                <a
+                    href="https://twitter.com/option_room"
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i className="fa fa-twitter"></i>
+                </a> for more information</p>
+        </div>
+    ); */
+
     const accountContext = useContext(AccountContext);
 
     const [isLoading, setIsLoading] = useState(false);
     const [markets, setMarkets] = useState([]);
     const [selectedArchiveVersion, setSelectedArchiveVersion] = useState(2);
-
-    const classes = useStyles();
 
     const loadActiveMarkets = async () => {
         const versionString = `${selectedArchiveVersion}.0`;

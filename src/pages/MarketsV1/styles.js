@@ -87,5 +87,23 @@ export const useStyles = makeStyles((theme) => ({
     ActiveVersion: {
         color: '#fff !important',
         background: `${theme.colors.primary} !important`
+    },
+    ComingSoonWrap: {
+        marginTop: '30px',
+        padding: '20px',
+        textAlign: 'center',
+        '& h1': {
+            fontSize: '30px',
+            margin: '0 0 15px',
+            textTransform: 'uppercase'
+        },
+        '& p': {
+            fontSize: '20px',
+            margin: '0 0 15px',
+            '& a': {
+                color: '#0058FF',
+                marginRight: '5px',
+            }
+        }
     }
 }));

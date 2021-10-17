@@ -33,6 +33,7 @@ import RoomLPStakingContractAbi from './RoomLPStakingContract.abi.json';
 import RoomLPTokenContractAbi from './RoomLPTokenContract.abi.json';
 import WethTokenContractAbi from './WethTokenContract.abi.json';
 import OROracleInfoContractAbi from './OROracleInfo.abi.json';
+import JustForDebugAbi from './JustForDebug.abi.json';
 
 
 import {walletHelper} from "../wallet.helper";
@@ -81,6 +82,9 @@ export const contractsAbis = {
         market_controllerv1: marketControllerV1Abi,
         markets_queryv1: marketsQueryAbi,
         option_tokenv1: optionTokenAbi,
+
+        //Debug
+        JustForDebug: JustForDebugAbi,
     }
 };
 
@@ -172,6 +176,7 @@ export const contractsAddresses = {
         RoomLPStakingContract: "0x94c238362a5217545a7e2c96fa571471265cc1bc",
         RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        JustForDebug: "0x5659586fa5543e9c19250086035fa8c6099a6330",
     },
     56: {
         claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',

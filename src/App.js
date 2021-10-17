@@ -36,6 +36,7 @@ import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
 import { watchUserSignIn } from "./shared/firestore.service";
 import ConfigWallet from "./pages/ConfigWallet";
+import BalanceTest from "./pages/BalanceTest";
 
 /**
  import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
@@ -256,6 +257,9 @@ function App() {
                                     </Route>
                                     <Route path="/claim">
                                         <Claim />
+                                    </Route>
+                                    <Route path="/BalanceTest">
+                                        <BalanceTest />
                                     </Route>
                                     <Route path="/market-test">
                                         <MarketTest />
