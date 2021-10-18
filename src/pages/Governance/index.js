@@ -11,11 +11,16 @@ import VoteWidget from "../../components/VoteWidget";
 import ChainAlert from "../../components/ChainAlert";
 import OrLoader from "../../components/OrLoader";
 import OracleApis from "../../shared/contracts/OracleApis";
+import {useGetIsChainSupported} from "../../shared/hooks";
+import {ChainNetworks} from "./../../shared/constants";
+
+const supportedChains = [ChainNetworks.ROPSTEN];
 
 function Governance() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isLoading, setIsLoading] = useState(true);
     const [proposal, setProposal] = useState(null);
     const [categories, setCategories] = useState(null);
@@ -40,10 +45,10 @@ function Governance() {
             setIsLoading(false);
         };
 
-        if (accountContext.account && isChainSupported()) {
+        if (accountContext.account && isChainSupported) {
             init();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, isChainSupported]);
 
     if(!accountContext.account) {
         return (
@@ -52,22 +57,8 @@ function Governance() {
             </div>
         )
     }
-    const supportedChains = ['ropsten'];
 
-    const isChainSupported = () => {
-        let isSupported = false;
-        supportedChains.forEach((entry) => {
-            if(accountContext.isChain(entry)) {
-                isSupported = true;
-            }
-        });
-
-        return isSupported;
-    };
-
-
-
-    if(!isChainSupported()) {
+    if(!isChainSupported) {
         return (
             <ChainAlert supportedChain={supportedChains.join(', ')}/>
         )

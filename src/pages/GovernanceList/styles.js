@@ -62,7 +62,22 @@ export const useStyles = makeStyles((theme) => ({
         marginRight: "auto",
         fontSize: "30px",
         lineHeight: "38px",
-        color: theme.isDark ? "#BFD1E1" : "##36414B",
+        color: theme.isDark ? "#BFD1E1" : "#36414B",
+        display: 'flex',
+        alignItems: 'baseline',
+        '& ul': {
+            padding: 0,
+            margin: 0,
+            listStyle: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            '& li': {
+                lineHeight: '12px',
+                fontSize: '12px',
+                marginLeft: '10px',
+                cursor: 'pointer'
+            }
+        }
     },
     MarketsPage__HeaderActions: {
         display: "flex",
@@ -90,8 +105,20 @@ export const useStyles = makeStyles((theme) => ({
             stroke: "#2E6AFA",
         },
     },
-
     ChainWrap: {
         padding: '50px'
+    },
+    QuickFilters: {
+        display: 'flex',
+        marginBottom: '15px',
+        '&>div': {
+            marginRight: "10px",
+            fontSize: "14px",
+            cursor: "pointer",
+            userSelect: "none"
+        }
+    },
+    QuickFilters__IsActive: {
+        color: theme.colors.primary
     }
 }));

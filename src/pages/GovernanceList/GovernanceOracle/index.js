@@ -12,6 +12,7 @@ import GovernanceCard from "../../../components/GovernanceCard";
 import {ChainNetworks} from "../../../shared/constants";
 import ChainAlert from "../../../components/ChainAlert";
 import OrLoader from "../../../components/OrLoader";
+import {useGetIsChainSupported} from "../../../shared/hooks";
 
 const supportedChains = [ChainNetworks.ROPSTEN];
 
@@ -24,23 +25,14 @@ function GovernanceOracle(props) {
     const [isLoading, setIsLoading] = useState(false);
     const accountContext = useContext(AccountContext);
     const filteredProposals = useGetFilteredProposals(markets, filterDetails.name, filterDetails.category, filterDetails.state, filterDetails.sort);
-
-    const isChainSupported = () => {
-        let isSupported = false;
-        supportedChains.forEach((entry) => {
-            if(accountContext.isChain(entry)) {
-                isSupported = true;
-            }
-        });
-
-        return isSupported;
-    };
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     useEffect(() => {
         const init = async () => {
             const oracleApis = new OracleApis();
 
             setIsLoading(true);
+            //await oracleApis.createQuestion(accountContext.account);
             const allCategories = await oracleApis.getAllCategories(accountContext.account);
             let marketsResult = await oracleApis.getAllQuestions(accountContext.account);
             marketsResult = marketsResult.map((entry) => {
@@ -51,17 +43,16 @@ function GovernanceOracle(props) {
                     })
                 };
             });
-
             setMarkets(marketsResult);
             setIsLoading(false);
         };
 
-        if (accountContext.account && isChainSupported()) {
+        if (accountContext.account && isChainSupported) {
             init();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, isChainSupported]);
 
-    if(!isChainSupported()) {
+    if(!isChainSupported) {
         return (
             <ChainAlert supportedChain={supportedChains.join(', ')}/>
         )
@@ -82,7 +73,7 @@ function GovernanceOracle(props) {
                 filteredProposals.length == 0 && (
                     <div className={classes.notFoundResults}>
                         <SentimentDissatisfiedIcon/>
-                        <div>We couldn't find any markets that match your search, please try another time</div>
+                        <div>We couldn't find any Oracle requests that match your search, please try another time</div>
                     </div>
                 )
             }

@@ -283,7 +283,7 @@ function App() {
                                         <Governance />
                                     </Route>
                                     <Route path="/governance" exact={true}>
-                                        <CourtStaking />
+                                        <GovernanceList />
                                     </Route>
 {/*
                                     <Route path="/governance/:governanceId">

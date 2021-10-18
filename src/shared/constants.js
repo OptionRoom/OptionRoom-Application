@@ -55,14 +55,14 @@ export const marketStatesDisplay = [
         title: 'Active',
         showInMarketsQuickFilter: true,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
     {
         id: '0',
         title: 'Invalid',
         showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
     {
         id: '1',
@@ -76,7 +76,7 @@ export const marketStatesDisplay = [
         title: 'Rejected',
         showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
 
     {
@@ -84,7 +84,7 @@ export const marketStatesDisplay = [
         title: 'Inactive',
         showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
     {
         id: '5',
@@ -105,14 +105,14 @@ export const marketStatesDisplay = [
         title: 'Resolve Again',
         showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
     {
         id: '6',
         title: 'Resolved',
         showInMarketsQuickFilter: true,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     },
     {
         id: '9',
@@ -120,7 +120,7 @@ export const marketStatesDisplay = [
         hide: false,
         showInMarketsQuickFilter: false,
         showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        showInGovernanceFilterWidget: false
     }
 ];
 

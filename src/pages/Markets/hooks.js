@@ -23,7 +23,7 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
 
             if (category && category.id != 'all') {
                 newMarkets = filter(newMarkets, (entry) => {
-                    return get(entry, ['dbData', 'category', 'id']) == category.value;
+                    return get(entry, ['dbData', 'category', 'id']) == category.id;
                 });
             }
 

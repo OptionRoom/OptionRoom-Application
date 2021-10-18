@@ -16,7 +16,7 @@ import CourtVotePowerStaking2 from "../../components/CourtVotePowerStaking2";
 import {
     ChainNetworks,
     GovernanceTypes,
-    FiltrationWidgetTypes
+    FiltrationWidgetTypes, marketStatesDisplay
 } from "../../shared/constants";
 
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN];
@@ -28,8 +28,6 @@ function Markets() {
 
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
-    const [allCategories, setAllCategories] = useState([]);
-    const [selectedType, setSelectedType] = useState(GovernanceTypes.ORACLE);
 
     const [filterDetails, setFilterDetails] = useState({
         name: "",
@@ -69,6 +67,49 @@ function Markets() {
         };
     }, []);
 
+    const getQuickFilterOptions = () => {
+        if(filterDetails.type.id === GovernanceTypes.MARKET) {
+            return marketStatesDisplay.filter(entry => entry.showInGovernanceFilterWidget);
+        }
+
+        return [
+            {
+                id: 'all',
+                title: 'All',
+            },
+            {
+                id: 'active',
+                title: 'Active'
+            },
+            {
+                id: 'ended',
+                title: 'Ended'
+            }
+        ];
+    }
+
+    useEffect(() => {
+        setFilterDetails({
+            ...filterDetails,
+            name: "",
+            category: {
+                title: 'All',
+                id: "all"
+            },
+            state: {
+                id: "all",
+                title: "All",
+            },
+            sort: filterDetails.type.id === GovernanceTypes.ORACLE ? {
+                by: "posted",
+                direction: "down",
+            } : {
+                by: "created",
+                direction: "down",
+            }
+        })
+    }, [filterDetails.type.id]);
+
     if (!accountContext.account) {
         return (
             <div className={classes.ConnectWrap}>
@@ -83,7 +124,12 @@ function Markets() {
                 <CourtVotePowerStaking2/>
                 <div className={classes.MarketsPage__Header}>
                     <div className={classes.MarketsPage__HeaderTitle}>
-                        Proposals
+                        {
+                            filterDetails.type.id === GovernanceTypes.ORACLE && (`Oracle`)
+                        }
+                        {
+                            filterDetails.type.id === GovernanceTypes.MARKET && (`Markets`)
+                        }
                     </div>
                     <div className={classes.MarketsPage__HeaderActions}>
                         <div className={clsx(classes.MarketsPage__HeaderActionsIconWrap, classes.MarketsPage__HeaderActionsFilters)}
@@ -118,6 +164,23 @@ function Markets() {
                             <ListIcon />
                         </div>
                     </div>
+                </div>
+                <div className={classes.QuickFilters}>
+                    {
+                        getQuickFilterOptions().map((entry) => {
+                            return (
+                                <div className={clsx({
+                                    [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id
+                                })}
+                                     onClick={() => {
+                                         setFilterDetails({
+                                             ...filterDetails,
+                                             state: entry
+                                         });
+                                     }}>{entry.title}</div>
+                            );
+                        })
+                    }
                 </div>
                 <div className={classes.MarketsPage__MainList}>
                     {

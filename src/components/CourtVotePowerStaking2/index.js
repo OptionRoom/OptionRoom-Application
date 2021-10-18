@@ -9,11 +9,15 @@ import {fromWei} from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import {ChainNetworks, MaxUint256} from "../../shared/constants";
+import {useGetIsChainSupported} from "../../shared/hooks";
+
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.ROPSTEN];
 
 function CourtVotePowerStaking2(props) {
     const {
     } = props;
     const accountContext = useContext(AccountContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     const classes = useStyles();
     const [isApprovingCourtForPowerStake, setIsApprovingCourtForPowerStake] = useState(false);
@@ -25,10 +29,6 @@ function CourtVotePowerStaking2(props) {
     const [courtTokenBalance, setCourtTokenBalance] = useState(0);
 
     const loadWalletAllowance = async () => {
-        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
-            return;
-        }
-
         try {
             const claimCourtAPIs = new ClaimCourtAPIs();
             const allowance = await claimCourtAPIs.getWalletCourtAllowanceOfPowerStakeContract(accountContext.account);
@@ -39,10 +39,6 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletStakeBalance = async () => {
-        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
-            return;
-        }
-
         try {
             const claimCourtAPIs = new ClaimCourtAPIs();
             const result = await claimCourtAPIs.getWalletStakedCourtInPowerStakeContract(accountContext.account);
@@ -53,10 +49,6 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletVotePower = async () => {
-        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
-            return;
-        }
-
         try {
             const claimCourtAPIs = new ClaimCourtAPIs();
             const result = await claimCourtAPIs.getVotePower(accountContext.account);
@@ -67,10 +59,6 @@ function CourtVotePowerStaking2(props) {
     };
 
     const loadWalletCourtBalance = async () => {
-        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
-            return;
-        }
-
         try {
             const claimCourtAPIs = new ClaimCourtAPIs();
             const result = await claimCourtAPIs.getAddressTokenBalance(accountContext.account, 'court');
@@ -81,7 +69,7 @@ function CourtVotePowerStaking2(props) {
     };
 
     const handleDeposit = async () => {
-        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+        if(!isChainSupported) {
             return;
         }
 
@@ -108,13 +96,13 @@ function CourtVotePowerStaking2(props) {
     };
 
     useEffect(() => {
-        if(accountContext.account) {
+        if(accountContext.account && isChainSupported) {
             loadWalletAllowance();
             loadWalletStakeBalance();
             loadWalletVotePower();
             loadWalletCourtBalance();
         }
-    }, [accountContext.account]);
+    }, [accountContext.account, isChainSupported]);
 
     return (
         <>

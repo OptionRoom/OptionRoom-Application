@@ -33,8 +33,8 @@ function FiltrationWidget(props) {
                     let cats = await getMarketCategories();
                     cats =
                         [{
-                            label: 'All',
-                            value: "all"
+                            title: 'All',
+                            id: "all"
                         },
                             ...cats]
                             .map((entry) => {
@@ -112,7 +112,7 @@ function FiltrationWidget(props) {
             return ["Posted", "Ends"];
         }
 
-        return ["Volume", "Created"];
+        return ["Created"];
     }
 
     const getStateOptions = ()=> {

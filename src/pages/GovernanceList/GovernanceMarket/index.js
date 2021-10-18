@@ -6,7 +6,7 @@ import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
 
 import { useStyles } from "./styles";
 import OracleApis from "../../../shared/contracts/OracleApis";
-import {useGetFilteredProposals} from "../hooks";
+import {useGetFilteredMarkets} from "../hooks";
 import {AccountContext} from "../../../shared/AccountContextProvider";
 import GovernanceCard from "../../../components/GovernanceCard";
 import {ChainNetworks} from "../../../shared/constants";
@@ -14,6 +14,7 @@ import ChainAlert from "../../../components/ChainAlert";
 import OrLoader from "../../../components/OrLoader";
 import MarketAPIs from "../../../shared/contracts/MarketAPIs";
 import MarketCard from "../../../components/MarketCard";
+import {useGetIsChainSupported} from "../../../shared/hooks";
 
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN];
 
@@ -25,18 +26,15 @@ function GovernanceMarket(props) {
     const [markets, setMarkets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const accountContext = useContext(AccountContext);
-    const filteredProposals = useGetFilteredProposals(markets, filterDetails.name, filterDetails.category, filterDetails.state, filterDetails.sort);
-
-    const isChainSupported = () => {
-        let isSupported = false;
-        supportedChains.forEach((entry) => {
-            if(accountContext.isChain(entry)) {
-                isSupported = true;
-            }
-        });
-
-        return isSupported;
-    };
+    //(marketsContracts , searchQuery, category, sortBy, state)
+    const filteredProposals = useGetFilteredMarkets(
+        markets,
+        filterDetails.name,
+        filterDetails.category,
+        filterDetails.sort,
+        filterDetails.state.id,
+    );
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     useEffect(() => {
         const init = async () => {
@@ -50,17 +48,16 @@ function GovernanceMarket(props) {
                 false,
                 true
             );
-
             setMarkets(marketContracts);
             setIsLoading(false);
         };
 
-        if (accountContext.account && isChainSupported()) {
+        if (accountContext.account && isChainSupported) {
             init();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, isChainSupported]);
 
-    if(!isChainSupported()) {
+    if(!isChainSupported) {
         return (
             <ChainAlert supportedChain={supportedChains.join(', ')}/>
         )
