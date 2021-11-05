@@ -2,14 +2,15 @@ const functions = require("firebase-functions");
 
 // metamask-auth
 const Web3 = require('web3');
-const speakeasy = require('speakeasy');
-const secret = '';
+
+const {sendNotification} = require("./notifications.helper");
+
 const web3 = new Web3(new Web3.providers.HttpProvider(
     `https://mainnet.infura.io/v3/${functions.config().infura.id}`
 ));
 
 // CORS Express middleware to enable CORS Requests.
-const cors = require('cors')({ origin: true });
+const cors = require('cors')({origin: true});
 
 // Firebase Setup
 const admin = require('firebase-admin');
@@ -29,10 +30,10 @@ exports.auth = functions.https.onRequest((req, res) => {
 
     const handleResponse = (msg, status, body) => {
         if (body) {
-            return res.status(200).json({ data: body });
+            return res.status(200).json({data: body});
         }
 
-        return res.status(status).json({ data: msg });
+        return res.status(status).json({data: msg});
     }
 
     try {
@@ -234,16 +235,16 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 2 minutes').onRun(asyn
         }
 
         const currentBlockNumber = await web3.eth.getBlockNumber();
-        if(latestSyncedBlockNumber < currentBlockNumber) {
+        if (latestSyncedBlockNumber < currentBlockNumber) {
             const nextBlock = (latestSyncedBlockNumber + maxBlockCount) < currentBlockNumber ? (latestSyncedBlockNumber + maxBlockCount) : currentBlockNumber;
             await callEvents(latestSyncedBlockNumber, nextBlock);
 
-            await db.collection("general").doc(generalDb.id).update({ buySellBlockNumber: nextBlock + 1 });
+            await db.collection("general").doc(generalDb.id).update({buySellBlockNumber: nextBlock + 1});
 
             functions.logger.log(`New markets which need update`, marketsNeedUpdateByAddress);
 
             for (let marketAddress of Object.keys(marketsNeedUpdateByAddress)) {
-                await db.collection(marketsDbName).doc(marketAddressOnId[marketAddress]).update({ tradeVolume: marketsNeedUpdateByAddress[marketAddress] });
+                await db.collection(marketsDbName).doc(marketAddressOnId[marketAddress]).update({tradeVolume: marketsNeedUpdateByAddress[marketAddress]});
             }
 
             functions.logger.log(`End sync`, latestSyncedBlockNumber, nextBlock, syncedEventsCount);
@@ -251,6 +252,161 @@ exports.syncBuyAndSell = functions.pubsub.schedule('every 2 minutes').onRun(asyn
             functions.logger.log(`Up to date`);
         }
     }
+
+    return await callInit();
+});
+
+const entityEventsDbName = 'entity-tracking-events';
+const entityTrackDbName = 'entity-tracking';
+
+exports.updateMarketsStatus = functions.pubsub.schedule('every 5 minutes').onRun(async (context) => {
+    const db = admin.firestore();
+
+    const web3 = new Web3(new Web3.providers.HttpProvider(
+        `${functions.config().ankr.bsc_url}`
+    ));
+
+    const marketController = contractsWeb3.getMarketControllerContract(web3);
+
+    const getMarketInfo = async (marketId) => {
+        return marketController
+            .methods
+            .getMarketInfo(marketId)
+            .call();
+    }
+
+    const getMarketState = async (marketId) => {
+        return marketController
+            .methods
+            .getMarketState(marketId)
+            .call();
+    }
+
+    const getMarketsInDb = async () => {
+        const snapshot = await db.collection(entityTrackDbName)
+            .where("type", "==", 'market')
+            .get();
+        return snapshot.docs.map(doc => {
+            return {
+                id: doc.id,
+                ...doc.data()
+            };
+        });
+    };
+
+    const getMarketsInContracts = async () => {
+
+        const result = await marketController
+            .methods
+            .getAllMarkets()
+            .call();
+
+        let markets = result.map((e) => {
+            return {
+                address: e,
+            }
+        });
+
+        for (const m of markets) {
+            const marketInfo = await getMarketInfo(m.address);
+            m.info = marketInfo;
+        }
+
+        for (const m of markets) {
+            const state = await getMarketState(m.address);
+            m.state = state;
+        }
+
+        return markets;
+    };
+
+    const addNewMarket = async (address, state, info) => {
+        await db.collection(entityTrackDbName).add({
+            address,
+            state,
+            info: {
+                createdTime: info.createdTime,
+                validatingEndTime: info.validatingEndTime,
+                participationEndTime: info.participationEndTime,
+                resolvingEndTime: info.resolvingEndTime,
+                lastResolvingVoteTime: info.lastResolvingVoteTime,
+                lastDisputeResolvingVoteTime: info.lastDisputeResolvingVoteTime,
+                question: info.question,
+                metaDataID: info.metaDataID,
+                resolveResorces: info.resolveResorces,
+            },
+            createdAt: new Date().getTime(),
+            type: 'market'
+        });
+    };
+
+    const updateMarketStatus = async (marketId, state) => {
+        await db.collection(entityTrackDbName).doc(marketId).update({state: state});
+    };
+
+    const marketStates = {
+        "0": "Invalid",
+        "1": "Validating",
+        "2": "Rejected",
+        "3": "Active",
+        "4": "Inactive",
+        "5": "Resolving",
+        "6": "Resolved",
+        "7": "DisputePeriod",
+        "8": "ResolvingAfterDispute",
+    };
+
+    const buildNotificationMessage = (entityType, entityContractAddress, entityTitle, newState, isNew) => {
+        const link = `https://app.optionroom.finance/markets/${entityContractAddress}`;
+        let message = '';
+
+        if (isNew) {
+            message = `A new market has been created: ${entityTitle}. Validate the market on this link: \n ${link}`;
+        } else {
+            message = `Market ${entityTitle} has been changed to ${marketStates[newState]}, check details\n ${link}`;
+        }
+
+        return message;
+    };
+
+    const addNewMarketEvent = async (contractAddress, state, title, isNew) => {
+        const message = buildNotificationMessage('market', contractAddress, title, state, isNew);
+
+        await db.collection(entityEventsDbName).add({
+            contractAddress,
+            type: 'market',
+            state,
+            message: message,
+            createdAt: new Date().getTime()
+        });
+
+        sendNotification('telegram', message);
+    };
+
+    const checkContract = async (entityInContract, entityInDb) => {
+        if (entityInContract && !entityInDb) {
+            //contract is newly created
+            await addNewMarket(entityInContract.address, entityInContract.state, entityInContract.info);
+            await addNewMarketEvent(entityInContract.address, entityInContract.state, entityInContract.info.question, true);
+        } else if (entityInContract.state != entityInDb.state) {
+            await updateMarketStatus(entityInDb.id, entityInContract.state);
+            await addNewMarketEvent(entityInContract.address, entityInContract.state, entityInContract.info.question, false);
+        }
+    };
+
+    const callInit = async () => {
+        const marketsInDb = await getMarketsInDb();
+        const marketsInContracts = await getMarketsInContracts();
+
+        for (const m of marketsInContracts) {
+            const marketInContract = m;
+            const marketInDb = marketsInDb.find((entry) => {
+                return entry.address = m.address;
+            });
+
+            await checkContract(marketInContract, marketInDb);
+        }
+    };
 
     return await callInit();
 });
