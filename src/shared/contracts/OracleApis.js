@@ -29,7 +29,8 @@ class OracleAPIs {
     async createQuestion(wallet) {
         const result = await this.oracleInfoContract
             .methods
-            .createQuestion('Is Naser a hero 2?', ["Yes", "No", "Absolutely No"], toWei(0), (Math.floor(Date.now() / 1000) + (100 * 60)), 0, '0x0000000000000000000000000000000000000000', 0, [1], 'This is a test question 2')
+            //createQuestion(string memory question, string[] memory choices, uint256 reward, uint256 rewardDistriputedEquallyPerc,uint256 duration, uint256 minPowerAboveDefault, address optionalERC20Address, uint256 minOptionalERC20Holding, uint256[] memory categoriesIndices, string memory description)
+            .createQuestion('Should i invest in Bitcoin?', ["Yes", "No", "Absolutely No"], toWei(5), 50, (1*60*60) , 0, '0x0000000000000000000000000000000000000000', 0, [1], 'This is a test question 2')
             .send({
                 from: wallet,
             });
@@ -71,6 +72,26 @@ class OracleAPIs {
             .methods
             .getAllCategories()
             .call({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async getRewardInfoForQuestion(wallet, questionId) {
+        const result = await this.oracleInfoContract
+            .methods
+            .getRewardInfoForQuestion(wallet, questionId)
+            .call({
+                from: wallet,
+            });
+        return result;
+    }
+
+    async claimRewards(wallet) {
+        const result = await this.oracleInfoContract
+            .methods
+            .claimRewards()
+            .send({
                 from: wallet,
             });
         return result;

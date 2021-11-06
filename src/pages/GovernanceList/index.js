@@ -19,9 +19,8 @@ import {
     FiltrationWidgetTypes, marketStatesDisplay
 } from "../../shared/constants";
 
-const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN];
 
-function Markets() {
+function GovernanceList() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
@@ -214,4 +213,4 @@ function Markets() {
     );
 }
 
-export default Markets;
+export default GovernanceList;

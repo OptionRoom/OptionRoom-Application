@@ -90,6 +90,7 @@ function Markets() {
                 true,
                 true
             );
+
             setMarketsContracts(marketContracts);
             setIsLoading(false);
             const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);

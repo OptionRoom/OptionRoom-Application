@@ -416,7 +416,7 @@ class MarketAPIs {
             '0x141a92f2Ab34CCA0fec2E615B8D13d847438B529',
         ];
 
-        const withdrawFees = marketsDontSupportWithdrawFees.indexOf(marketId) === -1 ? true : false;
+        const withdrawFees = false;//marketsDontSupportWithdrawFees.indexOf(marketId) === -1 ? true : false;
 
         return this.marketControllerContract
             .methods
@@ -504,7 +504,7 @@ class MarketAPIs {
             }
         }
 
-        if(withState) {
+        if(withPricesOfBuy) {
             for(const m of markets) {
                 const marketPricesOfBuy = await this.getPricesOfBuy(wallet, m.address);
                 m.pricesOfBuy = {

@@ -160,7 +160,7 @@ export const contractsAddresses = {
         room: '0x0A335B9D44D99ddb15bD90f0F1f0604b1C7f6756',
         court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
         reward_program: "0x924a0f72f5fcee64632011fa6d5bc9284e31fd0b",
-        OROracleInfo: "0x186b328C08c699C2cc03564C4Da346b237357003",
+        OROracleInfo: "0xc62Ffb4F3E82A1dA378450233976Dc6Cb6f2d66B",
         court_vote_stake: '0xedaa6c4d4f4923ab7b7bb8027839df7728012095',
 
         CourtEthLpTokenContract: "0x2dddc662114499d765b3a61f63139e7aee8cc138",
@@ -211,6 +211,7 @@ export const contractsAddresses = {
 
         RoomLPStakingContract: "0x082A88370DF7355071532680EF129491236a5f37",
         RoomLPTokenContract: "0x84d15c02acd9fb9e0266d4075e7207db11a15cb3",
+        OROracleInfo: "0x928e0868a3ea99273bcff5aca26ef6e2668cf4b5",
     },
     1337: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',

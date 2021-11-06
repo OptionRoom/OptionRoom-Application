@@ -29,7 +29,7 @@ import {walletHelper} from "../../shared/wallet.helper";
 import {
     toWei,
     fromWei,
-    isValidURL
+    formatTradeValue
 } from "../../shared/helper";
 
 import {
@@ -526,7 +526,7 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {fromWei(walletBalanceOfCollateralToken)})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(walletBalanceOfCollateralToken))})</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
                                         <TradeInput max={fromWei(walletBalanceOfCollateralToken)}

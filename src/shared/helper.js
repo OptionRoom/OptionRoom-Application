@@ -312,3 +312,10 @@ export const getItemFromLocalStorage = (key) => {
     return localStorage.getItem(key)
 }
 
+export const formatTradeValue = (value) => {
+    const numberOfDecimals = 2;
+    let num = `${value}`; //If it's not already a String
+    num = num.slice(0, (num.indexOf(".")) + (numberOfDecimals + 1)); //With 3 exposing the hundredths place
+    return Number(num);
+}
+

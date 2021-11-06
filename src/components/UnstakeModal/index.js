@@ -21,6 +21,7 @@ import {
     convertAmountToTokens,
     convertTokensToAmount, fromWei,
     toWei,
+    formatTradeValue
 } from "../../shared/helper";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import Slide from "@material-ui/core/Slide";
@@ -235,7 +236,7 @@ function UnstakeModal(props) {
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available{" "}
                     <span className={classes.Modal__TokensLabel_Balance}>
-                        {fromWei(stakedTokensBalance)}
+                        {formatTradeValue(fromWei(stakedTokensBalance))}
                     </span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>

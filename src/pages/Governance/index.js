@@ -13,6 +13,7 @@ import OrLoader from "../../components/OrLoader";
 import OracleApis from "../../shared/contracts/OracleApis";
 import {useGetIsChainSupported} from "../../shared/hooks";
 import {ChainNetworks} from "./../../shared/constants";
+import GovernanceRewardsWidget from "../../components/GovernanceRewardsWidget";
 
 const supportedChains = [ChainNetworks.ROPSTEN];
 
@@ -102,7 +103,7 @@ function Governance() {
                                 showProgressPercentage={true}
                                 showDonutOnOptionBlock={false}
                                 marketContractAddress={governanceId}/>
-
+                            <GovernanceRewardsWidget proposal={proposal}/>
                         </div>
                     </Grid>
                 </Grid>
