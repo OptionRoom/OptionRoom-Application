@@ -105,19 +105,24 @@ function CourtFarmingPool(props) {
         } else {
             if (usdtAllowanceForClaim == 0) {
                 const claimCourtAPIs = new ClaimCourtAPIs();
-                await claimCourtAPIs.approveUsdtForClaimContract(accountContext.account, newStakeContractsById[props.entryId]);
-                setUsdtAllowanceForClaim(MaxUint256);
-                setIsWithdrawingTokens(false);
-            } else {
+                try {
+                    await claimCourtAPIs.approveUsdtForClaimContract(accountContext.account, newStakeContractsById[props.entryId]);
+                    setUsdtAllowanceForClaim(MaxUint256);
+                } catch(e) {
 
+                } finally {
+                    setIsWithdrawingTokens(false);
+                }
+            } else {
                 if(parseFloat(claimInfo.claimCost) > 0) {
                     const busdBalanceOfWallet = await getWalletBalanceOfContract(accountContext.account, 'usdt');
-                    const costOfClaim = (parseFloat(claimInfo.claimCost)/1e18) * (parseFloat(claimInfo.courtAmount)/1e18);
+                    const busdBalanceOfWalletInUsd = parseFloat(fromWei(busdBalanceOfWallet));
+                    const costOfClaim = parseFloat(fromWei(claimInfo.claimCost)) * parseFloat(fromWei(claimInfo.courtAmount));
 
                     if(parseFloat(busdBalanceOfWallet) < parseFloat(costOfClaim)) {
                         swal(
                             "Insufficient funds",
-                            `You must hold at least ${fromWei(costOfClaim, 18, 2)} BUSD, your current balance is ${fromWei(busdBalanceOfWallet, null, 2)}`,
+                            `You must hold at least ${costOfClaim.toFixed(2)} BUSD, your current balance is ${busdBalanceOfWalletInUsd.toFixed(2)}`,
                             "error"
                         );
                         setIsWithdrawingTokens(false);
@@ -127,7 +132,7 @@ function CourtFarmingPool(props) {
 
                     swal({
                         title: "Confirm?",
-                        text: `Claiming COURT will cost ${fromWei(costOfClaim, null, 2)} BUSD`,
+                        text: `Claiming COURT will cost ${costOfClaim.toFixed(2)} BUSD`,
                         buttons: true,
                     })
                         .then(async (confirmClaim) =>  {
