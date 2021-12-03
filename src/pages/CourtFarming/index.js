@@ -119,7 +119,7 @@ function CourtFarmingPool(props) {
                     const busdBalanceOfWalletInUsd = parseFloat(fromWei(busdBalanceOfWallet));
                     const costOfClaim = parseFloat(fromWei(claimInfo.claimCost)) * parseFloat(fromWei(claimInfo.courtAmount));
 
-                    if(parseFloat(busdBalanceOfWallet) < parseFloat(costOfClaim)) {
+                    if(parseFloat(busdBalanceOfWalletInUsd) < parseFloat(costOfClaim)) {
                         swal(
                             "Insufficient funds",
                             `You must hold at least ${costOfClaim.toFixed(2)} BUSD, your current balance is ${busdBalanceOfWalletInUsd.toFixed(2)}`,
