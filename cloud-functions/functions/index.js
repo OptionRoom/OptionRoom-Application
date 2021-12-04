@@ -401,7 +401,7 @@ exports.updateMarketsStatus = functions.pubsub.schedule('every 5 minutes').onRun
         for (const m of marketsInContracts) {
             const marketInContract = m;
             const marketInDb = marketsInDb.find((entry) => {
-                return entry.address = m.address;
+                return entry.address == m.address;
             });
 
             await checkContract(marketInContract, marketInDb);
