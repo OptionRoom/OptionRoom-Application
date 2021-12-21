@@ -3,6 +3,9 @@ import * as blockies from "blockies-ts";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import moment from "moment";
 import { supportedChains } from "./chains";
+import {
+    marketDisputePeriod
+} from "./constants";
 
 export const toWei = (value, decimals) => {
     return Web3.utils.toWei(`${value}`, decimals);
@@ -324,3 +327,10 @@ export const formatTradeValue = (value) => {
     return Number(num);
 }
 
+export const getMarketDisputeEndTime = (resolvingEndTime, lastResolvingVoteTime) => {
+    if (resolvingEndTime > lastResolvingVoteTime) {
+        return resolvingEndTime + marketDisputePeriod;
+    }
+
+    return lastResolvingVoteTime + marketDisputePeriod;
+}

@@ -1,16 +1,11 @@
 import React, { useEffect } from "react";
-import clsx from "clsx";
-import { get } from "lodash";
-import numeral from "numeral";
 import Countdown from 'react-countdown';
 
-import { Link } from "react-router-dom";
 import { useStyles } from "./styles";
-import {VolumeIcon} from '../../shared/icons';
-
-import { fromWei, truncateText } from "../../shared/helper";
 import { marketStateColors, marketStates } from "../../shared/constants";
-
+import {
+    getMarketDisputeEndTime
+} from '../../shared/helper';
 
 function MarketStateWidget(props) {
     const classes = useStyles();
@@ -77,7 +72,7 @@ function MarketStateWidget(props) {
 
         if (completed) {
             // Render a completed state
-            return <span>You are good to go!</span>;
+            return <span>It ended!</span>;
         } else {
             // Render a countdown
             return (
@@ -118,7 +113,7 @@ function MarketStateWidget(props) {
         }
 
         if(state == 7) {
-            return parseInt(marketInfo.lastDisputeResolvingVoteTime) * 1000;
+            return parseInt(getMarketDisputeEndTime(parseInt(marketInfo.resolvingEndTime), parseInt(marketInfo.lastResolvingVoteTime))) * 1000;
         }
     }
 
