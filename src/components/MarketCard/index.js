@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { useStyles } from "./styles";
 import {VolumeIcon} from '../../shared/icons';
 
-import { fromWei, truncateText } from "../../shared/helper";
+import {fromWei, getMarketDisputeEndTime, truncateText} from "../../shared/helper";
 import { marketStateColors, marketStates } from "../../shared/constants";
 
 
@@ -58,7 +58,7 @@ function MarketCard(props) {
 
         if (completed) {
             // Render a completed state
-            return <span>You are good to go!</span>;
+            return <span>It ended!</span>;
         } else {
             // Render a countdown
             return (
@@ -101,7 +101,7 @@ function MarketCard(props) {
         }
 
         if(get(market, ["state"]) == 7) {
-            return parseInt(market.info.lastDisputeResolvingVoteTime) * 1000;
+            return parseInt(getMarketDisputeEndTime(parseInt(market.info.resolvingEndTime), parseInt(market.info.lastResolvingVoteTime))) * 1000;
         }
     }
 
