@@ -170,4 +170,4 @@ export const FiltrationWidgetTypes = {
     GOVERNANCE: 'governance'
 };
 
-export const marketDisputePeriod = 4 * 1800;
+export const marketDisputePeriod = 24 * 60 * 60;
