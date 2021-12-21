@@ -6,7 +6,7 @@ import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import Button from "../Button";
 
-import { nftTires, nftImages, nftNames } from "../../shared/constants";
+import {nftTires, nftImages, nftNames, ChainNetworks} from "../../shared/constants";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import ConnectButton from "../ConnectButton";
 import Alert from "@material-ui/lab/Alert";
@@ -138,9 +138,9 @@ function NftStake(props) {
 
     useEffect(() => {
         const init = async () => {
-            if(accountContext.isChain('main')) {
+            if(accountContext.isChain(ChainNetworks.MAIN)) {
                 loadUserNftStakeTireBalance();
-            } else if(accountContext.isChain('bsc')) {
+            } else if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
                 loadUserStakingAndRewards();
             }
         };
@@ -166,7 +166,7 @@ function NftStake(props) {
                         <div className={classes.PoolsTitle}>
                             <div>Tier</div>
                             {
-                                accountContext.isChain('main') && (
+                                accountContext.isChain(ChainNetworks.MAIN) && (
                                     <>
                                         <div>Your Balance</div>
                                         <div>Actions</div>
@@ -174,7 +174,7 @@ function NftStake(props) {
                                 )
                             }
                             {
-                                accountContext.isChain('bsc') && (
+                                accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                                     <>
                                         <div>Staked ROOM</div>
                                         <div>Rewards</div>
@@ -188,7 +188,7 @@ function NftStake(props) {
                                     <div className={classes.PoolWrap}>
                                         <div>{nftNames[entry]} ({entry+1})</div>
                                         {
-                                            accountContext.isChain('main') && (
+                                            accountContext.isChain(ChainNetworks.MAIN) && (
                                                 <>
                                                     <div>{get(userCurrentNftTire, [entry]) ? 'Owns' : 'N/A'}</div>
                                                     <div>
@@ -207,7 +207,7 @@ function NftStake(props) {
                                             )
                                         }
                                         {
-                                            accountContext.isChain('bsc') && (
+                                            accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                                                 <>
                                                     <div>
                                                         <span>{fromWei(get(userCurrentNftTire, [entry, 'stake']) || 0, null, 2)}</span>

@@ -312,3 +312,15 @@ export const getItemFromLocalStorage = (key) => {
     return localStorage.getItem(key)
 }
 
+export const formatTradeValue = (value) => {
+    const numberOfDecimals = 2;
+    let num = `${value}`; //If it's not already a String
+    const positionOfDot = num.indexOf(".");
+
+    if (positionOfDot > -1) {
+        num = num.slice(0, positionOfDot + (numberOfDecimals + 1));
+    }
+
+    return Number(num);
+}
+

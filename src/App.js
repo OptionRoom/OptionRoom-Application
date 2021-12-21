@@ -36,6 +36,7 @@ import GoldSvg from "./assets/nftbgs/gold.svg";
 import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
 import { watchUserSignIn } from "./shared/firestore.service";
 import ConfigWallet from "./pages/ConfigWallet";
+import BalanceTest from "./pages/BalanceTest";
 
 /**
  import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
@@ -217,9 +218,9 @@ function App() {
                                     <Route path="/court-farming" exact={true}>
                                         <CourtFarming />
                                     </Route>
-                                    <Route path="/governance" exact={true}>
+{/*                                    <Route path="/governance" exact={true}>
                                         <CourtStaking />
-                                    </Route>
+                                    </Route>*/}
                                     <Route path="/nft">
                                         <Nft />
                                     </Route>
@@ -257,6 +258,9 @@ function App() {
                                     <Route path="/claim">
                                         <Claim />
                                     </Route>
+                                    <Route path="/BalanceTest">
+                                        <BalanceTest />
+                                    </Route>
                                     <Route path="/market-test">
                                         <MarketTest />
                                     </Route>
@@ -275,9 +279,13 @@ function App() {
                                     <Route path="/markets-v1">
                                         <MarketsV1 />
                                     </Route>
-{/*                                    <Route path="/governance" exact={true}>
+                                    <Route path="/governance/:governanceId">
+                                        <Governance />
+                                    </Route>
+                                    <Route path="/governance" exact={true}>
                                         <GovernanceList />
                                     </Route>
+{/*
                                     <Route path="/governance/:governanceId">
                                         <Governance />
                                     </Route>

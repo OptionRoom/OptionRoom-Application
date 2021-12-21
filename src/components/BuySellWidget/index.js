@@ -9,7 +9,7 @@ import {get} from "lodash";
 import Button from "../Button";
 import TradeSlider2 from "../TradeSlider2";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {fromWei, toWei} from "../../shared/helper";
+import {fromWei, toWei, formatTradeValue} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
 import {
@@ -173,6 +173,7 @@ function BuySellWidget(props) {
                                              isSelected={selectedTradeOption === entry}
                                              onClick={(value) => setSelectedTradeOption(value)}
                                              title={entry}
+                                             showValueInChoice={true}
                                              value={averagePrice}/>
                             )
                         })
@@ -182,7 +183,7 @@ function BuySellWidget(props) {
             <div className={classes.BuySellWidgetAmount}>
                 <div className={classes.BuySellWidgetAmount__Header}>
                     <span>Amount</span>
-                    <span>{maxTradeSize}</span>
+                    <span>{formatTradeValue(maxTradeSize)}</span>
                 </div>
                 <div className={classes.BuySellWidgetAmount__InputWrap}>
                     <TradeInput max={maxTradeSize}

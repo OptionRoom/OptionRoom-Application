@@ -29,6 +29,9 @@ export const useStyles = makeStyles((theme) => ({
         marginBottom: '16.5px',
         paddingBottom: '16.5px',
         borderBottom: '1px solid #EDEFF4',
+
+    },
+    Options__OptionsMarket: {
         '& >div': {
             display: 'flex',
             '&>div': {

@@ -18,8 +18,9 @@ import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {
-    convertAmountToTokens,
-    convertTokensToAmount, fromWei,
+    formatTradeValue,
+    convertTokensToAmount,
+    fromWei,
 } from "../../shared/helper";
 import TradeInput from "../TradeInput";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
@@ -164,7 +165,7 @@ function DepositModal(props) {
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available{" "}
                     <span className={classes.Modal__TokensLabel_Balance}>
-                        {fromWei(userRoomLPTokens)}
+                        {formatTradeValue(fromWei(userRoomLPTokens))}
                     </span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>

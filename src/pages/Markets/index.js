@@ -14,17 +14,20 @@ import MarketCard from "../../components/MarketCard";
 import { useStyles } from "./styles";
 import {
     getMarkets,
-    getIfWalletIsWhitelistedForBeta,
 } from "../../shared/firestore.service";
 import FiltrationWidget from "../../components/FiltrationWidget";
 
 import Button from "../../components/Button";
-import NotWhitelisted from "../../components/NotWhitelisted";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import { useGetFilteredMarkets } from "./hooks";
+import {
+    useGetFilteredMarkets,
+    useGetMarketsContractsPricesOfBuy,
+    useGetMarketsContractsState,
+    useGetMarketsContractsInfo
+} from "./hooks";
 import { GridIcon, ListIcon } from "../../shared/icons";
 import OrLoader from "../../components/OrLoader";
-const marketsContractData = {};
+import {marketStatesDisplay, ChainNetworks, FiltrationWidgetTypes} from "../../shared/constants";
 
 function Markets() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
@@ -32,11 +35,12 @@ function Markets() {
     const accountContext = useContext(AccountContext);
     const [allMarkets, setAllMarkets] = useState([]);
     const [marketsContracts, setMarketsContracts] = useState([]);
-    const [marketsPriceOfBuy, setMarketsPriceOfBuy] = useState([]);
-    const [marketsTotalVolume, setMarketsTotalVolume] = useState([]);
+
+    const marketsContractsInfo = useGetMarketsContractsInfo(accountContext.account, marketsContracts);
+    const marketsContractsState = useGetMarketsContractsState(accountContext.account, marketsContracts);
+    const marketsPriceOfBuy = useGetMarketsContractsPricesOfBuy(accountContext.account, marketsContracts);
+
     const [isLoading, setIsLoading] = useState(true);
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] =
-        useState(true);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
     const [marketsTradedByWallet, setMarketsTradedByWallet] = useState([]);
@@ -59,115 +63,44 @@ function Markets() {
     });
 
     const filteredMarkets = useGetFilteredMarkets(
-        allMarkets,
         marketsContracts,
         filterDetails.name,
         filterDetails.category,
         filterDetails.sort,
         filterDetails.tradedOnly,
-        marketsTotalVolume,
+        filterDetails.state.id,
         marketsTradedByWallet
     );
 
     const classes = useStyles();
 
+    const getStateOptions = ()=> {
+        return marketStatesDisplay.filter(entry => entry.showInMarketsQuickFilter);
+    }
+
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
 
-/*             const isWalletWhitelistedForBetaRes =
-                await getIfWalletIsWhitelistedForBeta(accountContext.account);
-            setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes); */
+            const marketApis = new MarketAPIs();
+            const marketContracts = await marketApis.getAllMarkets(
+                accountContext.account,
+                true,
+                true,
+                true,
+                true
+            );
 
-            //if (isWalletWhitelistedForBetaRes) {
-                const result = await getMarkets(false);
-                setAllMarkets(result);
-                const marketApis = new MarketAPIs();
-                const marketContracts = await marketApis.getMarketsByState(
-                    accountContext.account,
-                    filterDetails.state.id
-                );
-                setMarketsContracts(marketContracts);
-                const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
-                setMarketsTradedByWallet(marketsTradedByWallet);
-            //}
-
+            setMarketsContracts(marketContracts);
             setIsLoading(false);
+            const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
+            setMarketsTradedByWallet(marketsTradedByWallet);
         };
 
-        if (accountContext.account && accountContext.isChain('bsc')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
-
-    useEffect(() => {
-        const init = async () => {
-            const marketApis = new MarketAPIs();
-            const marketContracts = await marketApis.getMarketsByState(
-                accountContext.account,
-                filterDetails.state.id
-            );
-
-            console.log("marketContracts", marketContracts);
-            setMarketsContracts(marketContracts);
-        };
-
-        if (accountContext.account && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [filterDetails.state, accountContext.chainId]);
-
-    useEffect(() => {
-        const init = async () => {
-            const marketApis = new MarketAPIs();
-            for (const address in marketsContracts) {
-                if (!marketsPriceOfBuy[address]) {
-                    const pricesOfBuy = await marketApis.getPricesOfBuy(
-                        accountContext.account,
-                        marketsContracts[address]
-                    );
-                    setMarketsPriceOfBuy((prevState) => {
-                        return {
-                            ...prevState,
-                            [`${address}`]: {
-                                yes: pricesOfBuy.priceOfYes,
-                                no: pricesOfBuy.priceOfNo,
-                            },
-                        };
-                    });
-                }
-            }
-        };
-
-        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [marketsContracts, accountContext.chainId]);
-
-/*     useEffect(() => {
-        const init = async () => {
-            const marketAPIs = new MarketAPIs();
-            for (const address in marketsContracts) {
-                if (!marketsTotalVolume[address]) {
-                    const tradingVolume =
-                        await marketAPIs.getMarketTradingVolume(
-                            accountContext.account,
-                            marketsContracts[address]
-                        );
-                    setMarketsTotalVolume((prevState) => {
-                        return {
-                            ...prevState,
-                            [`${address}`]: tradingVolume,
-                        };
-                    });
-                }
-            }
-        };
-
-        if (accountContext.account && marketsContracts && accountContext.isChain('bsc')) {
-            init();
-        }
-    }, [marketsContracts, accountContext.chainId]); */
 
     useEffect(() => {
         const handleScroll = () => {
@@ -192,7 +125,7 @@ function Markets() {
         );
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )
@@ -207,15 +140,11 @@ function Markets() {
         );
     }
 
-    if (!isWalletWhitelistedForBeta) {
-        return <NotWhitelisted />;
-    }
-
     return (
         <div className={classes.MarketsPage}>
             <div className={classes.MarketsPage__Main}>
                 {
-                    !accountContext.isChain('bsc') && (
+                    !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                         <ChainAlert/>
                     )
                 }
@@ -263,6 +192,23 @@ function Markets() {
                         </Link>
                     </div>
                 </div>
+                <div className={classes.QuickFilters}>
+                    {
+                        getStateOptions().map((entry) => {
+                            return (
+                                <div className={clsx({
+                                    [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id
+                                })}
+                                onClick={() => {
+                                    setFilterDetails({
+                                        ...filterDetails,
+                                        state: entry
+                                    });
+                                }}>{entry.title}</div>
+                            );
+                        })
+                    }
+                </div>
                 <div className={classes.MarketsPage__MainList}>
                     {
                         filteredMarkets.length == 0 && (
@@ -282,33 +228,13 @@ function Markets() {
                             {
                                 filteredMarkets.map((entry, index) => {
                                     return (
-                                        <div key={`market-${entry.id}`}>
+                                        <div key={`market-${entry.address}`}>
                                             <MarketCard
-                                                marketContractAddress={marketsContracts && marketsContracts[entry.id]}
-                                                market={{
-                                                    ...entry,
-                                                    state: filterDetails.state,
-                                                    priceOfBuy: get(
-                                                        marketsPriceOfBuy,
-                                                        [entry.id]
-                                                    ),
-                                                    volume: entry.tradeVolume,
-                                                }}
+                                                market={entry}
                                                 isListView={
-                                                    get(filterDetails, "view") ===
-                                                    "list"
+                                                    get(filterDetails, "view") === "list"
                                                 }
-                                                isFeatured={entry.isFeatured}
-                                                onMarketDataLoad={(e) => {
-                                                    if (
-                                                        e &&
-                                                        e.marketContractAddress
-                                                    ) {
-                                                        marketsContractData[
-                                                            e.marketId
-                                                            ] = e;
-                                                    }
-                                                }}
+                                                isFeatured={get(entry, ['dbData', 'isFeatured'], false)}
                                             />
                                         </div>
                                     );
@@ -318,18 +244,10 @@ function Markets() {
                     )}
                 </div>
             </div>
-            {
-                /**
-                 * isMinHeader
-                 */
-            }
             <div className={clsx(classes.MarketsPage__Sidebar, {
                 [classes.MarketsPage__Sidebar__IsMin]: isMinHeader,
                 [classes.MarketsPage__Sidebar__MobileOpen]: isMarketsSidebarOpen,
             })}>
-{/*
-                <div className={classes.MarketsPage__SidebarOverlay}></div>
-*/}
                 <FiltrationWidget
                     onClose={() => {
                         setIsMarketsSidebarOpen(false);
@@ -338,6 +256,7 @@ function Markets() {
                     onFilterUpdate={(newDetails) => {
                         setFilterDetails(newDetails);
                     }}
+                    type={FiltrationWidgetTypes.MARKETS}
                 />
             </div>
         </div>

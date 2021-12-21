@@ -4,6 +4,7 @@ import clsx from "clsx";
 import Tooltip from "@material-ui/core/Tooltip";
 import TradeSlider2 from "../TradeSlider2";
 import {useStyles} from "./styles";
+import {formatTradeValue} from '../../shared/helper';
 
 export const useTooltipConfig = (value, min, max) => {
     const [tooltip, setTooltip] = useState({
@@ -50,12 +51,12 @@ function TradeInput(props) {
     const classes = useStyles();
 
     const tooltipConfig = useTooltipConfig(value, min, max);
-    const [tradeVal, setTradeVal] = useState(value);
+    const [tradeVal, setTradeVal] = useState(formatTradeValue(value));
     const [tradePercent, setTradePercent] = useState(value && max ? (value / parseFloat(max)) * 100 : 0);
 
     useEffect(() => {
         if(value != tradeVal) {
-            setTradeVal(value);
+            setTradeVal(formatTradeValue(value));
             setTradePercent((value / parseFloat(max)) * 100);
         }
     }, [value]);
@@ -79,7 +80,7 @@ function TradeInput(props) {
                            [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
                        })}
                        onChange={(e) => {
-                           setTradeVal(e.target.value);
+                           setTradeVal(formatTradeValue(e.target.value));
                            setTradePercent((e.target.value / parseFloat(max)) * 100);
                            onChange(e.target.value);
                        }}
@@ -91,8 +92,8 @@ function TradeInput(props) {
                     onChange={(e, e2) => {
                         setTradePercent(e2);
                         const newVal = ((e2 * max) / 100);
-                        setTradeVal(newVal);
-                        onChange && onChange(newVal);
+                        setTradeVal(formatTradeValue(newVal));
+                        onChange && onChange(formatTradeValue(newVal));
                     }}
                 ></TradeSlider2>
             </div>

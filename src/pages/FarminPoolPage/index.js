@@ -8,6 +8,7 @@ import RoomLpStake from "../../components/RoomLpStake";
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
+import {ChainNetworks} from "../../shared/constants";
 
 const getPageConfig = (source, pool) => {
     if (source === "room" && pool === "CourtFarming_RoomStake") {
@@ -76,7 +77,7 @@ function FarminPoolPage(props) {
                 {accountContext.account && (
                     <>
                         {
-                            !accountContext.isChain('bsc') && (
+                            !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
                                 <Alert
                                     elevation={6}
                                     variant="filled"

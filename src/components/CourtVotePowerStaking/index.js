@@ -8,7 +8,7 @@ import UnstakeModal from "../UnstakeModal";
 import {fromWei} from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 import {AccountContext} from "../../shared/AccountContextProvider";
-import {MaxUint256} from "../../shared/constants";
+import {MaxUint256, ChainNetworks} from "../../shared/constants";
 
 function CourtVotePowerStaking(props) {
     const {
@@ -25,7 +25,7 @@ function CourtVotePowerStaking(props) {
     const [courtTokenBalance, setCourtTokenBalance] = useState(0);
 
     const loadWalletAllowance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -39,7 +39,7 @@ function CourtVotePowerStaking(props) {
     };
 
     const loadWalletStakeBalance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -53,7 +53,7 @@ function CourtVotePowerStaking(props) {
     };
 
     const loadWalletVotePower = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -67,7 +67,7 @@ function CourtVotePowerStaking(props) {
     };
 
     const loadWalletCourtBalance = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 
@@ -81,7 +81,7 @@ function CourtVotePowerStaking(props) {
     };
 
     const handleDeposit = async () => {
-        if(!accountContext.isChain('bsc')) {
+        if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             return;
         }
 

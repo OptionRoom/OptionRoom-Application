@@ -11,12 +11,25 @@ const generateMarketContract = (marketId) => {
     return getMarketContract(walletHelperInstance.getWeb3(), marketId);
 };
 
+const contractNames = {
+    '1.0': {
+        markets_query: 'markets_queryv1',
+        market_controller: 'market_controllerv1',
+        option_token: 'option_tokenv1'
+    },
+    '2.0': {
+        markets_query: 'markets_queryv2',
+        market_controller: 'market_controllerv2',
+        option_token: 'option_tokenv2'
+    }
+};
+
 class MarketV1APIs {
     constructor(version) {
-        this.marketsQueryContract = getContract('markets_queryv1');
-        this.marketControllerContract = getContract('market_controllerv1');
+        this.marketsQueryContract = getContract(contractNames[version].markets_query);
+        this.marketControllerContract = getContract(contractNames[version].market_controller);
         this.collateralTokenContract = getContract('usdt');
-        this.optionsTokenContract = getContract('option_tokenv1');
+        this.optionsTokenContract = getContract(contractNames[version].option_token);
         this.roomTokenContract = getContract('room');
     }
 

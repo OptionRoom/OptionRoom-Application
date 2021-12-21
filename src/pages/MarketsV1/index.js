@@ -15,6 +15,8 @@ import {getMarkets} from "../../shared/firestore.service";
 import MarketV1APIs from '../../shared/contracts/MarketV1APIs';
 import {fromWei, toWei, truncateText} from "../../shared/helper";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
+import clsx from "clsx";
+import {ChainNetworks} from "../../shared/constants";
 
 function MarketCard(props) {
     const classes = useStyles();
@@ -32,7 +34,7 @@ function MarketCard(props) {
 
     useEffect(() => {
         const init = async () => {
-            const marketsV1Api = new MarketV1APIs();
+            const marketsV1Api = new MarketV1APIs(props.selectedArchiveVersion);
             const marketiquidity = await marketsV1Api.getMarketiquidity(accountContext.account, props.market.marketAddress);
             const walletSharesPercentageOfMarket = await marketsV1Api.getWalletSharesPercentageOfMarket(accountContext.account, props.market.marketAddress);
             const WalletSharesOfMarket = await marketsV1Api.getWalletSharesOfMarket(accountContext.account, props.market.marketAddress);
@@ -55,7 +57,7 @@ function MarketCard(props) {
 
     const handleRemoveLiquidity = async () => {
         setIsRemoveLiquidityInProgress(true);
-        const marketsV1Api = new MarketV1APIs();
+        const marketsV1Api = new MarketV1APIs(props.selectedArchiveVersion);
 
         if(!isWalletOptionTokenApprovedForMarket) {
             await marketsV1Api.approveOptionTokenForMarket(accountContext.account, props.market.marketAddress);
@@ -76,7 +78,7 @@ function MarketCard(props) {
 
     const handleRedeem = async () => {
         setIsRedeemInProgress(true);
-        const marketsV1Api = new MarketV1APIs();
+        const marketsV1Api = new MarketV1APIs(props.selectedArchiveVersion);
         try {
             await marketsV1Api.redeemMarketRewards(accountContext.account, props.market.marketAddress);
             setWalletOptionTokensBalance([0 , 0]);
@@ -85,6 +87,13 @@ function MarketCard(props) {
         } finally {
             setIsRedeemInProgress(false);
         }
+    };
+
+    const getRewards = () => {
+        const the0rewards = parseFloat(fromWei(walletOptionTokensBalance[0]))/2;
+        const the1rewards = parseFloat(fromWei(walletOptionTokensBalance[1]))/2;
+
+        return (the0rewards + the1rewards).toFixed(2);
     };
 
     return (
@@ -124,10 +133,10 @@ function MarketCard(props) {
               <div className={classes.BlockTitle}>Your Rewards</div>
               <div className={classes.BlockValActions}>
                   <div className={classes.BlockVal}>
-                      {numeral(fromWei((walletOptionTokensBalance[0] + walletOptionTokensBalance[1]) / 2, null, 5)).format("$0,0.00")}
+                      {numeral(getRewards()).format("$0,0.00")}
                   </div>
                   {
-                      ((parseFloat(walletOptionTokensBalance[0]) + parseFloat(walletOptionTokensBalance[1])) > 0) && (
+                      (getRewards() > 0) && (
                           <div className={classes.BlockActions}>
                               <Button color={'primary'}
                                       size={'xs'}
@@ -145,36 +154,67 @@ function MarketCard(props) {
 function MarketsV1() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
+    const classes = useStyles();
+
+/*     return (
+        <div className={classes.ComingSoonWrap}>
+            <h1>This page is under maintenance</h1>
+            <p>Follow us here: <a
+                href="https://t.me/OptionRoom"
+                rel="noreferrer"
+                target="_blank"
+            >
+                <i className="fa fa-telegram"></i>
+            </a>
+                <a
+                    href="https://twitter.com/option_room"
+                    rel="noreferrer"
+                    target="_blank"
+                >
+                    <i className="fa fa-twitter"></i>
+                </a> for more information</p>
+        </div>
+    ); */
+
     const accountContext = useContext(AccountContext);
 
     const [isLoading, setIsLoading] = useState(false);
     const [markets, setMarkets] = useState([]);
+    const [selectedArchiveVersion, setSelectedArchiveVersion] = useState(2);
 
-    const classes = useStyles();
+    const loadActiveMarkets = async () => {
+        const versionString = `${selectedArchiveVersion}.0`;
+        setIsLoading(true);
+        setMarkets([]);
+        const markets = await getMarkets(versionString);
+        const marketsV1Api = new MarketV1APIs(versionString);
+        const marketsContracts = await marketsV1Api.getMarketsByState(accountContext.account, 'all');
+        const validMarkets = markets.filter((entry) => {
+            return !!marketsContracts[entry.id];
+        }).map((entry) => {
+            return {
+                ...entry,
+                marketAddress: marketsContracts[entry.id]
+            }
+        });
+
+        setMarkets(validMarkets);
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         const init = async () => {
-            setIsLoading(true);
-            const markets = await getMarkets(true);
-            const marketsV1Api = new MarketV1APIs();
-            const marketsContracts = await marketsV1Api.getMarketsByState(accountContext.account, 'all');
-            const validMarkets = markets.filter((entry) => {
-               return !!marketsContracts[entry.id];
-            }).map((entry) => {
-                return {
-                    ...entry,
-                    marketAddress: marketsContracts[entry.id]
-                }
-            });
-
-            setMarkets(validMarkets);
-            setIsLoading(false);
+            loadActiveMarkets();
         };
 
-        if (accountContext.account && accountContext.isChain('bsc')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
+
+    useEffect(() => {
+        loadActiveMarkets();
+    }, [selectedArchiveVersion]);
 
     if (!accountContext.account) {
         return (
@@ -184,34 +224,48 @@ function MarketsV1() {
         );
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )
     }
 
-    if (isLoading) {
-        return (
-            <div className={classes.LoadingWrapper}>
-                <OrLoader width={400}
-                          height={400}/>
-            </div>
-        );
-    }
-
     return (
         <div className={classes.MarketsPage}>
-            <h1 className={classes.MarketsPage__Title}>Markets (V1) - Archived</h1>
+            <h1 className={classes.MarketsPage__Title}>Markets (V1/V2) - Archived</h1>
+            <ul className={classes.VersionSelector}>
+                <li className={clsx({
+                    [classes.ActiveVersion]: selectedArchiveVersion === 2,
+                })}
+                  onClick={() => {
+                      setSelectedArchiveVersion(2);
+                  }}>V2</li>
+                <li className={clsx({
+                    [classes.ActiveVersion]: selectedArchiveVersion === 1,
+                })}
+                    onClick={() => {
+                        setSelectedArchiveVersion(1);
+                    }}>V1</li>
+            </ul>
             <ul className={classes.MarketsList}>
                 {
                     markets.map((entry) => {
                         return <li key={`market-${entry.id}`}>
                             <MarketCard
+                                        selectedArchiveVersion={`${selectedArchiveVersion}.0`}
                                         market={entry}/>
                         </li>
                     })
                 }
             </ul>
+            {
+                isLoading && (
+                    <div className={classes.LoadingWrapper}>
+                        <OrLoader width={400}
+                                  height={400}/>
+                    </div>
+                )
+            }
         </div>
     );
 }

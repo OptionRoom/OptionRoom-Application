@@ -30,7 +30,7 @@ function OptionBlock(props) {
                 )
             }
             {
-                ((props.value || props.value === 0) && !props.showDonut) && (
+                ((props.value || props.value === 0) && props.showValueInChoice) && (
                     <div className={classes.OptionBlock__Value}>{props.value}</div>
                 )
             }

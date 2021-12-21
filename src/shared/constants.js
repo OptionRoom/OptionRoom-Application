@@ -46,47 +46,81 @@ export const marketStatesDisplay = [
     {
         id: 'all',
         title: 'All',
-    },
-    {
-        id: '0',
-        title: 'Invalid',
-    },
-    {
-        id: '1',
-        title: 'Validating',
-    },
-    {
-        id: '2',
-        title: 'Rejected',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '3',
         title: 'Active',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
     },
+    {
+        id: '0',
+        title: 'Invalid',
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
+    },
+    {
+        id: '1',
+        title: 'Validating',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
+    },
+    {
+        id: '2',
+        title: 'Rejected',
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
+    },
+
     {
         id: '4',
         title: 'Inactive',
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
     },
     {
         id: '5',
         title: 'Resolving',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '7',
         title: 'Dispute',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: true
     },
     {
         id: '8',
         title: 'Resolve Again',
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
     },
     {
         id: '6',
         title: 'Resolved',
+        showInMarketsQuickFilter: true,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
     },
     {
         id: '9',
         title: 'Force Resolved',
-        hide: false
+        hide: false,
+        showInMarketsQuickFilter: false,
+        showInMarketsFilterWidget: true,
+        showInGovernanceFilterWidget: false
     }
 ];
 
@@ -113,3 +147,25 @@ export const marketStateColors = {
 
 
 export const courtStakeUnlockTimestamp = 1620914400;
+
+export const ChainNetworks = {
+    MAIN: 1,
+    ROPSTEN: 3,
+    KOVAN: 42,
+    RINKEBY: 4,
+    GOERLI: 5,
+    BINANCE_SMART_CHAIN: 56,
+    BINANCE_SMART_CHAIN_TESTNET: 97,
+};
+
+export const GovernanceTypes = {
+    SURVEY: 'survey',
+    MARKET: 'market',
+    ORACLE: 'oracle',
+    GOVERNANCE: 'governance'
+};
+
+export const FiltrationWidgetTypes = {
+    MARKETS: 'markets',
+    GOVERNANCE: 'governance'
+};

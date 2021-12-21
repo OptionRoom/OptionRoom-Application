@@ -20,6 +20,7 @@ import {
 } from "../../shared/contracts/PoolsStatsAPIs";
 
 import {
+    ChainNetworks,
     courtStakeUnlockTimestamp, MaxUint256
 } from './../../shared/constants';
 
@@ -358,7 +359,7 @@ function RoomLpStake(props) {
             );
         };
 
-        if (accountContext.account && accountContext.isChain('bsc')) {
+        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
 

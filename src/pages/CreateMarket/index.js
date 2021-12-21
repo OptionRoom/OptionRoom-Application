@@ -29,7 +29,7 @@ import {walletHelper} from "../../shared/wallet.helper";
 import {
     toWei,
     fromWei,
-    isValidURL
+    formatTradeValue
 } from "../../shared/helper";
 
 import {
@@ -45,6 +45,7 @@ import {useGetMarketCategories} from "../../shared/hooks";
 import TradeInput from "../../components/TradeInput";
 import {getContractAddress, getWalletBalanceOfContract} from '../../shared/contracts/contracts.helper';
 import ConfigHelper from "../../shared/config.helper";
+import {ChainNetworks, GovernanceTypes} from "../../shared/constants";
 
 const walletHelperInsatnce = walletHelper();
 
@@ -60,7 +61,7 @@ function CreateMarket() {
     const [isLoading, setIsLoading] = useState(true);
     const accountContext = useContext(AccountContext);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
-    const marketCategories = useGetMarketCategories();
+    const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET);
 
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
@@ -68,6 +69,7 @@ function CreateMarket() {
     const [walletRoomBalance, setWalletRoomBalance] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
     const [marketCreationFees, setMarketCreationFees] = useState(0);
+    const [marketMinLiq, setMarketMinLiq] = useState(1000);
 
     const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
         defaultValues: {
@@ -107,7 +109,7 @@ function CreateMarket() {
                 .required()
                 .label('End date'),
             liquidity: Joi.number()
-                .min(1000)
+                .min(marketMinLiq)
                 .max(parseFloat(walletBalanceOfCollateralToken ? fromWei(walletBalanceOfCollateralToken) : 0))
                 .required()
                 .label('Liquidity'),
@@ -213,18 +215,22 @@ function CreateMarket() {
                 data.title.trim()
             );
 
-            //wallet, question, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity
+            //wallet, question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources
             const newMarketContract = await marketApis.createMarket(
                 accountContext.account,
+                data.title.trim(),
                 createdMarket.id,
                 data.endDate.unix(),
                 resolveTimestamp,
                 collateralTokenAddress,
-                toWei(data.liquidity)
+                toWei(data.liquidity),
+                JSON.stringify(sources)
             );
 
+            const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, createdMarket.id);
+
             //Redirect to market page after creation
-            history.push(`/markets/${createdMarket.id}`);
+            history.push(`/markets/${marketContractAddressVal}`);
         } catch (e) {
             console.log("Something went wrong!", e);
         } finally {
@@ -248,17 +254,15 @@ function CreateMarket() {
             if (accountContext.account) {
                 const marketApis = new MarketAPIs();
                 const marketCreationFees = await marketApis.getMarketCreationFees(accountContext.account);
+                const getMarketMinShareLiq = await marketApis.getMarketMinShareLiq(accountContext.account);
+                setMarketMinLiq(parseFloat(fromWei(getMarketMinShareLiq)));
                 setMarketCreationFees(marketCreationFees);
-
                 loadWalletData();
-                setIsLoading(true);
-                //const isWalletWhitelistedForBetaRes = await getIfWalletIsWhitelistedForBeta(accountContext.account);
-                //setIsWalletWhitelistedForBeta(isWalletWhitelistedForBetaRes);
                 setIsLoading(false);
             }
         };
 
-        if(accountContext.isChain('bsc')) {
+        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
             init();
         }
     }, [accountContext.account, accountContext.chainId]);
@@ -295,7 +299,7 @@ function CreateMarket() {
         )
     }
 
-    if(!accountContext.isChain('bsc')) {
+    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
         return (
             <ChainAlert/>
         )
@@ -522,11 +526,11 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {fromWei(walletBalanceOfCollateralToken)})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(walletBalanceOfCollateralToken))})</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
                                         <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
-                                                    min={1000}
+                                                    min={marketMinLiq}
                                                     value={getValues('liquidity') || 0}
                                                     onValidityUpdate={(valid) => {
                                                         //setIsTradeDisabled(!valid);

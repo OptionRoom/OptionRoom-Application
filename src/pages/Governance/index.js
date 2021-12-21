@@ -1,132 +1,112 @@
-import {useState, useContext, useEffect} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
+import {useParams} from "react-router-dom";
 
 import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
-import MarketCard from "../../components/MarketCard";
 import {useStyles} from "./styles";
-import OptionBlock from '../../components/OptionBlock';
+import VoteWidget from "../../components/VoteWidget";
+import ChainAlert from "../../components/ChainAlert";
+import OrLoader from "../../components/OrLoader";
+import OracleApis from "../../shared/contracts/OracleApis";
+import {useGetIsChainSupported} from "../../shared/hooks";
+import {ChainNetworks} from "./../../shared/constants";
+import GovernanceRewardsWidget from "../../components/GovernanceRewardsWidget";
 
-import {walletHelper} from "../../shared/wallet.helper";
-import {
-    ellipseAddress,
-    getAddressImgUrl,
-    toWei,
-    fromWei,
-} from "../../shared/helper";
-import OutcomeProgress from "../../components/OutcomeProgress";
-
-const walletHelperInsatnce = walletHelper();
-
-const getNumberFromBigNumber = (bigNumber) => {
-    return fromWei(bigNumber, "ether", 2);
-};
-
-const getBigNumberFromNumber = (number) => {
-    return toWei(number, "ether");
-};
-
+const supportedChains = [ChainNetworks.ROPSTEN];
 
 function Governance() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
+    const [isLoading, setIsLoading] = useState(true);
+    const [proposal, setProposal] = useState(null);
+    const [categories, setCategories] = useState(null);
+    const {governanceId} = useParams();
 
     const classes = useStyles();
 
     useEffect(() => {
+        const init = async () => {
+            const oracleApis = new OracleApis();
 
-    }, [accountContext.account]);
+            setIsLoading(true);
+            const categories = await oracleApis.getAllCategories(accountContext.account, governanceId);
+            setCategories(categories);
+            const question = await oracleApis.getQuestionInfo(accountContext.account, governanceId);
+            setProposal({
+                ...question,
+                cats: question.categoriesIndices.map((entry) => {
+                    return categories[entry];
+                })
+            });
+            setIsLoading(false);
+        };
 
-    const cats = [
-        {
-            name: 'All',
-            count: '2',
-        },
-        {
-            name: 'Business',
-            count: '3',
-        },
-        {
-            name: 'Coronavirus',
-            count: '99',
-        },
-        {
-            name: 'Crypto',
-            count: '105',
-        },
-        {
-            name: 'NFTs',
-            count: '78',
-        },
-        {
-            name: 'Pop Culture',
-            count: '2',
-        },
-        {
-            name: 'Science',
-            count: '1',
-        },
-        {
-            name: 'Sports',
-            count: '65',
-        },
-        {
-            name: 'Tech',
-            count: '75',
-        },
-        {
-            name: 'US Current Affairs',
-            count: '82',
-        },
-    ];
+        if (accountContext.account && isChainSupported) {
+            init();
+        }
+    }, [accountContext.account, isChainSupported]);
+
+    if(!accountContext.account) {
+        return (
+            <div className={classes.ConnectWrap}>
+                <ConnectButton/>
+            </div>
+        )
+    }
+
+    if(!isChainSupported) {
+        return (
+            <ChainAlert supportedChain={supportedChains.join(', ')}/>
+        )
+    }
+
+    if(isLoading) {
+        return (
+            <div className={classes.LoadingWrapper}>
+                <OrLoader width={400}
+                          height={400}/>
+            </div>
+        )
+    }
 
     return (
         <>
-            <Navbar
-                title={"Governance"}
-                details={
-                    "Earn COURT tokens by providing liquidity to one of the pools on this page."
-                }
-            />
-            <div className={classes.MarketsPage}>
-                {accountContext.account && (
-                    <div>
-                        <Grid container spacing={3}>
-                            <Grid item xs={8}>
-                                <div className={classes.MarketDetails}>
-                                    <div className={classes.Cat}>US Current Affairs</div>
-                                    <div className={classes.Title}>Will Donald Trump be President of the USA on March
-                                        31, 2021?
-                                    </div>
-                                    <div className={classes.About}>
-                                        <div className={classes.About__Header}>
-                                            About
-                                        </div>
-                                        <div className={classes.About__Details}>
-                                            This is a market on if Donald Trump will be President of the United States
-                                            on March 31, 2021, 12pm EST. This market will resolve to “Yes“ if, on the
-                                            resolution date, Donald Trump is the current President of the United States,
-                                            officially substantiated More
-                                        </div>
-                                    </div>
+            <div className={classes.ProposalPage}>
+                <Grid container spacing={3}>
+                    <Grid item xs={8}>
+                        <div className={classes.MarketDetails}>
+                            <div className={classes.Cat}>
+                                {proposal.cats.join(', ')}
+                            </div>
+                            <div className={classes.Title}>{proposal.question}</div>
+                            <div className={classes.About}>
+                                <div className={classes.About__Header}>
+                                    About
                                 </div>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <div className={classes.MarketSidebar}>
+                                <div className={classes.About__Details}>
+                                    {proposal.description}
                                 </div>
-                            </Grid>
-                        </Grid>
-                    </div>
-                )}
-                {!accountContext.account && (
-                    <div className={classes.ConnectWrap}>
-                        <ConnectButton/>
-                    </div>
-                )}
+                            </div>
+                        </div>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <div className={classes.MarketSidebar}>
+                            <VoteWidget
+                                type={'proposal'}
+                                marketState={5}
+                                marketVersion={'2.0'}
+                                showProgressPercentage={true}
+                                showDonutOnOptionBlock={false}
+                                marketContractAddress={governanceId}/>
+                            <GovernanceRewardsWidget proposal={proposal}/>
+                        </div>
+                    </Grid>
+                </Grid>
             </div>
         </>
     );

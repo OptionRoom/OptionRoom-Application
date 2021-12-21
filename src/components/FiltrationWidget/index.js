@@ -1,26 +1,76 @@
-import React, {useState} from "react";
-import Select from "react-select";
-import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import React, {useContext, useEffect, useState} from "react";
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import {get} from 'lodash';
 import clsx from "clsx";
-import { withStyles } from '@material-ui/core/styles';
 import {SearchIcon} from "../../shared/icons";
 
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
+
 import {useStyles} from "./styles";
 import {useGetMarketCategories} from '../../shared/hooks';
-import {marketStatesDisplay} from '../../shared/constants';
+import {marketStatesDisplay, GovernanceTypes, FiltrationWidgetTypes} from '../../shared/constants';
 import OrSwitch from '../../components/OrSwitch';
 import OrSelect from "../OrSelect";
+import {AccountContext} from "../../shared/AccountContextProvider";
+import {getMarketCategories} from "../../shared/firestore.service";
+import OracleApis from "../../shared/contracts/OracleApis";
 
 function FiltrationWidget(props) {
 
     const classes = useStyles();
-    const {filterDetails} = props;
+    const {
+        filterDetails,
+        type
+    } = props;
+    const accountContext = useContext(AccountContext);
 
-    const marketCategories = useGetMarketCategories();
+    const [marketCategories, setMarketCategories] = useState([]);
+
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const selectedFilterType = get(filterDetails, ['type', 'id']);
+                if (FiltrationWidgetTypes.MARKETS === type || selectedFilterType == GovernanceTypes.MARKET) {
+                    let cats = await getMarketCategories();
+                    cats =
+                        [{
+                            title: 'All',
+                            id: "all"
+                        },
+                            ...cats]
+                            .map((entry) => {
+                                return {
+                                    value: entry.id,
+                                    label: entry.title
+                                };
+                            });
+
+                    setMarketCategories(cats);
+                    return;
+                }
+
+                if(selectedFilterType == GovernanceTypes.ORACLE) {
+                    const oracleApis = new OracleApis();
+                    const allCategories = await oracleApis.getAllCategories(accountContext.account);
+                    setMarketCategories([
+                        {
+                            label: 'All',
+                            value: "all"
+                        },
+                        ...allCategories.map((entry) => {
+                            return {
+                                label: entry,
+                                value: entry
+                            };
+                        })
+                    ]);
+                }
+            } catch (e) {
+
+            }
+        }
+
+        init();
+    }, [get(filterDetails, ['type', 'id'])]);
 
     const handleSort = (entry) => {
         if (get(filterDetails, ['sort', 'by']) === entry) {
@@ -42,7 +92,82 @@ function FiltrationWidget(props) {
                 direction: 'down'
             }
         });
+    };
 
+    const getSortOptions = ()=> {
+        if(FiltrationWidgetTypes.MARKETS === type) {
+            return ["Volume", "Created"];
+        }
+
+        const selectedFilterType = get(filterDetails, ['type', 'id']);
+        if(selectedFilterType === GovernanceTypes.ORACLE) {
+            return ["Posted", "Ends"];
+        }
+
+        if(selectedFilterType === GovernanceTypes.SURVEY) {
+            return ["Posted", "Ends"];
+        }
+
+        if(selectedFilterType === GovernanceTypes.GOVERNANCE) {
+            return ["Posted", "Ends"];
+        }
+
+        return ["Created"];
+    }
+
+    const getStateOptions = ()=> {
+        if(FiltrationWidgetTypes.MARKETS === type) {
+            return marketStatesDisplay.filter(entry => entry.showInMarketsFilterWidget).map((entry) => {
+                return {
+                    value: entry.id,
+                    label: entry.title
+                };
+            });
+        }
+
+        if(get(filterDetails, ['type', 'id']) === GovernanceTypes.MARKET) {
+            return marketStatesDisplay.filter(entry => entry.showInGovernanceFilterWidget).map((entry) => {
+                return {
+                    value: entry.id,
+                    label: entry.title
+                };
+            });
+        }
+
+        return [
+            {
+                value: 'all',
+                label: 'All',
+            },
+            {
+                value: 'active',
+                label: 'Active'
+            },
+            {
+                value: 'ended',
+                label: 'Ended'
+            }
+        ];
+    };
+
+    const getSearchPlaceholder = () => {
+        if(type === FiltrationWidgetTypes.GOVERNANCE) {
+            const selectedFilterType = get(filterDetails, ['type', 'id']);
+
+            if(selectedFilterType === GovernanceTypes.ORACLE) {
+                return 'Search Oracel requests';
+            }
+
+            if(selectedFilterType === GovernanceTypes.SURVEY) {
+                return 'Search survey requests';
+            }
+
+            if(selectedFilterType === GovernanceTypes.GOVERNANCE) {
+                return 'Search governance requests';
+            }
+        }
+
+        return 'Search markets';
     };
 
     return (
@@ -52,7 +177,7 @@ function FiltrationWidget(props) {
             </div>
             <div className={classes.SearchSection}>
                 <div className={classes.SearchInput}>
-                    <input placeholder={'Search markets'}
+                    <input placeholder={getSearchPlaceholder()}
                             className={classes.MarketNameInput}
                             value={get(filterDetails, 'name')}
                             onChange={(e) => {
@@ -65,23 +190,27 @@ function FiltrationWidget(props) {
                     <SearchIcon className={classes.SearchIcon}/>
                 </div>
             </div>
-            <div className={classes.SectionShow}>
-                <div className={classes.SectionShow__Title}>
-                    Show
-                </div>
-                <div className={classes.SectionShow__Actions}>
-                    <div>Traded only</div>
-                    <OrSwitch value={get(filterDetails, ['tradedOnly'])}
-                              color="primary"
-                              onChange={(value, value1)=> {
-                                  props.onFilterUpdate && props.onFilterUpdate({
-                                      ...filterDetails,
-                                      tradedOnly:  value1
-                                  });
-                              }}
-                              name="checkedA" />
-                </div>
-            </div>
+            {
+                type == FiltrationWidgetTypes.MARKETS && (
+                    <div className={classes.SectionShow}>
+                        <div className={classes.SectionShow__Title}>
+                            Show
+                        </div>
+                        <div className={classes.SectionShow__Actions}>
+                            <div>Traded only</div>
+                            <OrSwitch value={get(filterDetails, ['tradedOnly'])}
+                                      color="primary"
+                                      onChange={(value, value1)=> {
+                                          props.onFilterUpdate && props.onFilterUpdate({
+                                              ...filterDetails,
+                                              tradedOnly:  value1
+                                          });
+                                      }}
+                                      name="checkedA" />
+                        </div>
+                    </div>
+                )
+            }
             <div className={classes.SectionSort}>
                 <div className={classes.SectionSort__Title}>
                     Sort by
@@ -89,7 +218,7 @@ function FiltrationWidget(props) {
                 <div className={classes.SectionSort__Actions}>
                     <div className={classes.SortBlocks}>
                         {
-                            ["Volume", "Created"].map((entry) => {
+                            getSortOptions().map((entry) => {
                                 return (
                                     <div className={clsx(classes.SortBlock, {
                                         [classes.SortBlock__IsActive]: get(filterDetails, ['sort', 'by']) === entry.toLowerCase(),
@@ -118,22 +247,39 @@ function FiltrationWidget(props) {
                     Filters
                 </div>
                 <div className={classes.SectionShow__Body}>
-{/*                     <div className={classes.FiltersBlock}>
-                        <div className={classes.FiltersBlock__Title}>Category</div>
-                        <div className={classes.FiltersBlock__Entries}>
-                            <input placeholder={'Search markets'}
-                                   className={classes.MarketNameInput}
-                                   value={get(filterDetails, 'name')}
-                                   onChange={(e) => {
-                                       props.onFilterUpdate && props.onFilterUpdate({
-                                           ...filterDetails,
-                                           name: e.target.value
-                                       })
-                                   }}
-                                   type={'text'}/>
-                            <SearchIcon className={classes.SearchIcon}/>
-                        </div>
-                    </div> */}
+                    {
+                        [FiltrationWidgetTypes.GOVERNANCE].indexOf(type) > -1 && (
+                            <div className={classes.FiltersBlock}>
+                                <div className={classes.FiltersBlock__Title}>Type</div>
+                                <div className={classes.FiltersBlock__Entries}>
+                                    <OrSelect
+                                        value={{
+                                            value: get(filterDetails, ['type']).id,
+                                            label: get(filterDetails, ['type']).title,
+                                        }}
+                                        onChange={(entry) => {
+                                            props.onFilterUpdate && props.onFilterUpdate({
+                                                ...filterDetails,
+                                                type: {
+                                                    title: entry.label,
+                                                    id: entry.value
+                                                }
+                                            });
+                                        }}
+                                        options={[
+                                            {
+                                                value: GovernanceTypes.MARKET,
+                                                label: 'Markets'
+                                            },
+                                            {
+                                                value: GovernanceTypes.ORACLE,
+                                                label: 'Oracle'
+                                            }
+                                        ]}/>
+                                </div>
+                            </div>
+                        )
+                    }
                     <div className={classes.FiltersBlock}>
                         <div className={classes.FiltersBlock__Title}>Category</div>
                         <div className={classes.FiltersBlock__Entries}>
@@ -151,44 +297,7 @@ function FiltrationWidget(props) {
                                         }
                                     });
                                 }}
-                                options={
-                                    [
-                                        {
-                                            title: 'All',
-                                            id: "all"
-                                        },
-                                        ...marketCategories
-                                    ].map((entry) => {
-                                    return {
-                                        value: entry.id,
-                                        label: entry.title
-                                    };
-                                })}/>
-{/*                            {
-                                [
-                                    {
-                                        title: 'All',
-                                        id: "all"
-                                    },
-                                    ...marketCategories
-                                ].map((entry) => {
-                                    return (
-                                        <div className={clsx(classes.CheckInput, {
-                                                [classes.CheckInput__IsActive]: get(filterDetails, ['category', 'id']) === entry.id,
-                                            })}
-                                            onClick={()=> {
-                                                props.onFilterUpdate && props.onFilterUpdate({
-                                                    ...filterDetails,
-                                                    category: entry
-                                                })
-                                            }}
-                                             key={`category-${entry.id}`}>
-                                            <div className={classes.CheckInput__Indicator}></div>
-                                            <div className={classes.CheckInput__Title}>{entry.title}</div>
-                                        </div>
-                                    )
-                                })
-                            }*/}
+                                options={marketCategories}/>
                         </div>
                     </div>
                     <div className={classes.FiltersBlock}>
@@ -209,37 +318,7 @@ function FiltrationWidget(props) {
                                 });
                             }}
                                 menuPlacement={'top'}
-                              options={marketStatesDisplay.filter(entry => !entry.hide).map((entry) => {
-                                  return {
-                                      value: entry.id,
-                                      label: entry.title
-                                  };
-                              })}/>
-{/*                            {
-                               [
-                                   {
-                                       id: 'all',
-                                       title: 'All'
-                                   },
-                                   ...marketStatesDisplay
-                               ].map((entry) => {
-                                    return (
-                                        <div key={`state-${entry.id}`}
-                                            onClick={()=> {
-                                                props.onFilterUpdate && props.onFilterUpdate({
-                                                    ...filterDetails,
-                                                    state: entry
-                                                })
-                                            }}
-                                            className={clsx(classes.CheckInput, {
-                                                [classes.CheckInput__IsActive]: get(filterDetails, ['state', 'id']) === entry.id,
-                                            })}>
-                                            <div className={classes.CheckInput__Indicator}></div>
-                                            <div className={classes.CheckInput__Title}>{entry.title}</div>
-                                        </div>
-                                    )
-                                })
-                            }*/}
+                              options={getStateOptions()}/>
                         </div>
                     </div>
                 </div>

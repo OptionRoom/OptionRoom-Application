@@ -27,6 +27,7 @@ import {
 } from '../../shared/icons';
 import {fromWei, getItemFromLocalStorage, storeItemInLocalStorage} from "../../shared/helper";
 import ClaimAPIs from './../../shared/contracts/ClaimAPIs';
+import {ChainNetworks} from './../../shared/constants';
 import Alert from "@material-ui/lab/Alert";
 
 const BorderLinearProgress = withStyles((theme) => ({
@@ -181,7 +182,7 @@ function Claim() {
 
     useEffect(() => {
         if (accountContext.account) {
-            if(accountContext.isChain('bsc')) {
+            if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
                 loadClaimData();
                 loadRewardsData();
             }
@@ -214,7 +215,7 @@ function Claim() {
                 }
             />
             {
-                (!accountContext.isChain('bsc')) && (
+                (!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) && (
                     <Alert
                         elevation={6}
                         variant="filled"

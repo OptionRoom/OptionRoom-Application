@@ -1,138 +1,215 @@
-import React, {useState, useContext, useEffect} from "react";
-import {Link} from "react-router-dom";
-import ViewComfyIcon from "@material-ui/icons/ViewComfy";
-import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
+import React, { useState, useContext, useEffect } from "react";
+import { get } from "lodash";
+import clsx from "clsx";
+import SearchIcon from '@material-ui/icons/Search';
 
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
-import {AccountContext} from "../../shared/AccountContextProvider";
+import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
+import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import {useStyles} from "./styles";
-
-import GovernanceCard from "../../components/GovernanceCard";
-import {walletHelper} from "../../shared/wallet.helper";
-import {
-    ellipseAddress,
-    getAddressImgUrl,
-    toWei,
-    fromWei,
-} from "../../shared/helper";
-import Button from "../../components/Button";
+import { useStyles } from "./styles";
 import FiltrationWidget from "../../components/FiltrationWidget";
+import GovernanceOracle from "./GovernanceOracle";
+import GovernanceMarket from "./GovernanceMarket";
+
+import { GridIcon, ListIcon } from "../../shared/icons";
+import CourtVotePowerStaking2 from "../../components/CourtVotePowerStaking2";
 import {
-    GridIcon,
-    ListIcon
-} from '../../shared/icons';
-const walletHelperInsatnce = walletHelper();
+    ChainNetworks,
+    GovernanceTypes,
+    FiltrationWidgetTypes, marketStatesDisplay
+} from "../../shared/constants";
 
-const getNumberFromBigNumber = (bigNumber) => {
-    return fromWei(bigNumber, "ether", 2);
-};
-
-const getBigNumberFromNumber = (number) => {
-    return toWei(number, "ether");
-};
 
 function GovernanceList() {
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
 
+    const [isMinHeader, setIsMinHeader] = useState(false);
+    const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
+
+    const [filterDetails, setFilterDetails] = useState({
+        name: "",
+        category: {
+            title: 'All',
+            id: "all"
+        },
+        state: {
+            id: "all",
+            title: "All",
+        },
+        sort: {
+            by: "posted",
+            direction: "down",
+        },
+        view: "grid",
+        type: {
+            id: GovernanceTypes.ORACLE,
+            title: 'Oracle'
+        }
+    });
+
     const classes = useStyles();
 
     useEffect(() => {
+        const handleScroll = () => {
+            if(window.scrollY > 30) {
+                setIsMinHeader(true);
+            } else {
+                setIsMinHeader(false);
+            }
+        };
 
-    }, [accountContext.account]);
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
 
-    const cats = [
-        {
-            name: 'All',
-            count: '2',
-        },
-        {
-            name: 'Business',
-            count: '3',
-        },
-        {
-            name: 'Coronavirus',
-            count: '99',
-        },
-        {
-            name: 'Crypto',
-            count: '105',
-        },
-        {
-            name: 'NFTs',
-            count: '78',
-        },
-        {
-            name: 'Pop Culture',
-            count: '2',
-        },
-        {
-            name: 'Science',
-            count: '1',
-        },
-        {
-            name: 'Sports',
-            count: '65',
-        },
-        {
-            name: 'Tech',
-            count: '75',
-        },
-        {
-            name: 'US Current Affairs',
-            count: '82',
-        },
-    ];
+    const getQuickFilterOptions = () => {
+        if(filterDetails.type.id === GovernanceTypes.MARKET) {
+            return marketStatesDisplay.filter(entry => entry.showInGovernanceFilterWidget);
+        }
+
+        return [
+            {
+                id: 'all',
+                title: 'All',
+            },
+            {
+                id: 'active',
+                title: 'Active'
+            },
+            {
+                id: 'ended',
+                title: 'Ended'
+            }
+        ];
+    }
+
+    useEffect(() => {
+        setFilterDetails({
+            ...filterDetails,
+            name: "",
+            category: {
+                title: 'All',
+                id: "all"
+            },
+            state: {
+                id: "all",
+                title: "All",
+            },
+            sort: filterDetails.type.id === GovernanceTypes.ORACLE ? {
+                by: "posted",
+                direction: "down",
+            } : {
+                by: "created",
+                direction: "down",
+            }
+        })
+    }, [filterDetails.type.id]);
 
     if (!accountContext.account) {
         return (
             <div className={classes.ConnectWrap}>
-                <ConnectButton/>
+                <ConnectButton />
             </div>
-        )
+        );
     }
 
-    /*    if(isLoading) {
-            return (
-                <div className={classes.LoadingWrapper}>
-                    <CircularProgress/>
-                </div>
-            )
-        }*/
-
     return (
-        <>
-            <div className={classes.GovernanceListPage}>
-                <div className={classes.GovernanceListPage__Main}>
-                    <div className={classes.GovernanceListPage__Header}>
-                        <div className={classes.GovernanceListPage__HeaderTitle}>Governance</div>
-                        <div className={classes.GovernanceListPage__HeaderActions}>
-                            <GridIcon/>
-                            <ListIcon/>
-                            <Link to={`/markets/create`}>
-                                <Button
-                                    color="primary"
-                                    size={'medium'}>+ Create New</Button>
-                            </Link>
+        <div className={classes.MarketsPage}>
+            <div className={classes.MarketsPage__Main}>
+                <CourtVotePowerStaking2/>
+                <div className={classes.MarketsPage__Header}>
+                    <div className={classes.MarketsPage__HeaderTitle}>
+                        {
+                            filterDetails.type.id === GovernanceTypes.ORACLE && (`Oracle`)
+                        }
+                        {
+                            filterDetails.type.id === GovernanceTypes.MARKET && (`Markets`)
+                        }
+                    </div>
+                    <div className={classes.MarketsPage__HeaderActions}>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrap, classes.MarketsPage__HeaderActionsFilters)}
+                             onClick={() => {
+                                 setIsMarketsSidebarOpen(!isMarketsSidebarOpen);
+                             }}
+                        >
+                            <SearchIcon />
+                        </div>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                            [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "grid",
+                        })}
+                             onClick={() => {
+                                 setFilterDetails({
+                                     ...filterDetails,
+                                     view: "grid",
+                                 });
+                             }}
+                        >
+                            <GridIcon />
+                        </div>
+                        <div className={clsx(classes.MarketsPage__HeaderActionsIconWrapView, classes.MarketsPage__HeaderActionsIconWrap, {
+                            [classes.MarketsPage__HeaderActionsIconWrapActive]: get(filterDetails, "view") === "list",
+                        })}
+                             onClick={() => {
+                                 setFilterDetails({
+                                     ...filterDetails,
+                                     view: "list",
+                                 });
+                             }}
+                        >
+                            <ListIcon />
                         </div>
                     </div>
-                    <div className={classes.GovernanceListPage__MainList}>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                        <div><GovernanceCard/></div>
-                    </div>
                 </div>
-                <div className={classes.GovernanceListPage__Sidebar}>
-                    <FiltrationWidget/>
+                <div className={classes.QuickFilters}>
+                    {
+                        getQuickFilterOptions().map((entry) => {
+                            return (
+                                <div className={clsx({
+                                    [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id
+                                })}
+                                     onClick={() => {
+                                         setFilterDetails({
+                                             ...filterDetails,
+                                             state: entry
+                                         });
+                                     }}>{entry.title}</div>
+                            );
+                        })
+                    }
+                </div>
+                <div className={classes.MarketsPage__MainList}>
+                    {
+                        filterDetails.type.id === GovernanceTypes.ORACLE && (
+                            <GovernanceOracle filterDetails={filterDetails}/>
+                        )
+                    }
+                    {
+                        filterDetails.type.id === GovernanceTypes.MARKET && (
+                            <GovernanceMarket filterDetails={filterDetails}/>
+                        )
+                    }
                 </div>
             </div>
-        </>
+            <div className={clsx(classes.MarketsPage__Sidebar, {
+                [classes.MarketsPage__Sidebar__IsMin]: isMinHeader,
+                [classes.MarketsPage__Sidebar__MobileOpen]: isMarketsSidebarOpen,
+            })}>
+                <FiltrationWidget
+                    onClose={() => {
+                        setIsMarketsSidebarOpen(false);
+                    }}
+                    filterDetails={filterDetails}
+                    onFilterUpdate={(newDetails) => {
+                        setFilterDetails(newDetails);
+                    }}
+                    type={FiltrationWidgetTypes.GOVERNANCE}
+                />
+            </div>
+        </div>
     );
 }
 

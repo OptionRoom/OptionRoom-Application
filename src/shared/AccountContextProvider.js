@@ -29,18 +29,6 @@ const AccountContextProvider = (props) => {
     };
 
     const isChain = (chain) => {
-        if(chain === 'main') {
-            return chainId == 1;
-        }
-
-        if(chain === 'bsc') {
-            return chainId == 56;
-        }
-
-        if(chain === 'ropsten') {
-            return chainId == 3;
-        }
-
         return chain == chainId;
     };
 
