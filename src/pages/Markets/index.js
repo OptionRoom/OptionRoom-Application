@@ -36,10 +36,6 @@ function Markets() {
     const [allMarkets, setAllMarkets] = useState([]);
     const [marketsContracts, setMarketsContracts] = useState([]);
 
-    const marketsContractsInfo = useGetMarketsContractsInfo(accountContext.account, marketsContracts);
-    const marketsContractsState = useGetMarketsContractsState(accountContext.account, marketsContracts);
-    const marketsPriceOfBuy = useGetMarketsContractsPricesOfBuy(accountContext.account, marketsContracts);
-
     const [isLoading, setIsLoading] = useState(true);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);

@@ -275,13 +275,6 @@ function CourtFarming() {
             icons: [matter_icon],
             xUnit: "1x",
         },
-        /*         {
-            id: "COURT_ETH_LP_EARN_COURT",
-            title: "Deposit COURT-ETH LP",
-            decs: "Earn COURT",
-            link: "/court-farming/court-courtethlp",
-            icons: [courtTokenIconImg, eth_icon],
-        }, */
     ];
 
     useEffect(() => {

@@ -30,6 +30,7 @@
     "react-hook-form": "^7.3.3",
     "react-lottie": "^1.2.3",
     "react-minimal-pie-chart": "^8.2.0",
+    "react-query": "^3.34.15",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-select": "^4.3.0",
