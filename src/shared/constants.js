@@ -131,7 +131,6 @@ export const marketStatesDisplay = [
  Inactive: #34495e
  Resolved: #bdc3c7
  Resolving: #f39c12
- * @type {{"0": string, "1": string, "2": string, "3": string, "4": string, "5": string, "6": string, "7": string, "8": string}}
  */
 export const marketStateColors = {
     "0": "#",
@@ -156,6 +155,7 @@ export const ChainNetworks = {
     GOERLI: 5,
     BINANCE_SMART_CHAIN: 56,
     BINANCE_SMART_CHAIN_TESTNET: 97,
+    LOCAL_CHAIN: 1337,
 };
 
 export const GovernanceTypes = {
@@ -171,3 +171,28 @@ export const FiltrationWidgetTypes = {
 };
 
 export const marketDisputePeriod = 24 * 60 * 60;
+
+export const ContractNames = {
+    marketQueryV4: 'market_query_v4',
+    marketControllerV4: 'market_controller_v4',
+    usdt: 'usdt',
+    room: 'room',
+    orManager: 'or_manager',
+    busd: 'busd',
+    marketGovernance: 'market_governance',
+    optionTokenV4: 'optionTokenV4',
+
+};
+
+export const MarketVotingTypes = {
+    validating: 'validating',
+    resolving: 'resolving',
+    dispute: 'dispute'
+};
+
+export const MarketVotingTypesPerMarketAddress = {
+    1: MarketVotingTypes.validating,
+    5: MarketVotingTypes.resolving,
+    8: MarketVotingTypes.resolving,
+    7: MarketVotingTypes.dispute,
+};

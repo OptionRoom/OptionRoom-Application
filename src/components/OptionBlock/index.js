@@ -14,11 +14,8 @@ function OptionBlock(props) {
 
     return (
         <div className={classes.Options__OptionBlock}
-             onClick={() => props.onClick && props.onClick(props.title)}
-                data-selected={props.isSelected ? 'true' : 'false'}>
-{/*
-            <div className={classes.OptionBlock__Indicator}><div></div></div>
-*/}
+             onClick={() => props.onClick && props.onClick((props.optionValue || props.optionValue === 0) ? props.optionValue : props.title)}
+             data-selected={props.isSelected ? 'true' : 'false'}>
             <div className={classes.OptionBlock__Title}>{props.title}</div>
             {
                 props.showDonut && (

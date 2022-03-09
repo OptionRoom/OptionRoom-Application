@@ -1,11 +1,10 @@
 import React, {useState, useContext, useEffect} from "react";
+import {useQuery} from "react-query";
 import Grid from "@material-ui/core/Grid";
 import {useHistory, useParams} from 'react-router-dom'
 import {get, reduce} from 'lodash';
 import moment from 'moment';
 import numeral from "numeral";
-import NotWhitelisted from "../../components/NotWhitelisted";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from '@material-ui/lab/Alert';
 import FlareIcon from '@material-ui/icons/Flare';
 
@@ -15,11 +14,7 @@ import {
     LiquidityIcon,
 } from '../../shared/icons';
 import ChainAlert from '../../components/ChainAlert';
-
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
-import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import {useStyles} from "./styles";
 import BuySellWidget from "../../components/BuySellWidget";
 import VoteWidget from "../../components/VoteWidget";
 import DisputeWidget from "../../components/DisputeWidget";
@@ -28,14 +23,15 @@ import RedeemMarketRewardsWidget from "../../components/RedeemMarketRewardsWidge
 import MarketOutcome from "../../components/MarketOutcome";
 import MarketWalletPosition from "../../components/MarketWalletPosition";
 import MarketStateWidget from "../../components/MarketStateWidget";
+import OrLoader from "../../components/OrLoader";
 
-import {getIfWalletIsWhitelistedForBeta, getMarketById} from "../../shared/firestore.service";
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {ChainNetworks, MaxUint256} from '../../shared/constants';
+import {ChainNetworks, ContractNames, MaxUint256} from '../../shared/constants';
+import {useStyles} from "./styles";
+import {AccountContext} from "../../shared/AccountContextProvider";
 
 import {
     useGetMarketBuyPrices,
-    useGetMarketTradeVolume,
     useGetMarketState
 } from './hooks';
 
@@ -44,61 +40,65 @@ import {
     getWalletBalanceOfContract
 } from '../../shared/contracts/contracts.helper';
 import {fromWei} from "../../shared/helper";
-import OrLoader from "../../components/OrLoader";
+import {
+    useGetIsChainSupported,
+    useGetWalletAllowanceOfContractToSpender,
+    useGetWalletBalanceOfToken
+} from "../../shared/hooks";
+import {
+    getAccountBalances, getIsWalletOptionTokenApprovedForMarketController,
+    getMarketBalanceOf,
+    getMarketInfo, getMarketLiquidity,
+    getMarketPoolBalances,
+    getMarketTotalSupply
+} from "../../methods/market-controller.methods";
+import MarketBuyWidget from "../../components/MarketBuyWidget";
+import MarketSellWidget from "../../components/MarketSellWidget";
+import SelectTokensModal from "../../components/SelectTokensModal";
+const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Market() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
+
     const accountContext = useContext(AccountContext);
     const classes = useStyles();
 
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     //Mrket
-    const [marketInfo, setMarketInfo] = useState(null);
-    const [marketDb, setMarketDb] = useState(null);
-    const [marketVersion, setMarketVersion] = useState(null);
     const {marketId} = useParams();
     const [marketContractAddress, setMarketContractAddress] = useState(marketId);
     const marketState = useGetMarketState(accountContext.account, marketContractAddress);
+    const [marketInfo, setMarketInfo] = useState(null);
     const [marketContractData, setMarketContractData] = useState({});
 
-    const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
-    const [walletAllowanceOfCollateralToken, setWalletAllowanceOfCollateralToken] = useState(0);
+    const {
+        data: walletBalanceOfCollateralToken,
+        refetch: refetchWalletBalanceOfCollateralToken
+    } = useGetWalletBalanceOfToken(accountContext.account, ContractNames.busd);
+    const {
+        data: walletAllowanceOfCollateralToken,
+        refetch: refetchWalletAllowanceOfCollateralToken
+    } = useGetWalletAllowanceOfContractToSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
+
     const [isWalletOptionTokenApprovedForMarket, setIsWalletOptionTokenApprovedForMarket] = useState(0);
-    const [isWalletOptionTokenApprovedForMarketController, setIsWalletOptionTokenApprovedForMarketController] = useState(0);
+    const [isWalletOptionTokenApprovedForMarketController, setIsWalletOptionTokenApprovedForMarketController] = useState(false);
 
     //Buy and sell
     const pricesOfBuy = useGetMarketBuyPrices(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
 
-    const loadWalletBalanceOfCollateralToken = async () => {
-        const result = await getWalletBalanceOfContract(accountContext.account, 'usdt');
-        setWalletBalanceOfCollateralToken(result);
-    };
-
-    const loadWalletAllowanceOfCollateralToken = async () => {
-        const balanceOfAllowanceToken = await getWalletAllowanceOfContractToSpender(accountContext.account, 'usdt', 'market_controller');
-        setWalletAllowanceOfCollateralToken(balanceOfAllowanceToken);
-    };
-
     const loadWalletAllowanceOfOptionToken = async () => {
-        const marketApis = new MarketAPIs(marketVersion);
+/*        const marketApis = new MarketAPIs(marketVersion);
         const isWalletOptionTokenApprovedForMarketRes = await marketApis.getIsWalletOptionTokenApprovedForMarket(accountContext.account, marketContractAddress);
-        const isWalletOptionTokenApprovedForMarketController = await marketApis.getIsWalletOptionTokenApprovedForMarketController(accountContext.account);
-        setIsWalletOptionTokenApprovedForMarket(isWalletOptionTokenApprovedForMarketRes);
+        setIsWalletOptionTokenApprovedForMarket(isWalletOptionTokenApprovedForMarketRes);*/
+
+        const isWalletOptionTokenApprovedForMarketController = await getIsWalletOptionTokenApprovedForMarketController(accountContext.account);
         setIsWalletOptionTokenApprovedForMarketController(isWalletOptionTokenApprovedForMarketController);
     };
 
-    const loadWalletData = async () => {
-        loadWalletBalanceOfCollateralToken();
-        loadWalletAllowanceOfOptionToken();
-        loadWalletAllowanceOfCollateralToken();
-    };
-
-    const handleOnBuy = () => {
+    const handleOnTrade = () => {
+        refetchWalletBalanceOfCollateralToken();
         loadPageDetails();
-        loadWalletData();
     };
 
     const handleOnRedeem = () => {
@@ -115,64 +115,58 @@ function Market() {
 
     const loadMarketContractData = async () => {
         const wallet = accountContext.account;
-        const marketApis = new MarketAPIs(marketVersion);
-        const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
-        const marketiquidity = await marketApis.getMarketiquidity(wallet, marketContractAddress);
-        const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
-        const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketContractAddress);
-        const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
-        const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketContractAddress);
-        const walletSharesPercentageOfMarket = await marketApis.getWalletSharesPercentageOfMarket(wallet, marketContractAddress);
+
+        const marketTotalSupply = await getMarketTotalSupply(wallet, marketContractAddress);
+        const marketiquidity = await getMarketLiquidity(wallet, marketContractAddress);
+        const WalletOptionTokensBalance = await getAccountBalances(wallet, marketContractAddress, wallet);
+        const MarketOptionTokensPercentage = await getMarketPoolBalances(wallet, marketContractAddress);
+        const WalletBalanceOfMarket = await getMarketBalanceOf(wallet, marketContractAddress, wallet);
+        console.log({MarketOptionTokensPercentage});
+        console.log({WalletOptionTokensBalance});
+        console.log({WalletBalanceOfMarket});
+        //const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketContractAddress);
+        //const walletSharesPercentageOfMarket = await marketApis.getWalletSharesPercentageOfMarket(wallet, marketContractAddress);
 
         setMarketContractData({
             totalSupply: marketTotalSupply,
             marketiquidity: marketiquidity,
             optionTokensPercentage: MarketOptionTokensPercentage,
-            outcome: MarketOutcome,
-            walletSharesOfMarket: WalletSharesOfMarket,
-            walletSharesPercentageOfMarket: walletSharesPercentageOfMarket,
+            //walletSharesOfMarket: WalletSharesOfMarket,
+            //walletSharesPercentageOfMarket: walletSharesPercentageOfMarket,
             walletOptionTokensBalance: WalletOptionTokensBalance,
+            walletBalanceOfMarket: WalletBalanceOfMarket,
         });
     };
 
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-
-            let marketInfoDetail = marketInfo;
-
-            if (!marketInfoDetail) {
-                const marketApis = new MarketAPIs();
-                marketInfoDetail = await marketApis.getMarketInfo(accountContext.account, marketContractAddress);
+            if (!marketInfo) {
+                const marketInfoDetail = await getMarketInfo(accountContext.account, marketContractAddress);
+                console.log({marketInfoDetail});
                 setMarketInfo(marketInfoDetail);
             }
 
-            if (!marketDb) {
-                const result = await getMarketById(marketInfoDetail.metaDataID);
-                setMarketDb(result);
-                setMarketVersion(result.version);
-            }
-
             setIsLoading(false);
-
-            loadWalletData();
             loadPageDetails();
+
+            loadWalletAllowanceOfOptionToken();
         };
 
-        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && accountContext.account) {
+        if(isChainSupported && accountContext.account) {
             init();
         }
 
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, isChainSupported]);
 
     //Liquidity stuff
     const handleOnAddLiquidityComplete = () => {
-        loadWalletBalanceOfCollateralToken();
+        refetchWalletBalanceOfCollateralToken();
         loadPageDetails();
     };
 
     const handleOnRemoveLiquidityComplete = () => {
-        loadWalletBalanceOfCollateralToken();
+        refetchWalletBalanceOfCollateralToken();
         loadPageDetails();
     };
 
@@ -184,7 +178,6 @@ function Market() {
     const showTradeVolumeSection = () => {
         return ["3", "5", "6"].indexOf(marketState) > -1;
     };
-    //Buy adn sell stuff
 
     if(!accountContext.account) {
         return (
@@ -194,7 +187,7 @@ function Market() {
         )
     }
 
-    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+    if(!isChainSupported) {
         return (
             <ChainAlert/>
         )
@@ -206,12 +199,6 @@ function Market() {
                 <OrLoader width={400}
                           height={400}/>
             </div>
-        )
-    }
-
-    if(!isWalletWhitelistedForBeta) {
-        return (
-            <NotWhitelisted/>
         )
     }
 
@@ -243,9 +230,9 @@ function Market() {
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={8}>
                                 <div className={classes.Title}>{get(marketInfo, 'question')}</div>
-                                <div className={classes.Cat}>{get(marketDb, ['category', 'title'])}</div>
+                                <div className={classes.Cat}>{get(marketInfo, ['category', 'title'])}</div>
                                 <div className={classes.Gallery}>
-                                    <img src={get(marketDb, ['image'])}
+                                    <img src={get(marketInfo, ['imageURL'])}
                                          alt={'Market'}/>
                                 </div>
                             </Grid>
@@ -257,7 +244,7 @@ function Market() {
                                             <div className={classes.TradeVolume__Details}>
                                                 <TradeVolumeIcon/>
                                                 <div className={classes.TradeVolume__DetailsVal}>
-                                                    {numeral((get(marketDb, ['tradeVolume']) || 0)).format("$0,0.00")}
+                                                    {numeral((get(marketInfo, ['tradeVolume']) || 0)).format("$0,0.00")}
                                                 </div>
                                             </div>
                                         </div>
@@ -295,172 +282,171 @@ function Market() {
                 </div>
                 <div className={classes.MarketDetails}>
                     <div className={classes.MarketsPage__Header2Container}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={8}>
-                                <div className={classes.MarketDetails__Body}>
-                                    {
-                                        /**
-                                         <div className={classes.Graph}>
-                                        <div className={classes.Graph__Header}>
-                                        <div className={classes.Graph__HeaderTitle}>History</div>
-                                        <div className={classes.Graph__HeaderNav}>
-                                        <div className={classes.Graph__HeaderNavOption}>24h</div>
-                                        <div className={classes.Graph__HeaderNavOption}>7d</div>
-                                        <div className={classes.Graph__HeaderNavOption}>30d</div>
-                                        <div className={classes.Graph__HeaderNavOption}>all</div>
-                                        </div>
-                                        </div>
-                                        <div className={classes.Graph__Deatils}>
+                        <div className={classes.MarketDetails__Body}>
+                            <div className={classes.MarketWidgetWrap}>
+                                <MarketStateWidget marketInfo={marketInfo}
+                                                   state={marketState}/>
+                            </div>
+                            {
+                                showOutcomeSection() && (
+                                    <MarketOutcome marketState={marketState}
+                                                   optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
+                                                   marketContractAddress={marketContractAddress}/>
+                                )
+                            }
+                            <MarketWalletPosition marketState={marketState}
+                                                  optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
+                                                  walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                  marketContractAddress={marketContractAddress}/>
 
-                                        </div>
-                                        </div>
-                                        */
-                                    }
-                                    {
-                                        showOutcomeSection() && (
-                                            <MarketOutcome marketState={marketState}
-                                                           marketVersion={marketVersion}
-                                                           optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
-                                                           marketContractAddress={marketContractAddress}/>
-                                        )
-                                    }
-                                    <MarketWalletPosition marketState={marketState}
-                                                          marketVersion={marketVersion}
-                                                          optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
-                                                          walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                          marketContractAddress={marketContractAddress}/>
-                                    <div className={classes.About}>
-                                        <div className={classes.About__Header}>
-                                            About
-                                        </div>
-                                        <div
-                                            className={classes.About__Details}>{get(marketDb, 'description')}</div>
+                            {
+                                (get(marketInfo, ['creator']) == accountContext.account) && (
+                                    <div className={classes.CreatorWidegt}>
+                                        <Alert icon={<FlareIcon fontSize="inherit" />}
+                                               style={{
+                                                   borderRadius: '16px',
+                                                   marginBottom: '15px'
+                                               }}
+                                               severity="info">You are the creator of this market</Alert>
                                     </div>
-                                    <div className={classes.Resolution}>
-                                        <div className={classes.Resolution__Header}>
-                                            Resolution Source
-                                        </div>
-                                        <div className={classes.Resolution__Details}>
-                                            {get(marketDb, 'sources') && get(marketDb, 'sources').map((entry) => {
-                                                return (
-                                                    <div className={classes.ResolutionLink}>
-                                                        <a href={entry}
-                                                        target={'_blank'}>{entry}</a>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <div className={classes.MarketDetails__Sidebar}>
-                                    {
-                                        (marketDb && marketDb.wallet == accountContext.account) && (
-                                            <div className={classes.CreatorWidegt}>
-                                                <Alert icon={<FlareIcon fontSize="inherit" />}
-                                                    style={{
-                                                        borderRadius: '16px',
-                                                        marginBottom: '15px'
-                                                    }}
-                                                    severity="info">You are the creator of this market</Alert>
-                                            </div>
-                                        )
-                                    }
+                                )
+                            }
+                            <div className={classes.MarketWidgetWrap}>
+                                <MarketLiquidityWidget marketState={marketState}
+                                                       marketLiquidity={get(marketContractData, 'marketiquidity')}
+                                                       marketContractAddress={marketContractAddress}
+
+                                                       walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                       walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                       onApproveCollateralToken={(type) => {
+                                                           refetchWalletAllowanceOfCollateralToken();
+                                                       }}
+                                                       onAddLiquidity={handleOnAddLiquidityComplete}
+                                                       isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+
+                                                       isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
+                                                       onApproveOptionToken={(type) => {
+                                                           if(type === 'market') {
+                                                               setIsWalletOptionTokenApprovedForMarket(true);
+                                                           } else if(type=== 'market_controller') {
+                                                               setIsWalletOptionTokenApprovedForMarketController(true);
+                                                           }
+                                                       }}
+                                                       walletSharesOfMarket={get(marketContractData, 'walletSharesOfMarket')}
+                                                       walletSharesPercentageOfMarket={get(marketContractData, 'walletSharesPercentageOfMarket')}
+                                                       walletBalanceOfMarket={get(marketContractData, 'walletBalanceOfMarket')}
+                                                       onRemoveLiquidity={handleOnRemoveLiquidityComplete}
+
+                                />
+                            </div>
+                            {
+                                showVoteWidget() && (
                                     <div className={classes.MarketWidgetWrap}>
-                                        <MarketStateWidget marketInfo={marketInfo}
-                                                           state={marketState}/>
+                                        <VoteWidget
+                                            marketInfo={marketInfo}
+                                            marketState={marketState}
+                                            showDonutOnOptionBlock={true}
+                                            marketContractAddress={marketContractAddress}/>
                                     </div>
+                                )
+                            }
+                            {
+                                showDisputeWidget() && (
                                     <div className={classes.MarketWidgetWrap}>
-                                        <MarketLiquidityWidget marketState={marketState}
-                                                               marketVersion={marketVersion}
-                                                            marketLiquidity={get(marketContractData, 'marketiquidity')}
-                                                            marketContractAddress={marketContractAddress}
-
-                                                            walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                            walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                            onApproveCollateralToken={(type) => {
-                                                                setWalletAllowanceOfCollateralToken(MaxUint256);
-                                                            }}
-                                                            onAddLiquidity={handleOnAddLiquidityComplete}
-                                                            isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-
-                                                            isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                            onApproveOptionToken={(type) => {
-                                                                if(type === 'market') {
-                                                                    setIsWalletOptionTokenApprovedForMarket(true);
-                                                                } else if(type=== 'market_controller') {
-                                                                    setIsWalletOptionTokenApprovedForMarketController(true);
-                                                                }
-                                                            }}
-                                                            walletSharesOfMarket={get(marketContractData, 'walletSharesOfMarket')}
-                                                            walletSharesPercentageOfMarket={get(marketContractData, 'walletSharesPercentageOfMarket')}
-                                                            onRemoveLiquidity={handleOnRemoveLiquidityComplete}
-
-                                        />
+                                        <DisputeWidget
+                                            walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                            marketState={marketState}
+                                            onDispute={handleOnDispute}
+                                            marketContractAddress={marketContractAddress}/>
                                     </div>
-                                    {
-                                        showVoteWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <VoteWidget
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    showDonutOnOptionBlock={true}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showDisputeWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <DisputeWidget
-                                                    walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    onDispute={handleOnDispute}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showRedeemMarketRewardsWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <RedeemMarketRewardsWidget
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                    onRedeem={handleOnRedeem}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showBuySellWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <BuySellWidget pricesOfBuy={pricesOfBuy}
-                                                               marketVersion={marketVersion}
-                                                               onTrade={handleOnBuy}
-                                                               onApprove={(type) => {
-                                                                   if (type == 'CollateralToken') {
-                                                                       setWalletAllowanceOfCollateralToken(MaxUint256);
-                                                                   } else if(type === 'OptionToken') {
-                                                                       setIsWalletOptionTokenApprovedForMarket(true);
-                                                                   } else {
-                                                                       setIsWalletOptionTokenApprovedForMarketController(true);
-                                                                   }
-                                                               }}
-                                                               walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                               walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                               isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-                                                               isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                               walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                               marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
+                                )
+                            }
+                            {
+                                showRedeemMarketRewardsWidget() && (
+                                    <div className={classes.MarketWidgetWrap}>
+                                        <RedeemMarketRewardsWidget
+                                            marketState={marketState}
+                                            walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                            onRedeem={handleOnRedeem}
+                                            marketContractAddress={marketContractAddress}/>
+                                    </div>
+                                )
+                            }
+                            {
+                                showBuySellWidget() && (
+                                    <div className={`${classes.MarketWidgetWrap} ${classes.MarketBuySellWidget}`}>
+                                        <div key={'MarketBuyWidget'}>
+                                            <MarketBuyWidget
+                                                marketInfo={marketInfo}
+                                                pricesOfBuy={pricesOfBuy}
+                                                onTrade={handleOnTrade}
+                                                onApprove={(type) => {
+                                                    if (type == 'CollateralToken') {
+                                                        refetchWalletAllowanceOfCollateralToken();
+                                                    } else if (type === 'OptionToken') {
+                                                        setIsWalletOptionTokenApprovedForMarket(true);
+                                                    } else {
+                                                        setIsWalletOptionTokenApprovedForMarketController(true);
+                                                    }
+                                                }}
+                                                walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
+                                                walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                marketContractAddress={marketContractAddress}
+                                            ></MarketBuyWidget>
+                                        </div>
+                                        <div key={'MarketSellWidget'}>
+                                            <MarketSellWidget
+                                                marketInfo={marketInfo}
+                                                pricesOfBuy={pricesOfBuy}
+                                                onTrade={handleOnTrade}
+                                                onApprove={(type) => {
+                                                    if (type == 'CollateralToken') {
+                                                        refetchWalletAllowanceOfCollateralToken();
+                                                    } else if (type === 'OptionToken') {
+                                                        setIsWalletOptionTokenApprovedForMarket(true);
+                                                    } else {
+                                                        setIsWalletOptionTokenApprovedForMarketController(true);
+                                                    }
+                                                }}
+                                                walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
+                                                walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                marketContractAddress={marketContractAddress}
+                                            ></MarketSellWidget>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                            <div className={classes.About}>
+                                <div className={classes.About__Header}>
+                                    About
                                 </div>
-                            </Grid>
-                        </Grid>
+                                <div
+                                    className={classes.About__Details}>{get(marketInfo, 'description')}</div>
+                            </div>
+                            <div className={classes.Resolution}>
+                                <div className={classes.Resolution__Header}>
+                                    Resolution Source
+                                </div>
+                                <div className={classes.Resolution__Details}>
+                                    {get(marketInfo, 'resolveResources', []).map((entry, index) => {
+                                        return (
+                                            <div key={`resolveResources-${index}`}
+                                                 className={classes.ResolutionLink}>
+                                                <a href={entry}
+                                                   target={'_blank'}>{entry}</a>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                            <SelectTokensModal open={false}/>
+                        </div>
                     </div>
                 </div>
             </div>

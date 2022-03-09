@@ -15,7 +15,6 @@ import './App.css';
 import MainSidebar from "./components/MainSidebar";
 import MainNavbar from "./components/MainNavbar";
 import CourtFarming from "./pages/CourtFarming";
-import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import CreateMarket from "./pages/CreateMarket";
 import FarminPoolPage from "./pages/FarminPoolPage";

@@ -1,4 +1,4 @@
-import {useState, useRef} from 'react';
+import {useState} from 'react';
 import Button from "../Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
@@ -7,7 +7,7 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-import AvatarEditor from 'react-avatar-editor'
+import AvatarEditor from 'react-avatar-editor';
 import LoopIcon from '@material-ui/icons/Loop';
 import {useStyles} from "./styles";
 
@@ -78,7 +78,7 @@ function CropModal(props) {
                         color={[255, 255, 255, 0.6]} // RGBA
                         scale={zoom}
                         rotate={parseFloat(rotate)}
-                        borderRadius={500}
+                        borderRadius={10}
                     />
                 </div>
                 <div className={classes.Actions}>

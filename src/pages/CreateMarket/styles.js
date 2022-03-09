@@ -82,19 +82,6 @@ export const useStyles = makeStyles((theme) => {
             marginTop: '8px',
             color: 'red'
         },
-        CreateMarket__FieldSources: {
-            '& $CreateMarket__FieldBody' : {
-                display: 'flex',
-                alignItems: 'center',
-                '& input': {
-                    marginRight: '15px',
-                    width: 'calc(100% - 70px)'
-                },
-                '& button': {
-                    width: '56px'
-                }
-            }
-        },
         CreateMarket__LiquidityInput: {
             paddingRight: '200px'
         },
@@ -121,34 +108,6 @@ export const useStyles = makeStyles((theme) => {
             textDecoration: 'underline !important',
             cursor: 'pointer',
             marginRight: '12px'
-        },
-        CreateMarket__Sources: {
-            border: "1px solid #D2D9E1",
-            borderRadius: "8px",
-            backgroundColor: theme.isDark ? "#141A22": "#EDF1F5",
-            padding: '16px',
-            marginTop: '8px',
-            width: '100%',
-            '& >div': {
-                padding: '4px 8px',
-                borderRadius: "8px",
-                marginBottom: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                '& span:first-child': {
-                    marginRight: 'auto'
-                },
-                '&:last-child': {
-                    marginBottom: 0,
-                }
-            },
-            '& input': {
-                background: theme.isDark ? "#353F4D" : "#fff"
-            }
-        },
-        RemoveSourceIcon: {
-            cursor: 'pointer',
-            color: 'black'
         },
         CreateMarket__FieldBodyImg: {
             border: "1px solid #D2D9E1",

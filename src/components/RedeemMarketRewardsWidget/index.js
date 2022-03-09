@@ -9,6 +9,8 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
+import {redeemMarketRewards} from "../../methods/market-controller.methods";
+import {getMarketResolvingCount} from "../../methods/or-market-governance.methods";
 
 function RedeemMarketRewardsWidget(props) {
     const classes = useStyles();
@@ -20,9 +22,8 @@ function RedeemMarketRewardsWidget(props) {
 
     const handleRedeem = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs(props.marketVersion);
         try {
-            await marketApis.redeemMarketRewards(accountContext.account, props.marketContractAddress);
+            await redeemMarketRewards(accountContext.account, props.marketContractAddress);
             props.onRedeem && props.onRedeem();
         } catch (e) {
 
@@ -32,8 +33,7 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     const loadMarketInfo = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
+        const result = await getMarketResolvingCount(accountContext.account, props.marketContractAddress);
         setMarketInfo(result);
     };
 

@@ -9,39 +9,15 @@ import CourtVotePowerStaking from "../../components/CourtVotePowerStaking";
 
 import {useStyles} from "./styles";
 import {AccountContext} from "../../shared/AccountContextProvider";
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 
-import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import {ChainNetworks} from "../../shared/constants";
 
 function CourtStaking() {
     const classes = useStyles();
 
     const accountContext = useContext(AccountContext);
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
-
-
-/*    useEffect(() => {
-        let updateInfoIntervalId = null;
-
-        async function init() {
-            const courtAPIs = new CourtAPIs();
-
-        }
-
-        if (accountContext.account) {
-            init();
-        }
-
-        return () => {
-            clearInterval(updateInfoIntervalId);
-        };
-    }, [accountContext.chainId]);*/
-
     return (
         <>
-
             <div className={classes.LiquidityMiningPage}>
                 {
                     accountContext.account && (

@@ -1,5 +1,4 @@
 import React from "react";
-import clsx from "clsx";
 import Slider from '@material-ui/core/Slider';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';

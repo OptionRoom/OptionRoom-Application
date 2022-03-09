@@ -1,20 +1,7 @@
 import React from 'react';
 import clsx from 'clsx';
 import moment from 'moment';
-import {useState, useContext} from 'react';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-
-import {useStyles} from './styles'
-import ConnectButton from '../ConnectButton';
-import {AccountContext} from '../../shared/AccountContextProvider';
-import {OptionroomThemeContext} from '../../shared/OptionroomThemeContextProvider';
-import {
-    ellipseAddress,
-    getAddressImgUrl
-} from '../../shared/helper';
-import Button from "../Button";
-
+import {useStyles} from './styles';
 function GovernanceCard(props) {
 
     const classes = useStyles();
@@ -25,13 +12,6 @@ function GovernanceCard(props) {
     const isActive = ((parseFloat(proposal.endTime) * 1000) > (new Date()).getTime()) ? true : false;
     return (
         <div className={classes.GovernanceCard}>
-            {
-                /**
-                 <div className={classes.AvatarWrap}>
-                 <div className={classes.Avatar}></div>
-                 </div>
-                 */
-            }
             <div className={classes.Details}>
                 <div className={classes.Details__Header}>
                     <div className={classes.Cat}>{proposal.cats.join(', ')}</div>

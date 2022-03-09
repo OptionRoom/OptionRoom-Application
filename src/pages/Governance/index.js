@@ -2,10 +2,8 @@ import React, {useState, useContext, useEffect} from "react";
 import Grid from "@material-ui/core/Grid";
 import {useParams} from "react-router-dom";
 
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import Navbar from "../../components/Navbar";
 import {useStyles} from "./styles";
 import VoteWidget from "../../components/VoteWidget";
 import ChainAlert from "../../components/ChainAlert";
@@ -18,8 +16,6 @@ import GovernanceRewardsWidget from "../../components/GovernanceRewardsWidget";
 const supportedChains = [ChainNetworks.ROPSTEN];
 
 function Governance() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isLoading, setIsLoading] = useState(true);

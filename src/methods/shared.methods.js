@@ -1,5 +1,16 @@
 import {MaxUint256} from "../shared/constants";
-import {getContract, getContractAddress} from "../shared/contracts/contracts.helper";
+import {getContract, getContractAddress, getTokenContract} from "../shared/contracts/contracts.helper";
+
+export const getWalletBalanceOfContractWithAddress = (wallet, contractAddress) => {
+    const contract = getTokenContract(contractAddress);
+
+    return contract
+        .methods
+        .balanceOf(wallet)
+        .call({
+            from: wallet,
+        });
+};
 
 export const getWalletBalanceOfContract = (wallet, contractName) => {
     const contract = getContract(contractName);

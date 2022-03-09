@@ -3,7 +3,6 @@ import { get } from "lodash";
 import clsx from "clsx";
 import SearchIcon from '@material-ui/icons/Search';
 
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
 import { useStyles } from "./styles";
@@ -21,8 +20,6 @@ import {
 
 
 function GovernanceList() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
 
     const [isMinHeader, setIsMinHeader] = useState(false);

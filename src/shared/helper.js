@@ -334,3 +334,10 @@ export const getMarketDisputeEndTime = (resolvingEndTime, lastResolvingVoteTime)
 
     return lastResolvingVoteTime + marketDisputePeriod;
 }
+
+export const convertBase64ToBlob = async (base64Data) => {
+    const fetchRes = await fetch(base64Data);
+    const blob = await fetchRes.blob();
+
+    return blob;
+}

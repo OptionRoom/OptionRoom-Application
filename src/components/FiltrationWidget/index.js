@@ -6,13 +6,13 @@ import {SearchIcon} from "../../shared/icons";
 
 
 import {useStyles} from "./styles";
-import {useGetMarketCategories} from '../../shared/hooks';
 import {marketStatesDisplay, GovernanceTypes, FiltrationWidgetTypes} from '../../shared/constants';
 import OrSwitch from '../../components/OrSwitch';
 import OrSelect from "../OrSelect";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import {getMarketCategories} from "../../shared/firestore.service";
 import OracleApis from "../../shared/contracts/OracleApis";
+import {getCategories} from "../../methods/market-controller.methods";
 
 function FiltrationWidget(props) {
 
@@ -30,17 +30,13 @@ function FiltrationWidget(props) {
             try {
                 const selectedFilterType = get(filterDetails, ['type', 'id']);
                 if (FiltrationWidgetTypes.MARKETS === type || selectedFilterType == GovernanceTypes.MARKET) {
-                    let cats = await getMarketCategories();
+                    let cats = await getCategories(accountContext.account);
                     cats =
-                        [{
-                            title: 'All',
-                            id: "all"
-                        },
-                            ...cats]
-                            .map((entry) => {
+                        ['All', ...cats]
+                            .map((entry, index) => {
                                 return {
-                                    value: entry.id,
-                                    label: entry.title
+                                    value: entry === 'All' ? 'all' : index - 1,
+                                    label: entry
                                 };
                             });
 
@@ -218,9 +214,11 @@ function FiltrationWidget(props) {
                 <div className={classes.SectionSort__Actions}>
                     <div className={classes.SortBlocks}>
                         {
-                            getSortOptions().map((entry) => {
+                            getSortOptions().map((entry, index) => {
                                 return (
-                                    <div className={clsx(classes.SortBlock, {
+                                    <div
+                                    key={`state-${index}`}
+                                    className={clsx(classes.SortBlock, {
                                         [classes.SortBlock__IsActive]: get(filterDetails, ['sort', 'by']) === entry.toLowerCase(),
                                     })}
                                          onClick={() => handleSort(entry.toLowerCase())}>

@@ -1,21 +1,18 @@
 import React, { useState, useContext, useEffect } from "react";
 import {get} from "lodash";
 import numeral from "numeral";
-
+import clsx from "clsx";
 
 import ChainAlert from '../../components/ChainAlert';
 import OrLoader from '../../components/OrLoader';
 import Button from '../../components/Button';
 
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
 import { useStyles } from "./styles";
 import {getMarkets} from "../../shared/firestore.service";
 import MarketV1APIs from '../../shared/contracts/MarketV1APIs';
 import {fromWei, toWei, truncateText} from "../../shared/helper";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import clsx from "clsx";
 import {ChainNetworks} from "../../shared/constants";
 
 function MarketCard(props) {
@@ -152,29 +149,7 @@ function MarketCard(props) {
 }
 
 function MarketsV1() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
     const classes = useStyles();
-
-/*     return (
-        <div className={classes.ComingSoonWrap}>
-            <h1>This page is under maintenance</h1>
-            <p>Follow us here: <a
-                href="https://t.me/OptionRoom"
-                rel="noreferrer"
-                target="_blank"
-            >
-                <i className="fa fa-telegram"></i>
-            </a>
-                <a
-                    href="https://twitter.com/option_room"
-                    rel="noreferrer"
-                    target="_blank"
-                >
-                    <i className="fa fa-twitter"></i>
-                </a> for more information</p>
-        </div>
-    ); */
 
     const accountContext = useContext(AccountContext);
 

@@ -52,6 +52,7 @@ function TradeInput(props) {
 
     const tooltipConfig = useTooltipConfig(value, min, max);
     const [tradeVal, setTradeVal] = useState(formatTradeValue(value));
+    const [selectedToken, setSelectedToken] = useState();
     const [tradePercent, setTradePercent] = useState(value && max ? (value / parseFloat(max)) * 100 : 0);
 
     useEffect(() => {
@@ -71,21 +72,28 @@ function TradeInput(props) {
 
     return (
         <div className={classes.TradeInput}>
-            <Tooltip open={tooltipConfig.isOpen}
-                     placement={'top'}
-                     arrow
-                     title={tooltipConfig.tooltip}>
-                <input value={tradeVal}
-                       className={clsx({
-                           [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
-                       })}
-                       onChange={(e) => {
-                           setTradeVal(formatTradeValue(e.target.value));
-                           setTradePercent((e.target.value / parseFloat(max)) * 100);
-                           onChange(e.target.value);
-                       }}
-                       type='number'/>
-            </Tooltip>
+            <div className={classes.InputWrapper}>
+                <Tooltip open={tooltipConfig.isOpen}
+                         placement={'top'}
+                         arrow
+                         title={tooltipConfig.tooltip}>
+                    <input value={tradeVal}
+                           className={clsx(classes.Input,{
+                               [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
+                           })}
+                           onChange={(e) => {
+                               setTradeVal(formatTradeValue(e.target.value));
+                               setTradePercent((e.target.value / parseFloat(max)) * 100);
+                               onChange(e.target.value);
+                           }}
+                           type='number'/>
+{/*                    <div className={classes.SelectToken}>
+                        <div className={classes.TokenImg}></div>
+                        <div className={classes.TokenSymbol}></div>
+                        <div className={classes.SwitchIcon}></div>
+                    </div>*/}
+                </Tooltip>
+            </div>
             <div>
                 <TradeSlider2
                     value={tradePercent}

@@ -15,10 +15,6 @@ import rewardProgramAbi from './reward_program.abi.json';
 import CourtFarming_NoRoomStakeMatterAbi from './CourtFarming_NoRoomStakeMatter.abi.json';
 import CourtFarming_NoRoomStakeHTAbi from './CourtFarming_NoRoomStakeHT.abi.json';
 import CourtFarming_RoomStakeNewAbi from './CourtFarming_RoomStakeNew.abi.json';
-
-/////
-/////d
-/////d
 import CourtEthLpTokenContractAbi from './CourtEthLpTokenContract.abi.json';
 import CourtFarming_CourtEthLpStakeAbi from './CourtFarming_CourtEthLpStake.abi.json';
 import CourtFarming_HtStakeContractAbi from './CourtFarming_HtStakeContract.abi.json';
@@ -35,19 +31,33 @@ import WethTokenContractAbi from './WethTokenContract.abi.json';
 import OROracleInfoContractAbi from './OROracleInfo.abi.json';
 import JustForDebugAbi from './JustForDebug.abi.json';
 
+//V4
+import marketControllerV4Abi from '../../methods/abis/market-controller-v4.abi.json';
+import orManagerAbi from '../../methods/abis/or-manager.abi.json';
+import marketQueryV4Abi from '../../methods/abis/market-query-v4.abi.json';
+import marketEntityAbi from '../../methods/abis/market-entity.abi.json';
+import marketGovernanceAbi from '../../methods/abis/or-market-governance.abi.json';
+
 
 import {walletHelper} from "../wallet.helper";
-import {MaxUint256} from "../constants";
+import {ChainNetworks, ContractNames, MaxUint256} from "../constants";
 
 export const contractsAbis = {
     default: {
+        [ContractNames.usdt]: usdtAbi,
+        [ContractNames.room]: roomAbi,
+        [ContractNames.busd]: usdtAbi,
+        [ContractNames.marketControllerV4]: marketControllerV4Abi,
+        [ContractNames.orManager]: orManagerAbi,
+        [ContractNames.marketQueryV4]: marketQueryV4Abi,
+        [ContractNames.marketGovernance]: marketGovernanceAbi,
+        [ContractNames.optionTokenV4]: optionTokenAbi,
+
         claim_contract: claimContractAbi,
         market: marketAbi,
         market_controller: marketControllerAbi,
         markets_query: marketsQueryAbi,
         option_token: optionTokenAbi,
-        usdt: usdtAbi,
-        room: roomAbi,
         ht_court_farming_claim: htCourtFarmingClaimAbi,
         matter_court_farming_claim: matterCourtFarmingClaimAbi,
         court_vote_stake: courtVoteStakeAbi,
@@ -88,36 +98,6 @@ export const contractsAbis = {
     }
 };
 
-/**
-
- Main Net:
- usdt: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
- ht_court_farming_claim: '0x79dC7BBFD0c9088B0633556D292B24c6F2dAe33c',
- matter_court_farming_claim: '0xbb5cc0913afd3218bafc350e72b16304a026b47e',
- room: '0xad4f86a25bbc20ffb751f2fac312a0b4d8f88c64',
- court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
-
- CourtEthLpTokenContract: "0x2dddc662114499d765b3a61f63139e7aee8cc138",
- CourtFarming_CourtEthLpStake: "0xaa0e0811ca1eb5dbdc128f2de7fff3e17b3b8feb",
- CourtFarming_HtStakeContract: "0x56cA5FAF9F40254e093D99B6381ccce8D8d78212",
- CourtFarming_MatterStakeContract: "0x3bF32bb284a038Fd40E6DC022fddc87F894bF148",
- CourtFarming_RoomEthLpStakeContract: "0xFec868e10C859383a714cA71Ff2016E5d4E22664",
- CourtFarming_RoomStake: "0x46Ea1Fc2a4beBBe9C66639F91Dbec19eD02d3a4e",
- HtTokenContract: "0x6f259637dcd74c767781e37bc6133cd6a68aa161",
- MarketContract: "",
- MatterTokenContract: "0x1c9491865a1de77c5b6e19d2e6a5f1d7a6f2b25f",
- NftStakeContract: "0xD9036755366B750AA3b0870aaec6FC3094a7F6Ac",
- NftTokenContract: "0x8fDa42090a5AC9Dde01Fd2bA0431fE22FC72dc65",
- RoomLPStakingContract: "0x94c238362a5217545a7e2c96fa571471265cc1bc",
- RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
- WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-
- BSC:
- court_vote_stake: '0x3bd21a6d3925c8e7f20e1eb910d01c33b412e588',
- court_token: '0x75dcb13c357983b6281BDCD57d2D6e66f8c6086a',
-
- * @type {{"1": {CourtFarming_RoomStake: string, CourtFarming_CourtEthLpStake: string, CourtFarming_RoomEthLpStakeContract: string, NftTokenContract: string, CourtFarming_MatterStakeContract: string, CourtFarming_HtStakeContract: string, RoomLPStakingContract: string, room: string, CourtEthLpTokenContract: string, NftStakeContract: string, WethTokenContract: string, MatterTokenContract: string, MarketContract: string, matter_court_farming_claim: string, usdt: string, RoomLPTokenContract: string, ht_court_farming_claim: string, court_token: string, HtTokenContract: string}, "56": {court_vote_stake: string, court_token: string}, default: {market: string, market_controller: string, markets_query: string, option_token: string}, "3": {court_vote_stake: string, matter_court_farming_claim: string, usdt: string, ht_court_farming_claim: string}}}
- */
 export const contractsAddresses = {
     default: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
@@ -125,7 +105,7 @@ export const contractsAddresses = {
         markets_query: '0xDcB04413858aF86d0A9Fb9697DF944B97bF96Ae4',
         option_token: '0xf3ADc7F24611cd71D5008e91808B31C882d49D10',
     },
-    1: {
+    [ChainNetworks.MAIN]: {
         claim_contract: '0xf57a6898f75fc8e9cbcd02f2777bd3642f1368b6',
         usdt: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         ht_court_farming_claim: '0x79dC7BBFD0c9088B0633556D292B24c6F2dAe33c',
@@ -148,7 +128,7 @@ export const contractsAddresses = {
         RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     },
-    3: {
+    [ChainNetworks.ROPSTEN]: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
         market_controller: '0x377E6d09A0E4c325ca697B400d1AE937fFfC22B3',
         markets_query: '0xb94C7f331C711F9b118DA7ee0731fb1DADee4F02',
@@ -179,7 +159,7 @@ export const contractsAddresses = {
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
         JustForDebug: "0x5659586fa5543e9c19250086035fa8c6099a6330",
     },
-    56: {
+    [ChainNetworks.BINANCE_SMART_CHAIN]: {
         claim_contract: '0x8F58245B7cf498562d5de4E65f89286DDf5471e0',
         NftStakeContract: "0x1B161D12DC0bBEF6B28640F9D10F0f43f44885BA",
 
@@ -213,16 +193,14 @@ export const contractsAddresses = {
         RoomLPTokenContract: "0x84d15c02acd9fb9e0266d4075e7207db11a15cb3",
         OROracleInfo: "0x928e0868a3ea99273bcff5aca26ef6e2668cf4b5",
     },
-    1337: {
+    [ChainNetworks.LOCAL_CHAIN]: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
         market_controller: '0xbe35e9712762D41328f536fCBEea62055fC86d66',
         markets_query: '0x68ee49f5D704C70094D99C13B923E78bba2EaeF8',
         option_token: '0xdE1f725dEC62ed6A33DE44B5C832CAee3543bBEE',
         claim_contract: '0xf57a6898f75fc8e9cbcd02f2777bd3642f1368b6',
-        usdt: '0xD06EA4710d06ED13cB27b7413164CAB4aA5f3A2f',
         ht_court_farming_claim: '0x79dC7BBFD0c9088B0633556D292B24c6F2dAe33c',
         matter_court_farming_claim: '0xbb5cc0913afd3218bafc350e72b16304a026b47e',
-        room: '0xda5a76f9ba07b5D545e3028214CC1449Bf2C72Ff',
         court_token: "0x0538A9b4f4dcB0CB01A7fA34e17C0AC947c22553",
         reward_program: "0x5aee05529C22376DE324f3916EEBB293390478C6",
 
@@ -233,13 +211,21 @@ export const contractsAddresses = {
         CourtFarming_RoomEthLpStakeContract: "0xFec868e10C859383a714cA71Ff2016E5d4E22664",
         CourtFarming_RoomStake: "0x46Ea1Fc2a4beBBe9C66639F91Dbec19eD02d3a4e",
         HtTokenContract: "0x6f259637dcd74c767781e37bc6133cd6a68aa161",
-        MarketContract: "",
         MatterTokenContract: "0x1c9491865a1de77c5b6e19d2e6a5f1d7a6f2b25f",
         NftStakeContract: "0xD9036755366B750AA3b0870aaec6FC3094a7F6Ac",
         NftTokenContract: "0x8fDa42090a5AC9Dde01Fd2bA0431fE22FC72dc65",
         RoomLPStakingContract: "0x94c238362a5217545a7e2c96fa571471265cc1bc",
         RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+
+        [ContractNames.usdt]: '0x3Db9fbC0F2f9dfEDCCbd8ce8b3C66b4101a711B8',
+        [ContractNames.room]: '0xB6bb2DC39230adC0289725753bB36DD4f1910C28',
+        [ContractNames.marketControllerV4]: "0x41a87EA37804E6cf9FF2FD4D79b9FF634E9Bb8d6",
+        [ContractNames.orManager]: "0xa69fccc11BcE9b69e52FF1D7724510702032A9C5",
+        [ContractNames.marketQueryV4]: "0x0244047E1875CcBfef5E2E60ECb264DE9cF0f414",
+        [ContractNames.busd]: "0x3Db9fbC0F2f9dfEDCCbd8ce8b3C66b4101a711B8",
+        [ContractNames.marketGovernance]: "0xBDbcc26A3c30cb62E875d6C2eA873fc7CB67af3a",
+        [ContractNames.optionTokenV4]: "0xF8aC027e3372aD93602d95FA3305cAe2d4D0bc1A",
     }
 };
 
@@ -255,6 +241,26 @@ export const getContractAddress = (contractName) => {
 
 export const getContractAbi = (contractName) => {
     return contractsAbis.default[contractName];
+};
+
+export const getMarketEntityContract = (wallet, marketAddress) => {
+    const web3 = walletHelperInstance.getWeb3();
+    const newContract = new web3.eth.Contract(
+        marketEntityAbi,
+        marketAddress
+    );
+
+    return newContract;
+}
+
+export const getTokenContract = (contractAddress) => {
+    const web3 = walletHelperInstance.getWeb3();
+    const newContract = new web3.eth.Contract(
+        getContractAbi(ContractNames.busd),
+        contractAddress
+    );
+
+    return newContract;
 };
 
 export const getContract = (contractName) => {
@@ -315,7 +321,7 @@ export const approveContractForSpender = (wallet, source, spender, amount) => {
 };
 
 export const mintRoomDemoTokenToWallet = (wallet, amount) => {
-    const sourceContract = getContract('room');
+    const sourceContract = getContract(ContractNames.room);
 
     return sourceContract
         .methods

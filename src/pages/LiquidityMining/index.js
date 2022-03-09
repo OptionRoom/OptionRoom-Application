@@ -4,19 +4,14 @@ import {Link} from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import Button from '../../components/Button';
 import ConnectButton from '../../components/ConnectButton';
-import RoomLpStake from '../../components/RoomLpStake';
-import NftStake from '../../components/NftStake';
-
 import { useStyles } from './styles';
 import { AccountContext } from "../../shared/AccountContextProvider";
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 
 function LiquidityMining() {
     const classes = useStyles();
 
     const accountContext = useContext(AccountContext);
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme('primary');
+
     const pools = [
         {
             id: "ROOM_ETH_LP",

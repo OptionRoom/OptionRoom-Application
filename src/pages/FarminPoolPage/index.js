@@ -7,7 +7,6 @@ import RoomLpStake from "../../components/RoomLpStake";
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import {ChainNetworks} from "../../shared/constants";
 
 const getPageConfig = (source, pool) => {
@@ -64,8 +63,6 @@ function FarminPoolPage(props) {
     const classes = useStyles();
     const { source, pool, isDepositEnabled } = props;
     const accountContext = useContext(AccountContext);
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
 
     return (
         <>

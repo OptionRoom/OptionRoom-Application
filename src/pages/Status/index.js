@@ -1,12 +1,8 @@
 import React, {useContext} from "react";
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import Navbar from "../../components/Navbar";
 import {useStyles} from "./styles";
 
 function Status() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
-
     const classes = useStyles();
 
     return (

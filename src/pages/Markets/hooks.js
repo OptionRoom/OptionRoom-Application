@@ -23,7 +23,7 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
 
             if (category && category.id != 'all') {
                 newMarkets = filter(newMarkets, (entry) => {
-                    return get(entry, ['dbData', 'category', 'id']) == category.id;
+                    return get(entry, ['categories'], []).includes(category.title);
                 });
             }
 
@@ -39,7 +39,7 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
 
                 if (sortBy.by === 'volume') {
                     newMarkets = orderBy(newMarkets, (entry) => {
-                        return get(entry, ['dbData', 'tradeVolume'], 0);
+                        return parseFloat(get(entry, ['volume', 'totalVolume'], 0));
                     }, [sortDirection]);
                 } else if (sortBy.by === 'created') {
                     newMarkets = orderBy(newMarkets, (entry) => {

@@ -7,6 +7,7 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import { fromWei } from "../../shared/helper";
 import { getDataRan } from './../../components/MarketOutcome/generate-data';
 import {getBuySellEventsOfMarket} from '../../shared/firestore.service';
+import {getMarketState} from "../../methods/market-controller.methods";
 
 export const useGetMarketBuyPrices = (wallet, marketContractAddress, optionTokensPercentage) => {
     const [buyPrices, setBuyPrices] = useState({});
@@ -75,8 +76,7 @@ export const useGetMarketState = (wallet, marketContractAddress) => {
 
     useEffect(() => {
         const init = async () => {
-            const marketAPIs = new MarketAPIs();
-            const marketState = await marketAPIs.getMarketState(wallet, marketContractAddress);
+            const marketState = await getMarketState(wallet, marketContractAddress);
             setVal(marketState);
         };
 

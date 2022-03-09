@@ -7,39 +7,38 @@ import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
 
 import ChainAlert from '../../components/ChainAlert';
 
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
 import MarketCard from "../../components/MarketCard";
 import { useStyles } from "./styles";
-import {
-    getMarkets,
-} from "../../shared/firestore.service";
 import FiltrationWidget from "../../components/FiltrationWidget";
 
 import Button from "../../components/Button";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {
     useGetFilteredMarkets,
-    useGetMarketsContractsPricesOfBuy,
-    useGetMarketsContractsState,
-    useGetMarketsContractsInfo
 } from "./hooks";
 import { GridIcon, ListIcon } from "../../shared/icons";
 import OrLoader from "../../components/OrLoader";
 import {marketStatesDisplay, ChainNetworks, FiltrationWidgetTypes} from "../../shared/constants";
+import {
+    getCategories,
+    addCategory,
+    getAllMarkets
+} from '../../methods/market-controller.methods';
+
+import {useGetIsChainSupported} from "../../shared/hooks";
+
+const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Markets() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
-    const [allMarkets, setAllMarkets] = useState([]);
-    const [marketsContracts, setMarketsContracts] = useState([]);
 
+    const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isLoading, setIsLoading] = useState(true);
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isMarketsSidebarOpen, setIsMarketsSidebarOpen] = useState(false);
     const [marketsTradedByWallet, setMarketsTradedByWallet] = useState([]);
+    const [marketsContracts, setMarketsContracts] = useState([]);
 
     const [filterDetails, setFilterDetails] = useState({
         name: "",
@@ -74,27 +73,19 @@ function Markets() {
         return marketStatesDisplay.filter(entry => entry.showInMarketsQuickFilter);
     }
 
+    const loadMarkets = async () => {
+        setIsLoading(true);
+        const marketContracts = await getAllMarkets(accountContext.account, true, true, true, true, true);
+        console.log({marketContracts});
+        setMarketsContracts(marketContracts);
+        setIsLoading(false);
+        /*            const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
+                    setMarketsTradedByWallet(marketsTradedByWallet);*/
+    };
+
     useEffect(() => {
-        const init = async () => {
-            setIsLoading(true);
-
-            const marketApis = new MarketAPIs();
-            const marketContracts = await marketApis.getAllMarkets(
-                accountContext.account,
-                true,
-                true,
-                true,
-                true
-            );
-
-            setMarketsContracts(marketContracts);
-            setIsLoading(false);
-            const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);
-            setMarketsTradedByWallet(marketsTradedByWallet);
-        };
-
-        if (accountContext.account && accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
-            init();
+        if (accountContext.account && isChainSupported) {
+            loadMarkets();
         }
     }, [accountContext.account, accountContext.chainId]);
 
@@ -108,6 +99,11 @@ function Markets() {
         };
 
         window.addEventListener("scroll", handleScroll);
+
+        if (accountContext.account && isChainSupported) {
+            loadMarkets();
+        }
+
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
@@ -121,7 +117,7 @@ function Markets() {
         );
     }
 
-    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+    if(!isChainSupported) {
         return (
             <ChainAlert/>
         )
@@ -139,11 +135,6 @@ function Markets() {
     return (
         <div className={classes.MarketsPage}>
             <div className={classes.MarketsPage__Main}>
-                {
-                    !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
-                        <ChainAlert/>
-                    )
-                }
                 <div className={classes.MarketsPage__Header}>
                     <div className={classes.MarketsPage__HeaderTitle}>
                         Markets
@@ -200,7 +191,8 @@ function Markets() {
                                         ...filterDetails,
                                         state: entry
                                     });
-                                }}>{entry.title}</div>
+                                }}
+                                key={`state-${entry.id}`}>{entry.title}</div>
                             );
                         })
                     }
