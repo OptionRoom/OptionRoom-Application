@@ -55,6 +55,7 @@ import {
 import MarketBuyWidget from "../../components/MarketBuyWidget";
 import MarketSellWidget from "../../components/MarketSellWidget";
 import SelectTokensModal from "../../components/SelectTokensModal";
+import BuySellWidget2 from "../../components/BuySellWidget2";
 const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Market() {
@@ -141,6 +142,7 @@ function Market() {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
+
             if (!marketInfo) {
                 const marketInfoDetail = await getMarketInfo(accountContext.account, marketContractAddress);
                 console.log({marketInfoDetail});
@@ -374,51 +376,8 @@ function Market() {
                             }
                             {
                                 showBuySellWidget() && (
-                                    <div className={`${classes.MarketWidgetWrap} ${classes.MarketBuySellWidget}`}>
-                                        <div key={'MarketBuyWidget'}>
-                                            <MarketBuyWidget
-                                                marketInfo={marketInfo}
-                                                pricesOfBuy={pricesOfBuy}
-                                                onTrade={handleOnTrade}
-                                                onApprove={(type) => {
-                                                    if (type == 'CollateralToken') {
-                                                        refetchWalletAllowanceOfCollateralToken();
-                                                    } else if (type === 'OptionToken') {
-                                                        setIsWalletOptionTokenApprovedForMarket(true);
-                                                    } else {
-                                                        setIsWalletOptionTokenApprovedForMarketController(true);
-                                                    }
-                                                }}
-                                                walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-                                                isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                marketContractAddress={marketContractAddress}
-                                            ></MarketBuyWidget>
-                                        </div>
-                                        <div key={'MarketSellWidget'}>
-                                            <MarketSellWidget
-                                                marketInfo={marketInfo}
-                                                pricesOfBuy={pricesOfBuy}
-                                                onTrade={handleOnTrade}
-                                                onApprove={(type) => {
-                                                    if (type == 'CollateralToken') {
-                                                        refetchWalletAllowanceOfCollateralToken();
-                                                    } else if (type === 'OptionToken') {
-                                                        setIsWalletOptionTokenApprovedForMarket(true);
-                                                    } else {
-                                                        setIsWalletOptionTokenApprovedForMarketController(true);
-                                                    }
-                                                }}
-                                                walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-                                                isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                marketContractAddress={marketContractAddress}
-                                            ></MarketSellWidget>
-                                        </div>
+                                    <div className={`${classes.MarketWidgetWrap}`}>
+                                        <BuySellWidget2 marketInfo={marketInfo}/>
                                     </div>
                                 )
                             }

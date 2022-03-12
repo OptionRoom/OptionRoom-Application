@@ -171,15 +171,19 @@ function CreateMarket() {
     const loadWalletBalanceOfCollateralToken = async () => {
         const balanceOfColletralToken = await getWalletBalanceOfContract(accountContext.account, ContractNames.busd);
         setWalletBalanceOfCollateralToken(balanceOfColletralToken);
-
+        console.log({balanceOfColletralToken});
         const walletAllowanceOfCollateralTokenForMarketRouter = await getWalletAllowanceOfContractToSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
         setWalletAllowanceOfCollateralTokenForMarketRouter(walletAllowanceOfCollateralTokenForMarketRouter);
+        console.log({walletAllowanceOfCollateralTokenForMarketRouter});
 
         const walletAllowanceOfRoomTokenForMarketRouter = await getWalletAllowanceOfContractToSpender(accountContext.account, ContractNames.room, ContractNames.marketControllerV4);
         setWalletAllowanceOfRoomTokenForMarketRouter(walletAllowanceOfRoomTokenForMarketRouter);
+        console.log({walletAllowanceOfRoomTokenForMarketRouter});
 
         const walletRoomBalance = await getWalletBalanceOfContract(accountContext.account, ContractNames.room);
         setWalletRoomBalance(walletRoomBalance);
+        console.log({walletRoomBalance});
+
     };
 
     const loadWalletData = async () => {

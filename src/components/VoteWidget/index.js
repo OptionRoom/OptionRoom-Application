@@ -110,8 +110,7 @@ function VoteWidget(props) {
 
             setMarketVotes(formattedVotes);
         } else {
-/*
-            const votes = await getAllVotesOnMarket(accountContext.account, props.marketContractAddress, MarketVotingTypesPerMarketAddress[props.marketState]);
+/*            const votes = await getAllVotesOnMarket(accountContext.account, props.marketContractAddress, MarketVotingTypesPerMarketAddress[props.marketState]);
             console.log({votes});
             if(votes) {
                 const formattedVotes = [];
