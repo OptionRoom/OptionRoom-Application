@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from "react";
 import numeral from "numeral";
 
 import {useStyles} from "./styles";
-import OptionBlock from "../OptionBlock";
 import {get} from "lodash";
 import Button from "../Button";
 import {
@@ -25,7 +24,17 @@ import {
 import {
     ContractNames
 } from "../../shared/constants";
+import Dialog from "@material-ui/core/Dialog";
+import MuiDialogTitle from "@material-ui/core/DialogTitle";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+import MuiDialogContent from "@material-ui/core/DialogContent";
+import Slide from "@material-ui/core/Slide";
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 export const useGetBuyPrices = (wallet, marketContractAddress) => {
     const [buySellDetails, setBuySellDetails] = useState([]);
@@ -110,12 +119,11 @@ function MarketBuyWidget(props) {
 
     //Buy & Sell
     const [tradeInput, setTradeInput] = useState(0);
-    const [selectedTradeOption, setSelectedTradeOption] = useState(0);
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
     const [isTradeDisabled, setIsTradeDisabled] = useState(true);
-    const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeOption);
+    const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, get(props.selectedOption, ['index']));
     const buyPrices = useGetBuyPrices(accountContext.account, props.marketContractAddress);
-    const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeOption, props.walletBalanceOfCollateralToken);
+    const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, get(props.selectedOption, ['index']), props.walletBalanceOfCollateralToken);
 
     const startTrade = async () => {
         setIsTradeInProgress(true);
@@ -130,7 +138,7 @@ function MarketBuyWidget(props) {
                     props.marketContractAddress,
                     getContractAddress(ContractNames.busd),
                     toWei(tradeInput),
-                    selectedTradeOption,
+                    get(props.selectedOption, ['index']),
                     0
                 );
                 props.onTrade && props.onTrade();
@@ -142,84 +150,101 @@ function MarketBuyWidget(props) {
         }
     };
 
-    return (
-        <div className={classes.BuySellWidget}>
-            <div className={classes.BuySellWidget__Options}>
-                <div className={classes.Options__Header}>Buy</div>
-                <div className={classes.Options__Options}>
-                    {
-                        get(props.marketInfo, ['choices'], []).map((entry, index) => {
-                            const averagePrice = numeral(get(buyPrices, [index]) || 0).format("$0,0.00");
-                            return (
-                                <OptionBlock key={`OptionBlock-${index}`}
-                                             isSelected={selectedTradeOption === index}
-                                             onClick={(value) => {
-                                                 setSelectedTradeOption(value);
-                                             }}
-                                             title={entry}
-                                             showValueInChoice={true}
-                                             value={averagePrice}
-                                             optionValue={index}/>
-                            )
-                        })
-                    }
-                </div>
-            </div>
-            <div className={classes.BuySellWidgetAmount}>
-                <div className={classes.BuySellWidgetAmount__Header}>
-                    <span>Amount</span>
-                    <span>{formatTradeValue(maxTradeSize)}</span>
-                </div>
-                <div className={classes.BuySellWidgetAmount__InputWrap}>
-                    <TradeInput max={maxTradeSize}
-                                min={0}
-                                value={tradeInput}
-                                onValidityUpdate={(valid) => {
-                                    //setIsTradeDisabled(!valid);
-                                }}
-                                onChange={(e) => {
-                                    clearTimeout(updateTradeInputInterval);
-                                    updateTradeInputInterval = setTimeout(() => {
-                                        setTradeInput(e);
-                                    }, 100);
+    const handleClose = () => {
+        props.onClose();
+    };
 
-                                    if (e == 0) {
-                                        setIsTradeDisabled(true);
-                                    } else {
-                                        setIsTradeDisabled(false);
-                                    }
-                                }}/>
-                </div>
-            </div>
-            <div className={classes.BuySellWidgetInfo}>
-                {
-                    [
+    return (
+        <Dialog
+            TransitionComponent={Transition}
+            keepMounted
+            classes={{
+                paper: classes.paper,
+            }}
+            onClose={handleClose}
+            aria-labelledby="DepositModal-dialog-title"
+            open={props.open}
+            disableBackdropClick={true}
+        >
+            <MuiDialogTitle
+                id="DepositModal-dialog-title"
+                disableTypography
+                className={classes.MuiDialogTitle}
+            >
+                <Typography className={classes.DialogTitle}
+                            variant="h6">
+                    Buy {get(props.selectedOption, ['title'])}
+                </Typography>
+                {handleClose && (
+                    <IconButton
+                        aria-label="close"
+                        className={classes.closeButton}
+                        onClick={handleClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                )}
+            </MuiDialogTitle>
+            <MuiDialogContent className={classes.MuiDialogContent}>
+                <div className={classes.BuySellWidget}>
+                    <div className={classes.BuySellWidgetAmount}>
+                        <div className={classes.BuySellWidgetAmount__Header}>
+                            <span>Amount</span>
+                            <span>{formatTradeValue(maxTradeSize)}</span>
+                        </div>
+                        <div className={classes.BuySellWidgetAmount__InputWrap}>
+                            <TradeInput max={maxTradeSize}
+                                        min={0}
+                                        value={tradeInput}
+                                        onValidityUpdate={(valid) => {
+                                            //setIsTradeDisabled(!valid);
+                                        }}
+                                        onChange={(e) => {
+                                            clearTimeout(updateTradeInputInterval);
+                                            updateTradeInputInterval = setTimeout(() => {
+                                                setTradeInput(e);
+                                            }, 100);
+
+                                            if (e == 0) {
+                                                setIsTradeDisabled(true);
+                                            } else {
+                                                setIsTradeDisabled(false);
+                                            }
+                                        }}/>
+                        </div>
+                    </div>
+                    <div className={classes.BuySellWidgetInfo}>
                         {
-                            title: 'Est. Shares',
-                            value: numeral(get(buySellDetails, ['estShares']) || 0).format("0,0.00"),
-                        },
-                    ].map((entry) => {
-                        return (
-                            <div className={classes.BuySellWidgetInfo__Row}>
-                                <div className={classes.BuySellWidgetInfo__RowTitle}>{entry.title}</div>
-                                <div
-                                    className={classes.BuySellWidgetInfo__RowValue}>{entry.value}</div>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            <Button color="primary"
-                    size={"large"}
-                    fullWidth={true}
-                    onClick={startTrade}
-                    isDisabled={isTradeDisabled}
-                    isProcessing={isTradeInProgress}>
-                {
-                    props.walletAllowanceOfCollateralToken == 0 ? 'Approve' : 'Trade'
-                }
-            </Button>
-        </div>
+                            [
+                                {
+                                    title: 'Est. Shares',
+                                    value: numeral(get(buySellDetails, ['estShares']) || 0).format("0,0.00"),
+                                },
+                            ].map((entry, index) => {
+                                return (
+                                    <div key={`data-${index}`}
+                                         className={classes.BuySellWidgetInfo__Row}>
+                                        <div className={classes.BuySellWidgetInfo__RowTitle}>{entry.title}</div>
+                                        <div
+                                            className={classes.BuySellWidgetInfo__RowValue}>{entry.value}</div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                    <Button color="primary"
+                            size={"large"}
+                            fullWidth={true}
+                            onClick={startTrade}
+                            isDisabled={isTradeDisabled}
+                            isProcessing={isTradeInProgress}>
+                        {
+                            props.walletAllowanceOfCollateralToken == 0 ? 'Approve' : 'Trade'
+                        }
+                    </Button>
+                </div>
+            </MuiDialogContent>
+        </Dialog>
     );
 }
 

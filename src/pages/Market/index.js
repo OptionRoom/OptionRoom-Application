@@ -52,8 +52,6 @@ import {
     getMarketPoolBalances,
     getMarketTotalSupply
 } from "../../methods/market-controller.methods";
-import MarketBuyWidget from "../../components/MarketBuyWidget";
-import MarketSellWidget from "../../components/MarketSellWidget";
 import SelectTokensModal from "../../components/SelectTokensModal";
 import BuySellWidget2 from "../../components/BuySellWidget2";
 const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
@@ -377,7 +375,24 @@ function Market() {
                             {
                                 showBuySellWidget() && (
                                     <div className={`${classes.MarketWidgetWrap}`}>
-                                        <BuySellWidget2 marketInfo={marketInfo}/>
+                                        <BuySellWidget2 marketInfo={marketInfo}
+                                                        pricesOfBuy={pricesOfBuy}
+                                                        onTrade={handleOnTrade}
+                                                        onApprove={(type) => {
+                                                            if (type == 'CollateralToken') {
+                                                                refetchWalletAllowanceOfCollateralToken();
+                                                            } else if (type === 'OptionToken') {
+                                                                setIsWalletOptionTokenApprovedForMarket(true);
+                                                            } else {
+                                                                setIsWalletOptionTokenApprovedForMarketController(true);
+                                                            }
+                                                        }}
+                                                        walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
+                                                        walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
+                                                        isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
+                                                        isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
+                                                        walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                        marketContractAddress={marketContractAddress}/>
                                     </div>
                                 )
                             }
