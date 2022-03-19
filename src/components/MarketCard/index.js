@@ -161,19 +161,9 @@ function MarketCard(props) {
                     </div>
                 </div>
                 <div className={classes.OptionsWrap}>
-                    {get(market, ['info', 'choices'], []).map((entry, index) => {
-                        return (
-                            <div key={`choice-${entry}`}
-                                 className={classes.Option}>
-                                <div className={classes.Option__Title}>{entry}</div>
-                                <div className={classes.Option__Val}>
-                                    {numeral(
-                                        get(market, ["pricesOfBuy", index], 0)
-                                    ).format("$0,0.00")}
-                                </div>
-                            </div>
-                        )
-                    })}
+                    <span>
+                        {get(market, ['info', 'choices'], []).length} options
+                    </span>
                 </div>
             </div>
             {

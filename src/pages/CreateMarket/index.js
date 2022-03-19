@@ -91,7 +91,6 @@ function CreateMarket() {
     const [isLoading, setIsLoading] = useState(true);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
     const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET, accountContext.account);
-    console.log("marketCategories", marketCategories);
     const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
     const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
     const [walletAllowanceOfRoomTokenForMarketRouter, setWalletAllowanceOfRoomTokenForMarketRouter] = useState(0);
@@ -270,7 +269,7 @@ function CreateMarket() {
         if(isChainSupported) {
             init();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     const renderCreateBtn = () => {
         if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {

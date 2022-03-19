@@ -201,6 +201,7 @@ function GovernanceList() {
                     }}
                     filterDetails={filterDetails}
                     onFilterUpdate={(newDetails) => {
+                        console.log('test')
                         setFilterDetails(newDetails);
                     }}
                     type={FiltrationWidgetTypes.GOVERNANCE}

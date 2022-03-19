@@ -9,7 +9,7 @@ export const useGetFilteredMarkets = (marketsContracts , searchQuery, category, 
         if (marketsContracts && marketsContracts.length > 0) {
             let newMarkets = [...marketsContracts];
 
-            if(tradedOnly) {
+            if(tradedOnly && marketsTradedByWallet && marketsTradedByWallet.length > 0) {
                 newMarkets = filter(newMarkets, (entry) => {
                     return marketsTradedByWallet.indexOf(entry.address) > -1;
                 });

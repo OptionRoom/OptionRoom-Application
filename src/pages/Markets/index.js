@@ -87,7 +87,7 @@ function Markets() {
         if (accountContext.account && isChainSupported) {
             loadMarkets();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     useEffect(() => {
         const handleScroll = () => {

@@ -25,7 +25,7 @@ function GovernanceMarket(props) {
     const [isLoading, setIsLoading] = useState(false);
     const accountContext = useContext(AccountContext);
     const tradedOnly = false;
-    const tradedByWallet = [];
+    const [tradedByWallet, setTradedByWallet] = useState([]);
 
     const filteredProposals = useGetFilteredMarkets(
         markets,

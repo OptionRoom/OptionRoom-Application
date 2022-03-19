@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import {useStyles} from "./styles";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import {get} from "lodash";
+import Button from "../Button";
 
 import MarketBuyWidget from '../MarketBuyWidget';
 
@@ -22,7 +23,7 @@ function BuySellWidget2(props) {
     return (
         <div className={classes.BuySellWidget}>
             <div className={classes.Title}>Buy/Sell Options</div>
-            <div>
+            <div className={classes.OptionContainer}>
                 {
                     get(marketInfo, ['choices'], []).map((entry, index) => {
                         return (
@@ -32,8 +33,20 @@ function BuySellWidget2(props) {
                                     {entry}
                                 </div>
                                 <div className={classes.BuySellWrap}>
-                                    <div onClick={()=> openBuyModal(entry, index)}>Buy</div>
-                                    <div>Sell</div>
+                                    <Button
+                                        color="green"
+                                        onClick={() => openBuyModal(entry, index)}
+                                        size={"small"}
+                                        className={classes.BuySellBtn}>
+                                        Buy
+                                    </Button>
+                                    <Button
+                                        color="red"
+                                        onClick={() => { }}
+                                        size={"small"}
+                                        className={classes.BuySellBtn}>
+                                        Sell
+                                    </Button>
                                 </div>
                             </div>
                         )
