@@ -1,55 +1,52 @@
 import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
-    BuySellWidget: {
-        borderRadius: "16px",
-        background: theme.isDark ? "#252E39" : "#fff",
-        boxShadow: `${theme.colors.boxBoxShadow}`,
-        padding: "24px",
+    paper: {
+        borderRadius: '12px',
+        minWidth: "400px"
     },
-    BuySellWidget__Nav: {
-        marginBottom: '24px',
-
-        /*        display: 'flex',
-                alignItems: 'center',
-                '& >div': {
-                    paddingBottom: '15px',
-                    width: '50%',
-                    color: theme.isDark ? "#fff" : "#2B3540",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    letterSpacing: "0",
-                    lineHeight: "24px",
-                    textAlign: "center",
-                    borderBottom: '2px solid #EDEFF4',
-                    cursor: 'pointer',
-                    transition: '0.2s all',
-                    '&[data-selected="true"], &:hover': {
-                        borderBottom: '2px solid #0051FF',
-                    }
-                }*/
+    closeButton: {
+        position: 'absolute',
+        right: theme.spacing(1),
+        top: theme.spacing(1),
+        color: theme.palette.grey[500],
+    },
+    MuiDialogTitle: {
+        borderBottom: '1px solid #EDEFF4',
+        padding: '24px 24px'
+    },
+    DialogTitle: {
+        color: theme.isDark ? '#fff' : "#06293D",
+        fontSize: '18px',
+        fontWeight: 500,
+        letterSpacing: 0,
+        lineHeight: '24px',
+    },
+    MuiDialogActions: {
+        padding: '24px 24px',
+        display: 'flex',
+        background: theme.isDark ? '#000' : 'rgb(245, 248, 250)'
+    },
+    MuiDialogActions__CancelBtn: {
+        marginRight: 'auto',
+    },
+    MuiDialogActions__ConfirmBtn: {
+    },
+    MuiDialogActions__ConfirmBtn__Inner: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    MuiDialogActions__ConfirmBtn__CircularProgress: {
+        marginRight: '5px',
+        color: 'rgba(0, 0, 0, 0.26)'
+    },
+    MuiDialogContent: {
+        padding: '32px 24px',
     },
     BuySellWidget__Options: {
         marginBottom: '16.5px',
         paddingBottom: '16.5px',
         borderBottom: '1px solid #EDEFF4'
-    },
-    Options__Header: {
-        color: theme.isDark ? "#fff" : "#4E5D6D",
-        fontSize: "14px",
-        letterSpacing: "0",
-        lineHeight: "24px",
-        marginBottom: '8px'
-    },
-    Options__Options: {
-        display: 'flex',
-        '&>div': {
-            marginRight: '4px',
-            width: 'calc(50% - 4px)',
-            '&:last-child':{
-                marginRight: 0
-            }
-        }
     },
     BuySellWidgetAmount: {
         marginBottom: "16px",
