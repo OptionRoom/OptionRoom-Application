@@ -17,20 +17,20 @@ export const useStyles = makeStyles((theme) => ({
         color: "#818B95",
         marginBottom: '18px'
     },
+    OptionContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap'
+    },
     OptionBlock: {
         display: 'flex',
+        width: '49%',
         alignItems: 'center',
-        width: '100%',
         background: '#F7FAFF',
         padding: '10px 10px',
         borderBottom: '1px solid #efefef',
-        '&:first-child': {
-            borderRadius: '5px 5px 0 0'
-        },
-        '&:last-child': {
-            borderRadius: '0 5px 5px 0',
-            borderBottom: 'none'
-        }
+        borderRadius: '5px',
+        marginBottom: '5px'
     },
     OptionName: {
         fontSize: '18px',
@@ -46,5 +46,8 @@ export const useStyles = makeStyles((theme) => ({
             textDecoration: 'underline',
             cursor: 'pointer'
         }
-    }
+    },
+    BuySellBtn: {
+        marginLeft: '5px'
+    },
 }));

@@ -218,14 +218,14 @@ export const contractsAddresses = {
         RoomLPTokenContract: "0xBE55c87dFf2a9f5c95cB5C07572C51fd91fe0732",
         WethTokenContract: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
 
-        [ContractNames.usdt]: '0x9745120ee4622a8de153C0d08fa6A497c8f78941',
-        [ContractNames.room]: '0x8Dc55f16b1E533B790B795A4d9a817d4E8EfB10b',
-        [ContractNames.marketControllerV4]: "0x6D78F970568538cAC3E586b4EEaF20ea3776Ba99",
-        [ContractNames.orManager]: "0x708e2DBc971c9fb643e188DCF0B941Ba56A0ec3F",
-        [ContractNames.marketQueryV4]: "0x69861b32377153C9789E556c8E631aF45e3aE0FB",
-        [ContractNames.busd]: "0x9745120ee4622a8de153C0d08fa6A497c8f78941",
-        [ContractNames.marketGovernance]: "0xe266d4D6dBA97913717cAb90F5d9399e00Ffa8D3",
-        [ContractNames.optionTokenV4]: "0x5AC9Bd1bBF69A5396426B0e047E37E37B76eBE75",
+        [ContractNames.usdt]: '0x7d4011d6b016996944239f7eD443C6279b53686e',//DummyToken1
+        [ContractNames.room]: '0xc9c1242d3E6aD8EbB50A15c46A33159ee547B911',//DummyToken4
+        [ContractNames.marketControllerV4]: "0x470Dc6eD446c185F7f8ba5C87178aD2EB8Df7633",//ORMarketController
+        [ContractNames.orManager]: "0x3d420Adf09D8834D9D0963C8A2d3185766770e8a", //ORManager
+        [ContractNames.marketQueryV4]: "0x6d954523D3f6fD28831e43d9DCa6AE721e281702",//ORQuery
+        [ContractNames.busd]: "0x7d4011d6b016996944239f7eD443C6279b53686e",//DummyToken1
+        [ContractNames.marketGovernance]: "0xcD2C168469ccD6374464A1e92511DcF66c302CEA",//ORMarketGovernance
+        [ContractNames.optionTokenV4]: "0xF7D19fa3A1015a4A69dd48F6AbEFAE2F2B6816aa",//ORConditionalTokens
     }
 };
 

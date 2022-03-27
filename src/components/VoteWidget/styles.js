@@ -32,6 +32,9 @@ export const useStyles = makeStyles((theme) => ({
 
     },
     Options__OptionsMarket: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
         '& >div': {
             display: 'flex',
             '&>div': {
@@ -51,5 +54,5 @@ export const useStyles = makeStyles((theme) => ({
                 marginBottom: 0
             }
         }
-    }
+    },
 }));

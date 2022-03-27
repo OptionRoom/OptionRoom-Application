@@ -71,6 +71,7 @@ export const useStyles = makeStyles((theme) => ({
     VolumeWrap: {
         marginRight: "auto",
         display: "flex",
+        flex: 4
     },
     VolumeIcon: {
         width: "43px",
@@ -100,7 +101,14 @@ export const useStyles = makeStyles((theme) => ({
         color: theme.isDark ? "#fff" : "#36414B",
     },
     OptionsWrap: {
-        display: "flex",
+        background: "rgba(46, 106, 250, 0.3)",
+        color: theme.isDark ? "#fff" : "#2E6AFA",
+        borderRadius: "13.5px",
+        width: '20px',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex'
     },
     Option: {
         width: "50%",

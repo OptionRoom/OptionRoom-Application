@@ -13,6 +13,22 @@ export const useStyles = makeStyles((theme) => ({
             color: '#FFF'
         }
     },
+    Green: {
+        backgroundColor: '#2ECC71',
+        color: '#FFF',
+        '&:hover': {
+            backgroundColor: '#2ECC71',
+            color: '#FFF'
+        }
+    },
+    Red: {
+        backgroundColor: '#C0392B',
+        color: '#FFF',
+        '&:hover': {
+            backgroundColor: '#C0392B',
+            color: '#FFF'
+        }
+    },
     Black: {
         backgroundColor: '#000',
         color: '#FFFFFF !important',
