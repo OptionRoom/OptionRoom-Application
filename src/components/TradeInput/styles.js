@@ -25,4 +25,30 @@ export const useStyles = makeStyles((theme) => ({
     BuySellWidgetAmount__InputFieldError: {
         border: "1px solid red !important",
     },
+    SelectedToken: {
+        top: "50%",
+        right: "12px",
+        display: "flex",
+        position: "absolute",
+        alignItems: "center",
+        transform: "translateY(-50%)",
+        padding: "5px 7px",
+        background: "#ddd",
+        borderRadius: "10px",
+        cursor: 'pointer'
+    },
+    SelectedToken__TokenImg: {
+        width: '20px',
+        height: '20px',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderRadius: '50%',
+        marginRight: '5px'
+    },
+    SelectedToken__TokenSymbol: {
+        fontSize: '14px',
+        textTransform: 'uppercase',
+        fontWeight: '700',
+        marginRight: '5px'
+    }
 }));

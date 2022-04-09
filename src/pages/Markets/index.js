@@ -28,7 +28,7 @@ import {
 
 import {useGetIsChainSupported} from "../../shared/hooks";
 
-const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Markets() {
     const accountContext = useContext(AccountContext);
@@ -76,7 +76,6 @@ function Markets() {
     const loadMarkets = async () => {
         setIsLoading(true);
         const marketContracts = await getAllMarkets(accountContext.account, true, true, true, true, true);
-        console.log({marketContracts});
         setMarketsContracts(marketContracts);
         setIsLoading(false);
         /*            const marketsTradedByWallet = await marketApis.getMarketsTradedByWallet(accountContext.account);

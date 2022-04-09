@@ -67,6 +67,7 @@ export const useStyles = makeStyles((theme) => ({
     SubDetails: {
         padding: "25px",
         display: "flex",
+        alignItems: 'center'
     },
     VolumeWrap: {
         marginRight: "auto",
@@ -104,11 +105,12 @@ export const useStyles = makeStyles((theme) => ({
         background: "rgba(46, 106, 250, 0.3)",
         color: theme.isDark ? "#fff" : "#2E6AFA",
         borderRadius: "13.5px",
-        width: '20px',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        display: 'flex'
+        //width: '20px',
+        //flex: 1,
+        //alignItems: 'center',
+        //justifyContent: 'center',
+        //display: 'flex'
+        padding: '10px 15px'
     },
     Option: {
         width: "50%",
@@ -172,7 +174,7 @@ export const useStyles = makeStyles((theme) => ({
         "& $Title": {
             marginBottom: '4px',
             order: "-1",
-            width: '100%'
+            width: '100%',
         },
         "& $Avatar": {
             order: -1,

@@ -1,7 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
-import Grid from "@material-ui/core/Grid";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from '@material-ui/icons/Delete';
+
 import {
     DateTimePicker,
     MuiPickersUtilsProvider
@@ -48,12 +46,6 @@ import {
 } from "../../shared/helper";
 
 import {
-    approveContractForSpender,
-    getWalletAllowanceOfContractToSpender,
-    getWalletBalanceOfContract
-} from '../../methods/shared.methods';
-
-import {
     getMarketCreationConfig
 } from '../../methods/or-manager.methods';
 
@@ -77,24 +69,26 @@ import {
     GovernanceTypes
 } from "../../shared/constants";
 import RepeaterField from "../../components/RepeaterField";
+import {
+    formatAddress,
+    SmartContractsContext,
+    SmartContractsContextFunctions
+} from "../../shared/SmartContractsContextProvider";
 
 const sourcesFieldName = 'sources';
 const choicesFieldName = 'choices';
-const supportedChains = [ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function CreateMarket() {
     const classes = useStyles();
     const history = useHistory();
     const accountContext = useContext(AccountContext);
+    const smartContractsContext = useContext(SmartContractsContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
     const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET, accountContext.account);
-    const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
-    const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
-    const [walletAllowanceOfRoomTokenForMarketRouter, setWalletAllowanceOfRoomTokenForMarketRouter] = useState(0);
-    const [walletRoomBalance, setWalletRoomBalance] = useState(0);
     const [croppingImg, setCroppingImg] = useState(null);
     const [marketCreationFees, setMarketCreationFees] = useState(0);
     const [marketMinLiq, setMarketMinLiq] = useState(1000);
@@ -148,7 +142,7 @@ function CreateMarket() {
                 .label('End date'),
             liquidity: Joi.number()
                 .min(marketMinLiq)
-                .max(parseFloat(walletBalanceOfCollateralToken ? fromWei(walletBalanceOfCollateralToken) : 0))
+                .max(parseFloat(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))))
                 .required()
                 .label('Liquidity'),
             image: Joi.any()
@@ -167,28 +161,6 @@ function CreateMarket() {
         name: choicesFieldName,
     });
 
-    const loadWalletBalanceOfCollateralToken = async () => {
-        const balanceOfColletralToken = await getWalletBalanceOfContract(accountContext.account, ContractNames.busd);
-        setWalletBalanceOfCollateralToken(balanceOfColletralToken);
-        console.log({balanceOfColletralToken});
-        const walletAllowanceOfCollateralTokenForMarketRouter = await getWalletAllowanceOfContractToSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
-        setWalletAllowanceOfCollateralTokenForMarketRouter(walletAllowanceOfCollateralTokenForMarketRouter);
-        console.log({walletAllowanceOfCollateralTokenForMarketRouter});
-
-        const walletAllowanceOfRoomTokenForMarketRouter = await getWalletAllowanceOfContractToSpender(accountContext.account, ContractNames.room, ContractNames.marketControllerV4);
-        setWalletAllowanceOfRoomTokenForMarketRouter(walletAllowanceOfRoomTokenForMarketRouter);
-        console.log({walletAllowanceOfRoomTokenForMarketRouter});
-
-        const walletRoomBalance = await getWalletBalanceOfContract(accountContext.account, ContractNames.room);
-        setWalletRoomBalance(walletRoomBalance);
-        console.log({walletRoomBalance});
-
-    };
-
-    const loadWalletData = async () => {
-        loadWalletBalanceOfCollateralToken();
-    };
-
     const handleChangeSelectedFile = async (event) => {
         setCroppingImg(event.target.files[0]);
         setIsCropModalOpen(true);
@@ -200,20 +172,28 @@ function CreateMarket() {
 
     const approveStableCoin = async () => {
         setIsCreatingMarket(true);
-        await approveContractForSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
-        loadWalletData();
-        setIsCreatingMarket(false);
+        try {
+            await smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ContractNames.marketControllerV4]);
+        } catch (e) {
+
+        } finally {
+            setIsCreatingMarket(false);
+        }
     };
 
     const approveRoomToken = async () => {
         setIsCreatingMarket(true);
-        await approveContractForSpender(accountContext.account, ContractNames.room, ContractNames.marketControllerV4);
-        loadWalletData();
-        setIsCreatingMarket(false);
+        try {
+            await smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.room, ContractNames.marketControllerV4]);
+        } catch (e) {
+
+        } finally {
+            setIsCreatingMarket(false);
+        }
     };
 
     const handleCreateMarket = async (data) => {
-        if(parseFloat(fromWei(walletRoomBalance)) < parseFloat(fromWei(marketCreationFees))) {
+        if(parseFloat(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0))) < parseFloat(fromWei(marketCreationFees))) {
             swal(
                 "Insufficient funds",
                 `You must hold at least ${fromWei(marketCreationFees)} ROOM Tokens to create the market`,
@@ -261,7 +241,6 @@ function CreateMarket() {
                 const marketCreationConfig = await getMarketCreationConfig(accountContext.account);
                 setMarketMinLiq(parseFloat(fromWei(marketCreationConfig.minLiquidity)));
                 setMarketCreationFees(marketCreationConfig.marketCreationFees);
-                loadWalletData();
                 setIsLoading(false);
             }
         };
@@ -272,7 +251,9 @@ function CreateMarket() {
     }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     const renderCreateBtn = () => {
-        if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
+        //walletAllowanceOfCollateralTokenForMarketRouter
+
+        if (get(smartContractsContext.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.busd), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -283,7 +264,7 @@ function CreateMarket() {
             )
         }
 
-        if (walletAllowanceOfRoomTokenForMarketRouter <= 0) {
+        if (get(smartContractsContext.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.room), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -472,10 +453,10 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(walletBalanceOfCollateralToken))})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
-                                        <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
+                                        <TradeInput max={fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}
                                                     min={marketMinLiq}
                                                     value={getValues('liquidity') || 0}
                                                     onValidityUpdate={(valid) => {
@@ -553,7 +534,7 @@ function CreateMarket() {
                             {renderCreateBtn()}
                         </div>
                         <div className={classes.CreateNote}>
-                            Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(walletRoomBalance, null, 2)}
+                            Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0), null, 2)}
                         </div>
                     </form>
                     <CropModal isOpen={isCropModalOpen}

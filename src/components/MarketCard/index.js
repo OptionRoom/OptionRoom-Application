@@ -156,14 +156,12 @@ function MarketCard(props) {
                     <div>
                         <div className={classes.Volume__Title}>Volume</div>
                         <div className={classes.Volume__Val}>
-                            {numeral(fromWei(get(market, ["volume", "totalVolume"], 0))).format("$0,0.00")}
+                            {numeral(get(market, ["volume", "totalVolume"], 0)).format("$0,0.00")}
                         </div>
                     </div>
                 </div>
                 <div className={classes.OptionsWrap}>
-                    <span>
-                        {get(market, ['info', 'choices'], []).length} options
-                    </span>
+                    {`${get(market, ['info', 'choices'], []).length} options`}
                 </div>
             </div>
             {

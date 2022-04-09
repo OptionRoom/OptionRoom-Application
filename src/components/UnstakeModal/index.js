@@ -27,6 +27,7 @@ import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import Slide from "@material-ui/core/Slide";
 import TradeInput from "../TradeInput";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
+import {removeFunding} from "../../methods/market-controller.methods";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -137,8 +138,7 @@ function UnstakeModal(props) {
                     );
                 }
             } else if (type === "market_liquidity") {
-                const marketAPIs = new MarketAPIs(props.marketVersion);
-                await marketAPIs.removeLiquidityFromMarket(accountContext.account, props.marketContractId, toWei(amountToUnstake));
+                await removeFunding(accountContext.account, props.marketContractId, toWei(amountToUnstake), false);
             } else if (type === "court_power_stake") {
                 const claimCourtAPIs = new ClaimCourtAPIs();
                 await claimCourtAPIs.withdrawCourtInPowerStakeContract(

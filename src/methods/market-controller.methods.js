@@ -1,6 +1,7 @@
 //buy
 import {getContract, getContractAddress, getMarketEntityContract} from "../shared/contracts/contracts.helper";
 import {ContractNames} from "../shared/constants";
+import {fromWei} from "../shared/helper";
 
 export const buyMarketOptions = (wallet, marketAddress, tokenAddress, investmentAmount, outcomeIndex, minOutcomeTokensToBuy) => {
     const contract = getContract(ContractNames.marketControllerV4);
@@ -125,15 +126,58 @@ export const addCategory = async (wallet, categroy) => {
         });
 };
 
-export const getMarketInfo = async (wallet, market) => {
+export const getMarketInfo = async (wallet, market, withState, withVolume, withPrices, withCategories, withTotalSupply, withLiquidity, withPoolBalances) => {
     const contract = getContract(ContractNames.marketControllerV4);
-
-    return contract
+    let info = await contract
         .methods
         .getMarketInfo(market)
         .call({
             from: wallet,
         });
+
+    info = {info};
+
+
+    if(withState) {
+        const result = await getMarketState(wallet, market);
+        info = {...info, state: result};
+    }
+
+    if(withVolume) {
+        const volume = await getMarketVolume(wallet, market);
+        info = {...info, volume: volume};
+    }
+
+    if(withTotalSupply) {
+        const result = await getMarketTotalSupply(wallet, market);
+        info = {...info, totalSupply: result};
+    }
+
+    if(withLiquidity) {
+        const result = await getMarketLiquidity(wallet, market);
+        info = {...info, liquidity: result};
+    }
+
+    if(withPoolBalances) {
+        const result = await getMarketPoolBalances(wallet, market);
+        info = {...info, poolBalances: result};
+    }
+
+    if(withPrices) {
+    }
+
+    if(withCategories) {
+        const allCats = await getCategories(wallet);
+        const result = await getMarketCategories(wallet, market);
+        info = {
+            ...info,
+            categories: result.map((entry) => {
+                return allCats[entry];
+            })
+        };
+    }
+
+    return info;
 };
 
 export const getMarketVolumeSell = async (wallet, market) => {
@@ -163,7 +207,7 @@ export const getMarketVolumeBuy = async (wallet, market) => {
 
     return contract
         .methods
-        .marketsVolumeSell(market)
+        .marketsVolumeBuy(market)
         .call({
             from: wallet,
         });
@@ -259,6 +303,7 @@ export const getAllMarkets = async (wallet, withInfo, withState, withVolume, wit
 
             await Promise.all(promiseArray)
                 .then(resolvedPromises => {
+
                     markets = markets.map((entry, index) => {
                         return {
                             ...entry,
@@ -305,7 +350,7 @@ export const getAllMarketsInfo = (wallet) => {
 export const getAllMarketsAddresses = (wallet) => {
     const contract = getContract(ContractNames.marketQueryV4);
     const marketControllerV4Address = getContractAddress(ContractNames.marketControllerV4);
-
+    console.log({marketControllerV4Address})
     return contract
         .methods
         .getAllMarketsAddresses(marketControllerV4Address)
@@ -339,7 +384,7 @@ export const getMarketCategories = (wallet, marketAddress) => {
 export const getMarketVolume = async (wallet, marketAddress) => {
     const buyVolume = await getMarketVolumeBuy(wallet, marketAddress);
     const sellVolume = await getMarketVolumeSell(wallet, marketAddress);
-    const totalVolume = parseFloat(buyVolume) + parseFloat(sellVolume);
+    const totalVolume = parseFloat(fromWei(buyVolume)) + parseFloat(fromWei(sellVolume));
     return {
         buyVolume,
         sellVolume,
@@ -414,6 +459,17 @@ export const getIsWalletOptionTokenApprovedForMarketController = async (wallet) 
         });
 }
 
+export const getIsWalletOptionTokenApprovedForMarket = async (wallet, marketAddress) => {
+    const contract = getContract(ContractNames.optionTokenV4);
+
+    return contract
+        .methods
+        .isApprovedForAll(wallet, marketAddress)
+        .call({
+            from: wallet,
+        });
+}
+
 export const redeemMarketRewards = async (wallet, marketAddress) => {
     const contract = getContract(ContractNames.optionTokenV4);
 
@@ -431,6 +487,17 @@ export const approveOptionTokenForMarketController = async (wallet) => {
     return contract
         .methods
         .setApprovalForAll(getContractAddress(ContractNames.marketControllerV4), true)
+        .send({
+            from: wallet,
+        });
+}
+
+export const approveOptionTokenForMarket = async (wallet, market) => {
+    const contract = getContract(ContractNames.optionTokenV4);
+
+    return contract
+        .methods
+        .setApprovalForAll(market, true)
         .send({
             from: wallet,
         });

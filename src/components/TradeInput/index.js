@@ -5,18 +5,21 @@ import Tooltip from "@material-ui/core/Tooltip";
 import TradeSlider2 from "../TradeSlider2";
 import {useStyles} from "./styles";
 import {formatTradeValue} from '../../shared/helper';
+import SelectTokensModal from "../SelectTokensModal";
+import {getDefaultCollateralToken} from "../../shared/contracts/contracts.helper";
 
 export const useTooltipConfig = (value, min, max) => {
+
     const [tooltip, setTooltip] = useState({
         isOpen: false,
-        content: ''
+        tooltip: ''
     });
 
     useEffect(() => {
         if (value == 0) {
             setTooltip({
                 isOpen: false,
-                content: ''
+                tooltip: ''
             })
         } else if (parseFloat(value) < min) {
             setTooltip({
@@ -31,7 +34,7 @@ export const useTooltipConfig = (value, min, max) => {
         } else {
             setTooltip({
                 isOpen: false,
-                content: ''
+                tooltip: ''
             })
         }
     }, [value, max, min]);
@@ -45,14 +48,18 @@ function TradeInput(props) {
         min,
         max,
         value,
-        onChange
+        onChange,
+        hideSlider,
+        withTokenSelector,
+        handleSelectNewToken,
+        selectedToken
     } = props;
 
     const classes = useStyles();
 
     const tooltipConfig = useTooltipConfig(value, min, max);
     const [tradeVal, setTradeVal] = useState(formatTradeValue(value));
-    const [selectedToken, setSelectedToken] = useState();
+    const [isSelectTokenModalOpen, setIsSelectTokenModalOpen] = useState(false);
     const [tradePercent, setTradePercent] = useState(value && max ? (value / parseFloat(max)) * 100 : 0);
 
     useEffect(() => {
@@ -70,6 +77,10 @@ function TradeInput(props) {
         }
     }, [tooltipConfig]);
 
+    const handleSelectToken = (newToken) => {
+        handleSelectNewToken && handleSelectNewToken(newToken);
+    };
+
     return (
         <div className={classes.TradeInput}>
             <div className={classes.InputWrapper}>
@@ -77,34 +88,63 @@ function TradeInput(props) {
                          placement={'top'}
                          arrow
                          title={tooltipConfig.tooltip}>
-                    <input value={tradeVal}
-                           className={clsx(classes.Input,{
-                               [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
-                           })}
-                           onChange={(e) => {
-                               setTradeVal(formatTradeValue(e.target.value));
-                               setTradePercent((e.target.value / parseFloat(max)) * 100);
-                               onChange(e.target.value);
-                           }}
-                           type='number'/>
-{/*                    <div className={classes.SelectToken}>
-                        <div className={classes.TokenImg}></div>
-                        <div className={classes.TokenSymbol}></div>
-                        <div className={classes.SwitchIcon}></div>
-                    </div>*/}
+                    <>
+
+                        <input value={tradeVal}
+                               className={clsx(classes.Input,{
+                                   [classes.BuySellWidgetAmount__InputFieldError]: tooltipConfig.isOpen
+                               })}
+                               onChange={(e) => {
+                                   setTradeVal(formatTradeValue(e.target.value));
+                                   setTradePercent((e.target.value / parseFloat(max)) * 100);
+                                   onChange(e.target.value);
+                               }}
+                               type='number'/>
+                        {
+                            withTokenSelector && (
+                                <div className={classes.SelectedToken}
+                                     onClick={() => {
+                                         setIsSelectTokenModalOpen(true);
+                                     }}>
+                                    <div className={classes.SelectedToken__TokenImg}
+                                         style={{
+                                             backgroundImage: `url("${selectedToken.logoURI}")`
+                                         }}></div>
+                                    <div className={classes.SelectedToken__TokenSymbol}>{selectedToken.symbol}</div>
+                                    <div className={classes.SelectedToken__SwitchIcon}>
+                                        <i className={'fa fa-exchange'}></i>
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </>
                 </Tooltip>
             </div>
-            <div>
-                <TradeSlider2
-                    value={tradePercent}
-                    onChange={(e, e2) => {
-                        setTradePercent(e2);
-                        const newVal = ((e2 * max) / 100);
-                        setTradeVal(formatTradeValue(newVal));
-                        onChange && onChange(formatTradeValue(newVal));
-                    }}
-                ></TradeSlider2>
-            </div>
+            {
+                !hideSlider && (
+                    <div>
+                        <TradeSlider2
+                            value={tradePercent}
+                            onChange={(e, e2) => {
+                                setTradePercent(e2);
+                                const newVal = ((e2 * max) / 100);
+                                setTradeVal(formatTradeValue(newVal));
+                                onChange && onChange(formatTradeValue(newVal));
+                            }}
+                        ></TradeSlider2>
+                    </div>
+                )
+            }
+            {
+                withTokenSelector && (
+                    <SelectTokensModal
+                        onClose={() => {
+                            setIsSelectTokenModalOpen(false);
+                        }}
+                        onSelectToken={handleSelectToken}
+                        open={isSelectTokenModalOpen}/>
+                )
+            }
         </div>
     );
 }

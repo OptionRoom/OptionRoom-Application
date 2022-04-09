@@ -21,6 +21,7 @@
     "ipfs-http-client": "^56.0.1",
     "joi": "^17.4.0",
     "lodash": "^4.17.21",
+    "mobx-react-lite": "^3.3.0",
     "moment": "^2.29.1",
     "numeral": "^2.0.6",
     "react": "^17.0.1",

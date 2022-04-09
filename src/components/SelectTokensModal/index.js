@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 
-import tokensList from '../../shared/pancakeswap-extended.json';
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -11,18 +10,31 @@ import Slide from '@material-ui/core/Slide';
 import {CircularProgress} from "@material-ui/core";
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
-import {useQuery} from "react-query";
-import {getWalletBalanceOfContract, getWalletBalanceOfContractWithAddress} from "../../methods/shared.methods";
+import {
+    getWalletBalanceOfContractWithAddress
+} from "../../methods/shared.methods";
+
 import {fromWei} from "../../shared/helper";
+import {getTokensList} from "../../shared/contracts/contracts.helper";
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
+
 export const useGetTokens = (name) => {
-    const [filteredTokens, setFilteredTokens] = useState(tokensList.tokens.slice(0, 10));
+
+    const tokensList = getTokensList();
+
+    const [filteredTokens, setFilteredTokens] = useState(tokensList.slice(0, 10));
 
     useEffect(() => {
-
+        if(name && name != "") {
+            setFilteredTokens(tokensList.filter((entry) => {
+                return entry.name.indexOf(name) > -1 || entry.symbol.indexOf(name) > -1;
+            }).slice(0, 20));
+        } else {
+            setFilteredTokens(tokensList.slice(0, 10));
+        }
     }, [name]);
 
     return filteredTokens;
@@ -53,8 +65,20 @@ function TokenEntity(props) {
         }
     }, [props.entry.address, accountContext.account]);
 
+    const balanceOfToken = parseFloat(fromWei(balance || 0)).toFixed(2);
+
     return (
-        <div className={classes.Token}>
+        <div className={classes.Token}
+             onClick={() => {
+                 if(isLoadingBalance) {
+                     return;
+                 }
+
+                 props.onSelectToken({
+                     ...entry,
+                     balance: balance
+                 })
+             }}>
             <div className={classes.Token__Img}>
                 <img src={entry.logoURI}/>
             </div>
@@ -69,7 +93,7 @@ function TokenEntity(props) {
                             <CircularProgress size={14}/>
                         </div>
                     ) : (
-                        fromWei(balance || 0)
+                        balanceOfToken
                     )
                 }
             </div>
@@ -81,8 +105,6 @@ function SelectTokensModal(props) {
     const [searchInput, setSearchInput] = useState('');
     const tokens = useGetTokens(searchInput);
     const classes = useStyles();
-
-    console.log({tokens});
 
     const handleClose = () => {
         props.onClose();
@@ -131,6 +153,10 @@ function SelectTokensModal(props) {
                         tokens.map((entry) => {
                             return (
                                 <TokenEntity
+                                    onSelectToken={(entry) => {
+                                        props.onSelectToken && props.onSelectToken(entry);
+                                        handleClose();
+                                    }}
                                     key={`Token-${entry.symbol}`}
                                     entry={entry}/>
                             )

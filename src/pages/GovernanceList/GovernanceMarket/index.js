@@ -14,7 +14,7 @@ import MarketCard from "../../../components/MarketCard";
 import {useGetIsChainSupported} from "../../../shared/hooks";
 import {getAllMarkets} from "../../../methods/market-controller.methods";
 
-const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.LOCAL_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.LOCAL_CHAIN];
 
 function GovernanceMarket(props) {
     const classes = useStyles();

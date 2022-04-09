@@ -6,11 +6,16 @@ import Button from "../Button";
 
 import MarketBuyWidget from '../MarketBuyWidget';
 import MarketSellWidget from '../MarketSellWidget';
+import {fromWei} from "../../shared/helper";
+import {formatAddress, SmartContractsContext} from "../../shared/SmartContractsContextProvider";
 
 function BuySellWidget2(props) {
     const classes = useStyles();
+    const { marketInfo, marketContractAddress} = props;
+
+    const smartContractsContext = useContext(SmartContractsContext);
     const accountContext = useContext(AccountContext);
-    const { marketInfo } = props;
+
     const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
     const [isSellModalOpen, setIsSellModalOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -29,17 +34,21 @@ function BuySellWidget2(props) {
             index: index
         });
         setIsSellModalOpen(true);
-    }
+    };
+
+    const handleOnTrade = () => {
+
+    };
 
     return (
         <div className={classes.BuySellWidget}>
             <div className={classes.Title}>Buy/Sell Options</div>
             <div className={classes.OptionContainer}>
                 {
-                    get(marketInfo, ['choices'], []).map((entry, index) => {
+                    get(marketInfo, ['info', 'choices'], []).map((entry, index) => {
                         return (
                             <div className={classes.OptionBlock}
-                                key={`OptionBlock-${index}`}>
+                                key={`OptionBlock-2-${index}`}>
                                 <div className={classes.OptionName}>
                                     {entry}
                                 </div>
@@ -56,7 +65,7 @@ function BuySellWidget2(props) {
                                         onClick={() => { openSellModal(entry, index) }}
                                         size={"small"}
                                         className={classes.BuySellBtn}>
-                                        Sell
+                                        Sell ({fromWei(get(smartContractsContext, ['marketWalletData', formatAddress(marketContractAddress), formatAddress(accountContext.account), 'accountBalances', index], 0), null, 2)})
                                     </Button>
                                 </div>
                             </div>
@@ -64,28 +73,16 @@ function BuySellWidget2(props) {
                     })
                 }
             </div>
-            <MarketBuyWidget open={isBuyModalOpen}
+            <MarketBuyWidget
+                open={isBuyModalOpen}
                 onClose={() => {
                     setIsBuyModalOpen(false);
                 }}
                 selectedOption={selectedOption}
                 marketInfo={marketInfo}
-                pricesOfBuy={props.pricesOfBuy}
-                onTrade={props.handleOnTrade}
+                onTrade={handleOnTrade}
                 onApprove={(type) => {
-                    if (type == 'CollateralToken') {
-                        props.refetchWalletAllowanceOfCollateralToken();
-                    } else if (type === 'OptionToken') {
-                        props.setIsWalletOptionTokenApprovedForMarket(true);
-                    } else {
-                        props.setIsWalletOptionTokenApprovedForMarketController(true);
-                    }
                 }}
-                walletBalanceOfCollateralToken={props.walletBalanceOfCollateralToken}
-                walletAllowanceOfCollateralToken={props.walletAllowanceOfCollateralToken}
-                isWalletOptionTokenApprovedForMarket={props.isWalletOptionTokenApprovedForMarket}
-                isWalletOptionTokenApprovedForMarketController={props.isWalletOptionTokenApprovedForMarketController}
-                walletOptionTokensBalance={get(props.marketContractData, ['walletOptionTokensBalance'])}
                 marketContractAddress={props.marketContractAddress} />
             <MarketSellWidget open={isSellModalOpen}
                 onClose={() => {
@@ -93,21 +90,9 @@ function BuySellWidget2(props) {
                 }}
                 marketInfo={marketInfo}
                 selectedOption={selectedOption}
-                onTrade={props.handleOnTrade}
+                onTrade={handleOnTrade}
                 onApprove={(type) => {
-                    if (type == 'CollateralToken') {
-                        props.refetchWalletAllowanceOfCollateralToken();
-                    } else if (type === 'OptionToken') {
-                        props.setIsWalletOptionTokenApprovedForMarket(true);
-                    } else {
-                        props.setIsWalletOptionTokenApprovedForMarketController(true);
-                    }
                 }}
-                walletBalanceOfCollateralToken={props.walletBalanceOfCollateralToken}
-                walletAllowanceOfCollateralToken={props.walletAllowanceOfCollateralToken}
-                isWalletOptionTokenApprovedForMarket={props.isWalletOptionTokenApprovedForMarket}
-                isWalletOptionTokenApprovedForMarketController={props.isWalletOptionTokenApprovedForMarketController}
-                walletOptionTokensBalance={get(props.marketContractData, ['walletOptionTokensBalance'])}
                 marketContractAddress={props.marketContractAddress} />
         </div>
     );

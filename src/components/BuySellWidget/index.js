@@ -30,41 +30,23 @@ export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount
 
     useEffect(() => {
         const init = async () => {
-            if(tradeType === 'buy') {
-                const numberOfBoughtTokens = await getBuyAmount(
-                    wallet,
-                    marketContractAddress,
-                    getContractAddress(ContractNames.busd),
-                    toWei(tradeAmount),
-                    option
-                );
+            const numberOfBoughtTokens = await getBuyAmount(
+                wallet,
+                marketContractAddress,
+                getContractAddress(ContractNames.busd),
+                toWei(tradeAmount),
+                option
+            );
 
-                const averagePrice = parseFloat(tradeAmount)/fromWei(numberOfBoughtTokens);
-                const estShares = fromWei(numberOfBoughtTokens);
-                const maxRoi = (parseFloat(fromWei(numberOfBoughtTokens)) - parseFloat(tradeAmount)) / parseFloat(tradeAmount);
+            const averagePrice = parseFloat(tradeAmount)/fromWei(numberOfBoughtTokens);
+            const estShares = fromWei(numberOfBoughtTokens);
+            const maxRoi = (parseFloat(fromWei(numberOfBoughtTokens)) - parseFloat(tradeAmount)) / parseFloat(tradeAmount);
 
-                setBuySellDetails({
-                    averagePrice,
-                    estShares,
-                    maxRoi
-                });
-            } else if(tradeType === 'sell') {
-                const optionIndex = option.toLowerCase() === 'yes' ? 0 : 1;
-                const marketApis = new MarketAPIs(marketVersion);
-                const amountOfColletralTokenOutput = await marketApis.getCollateralTokensCountOfSell(
-                    wallet,
-                    marketContractAddress,
-                    toWei(tradeAmount),
-                    optionIndex
-                );
-
-                const averagePrice = parseFloat(fromWei(amountOfColletralTokenOutput))/parseFloat(tradeAmount);
-                const totalSellPrice = fromWei(amountOfColletralTokenOutput);
-                setBuySellDetails({
-                    averagePrice,
-                    totalSellPrice
-                });
-            }
+            setBuySellDetails({
+                averagePrice,
+                estShares,
+                maxRoi
+            });
         };
 
         if (wallet && marketContractAddress && (tradeAmount && tradeAmount >= 0) && (option || option === 0)) {

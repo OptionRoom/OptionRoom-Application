@@ -24,13 +24,17 @@ export const useStyles = makeStyles((theme) => ({
     },
     OptionBlock: {
         display: 'flex',
-        width: '49%',
+        width: '100%',
         alignItems: 'center',
         background: '#F7FAFF',
         padding: '10px 10px',
         borderBottom: '1px solid #efefef',
         borderRadius: '5px',
-        marginBottom: '5px'
+        marginBottom: '5px',
+        [theme.breakpoints.up("md")]: {
+            width: '49%',
+        },
+
     },
     OptionName: {
         fontSize: '18px',

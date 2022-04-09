@@ -26,6 +26,7 @@ import {fromWei, getItemFromLocalStorage, storeItemInLocalStorage} from "../../s
 import ClaimAPIs from './../../shared/contracts/ClaimAPIs';
 import {ChainNetworks} from './../../shared/constants';
 import Alert from "@material-ui/lab/Alert";
+import {useGetIsChainSupported} from "../../shared/hooks";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -42,9 +43,11 @@ const BorderLinearProgress = withStyles((theme) => ({
 }))(LinearProgress);
 
 const SELECTED_POOL_NAME = "selectedClaimPool";
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN, ChainNetworks.LOCAL_CHAIN];
 
 function Claim() {
     const accountContext = useContext(AccountContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     const classes = useStyles();
     const [selectedPool, setSelectedPool] = useState(getItemFromLocalStorage(SELECTED_POOL_NAME) || 'rewards');
@@ -177,7 +180,7 @@ function Claim() {
 
     useEffect(() => {
         if (accountContext.account) {
-            if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+            if(isChainSupported) {
                 loadClaimData();
                 loadRewardsData();
             }
@@ -210,7 +213,7 @@ function Claim() {
                 }
             />
             {
-                (!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) && (
+                (!isChainSupported) && (
                     <Alert
                         elevation={6}
                         variant="filled"

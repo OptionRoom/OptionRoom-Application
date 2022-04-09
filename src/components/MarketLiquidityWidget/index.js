@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import swal from 'sweetalert';
 import numeral from "numeral";
+import {get} from 'lodash';
 
 import {useStyles} from "./styles";
 import {AccountContext} from "../../shared/AccountContextProvider";
@@ -8,14 +9,33 @@ import Button from "../Button";
 import DepositModal from "../DepositModal";
 import UnstakeModal from "../UnstakeModal";
 import {fromWei} from "../../shared/helper";
-import MarketAPIs from '../../shared/contracts/MarketAPIs';
 import ClaimAPIs from '../../shared/contracts/ClaimAPIs';
+import MarketAPIs from "../../shared/contracts/MarketAPIs";
+import {
+    formatAddress,
+    SmartContractsContext,
+    SmartContractsContextFunctions
+} from "../../shared/SmartContractsContextProvider";
+import {getContractAddress} from "../../shared/contracts/contracts.helper";
+import {ContractNames} from "../../shared/constants";
 
 function MarketLiquidityWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
+    const smartContractsContext = useContext(SmartContractsContext);
+    const {
+        marketContractAddress
+    } = props;
 
-    const [isProcessing, setIsProcessing] = useState(false);
+    const busdAddress = getContractAddress(ContractNames.busd);
+    const marketControllerV4Address = getContractAddress(ContractNames.marketControllerV4);
+    const walletAllowanceOfCollateralToken = get(smartContractsContext.walletAllowanceOfSomething, [formatAddress(accountContext.account), formatAddress(busdAddress), formatAddress(marketControllerV4Address)], 0);
+    const isWalletOptionTokenApprovedForMarket = get(smartContractsContext.marketWalletData, [formatAddress(marketContractAddress), formatAddress(accountContext.account), 'isWalletOptionTokenApprovedForMarket'], false);
+    const walletBalanceOfMarket = get(smartContractsContext.marketWalletData, [formatAddress(marketContractAddress), formatAddress(accountContext.account), 'marketBalanceOf'], 0);
+    const walletBalanceOfCollateral = get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0);
+
+    console.log('222', smartContractsContext.marketWalletData, isWalletOptionTokenApprovedForMarket);
+
     //Liq
     const [isRemoveLiquidityModalOpen, setIsRemoveLiquidityModalOpen] = useState(false);
     const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
@@ -26,15 +46,15 @@ function MarketLiquidityWidget(props) {
 
     const loadMarketLiqRewards = async () => {
         const claimAPIs = new ClaimAPIs();
-        const rewards = await claimAPIs.getMarketLiqRewards(accountContext.account, props.marketContractAddress);
+        const rewards = await claimAPIs.getMarketLiqRewards(accountContext.account, marketContractAddress);
         setMarketLiqRewards(rewards);
     }
 
     useEffect(() => {
-        if(props.marketContractAddress) {
+        if(marketContractAddress) {
             loadMarketLiqRewards();
         }
-    }, [props.marketContractAddress]);
+    }, [marketContractAddress]);
 
     const showAddLiquiditySection = () => {
         return ["3"].indexOf(props.marketState) > -1;
@@ -48,12 +68,15 @@ function MarketLiquidityWidget(props) {
         return marketLiqRewards && (marketLiqRewards.claimedRewards > 0 || marketLiqRewards.pendingRewards > 0);
     };
 
+
     const handleAddLiquidity = async () => {
-        if(props.walletAllowanceOfCollateralToken == 0) {
+        if(walletAllowanceOfCollateralToken == 0) {
             setIsAddLiquidityInProgress(true);
-            const marketAPIs = new MarketAPIs(props.marketVersion);
-            await marketAPIs.approveCollateralTokenForMarketRouter(accountContext.account);
-            props.onApproveCollateralToken && props.onApproveCollateralToken();
+            smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [
+                accountContext.account,
+                ContractNames.busd,
+                ContractNames.marketControllerV4
+            ]);
             setIsAddLiquidityInProgress(false);
             return;
         }
@@ -62,11 +85,12 @@ function MarketLiquidityWidget(props) {
     };
 
     const handleRemoveLiquidity = async () => {
-        if(!props.isWalletOptionTokenApprovedForMarket) {
+        if(!isWalletOptionTokenApprovedForMarket) {
             setIsRemoveLiquidityInProgress(true);
-            const marketAPIs = new MarketAPIs(props.marketVersion);
-            await marketAPIs.approveOptionTokenForMarket(accountContext.account, props.marketContractAddress);
-            props.onApproveOptionToken && props.onApproveOptionToken('market');
+            await smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_OPTION_TOKEN_TO_SPENDER, [
+                accountContext.account,
+                marketContractAddress
+            ]);
             setIsRemoveLiquidityInProgress(false);
             return;
         }
@@ -78,7 +102,7 @@ function MarketLiquidityWidget(props) {
         try {
             setIsClaimingLpRewards(true);
             const claimAPIs = new ClaimAPIs();
-            await claimAPIs.claimMarketLiqRewards(accountContext.account, props.marketContractAddress);
+            await claimAPIs.claimMarketLiqRewards(accountContext.account, marketContractAddress);
             loadMarketLiqRewards();
         } catch (e) {
 
@@ -95,11 +119,11 @@ function MarketLiquidityWidget(props) {
             <div className={classes.MarketLiquidityWidget__Info}>
                 <div>
                     <div>Total Liquidity</div>
-                    <div>{numeral(fromWei(props.marketLiquidity || 0)).format("$0,0.00")}</div>
+                    <div>{numeral(fromWei(get(smartContractsContext, ['marketInfo', formatAddress(marketContractAddress), 'liquidity'], 0))).format("$0,0.00")}</div>
                 </div>
                 <div>
                     <div>Your Share</div>
-                    <div>{numeral(fromWei(props.walletBalanceOfMarket || 0)).format("0,0.00")}</div>
+                    <div>{numeral(fromWei(walletBalanceOfMarket)).format("0,0.00")}</div>
                 </div>
             </div>
             <div className={classes.MarketLiquidityWidget__Actions}>
@@ -107,10 +131,10 @@ function MarketLiquidityWidget(props) {
                     showAddLiquiditySection() && (
                         <>
                             <div>
-                                {(props.walletAllowanceOfCollateralToken == 0) && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleAddLiquidity}>(approve to unlock)</div>)}
+                                {(walletAllowanceOfCollateralToken == 0) && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleAddLiquidity}>(approve to unlock)</div>)}
                                 <Button
                                     color="primary"
-                                    isDisabled={props.walletAllowanceOfCollateralToken == 0}
+                                    isDisabled={walletAllowanceOfCollateralToken == 0}
                                     onClick={handleAddLiquidity}
                                     size={"small"}>
                                     Add Liquidity
@@ -120,9 +144,9 @@ function MarketLiquidityWidget(props) {
                     )
                 }
                 {
-                    (showRemoveLiquiditySection() && parseFloat(props.walletSharesOfMarket) > 0) && (
+                    (showRemoveLiquiditySection() && parseFloat(walletBalanceOfMarket) > 0) && (
                         <div>
-                            {!props.isWalletOptionTokenApprovedForMarket && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleRemoveLiquidity}>(approve to unlock)</div>)}
+                            {!isWalletOptionTokenApprovedForMarket && (<div className={classes.MarketLiquidityWidget__ActionsApprove} onClick={handleRemoveLiquidity}>(approve to unlock)</div>)}
                             <Button
                                 isDisabled={false}
                                 size={"small"}
@@ -163,23 +187,25 @@ function MarketLiquidityWidget(props) {
             <DepositModal open={isDepositModalOpen}
                           onClose={() => setIsDepositModalOpen(false)}
                           onStake={() => {
-                              props.onAddLiquidity && props.onAddLiquidity();
+                              smartContractsContext.loadMarketWalletData(accountContext.account, marketContractAddress);
+                              smartContractsContext.loadWalletBalanceOfToken(accountContext.account, getContractAddress(ContractNames.busd));
+                              smartContractsContext.loadMarketInfo(accountContext.account, marketContractAddress);
                           }}
-                          userRoomLPTokens={
-                              props.walletBalanceOfCollateralToken
-                          }
-                          marketContractId={props.marketContractAddress}
+                          userRoomLPTokens={walletBalanceOfCollateral}
+                          marketContractId={marketContractAddress}
                           type={"Add_Market_Liquidity"}/>
             <UnstakeModal
-                marketContractId={props.marketContractAddress}
+                marketContractId={marketContractAddress}
                 open={isRemoveLiquidityModalOpen}
                 onClose={() =>
                     setIsRemoveLiquidityModalOpen(false)
                 }
                 onUnStake={() => {
-                    props.onRemoveLiquidity && props.onRemoveLiquidity();
+                    smartContractsContext.loadMarketWalletData(accountContext.account, marketContractAddress);
+                    smartContractsContext.loadWalletBalanceOfToken(accountContext.account, getContractAddress(ContractNames.busd));
+                    smartContractsContext.loadMarketInfo(accountContext.account, marketContractAddress);
                 }}
-                stakedTokensBalance={props.walletSharesOfMarket || 0}
+                stakedTokensBalance={walletBalanceOfMarket}
                 type={"market_liquidity"}
             />
         </div>

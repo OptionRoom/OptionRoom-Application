@@ -30,21 +30,12 @@ export const useStyles = makeStyles((theme) => ({
     OutcomeBlock: {
         marginLeft: '10px',
         display: 'flex',
-        [theme.breakpoints.up("md")]: {
-            marginLeft: '47px',
-        },
+        alignItems: 'center'
     },
-    OutcomeBlock__Chart: {
-        marginRight: '9px'
-    },
-    OutcomeBlock__Val: {
-        fontStyle: "normal",
-        fontWeight: "normal",
-        fontSize: "12px",
-        lineHeight: "32px",
-        color: theme.isDark ? "#fff" : "#36414B",
-        [theme.breakpoints.up("md")]: {
-            fontSize: "25px",
-        },
+    OutcomeBlock__Square: {
+        width: '10px',
+        height: '10px',
+        backgroundColor: '#000',
+        marginRight: '5px'
     }
 }));

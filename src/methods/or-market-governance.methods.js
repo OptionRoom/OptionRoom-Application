@@ -9,7 +9,6 @@ export const disputeMarket = (wallet, marketId, disputeReason) => {
         .send({
             from: wallet,
         });
-
 }
 
 export const getResolvingOutcome = (wallet, marketId, choicesLength) => {

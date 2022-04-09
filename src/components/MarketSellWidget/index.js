@@ -1,29 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import numeral from "numeral";
 import { useStyles } from "./styles";
-import OptionBlock from "../OptionBlock";
 import { get } from "lodash";
-import Button from "../Button";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import { fromWei, toWei, formatTradeValue } from "../../shared/helper";
-import { AccountContext } from "../../shared/AccountContextProvider";
-
-import {
-    approveContractForSpender, getContractAddress
-} from '../../shared/contracts/contracts.helper';
-
-import TradeInput from '../../components/TradeInput';
-import OrTab from "../OrTab";
-import {
-    approveOptionTokenForMarketController,
-    buyMarketOptions,
-    calcSellAmount,
-    getBuyAmount,
-    sellMarketOptions
-} from "../../methods/market-controller.methods";
-import { ContractNames } from "../../shared/constants";
-import { useGetBuyPrices } from "../MarketBuyWidget";
-
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import Typography from "@material-ui/core/Typography";
@@ -31,23 +9,52 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import Slide from "@material-ui/core/Slide";
+import { useQuery } from "react-query";
+
+import Button from "../Button";
+import { fromWei, toWei, formatTradeValue } from "../../shared/helper";
+import { AccountContext } from "../../shared/AccountContextProvider";
+
+import {
+    approveContractForSpender,
+    getContractAddress
+} from '../../shared/contracts/contracts.helper';
+
+import {
+    approveOptionTokenForMarketController,
+    buyMarketOptions,
+    calcSellAmount, getAccountBalances,
+    getBuyAmount,
+    sellMarketOptions
+} from "../../methods/market-controller.methods";
+import { ContractNames } from "../../shared/constants";
+import { useGetBuyPrices } from "../MarketBuyWidget";
+
+import TradeInput from "../TradeInput";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
 });
 
+export const useGetWalletBalanceOfMarketOptions = (wallet, marketContractAddress) => {
+    return useQuery(["useGetWalletBalanceOfMarketOptions", wallet, marketContractAddress], () => getAccountBalances(wallet, marketContractAddress, wallet));
+};
 
-export const useGetMaxTradeSize = (wallet, marketContractAddress, tradeOption, walletOptionTokensBalance) => {
+export const useGetSellAmount = (wallet, marketContractAddress, tradeOption, amountOut) => {
     const [maxTradeSize, setMaxTradeSize] = useState(0);
 
     useEffect(() => {
         const init = async () => {
-            setMaxTradeSize(parseFloat(fromWei(get(walletOptionTokensBalance, [tradeOption]) || 0)));
+            //wallet, marketAddress, tokenAddress, returnAmount, outcomeIndex
+            const sellAmount = await calcSellAmount(wallet, marketContractAddress, getContractAddress(ContractNames.busd), amountOut, tradeOption);
+            console.log({sellAmount});
+            setMaxTradeSize(sellAmount);
         };
 
-        init();
-
-    }, [wallet, marketContractAddress, tradeOption, walletOptionTokensBalance]);
+        if(wallet && marketContractAddress && (tradeOption || tradeOption == 0) && amountOut) {
+            init();
+        }
+    }, [wallet, marketContractAddress, tradeOption, amountOut]);
 
     return maxTradeSize;
 };
@@ -61,26 +68,28 @@ function MarketSellWidget(props) {
 
     //Buy & Sell
     const [tradeInput, setTradeInput] = useState(0);
-    const [selectedTradeOption, setSelectedTradeOption] = useState(0);
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
     const [isTradeDisabled, setIsTradeDisabled] = useState(true);
-    const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, get(props.selectedOption, ['index']), props.walletBalanceOfCollateralToken);
-    const buyPrices = useGetBuyPrices(accountContext.account, props.marketContractAddress);
+    const {
+        data: walletBalanceOfMarketOptions
+    } = useGetWalletBalanceOfMarketOptions(accountContext.account, props.marketContractAddress);
+    const sellAmount = useGetSellAmount(accountContext.account, props.marketContractAddress, get(props.selectedOption, ['index']), toWei(tradeInput));
 
     const startTrade = async () => {
         setIsTradeInProgress(true);
         try {
             if (props.isWalletOptionTokenApprovedForMarketController) {
-                sellMarketOptions(
+                await sellMarketOptions(
                     accountContext.account,
                     props.marketContractAddress,
                     getContractAddress(ContractNames.busd),
-                    toWei(parseFloat(tradeInput) * get(buyPrices, [selectedTradeOption])),
-                    selectedTradeOption,
-                    toWei(tradeInput)
+                    toWei(tradeInput),
+                    get(props.selectedOption, ['index']),
+                    get(sellAmount, ['outcomeTokenSellAmount'], 0)
                 );
                 setTradeInput(0);
                 props.onTrade && props.onTrade();
+                handleClose();
             } else {
                 await approveOptionTokenForMarketController(accountContext.account);
                 props.onApprove && props.onApprove('OptionToken__Controller');
@@ -92,9 +101,14 @@ function MarketSellWidget(props) {
         }
     };
 
-    const handleClose = () => {
+    const handleClose = (reason) => {
         props.onClose();
+        setTradeInput(0);
     };
+
+    const sellAmountI = fromWei(get(sellAmount, ['outcomeTokenSellAmount'], 0));
+    const accountBalanceOfThisToken = fromWei(get(walletBalanceOfMarketOptions, [get(props.selectedOption, ['index'])], 0), null, 2);
+    const youKeepVal = (accountBalanceOfThisToken || 0) - (sellAmountI || 0);
 
     return (
         <Dialog
@@ -115,7 +129,7 @@ function MarketSellWidget(props) {
             >
                 <Typography className={classes.DialogTitle}
                     variant="h6">
-                    Sell {get(props.selectedOption, ['title'])}
+                    Sell {get(props.selectedOption, ['title'])} option
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -131,40 +145,49 @@ function MarketSellWidget(props) {
             <div className={classes.BuySellWidget}>
                 <div className={classes.BuySellWidgetAmount}>
                     <div className={classes.BuySellWidgetAmount__Header}>
-                        <span>Amount</span>
-                        <span>{formatTradeValue(maxTradeSize)}</span>
+                        <span>How much you want to get from the sell?</span>
                     </div>
                     <div className={classes.BuySellWidgetAmount__InputWrap}>
-                        <TradeInput max={maxTradeSize}
-                            min={0}
-                            value={tradeInput}
-                            onValidityUpdate={(valid) => {
-                                //setIsTradeDisabled(!valid);
-                            }}
-                            onChange={(e) => {
-                                clearTimeout(updateTradeInputInterval);
-                                updateTradeInputInterval = setTimeout(() => {
-                                    setTradeInput(e);
-                                }, 100);
+                        <TradeInput max={100000000000000000000000000}
+                                    hideSlider={true}
+                                    min={0}
+                                    value={tradeInput}
+                                    onValidityUpdate={(valid) => {
+                                        //setIsTradeDisabled(!valid);
+                                    }}
+                                    onChange={(e) => {
+                                        clearTimeout(updateTradeInputInterval);
+                                        updateTradeInputInterval = setTimeout(() => {
+                                            setTradeInput(e);
+                                        }, 100);
 
-                                if (e == 0) {
-                                    setIsTradeDisabled(true);
-                                } else {
-                                    setIsTradeDisabled(false);
-                                }
-                            }} />
+                                        if (e == 0) {
+                                            setIsTradeDisabled(true);
+                                        } else {
+                                            setIsTradeDisabled(false);
+                                        }
+                                    }}/>
                     </div>
                 </div>
                 <div className={classes.BuySellWidgetInfo}>
                     {
                         [
                             {
-                                title: 'Total sell amount',
-                                value: numeral(tradeInput ? (parseFloat(tradeInput) * get(buyPrices, [selectedTradeOption]) || 0) : 0).format("~0,0.00"),
+                                title: 'We will sell',
+                                value: parseFloat(sellAmountI).toFixed(2),
+                            },
+                            {
+                                title: 'You have',
+                                value: accountBalanceOfThisToken,
+                            },
+                            {
+                                title: 'You keep',
+                                value: parseFloat(youKeepVal).toFixed(2),
                             }
-                        ].map((entry) => {
+                        ].map((entry, index) => {
                             return (
-                                <div className={classes.BuySellWidgetInfo__Row}>
+                                <div className={classes.BuySellWidgetInfo__Row}
+                                     key={`Market-sell-${index}`}>
                                     <div className={classes.BuySellWidgetInfo__RowTitle}>{entry.title}</div>
                                     <div
                                         className={classes.BuySellWidgetInfo__RowValue}>{entry.value}</div>
@@ -180,7 +203,7 @@ function MarketSellWidget(props) {
                     isDisabled={isTradeDisabled}
                     isProcessing={isTradeInProgress}>
                     {
-                        props.isWalletOptionTokenApprovedForMarketController ? 'Trade' : 'Approve Tokens'
+                        props.isWalletOptionTokenApprovedForMarketController ? 'Sell' : 'Approve Tokens to sell'
                     }
                 </Button>
             </div>

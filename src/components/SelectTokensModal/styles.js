@@ -67,7 +67,12 @@ export const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         width: '100%',
-        padding: '10px 10px 10px 0'
+        padding: '10px 10px 10px 10px',
+        cursor: 'pointer',
+        transition: '0.2s all',
+        '&:hover': {
+            background: '#f4f4f4'
+        }
     },
     Token__Img:{
         width: '24px',

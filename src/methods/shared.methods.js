@@ -23,6 +23,18 @@ export const getWalletBalanceOfContract = (wallet, contractName) => {
         });
 };
 
+export const getWalletAllowanceOfContractToSpenderByAddress = (wallet, source, spender) => {
+    const sourceContract = getContract(source);
+    const spenderContractAddress = getContractAddress(spender);
+
+    return sourceContract
+        .methods
+        .allowance(wallet, spenderContractAddress)
+        .call({
+            from: wallet,
+        });
+};
+
 export const getWalletAllowanceOfContractToSpender = (wallet, source, spender) => {
     const sourceContract = getContract(source);
     const spenderContractAddress = getContractAddress(spender);

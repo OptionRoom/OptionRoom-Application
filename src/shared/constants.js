@@ -181,7 +181,13 @@ export const ContractNames = {
     busd: 'busd',
     marketGovernance: 'market_governance',
     optionTokenV4: 'optionTokenV4',
-
+    court_token: 'court_token',
+    MatterTokenContract: 'MatterTokenContract',
+    HtTokenContract: 'HtTokenContract',
+    ht_court_farming_claim: 'ht_court_farming_claim',
+    matter_court_farming_claim: 'matter_court_farming_claim',
+    court_vote_stake: 'court_vote_stake',
+    reward_program: 'reward_program',
 };
 
 export const MarketVotingTypes = {

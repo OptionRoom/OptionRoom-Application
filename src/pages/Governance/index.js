@@ -13,7 +13,7 @@ import {useGetIsChainSupported} from "../../shared/hooks";
 import {ChainNetworks} from "./../../shared/constants";
 import GovernanceRewardsWidget from "../../components/GovernanceRewardsWidget";
 
-const supportedChains = [ChainNetworks.ROPSTEN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN];
 
 function Governance() {
     const accountContext = useContext(AccountContext);

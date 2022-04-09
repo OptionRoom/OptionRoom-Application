@@ -11,7 +11,12 @@ import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
 import FlareIcon from "@material-ui/icons/Flare";
-import {disputeMarket, getMarketDisputers, getWalletVotesOnMarket} from "../../methods/or-market-governance.methods";
+import {
+    disputeMarket,
+    getMarketDisputers,
+    getResolvingOutcome,
+    getWalletVotesOnMarket
+} from "../../methods/or-market-governance.methods";
 import {MarketVotingTypesPerMarketAddress} from "../../shared/constants";
 
 
@@ -47,6 +52,21 @@ export const useGetDidDisputedMarket = (walletDisputeVotes) => {
     return didDisputedMarket;
 };
 
+export const useGetMarketResolvingOutcome = (wallet, address, info) => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const init = async () => {
+            const data = await getResolvingOutcome(wallet, address, get(info, ['choices']).length);
+            setData(data);
+        }
+
+        init();
+    }, [wallet, address]);
+
+    return data;
+};
+
 function DisputeWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
@@ -57,6 +77,7 @@ function DisputeWidget(props) {
     const [minHoldingsToDispute, setMinHoldingsToDispute] = useState(null);
     const [walletDisputeVotes, setWalletDisputeVotes] = useState(null);
     const didDisputedMarket = useGetDidDisputedMarket(walletDisputeVotes);
+    const resolvingOutcome = useGetMarketResolvingOutcome(accountContext.account, props.marketContractAddress, props.info);
     const canDisputeMarket = useGetCanDisputeMarket(minHoldingsToDispute, props.walletOptionTokensBalance, didDisputedMarket);
 
     const isWalletEligibleToDispute = () => {
