@@ -163,9 +163,11 @@ function GovernanceList() {
                 </div>
                 <div className={classes.QuickFilters}>
                     {
-                        getQuickFilterOptions().map((entry) => {
+                        getQuickFilterOptions().map((entry, index) => {
                             return (
-                                <div className={clsx({
+                                <div
+                                    key={`Quick-filters-${index}`}
+                                    className={clsx({
                                     [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id
                                 })}
                                      onClick={() => {

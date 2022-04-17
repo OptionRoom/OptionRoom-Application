@@ -298,7 +298,12 @@ export const getContractAddress = (contractName) => {
     }
 
     if(!contractsAddresses[chainId][contractName]) {
-        return contractName;
+        const tokensList = getTokensList();
+        if(tokensList.find((entry) => {
+            return entry.address === contractName;
+        })) {
+            return contractName;
+        }
     }
 
     return contractsAddresses[chainId][contractName];
@@ -328,7 +333,6 @@ export const getTokenContract = (contractAddress) => {
     return newContract;
 };
 
-const activateSavingInstances = false;
 export const getContract = (contractName) => {
     const web3 = walletHelperInstance.getWeb3();
 
@@ -344,24 +348,15 @@ export const getContract = (contractName) => {
         return newContract;
     }
 
-    const chainId = walletHelperInstance.getChainId();
-
-/*    if (activateSavingInstances && contractsInstances[chainId] && contractsInstances[chainId][contractName]) {
-        return contractsInstances[chainId][contractName];
-    }*/
 
     if(!getContractAbi(contractName) || !getContractAddress(contractName)) {
         return ;
     }
+
     const newContract = new web3.eth.Contract(
         getContractAbi(contractName),
         getContractAddress(contractName)
     );
-
-/*    if(activateSavingInstances) {
-        contractsInstances[chainId] = contractsInstances[chainId] || {};
-        contractsInstances[chainId][contractName] = newContract;
-    }*/
 
     return newContract;
 };
