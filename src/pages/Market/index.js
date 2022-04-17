@@ -1,5 +1,4 @@
 import React, {useState, useContext, useEffect} from "react";
-import {useQuery} from "react-query";
 import Grid from "@material-ui/core/Grid";
 import {useHistory, useParams} from 'react-router-dom'
 import {get, reduce} from 'lodash';
@@ -7,6 +6,7 @@ import moment from 'moment';
 import numeral from "numeral";
 import Alert from '@material-ui/lab/Alert';
 import FlareIcon from '@material-ui/icons/Flare';
+import { observer } from "mobx-react-lite";
 
 import {
     TradeVolumeIcon,
@@ -24,7 +24,7 @@ import MarketWalletPosition from "../../components/MarketWalletPosition";
 import MarketStateWidget from "../../components/MarketStateWidget";
 import OrLoader from "../../components/OrLoader";
 
-import {ChainNetworks} from '../../shared/constants';
+import {ChainNetworks, ContractNames} from '../../shared/constants';
 import {useStyles} from "./styles";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
@@ -40,6 +40,8 @@ import {
     SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
+import {getContractAddress} from "../../shared/contracts/contracts.helper";
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Market() {
@@ -57,8 +59,8 @@ function Market() {
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-            await smartContractsContext.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_INFO, [accountContext.account, marketContractAddress]);
-            await smartContractsContext.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_WALLET_DATA, [accountContext.account, marketContractAddress]);
+            await smartState.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_INFO, [accountContext.account, marketContractAddress]);
+            await smartState.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_WALLET_DATA, [accountContext.account, marketContractAddress]);
             setIsLoading(false);
         };
 
@@ -108,15 +110,15 @@ function Market() {
     };
 
     const getMarketState = () => {
-        return get(smartContractsContext.marketInfo, [formatAddress(marketContractAddress), 'state']);
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress), 'state']);
     };
 
     const getMarketInfo = () => {
-        return get(smartContractsContext.marketInfo, [formatAddress(marketContractAddress)]);
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress)]);
     };
 
     const getMarketWalletData = () => {
-        return get(smartContractsContext.marketInfo, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
     };
 
     //UI stuff
@@ -339,4 +341,4 @@ function Market() {
     );
 }
 
-export default Market;
+export default observer(Market);

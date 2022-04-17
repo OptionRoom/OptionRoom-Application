@@ -10,27 +10,24 @@ import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import Slide from "@material-ui/core/Slide";
 import { useQuery } from "react-query";
+import {observer} from "mobx-react-lite";
 
 import Button from "../Button";
 import { fromWei, toWei, formatTradeValue } from "../../shared/helper";
 import { AccountContext } from "../../shared/AccountContextProvider";
 
 import {
-    approveContractForSpender,
-    getContractAddress
+    getDefaultCollateralToken
 } from '../../shared/contracts/contracts.helper';
 
 import {
     approveOptionTokenForMarketController,
-    buyMarketOptions,
     calcSellAmount, getAccountBalances,
-    getBuyAmount,
     sellMarketOptions
 } from "../../methods/market-controller.methods";
-import { ContractNames } from "../../shared/constants";
-import { useGetBuyPrices } from "../MarketBuyWidget";
 
 import TradeInput from "../TradeInput";
+import {formatAddress, smartState} from "../../shared/SmartState";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -40,21 +37,20 @@ export const useGetWalletBalanceOfMarketOptions = (wallet, marketContractAddress
     return useQuery(["useGetWalletBalanceOfMarketOptions", wallet, marketContractAddress], () => getAccountBalances(wallet, marketContractAddress, wallet));
 };
 
-export const useGetSellAmount = (wallet, marketContractAddress, tradeOption, amountOut) => {
+export const useGetSellAmount = (wallet, marketContractAddress, tradeOption, amountOut, selectedTokenAddress) => {
     const [maxTradeSize, setMaxTradeSize] = useState(0);
 
     useEffect(() => {
         const init = async () => {
             //wallet, marketAddress, tokenAddress, returnAmount, outcomeIndex
-            const sellAmount = await calcSellAmount(wallet, marketContractAddress, getContractAddress(ContractNames.busd), amountOut, tradeOption);
-            console.log({sellAmount});
+            const sellAmount = await calcSellAmount(wallet, marketContractAddress, selectedTokenAddress, amountOut, tradeOption);
             setMaxTradeSize(sellAmount);
         };
 
-        if(wallet && marketContractAddress && (tradeOption || tradeOption == 0) && amountOut) {
+        if(wallet && marketContractAddress && (tradeOption || tradeOption == 0) && amountOut && selectedTokenAddress) {
             init();
         }
-    }, [wallet, marketContractAddress, tradeOption, amountOut]);
+    }, [wallet, marketContractAddress, tradeOption, amountOut, selectedTokenAddress]);
 
     return maxTradeSize;
 };
@@ -70,28 +66,35 @@ function MarketSellWidget(props) {
     const [tradeInput, setTradeInput] = useState(0);
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
     const [isTradeDisabled, setIsTradeDisabled] = useState(true);
-    const {
-        data: walletBalanceOfMarketOptions
-    } = useGetWalletBalanceOfMarketOptions(accountContext.account, props.marketContractAddress);
-    const sellAmount = useGetSellAmount(accountContext.account, props.marketContractAddress, get(props.selectedOption, ['index']), toWei(tradeInput));
+    const defaultCollateralToken = getDefaultCollateralToken();
+    const [selectedInToken, setSelectedInToken] = useState(defaultCollateralToken);
+    const sellAmount = useGetSellAmount(accountContext.account, props.marketContractAddress, get(props.selectedOption, ['index']), toWei(tradeInput), get(selectedInToken, ['address']));
+    const walletBalanceOfMarketOptions = get(smartState, ['marketWalletData', formatAddress(props.marketContractAddress), formatAddress(accountContext.account), 'accountBalances']);
+    const isWalletOptionTokenApprovedForMarketController = get(smartState, ['isWalletOptionTokenApprovedForMarketController', formatAddress(accountContext.account)]);
 
     const startTrade = async () => {
         setIsTradeInProgress(true);
         try {
-            if (props.isWalletOptionTokenApprovedForMarketController) {
+            if (isWalletOptionTokenApprovedForMarketController) {
                 await sellMarketOptions(
                     accountContext.account,
                     props.marketContractAddress,
-                    getContractAddress(ContractNames.busd),
+                    get(selectedInToken, ['address']),
                     toWei(tradeInput),
                     get(props.selectedOption, ['index']),
                     get(sellAmount, ['outcomeTokenSellAmount'], 0)
                 );
+                smartState.loadMarketWalletData(accountContext.account, props.marketContractAddress);
+                smartState.loadWalletBalanceOfToken(accountContext.account, get(selectedInToken, ['address']));
+                smartState.loadMarketInfo(accountContext.account, props.marketContractAddress);
+
                 setTradeInput(0);
+
                 props.onTrade && props.onTrade();
                 handleClose();
             } else {
                 await approveOptionTokenForMarketController(accountContext.account);
+                await smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
                 props.onApprove && props.onApprove('OptionToken__Controller');
             }
         } catch (e) {
@@ -166,7 +169,13 @@ function MarketSellWidget(props) {
                                         } else {
                                             setIsTradeDisabled(false);
                                         }
-                                    }}/>
+                                    }}
+                                    withTokenSelector={true}
+                                    selectedToken={selectedInToken}
+                                    handleSelectNewToken={(token) => {
+                                        setSelectedInToken(token);
+                                    }}
+                        />
                     </div>
                 </div>
                 <div className={classes.BuySellWidgetInfo}>
@@ -203,7 +212,7 @@ function MarketSellWidget(props) {
                     isDisabled={isTradeDisabled}
                     isProcessing={isTradeInProgress}>
                     {
-                        props.isWalletOptionTokenApprovedForMarketController ? 'Sell' : 'Approve Tokens to sell'
+                        isWalletOptionTokenApprovedForMarketController ? 'Sell' : 'Approve Tokens to sell'
                     }
                 </Button>
             </div>
@@ -212,4 +221,4 @@ function MarketSellWidget(props) {
     );
 }
 
-export default MarketSellWidget;
+export default observer(MarketSellWidget);

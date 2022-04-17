@@ -10201,7 +10201,7 @@
   "resolved" "https://registry.npmjs.org/mobx-react-lite/-/mobx-react-lite-3.3.0.tgz"
   "version" "3.3.0"
 
-"mobx@^6.1.0":
+"mobx@^6.1.0", "mobx@^6.5.0":
   "integrity" "sha512-pHZ/cySF00FVENDWIDzJyoObFahK6Eg4d0papqm6d7yMkxWTZ/S/csqJX1A3PsYy4t5k3z2QnlwuCfMW5lSEwA=="
   "resolved" "https://registry.npmjs.org/mobx/-/mobx-6.5.0.tgz"
   "version" "6.5.0"

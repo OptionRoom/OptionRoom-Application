@@ -180,7 +180,6 @@ function BuySellWidget(props) {
                                 <OptionBlock key={`OptionBlock-${index}`}
                                              isSelected={selectedTradeOption === index}
                                              onClick={(value) => {
-                                                 console.log({value});
                                                  setSelectedTradeOption(value);
                                              }}
                                              title={entry}

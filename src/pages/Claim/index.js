@@ -43,7 +43,7 @@ const BorderLinearProgress = withStyles((theme) => ({
 }))(LinearProgress);
 
 const SELECTED_POOL_NAME = "selectedClaimPool";
-const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN, ChainNetworks.LOCAL_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN, ChainNetworks.LOCAL_CHAIN];
 
 function Claim() {
     const accountContext = useContext(AccountContext);

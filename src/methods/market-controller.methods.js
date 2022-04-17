@@ -135,8 +135,9 @@ export const getMarketInfo = async (wallet, market, withState, withVolume, withP
             from: wallet,
         });
 
-    info = {info};
-
+    info = {
+        info: {...info}
+    };
 
     if(withState) {
         const result = await getMarketState(wallet, market);
@@ -350,7 +351,6 @@ export const getAllMarketsInfo = (wallet) => {
 export const getAllMarketsAddresses = (wallet) => {
     const contract = getContract(ContractNames.marketQueryV4);
     const marketControllerV4Address = getContractAddress(ContractNames.marketControllerV4);
-    console.log({marketControllerV4Address})
     return contract
         .methods
         .getAllMarketsAddresses(marketControllerV4Address)

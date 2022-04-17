@@ -1,19 +1,22 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
+import { get } from "lodash";
+import { observer } from "mobx-react-lite";
+
+
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
-import { get } from "lodash";
 import Button from "../Button";
 
 import MarketBuyWidget from '../MarketBuyWidget';
 import MarketSellWidget from '../MarketSellWidget';
 import {fromWei} from "../../shared/helper";
-import {formatAddress, SmartContractsContext} from "../../shared/SmartContractsContextProvider";
+import {formatAddress} from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
 
 function BuySellWidget2(props) {
     const classes = useStyles();
     const { marketInfo, marketContractAddress} = props;
 
-    const smartContractsContext = useContext(SmartContractsContext);
     const accountContext = useContext(AccountContext);
 
     const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
@@ -37,7 +40,6 @@ function BuySellWidget2(props) {
     };
 
     const handleOnTrade = () => {
-
     };
 
     return (
@@ -65,7 +67,7 @@ function BuySellWidget2(props) {
                                         onClick={() => { openSellModal(entry, index) }}
                                         size={"small"}
                                         className={classes.BuySellBtn}>
-                                        Sell ({fromWei(get(smartContractsContext, ['marketWalletData', formatAddress(marketContractAddress), formatAddress(accountContext.account), 'accountBalances', index], 0), null, 2)})
+                                        Sell ({fromWei(get(smartState, ['marketWalletData', formatAddress(marketContractAddress), formatAddress(accountContext.account), 'accountBalances', index], 0), null, 2)})
                                     </Button>
                                 </div>
                             </div>
@@ -98,4 +100,4 @@ function BuySellWidget2(props) {
     );
 }
 
-export default BuySellWidget2;
+export default observer(BuySellWidget2);

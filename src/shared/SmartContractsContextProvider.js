@@ -145,7 +145,6 @@ const SmartContractsContextProvider = (props) => {
     }
 
     const callApproveContractForSpender = async (wallet, source, spender) => {
-        console.log("wallet, source, spender", wallet, source, spender);
         await approveContractForSpender(wallet, source, spender);
         await loadWalletAllowance(wallet, source, spender);
     }

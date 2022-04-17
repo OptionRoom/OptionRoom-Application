@@ -333,11 +333,9 @@ export const getContract = (contractName) => {
     const web3 = walletHelperInstance.getWeb3();
 
     const tokensList = getTokensList();
-    console.log('contractName', contractName);
     if(tokensList.find((entry) => {
         return entry.address === contractName;
     })) {
-        console.log("here");
         const newContract = new web3.eth.Contract(
             getContractAbi(ContractNames.busd),
             contractName

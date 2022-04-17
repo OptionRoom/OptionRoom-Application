@@ -74,6 +74,7 @@ import {
     SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
 
 const sourcesFieldName = 'sources';
 const choicesFieldName = 'choices';
@@ -142,7 +143,7 @@ function CreateMarket() {
                 .label('End date'),
             liquidity: Joi.number()
                 .min(marketMinLiq)
-                .max(parseFloat(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))))
+                .max(parseFloat(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))))
                 .required()
                 .label('Liquidity'),
             image: Joi.any()
@@ -173,7 +174,7 @@ function CreateMarket() {
     const approveStableCoin = async () => {
         setIsCreatingMarket(true);
         try {
-            await smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ContractNames.marketControllerV4]);
+            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ContractNames.marketControllerV4]);
         } catch (e) {
 
         } finally {
@@ -184,7 +185,7 @@ function CreateMarket() {
     const approveRoomToken = async () => {
         setIsCreatingMarket(true);
         try {
-            await smartContractsContext.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.room, ContractNames.marketControllerV4]);
+            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.room, ContractNames.marketControllerV4]);
         } catch (e) {
 
         } finally {
@@ -193,7 +194,7 @@ function CreateMarket() {
     };
 
     const handleCreateMarket = async (data) => {
-        if(parseFloat(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0))) < parseFloat(fromWei(marketCreationFees))) {
+        if(parseFloat(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0))) < parseFloat(fromWei(marketCreationFees))) {
             swal(
                 "Insufficient funds",
                 `You must hold at least ${fromWei(marketCreationFees)} ROOM Tokens to create the market`,
@@ -253,7 +254,7 @@ function CreateMarket() {
     const renderCreateBtn = () => {
         //walletAllowanceOfCollateralTokenForMarketRouter
 
-        if (get(smartContractsContext.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.busd), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
+        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.busd), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -264,7 +265,7 @@ function CreateMarket() {
             )
         }
 
-        if (get(smartContractsContext.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.room), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
+        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.room), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -453,10 +454,10 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
-                                        <TradeInput max={fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}
+                                        <TradeInput max={fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}
                                                     min={marketMinLiq}
                                                     value={getValues('liquidity') || 0}
                                                     onValidityUpdate={(valid) => {
@@ -534,7 +535,7 @@ function CreateMarket() {
                             {renderCreateBtn()}
                         </div>
                         <div className={classes.CreateNote}>
-                            Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0), null, 2)}
+                            Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0), null, 2)}
                         </div>
                     </form>
                     <CropModal isOpen={isCropModalOpen}

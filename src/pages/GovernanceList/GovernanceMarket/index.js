@@ -51,7 +51,7 @@ function GovernanceMarket(props) {
                 true,
                 true
             );
-            console.log("marketContracts", marketContracts);
+
             setMarkets(marketContracts);
             setIsLoading(false);
         };

@@ -29,6 +29,10 @@ import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
 import {OptionroomThemeContext} from "./shared/OptionroomThemeContextProvider";
 import {watchUserSignIn} from "./shared/firestore.service";
+import {smartState} from "./shared/SmartState";
+import {AccountContext} from "./shared/AccountContextProvider";
+import {getTokensList} from "./shared/contracts/contracts.helper";
+import {ContractNames} from "./shared/constants";
 
 const useStyles = makeStyles((theme) => ({
     Main: {
@@ -66,6 +70,7 @@ function App() {
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isSidebarExpand, setIsSidebarExpand] = useState(true);
     const [themeType, setThemeType] = useState(localStorage.getItem('optionroom_theme') || 'light');
+    const accountContext = useContext(AccountContext);
 
     const lightColors = {
         primary: '#004BFF',
@@ -138,6 +143,18 @@ function App() {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    useEffect(() => {
+        if(accountContext.account && accountContext.chainId) {
+            smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
+
+            const tokens = getTokensList();
+            for(let token of tokens) {
+                smartState.loadWalletBalanceOfTokenWithAddress(accountContext.account, token.address);
+                smartState.loadWalletAllowance(accountContext.account, token.address, ContractNames.marketControllerV4);
+            }
+        }
+    }, [accountContext.account, accountContext.chainId]);
 
     const handleToggleSidebar = () => {
         setIsSidebarExpand(!isSidebarExpand);

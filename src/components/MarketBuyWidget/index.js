@@ -31,6 +31,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import Slide from "@material-ui/core/Slide";
 import {formatAddress, SmartContractsContext} from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -103,14 +104,14 @@ export const useGetMaxTradeSize = (selectedInToken) => {
 
     useEffect(() => {
         const init = async () => {
-            const balance = get(smartContractsContext.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(selectedInToken.address)], 0);
+            const balance = get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(selectedInToken.address)], 0);
             setMaxTradeSize(parseFloat(fromWei(balance)).toFixed(2));
         };
 
-        if(accountContext.account && selectedInToken && smartContractsContext.walletBalanceOfSomething) {
+        if(accountContext.account && selectedInToken && smartState.walletBalanceOfSomething) {
             init();
         }
-    }, [accountContext.account, selectedInToken, smartContractsContext.walletBalanceOfSomething]);
+    }, [accountContext.account, selectedInToken, smartState.walletBalanceOfSomething]);
 
     return maxTradeSize;
 };
@@ -124,18 +125,17 @@ export const useIsTokenApprovedForMarketController = (selectedInToken) => {
     useEffect(() => {
         const init = async () => {
             const isApproved = get(
-                smartContractsContext.walletAllowanceOfSomething,
+                smartState.walletAllowanceOfSomething,
                 [formatAddress(accountContext.account), formatAddress(selectedInToken), formatAddress(getContractAddress(ContractNames.marketControllerV4))],
                 0
             );
             setIsApproved(isApproved > 0 ? true : false);
         };
 
-        console.log('smartContractsContext.walletAllowanceOfSomething', smartContractsContext.walletAllowanceOfSomething);
-        if(accountContext.account && selectedInToken && smartContractsContext.walletAllowanceOfSomething) {
+        if(accountContext.account && selectedInToken && smartState.walletAllowanceOfSomething) {
             init();
         }
-    }, [accountContext.account, selectedInToken, smartContractsContext.walletAllowanceOfSomething]);
+    }, [accountContext.account, selectedInToken, smartState.walletAllowanceOfSomething]);
 
     return isApproved;
 };
@@ -163,17 +163,22 @@ function MarketBuyWidget(props) {
         setIsTradeInProgress(true);
         try {
             if (!isSelectedTokenApprovedForMarketController) {
-                await smartContractsContext.callApproveContractForSpender(accountContext.account, get(selectedInToken, ['address']), ContractNames.marketControllerV4);
+                await smartState.callApproveContractForSpender(accountContext.account, get(selectedInToken, ['address']), ContractNames.marketControllerV4);
                 props.onApprove && props.onApprove('CollateralToken');
             } else {
                 await buyMarketOptions(
                     accountContext.account,
                     props.marketContractAddress,
-                    getContractAddress(ContractNames.busd),
+                    get(selectedInToken, ['address']),
                     toWei(tradeInput),
                     get(props.selectedOption, ['index']),
                     0
                 );
+
+                smartState.loadMarketWalletData(accountContext.account, props.marketContractAddress);
+                smartState.loadWalletBalanceOfToken(accountContext.account, get(selectedInToken, ['address']));
+                smartState.loadMarketInfo(accountContext.account, props.marketContractAddress);
+
                 props.onTrade && props.onTrade();
                 handleClose();
             }
