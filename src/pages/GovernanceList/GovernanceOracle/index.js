@@ -14,7 +14,7 @@ import ChainAlert from "../../../components/ChainAlert";
 import OrLoader from "../../../components/OrLoader";
 import {useGetIsChainSupported} from "../../../shared/hooks";
 
-const supportedChains = [ChainNetworks.ROPSTEN, ChainNetworks.BINANCE_SMART_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function GovernanceOracle(props) {
     const classes = useStyles();

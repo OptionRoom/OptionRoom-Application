@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
 import clsx from "clsx";
-import HowToVoteIcon from '@material-ui/icons/HowToVote';
 import { useStyles } from "./styles";
 import Button from "../Button";
 import DepositModal from "../DepositModal";
@@ -11,11 +10,9 @@ import {AccountContext} from "../../shared/AccountContextProvider";
 import {ChainNetworks, MaxUint256} from "../../shared/constants";
 import {useGetIsChainSupported} from "../../shared/hooks";
 
-const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.ROPSTEN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.ROPSTEN, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET];
 
-function CourtVotePowerStaking2(props) {
-    const {
-    } = props;
+function CourtVotePowerStaking2(props) {;
     const accountContext = useContext(AccountContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
 

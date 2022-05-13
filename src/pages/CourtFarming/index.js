@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useState, createRef } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-
 import swal from "sweetalert";
 
-import Tooltip from "@material-ui/core/Tooltip";
 import Navbar from "../../components/Navbar";
 import Button from "../../components/Button";
 import ConnectButton from "../../components/ConnectButton";
@@ -14,39 +11,15 @@ import {
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
 import ht_icon from "../../assets/ht_icon.png";
 import matter_icon from "../../assets/matter_icon.png";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import NewCourtClaimAPIs from "../../shared/contracts/NewCourtClaimAPIs";
 import {
     fromWei,
-    toWei,
-    getOrRemoveRoiOfCourt,
-    saveRoiOfCourt,
 } from "../../shared/helper";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
 import {ChainNetworks, MaxUint256} from "../../shared/constants";
-
-const useStylesBootstrap = makeStyles((theme) => ({
-    arrow: {
-        //color: theme.palette.common.white,
-    },
-    tooltip: {
-        padding: "10px",
-        backgroundColor: "#fff",
-        color: "rgba(0, 0, 0, 0.87)",
-        maxWidth: 220,
-        fontSize: theme.typography.pxToRem(12),
-        border: "1px solid #dadde9",
-    },
-}));
-
-function HtmlTooltip(props) {
-    const classes = useStylesBootstrap();
-
-    return <Tooltip placement="top" arrow classes={classes} {...props} />;
-}
 
 const oldStakeContractsById = {
     "HT_COURT": "CourtFarming_HtStake",
@@ -242,8 +215,7 @@ function CourtFarming() {
     const classes = useStyles();
 
     const accountContext = useContext(AccountContext);
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
+
     const pools = [
         {
             id: "ROOM_COURT",
@@ -275,13 +247,6 @@ function CourtFarming() {
             icons: [matter_icon],
             xUnit: "1x",
         },
-        /*         {
-            id: "COURT_ETH_LP_EARN_COURT",
-            title: "Deposit COURT-ETH LP",
-            decs: "Earn COURT",
-            link: "/court-farming/court-courtethlp",
-            icons: [courtTokenIconImg, eth_icon],
-        }, */
     ];
 
     useEffect(() => {

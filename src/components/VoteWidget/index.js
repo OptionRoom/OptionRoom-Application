@@ -1,16 +1,30 @@
 import React, {useContext, useEffect, useState} from "react";
+import clsx from "clsx";
+import numeral from "numeral";
+import {get} from "lodash";
 
 import {useStyles} from "./styles";
 import OptionBlock from "../OptionBlock";
-import numeral from "numeral";
-import {get} from "lodash";
 import Button from "../Button";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {fromWei, toWei} from "../../shared/helper";
-import {AccountContext} from "../../shared/AccountContextProvider";
+import {
+    fromWei,
+    toWei
+} from "../../shared/helper";
+import {
+    AccountContext
+} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
 import OracleApis from "../../shared/contracts/OracleApis";
-import clsx from "clsx";
+import {
+    addGovernanceVoteForMarket,
+    getAllVotesOnMarket,
+    getWalletVotesOnMarket,
+    withdrawMarketVote
+} from "../../methods/or-market-governance.methods";
+import {
+    MarketVotingTypes,
+    MarketVotingTypesPerMarketAddress
+} from "../../shared/constants";
 
 
 
@@ -28,21 +42,22 @@ function VoteWidget(props) {
     const handleVote = async () => {
         setIsProcessing(true);
 
-
         try {
             if(props.type === 'proposal') {
                 const oracleApis = new OracleApis();
                 await oracleApis.vote(accountContext.account, props.marketContractAddress, voteInput);
             } else {
+
                 let voteVal = voteInput;
+
                 if(props.marketState == 1) {
                     voteVal = voteInput === 0 ? true : false;
                 }
-                const marketApis = new MarketAPIs(props.marketVersion);
-                await marketApis.addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
+
+                await addGovernanceVoteForMarket(accountContext.account, props.marketContractAddress, voteVal, props.marketState);
             }
 
-            loadVote();
+            loadAllVotes();
             loadWalletVotes();
 
             props.onVote && props.onVote();
@@ -55,11 +70,9 @@ function VoteWidget(props) {
 
     const handleWithdrawVote = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs(props.marketVersion);
-
         try {
-            await marketApis.withdrawMarketVote(accountContext.account, props.marketContractAddress, props.marketState);
-            loadVote();
+            await withdrawMarketVote(accountContext.account, props.marketContractAddress, props.marketState);
+            loadAllVotes();
             loadWalletVotes();
             props.onVote && props.onVote();
         } catch (e) {
@@ -79,11 +92,12 @@ function VoteWidget(props) {
         }
     }
 
-    const loadVote = async () => {
+
+
+    const loadAllVotes = async () => {
         if(props.type === 'proposal') {
             const oracleApis = new OracleApis();
             const question = await oracleApis.getQuestionInfo(accountContext.account, props.marketContractAddress);
-            console.log("question", question);
             setProposal(question);
             const formattedVotes = [];
             let totalVotes = 0;
@@ -96,21 +110,20 @@ function VoteWidget(props) {
 
             setMarketVotes(formattedVotes);
         } else {
-            const marketAPIs = new MarketAPIs(props.marketVersion);
-            const votes = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
-            if(props.marketState == 1) {
-                const validatingVotesCount = votes.validatingVotesCount;
+/*            const votes = await getAllVotesOnMarket(accountContext.account, props.marketContractAddress, MarketVotingTypesPerMarketAddress[props.marketState]);
+            console.log({votes});
+            if(votes) {
                 const formattedVotes = [];
-                formattedVotes[1] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-                formattedVotes[0] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
+                let totalVotes = 0;
+                votes.forEach((e) => {
+                    totalVotes += parseInt(e);
+                });
+                votes.forEach((e, index) => {
+                    formattedVotes[index] = (parseInt(e)/totalVotes) * 100;
+                });
+
                 setMarketVotes(formattedVotes);
-            } else if(props.marketState == 5 || props.marketState == 8) {
-                const validatingVotesCount = votes.resolvingVotesCount;
-                const formattedVotes = [];
-                formattedVotes[0] = (parseFloat(validatingVotesCount[0])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-                formattedVotes[1] = (parseFloat(validatingVotesCount[1])/(parseFloat(validatingVotesCount[0]) + parseFloat(validatingVotesCount[1]))) * 100;
-                setMarketVotes(formattedVotes);
-            }
+            }*/
         }
     };
 
@@ -118,11 +131,9 @@ function VoteWidget(props) {
         if(props.type === 'proposal') {
             const oracleApis = new OracleApis();
             const votes = await oracleApis.getUserVote(accountContext.account, props.marketContractAddress);
-            console.log("votes", votes);
             setWalletVote(votes);
         } else {
-            const marketAPIs = new MarketAPIs(props.marketVersion);
-            const votes = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
+            const votes = await getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, MarketVotingTypesPerMarketAddress[props.marketState]);
             setWalletVote(votes);
         }
     };
@@ -155,7 +166,13 @@ function VoteWidget(props) {
         if(props.type === 'proposal') {
             return (proposal && proposal.choices) || [];
         } else {
-            return ['Yes', 'No'];
+            if(props.marketState == 1) {
+                return ['Valid', 'Invalid'];
+            }
+
+            if(props.marketState == 5 || props.marketState == 8) {
+                return get(props.marketInfo, ['choices'], []);
+            }
         }
     };
 
@@ -168,11 +185,7 @@ function VoteWidget(props) {
     };
 
     const showVotedSection = () => {
-        if(props.type === 'proposal') {
-            return get(walletVote, ['voteFlag']) === true;
-        } else {
-            return walletVote && walletVote.voteFlag;
-        }
+        return get(walletVote, ['voteFlag']) === true;
     };
 
     const showWithdrawVoteSection = () => {
@@ -184,7 +197,7 @@ function VoteWidget(props) {
     };
 
     useEffect(() => {
-        loadVote();
+        loadAllVotes();
     }, []);
 
     return (
@@ -227,7 +240,8 @@ function VoteWidget(props) {
                                                          }}
                                                          showDonut={props.showDonutOnOptionBlock}
                                                          showValueInChoice={false}
-                                                         title={entry}/>
+                                                         title={entry}
+                                                         key={`Vote-${index}`}/>
                                         )
                                     })
                                 }

@@ -1,19 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
 import {useState, useContext} from 'react';
-import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-
 import {useStyles} from './styles'
-import ConnectButton from '../ConnectButton';
 import {AccountContext} from '../../shared/AccountContextProvider';
 import {OptionroomThemeContext} from '../../shared/OptionroomThemeContextProvider';
-import {
-    ellipseAddress,
-    getAddressImgUrl
-} from '../../shared/helper';
-import Button from "../Button";
-
 function Navbar(props) {
 
     const classes = useStyles();
@@ -21,7 +11,7 @@ function Navbar(props) {
         title,
         details
     } = props;
-    const accountContext = useContext(AccountContext);
+
     const optionroomThemeContext = useContext(OptionroomThemeContext);
 
     return (

@@ -1,18 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {
+    QueryClient,
+    QueryClientProvider,
+} from "react-query";
+
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AccountContextProvider from './shared/AccountContextProvider';
 import OptionroomThemeContextProvider from './shared/OptionroomThemeContextProvider';
+import SmartContractsContext from './shared/SmartContractsContextProvider';
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
     <React.StrictMode>
-        <OptionroomThemeContextProvider>
-            <AccountContextProvider>
-                <App/>
-            </AccountContextProvider>
-        </OptionroomThemeContextProvider>
+        <QueryClientProvider client={queryClient}>
+            <OptionroomThemeContextProvider>
+                <AccountContextProvider>
+                    <SmartContractsContext>
+                        <App/>
+                    </SmartContractsContext>
+                </AccountContextProvider>
+            </OptionroomThemeContextProvider>
+        </QueryClientProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );

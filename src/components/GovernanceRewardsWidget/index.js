@@ -11,7 +11,7 @@ import Button from "../Button";
 import {fromWei} from "../../shared/helper";
 import NewCourtClaimAPIs from "../../shared/contracts/NewCourtClaimAPIs";
 
-const supportedChains = [ChainNetworks.ROPSTEN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN];
 
 function GovernanceRewardsWidget(props) {
 

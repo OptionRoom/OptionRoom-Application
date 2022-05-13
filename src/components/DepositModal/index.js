@@ -16,7 +16,6 @@ import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {
     formatTradeValue,
     convertTokensToAmount,
@@ -24,6 +23,9 @@ import {
 } from "../../shared/helper";
 import TradeInput from "../TradeInput";
 import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
+import {
+    addFunding
+} from '../../methods/market-controller.methods';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -109,8 +111,7 @@ function DepositModal(props) {
                     tokensAmount
                 );
             } else if(type === 'Add_Market_Liquidity'){
-                const marketAPIs = new MarketAPIs(props.marketVersion);
-                await marketAPIs.addLiquidityToMarket(accountContext.account, props.marketContractId, tokensAmount);
+                await addFunding(accountContext.account, props.marketContractId, tokensAmount);
             } else {
                 await courtAPIs.stackeTokens(
                     accountContext.account,

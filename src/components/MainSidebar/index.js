@@ -181,12 +181,6 @@ function MainSidebar(props) {
              })}>
             <div className={classes.NavLinks}>
                 {[
-/*                     {
-                        title: 'Status',
-                        link: '/status',
-                        icon: MarketsIcon,
-                        isNew: true
-                    }, */
                     {
                         title: 'Markets',
                         link: '/markets',
@@ -208,11 +202,6 @@ function MainSidebar(props) {
                         link: "/liquidity-mining",
                         icon: LiquiditySidebarIcon,
                     },
-/*                     {
-                        title: "Get NFTs",
-                        link: "/nft",
-                        icon: NftIcon,
-                    }, */
                     {
                         title: "NFT Staking",
                         link: "/nft-stake",

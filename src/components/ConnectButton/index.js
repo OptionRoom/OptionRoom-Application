@@ -18,12 +18,13 @@ function ConnectButton(props) {
                     className={clsx(classes.ConnectBtn, {
                         [classes.ConnectBtn___Black]: optionroomThemeContext.theme === 'black',
                     })}
-
                     onClick={() => {
                         accountContext.connect();
                     }}
                     variant="contained"
-                    size={'small'}>Connect</Button>
+                    size={'small'}>
+                Connect
+            </Button>
         </div>
     );
 }

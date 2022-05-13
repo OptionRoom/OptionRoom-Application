@@ -1,16 +1,16 @@
 import { getContract, getContractAddress } from "./contracts.helper";
-import { MaxUint256 } from "../../shared/constants";
+import {ContractNames, MaxUint256} from "../../shared/constants";
 
 
 class ClaimCourtAPIs {
     constructor() {
-        this.courtTokenContract = getContract('court_token');
-        this.usdtTokenContract = getContract('usdt');
-        this.matterTokenContract = getContract('MatterTokenContract');
-        this.htTokenContract =  getContract('HtTokenContract');
-        this.htClaimContract =  getContract('ht_court_farming_claim');
-        this.matterClaimContract =  getContract('matter_court_farming_claim');
-        this.courtPowerStakeContract =  getContract('court_vote_stake');
+        this.courtTokenContract = getContract(ContractNames.court_token);
+        this.usdtTokenContract = getContract(ContractNames.usdt);
+        this.matterTokenContract = getContract(ContractNames.MatterTokenContract);
+        this.htTokenContract =  getContract(ContractNames.HtTokenContract);
+        this.htClaimContract =  getContract(ContractNames.ht_court_farming_claim);
+        this.matterClaimContract =  getContract(ContractNames.matter_court_farming_claim);
+        this.courtPowerStakeContract =  getContract(ContractNames.court_vote_stake);
     }
 
     async approveUsdtForClaimContract(address, contract) {

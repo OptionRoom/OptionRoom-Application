@@ -38,6 +38,8 @@ function Button(props) {
             disabled={isProcessing || isDisabled}
             className={clsx(classes.root, className, {
                 [classes.Primary]: color === "primary",
+                [classes.Green]: color === "green",
+                [classes.Red]: color === "red",
                 [classes.Black]: color === "black",
                 [classes.Gray]: color === "gray",
                 [classes.White]: color === "white",

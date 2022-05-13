@@ -4,10 +4,9 @@ import {useHistory, useParams} from 'react-router-dom'
 import {get, reduce} from 'lodash';
 import moment from 'moment';
 import numeral from "numeral";
-import NotWhitelisted from "../../components/NotWhitelisted";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Alert from '@material-ui/lab/Alert';
 import FlareIcon from '@material-ui/icons/Flare';
+import { observer } from "mobx-react-lite";
 
 import {
     TradeVolumeIcon,
@@ -15,12 +14,7 @@ import {
     LiquidityIcon,
 } from '../../shared/icons';
 import ChainAlert from '../../components/ChainAlert';
-
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
-import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import {useStyles} from "./styles";
-import BuySellWidget from "../../components/BuySellWidget";
 import VoteWidget from "../../components/VoteWidget";
 import DisputeWidget from "../../components/DisputeWidget";
 import MarketLiquidityWidget from "../../components/MarketLiquidityWidget";
@@ -28,163 +22,53 @@ import RedeemMarketRewardsWidget from "../../components/RedeemMarketRewardsWidge
 import MarketOutcome from "../../components/MarketOutcome";
 import MarketWalletPosition from "../../components/MarketWalletPosition";
 import MarketStateWidget from "../../components/MarketStateWidget";
-
-import {getIfWalletIsWhitelistedForBeta, getMarketById} from "../../shared/firestore.service";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
-import {ChainNetworks, MaxUint256} from '../../shared/constants';
-
-import {
-    useGetMarketBuyPrices,
-    useGetMarketTradeVolume,
-    useGetMarketState
-} from './hooks';
-
-import {
-    getWalletAllowanceOfContractToSpender,
-    getWalletBalanceOfContract
-} from '../../shared/contracts/contracts.helper';
-import {fromWei} from "../../shared/helper";
 import OrLoader from "../../components/OrLoader";
 
-function Market() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
-    const accountContext = useContext(AccountContext);
-    const classes = useStyles();
+import {ChainNetworks, ContractNames} from '../../shared/constants';
+import {useStyles} from "./styles";
+import {AccountContext} from "../../shared/AccountContextProvider";
 
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
+import {fromWei} from "../../shared/helper";
+import {
+    useGetIsChainSupported,
+} from "../../shared/hooks";
+
+import BuySellWidget2 from "../../components/BuySellWidget2";
+import OptionsWidget from "../../components/OptionsWidget";
+import {
+    formatAddress,
+    SmartContractsContext,
+    SmartContractsContextFunctions
+} from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
+import {getContractAddress} from "../../shared/contracts/contracts.helper";
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
+
+function Market() {
+    const classes = useStyles();
+    const accountContext = useContext(AccountContext);
+    const smartContractsContext = useContext(SmartContractsContext);
+
     const [isLoading, setIsLoading] = useState(true);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     //Mrket
-    const [marketInfo, setMarketInfo] = useState(null);
-    const [marketDb, setMarketDb] = useState(null);
-    const [marketVersion, setMarketVersion] = useState(null);
     const {marketId} = useParams();
     const [marketContractAddress, setMarketContractAddress] = useState(marketId);
-    const marketState = useGetMarketState(accountContext.account, marketContractAddress);
-    const [marketContractData, setMarketContractData] = useState({});
-
-    const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
-    const [walletAllowanceOfCollateralToken, setWalletAllowanceOfCollateralToken] = useState(0);
-    const [isWalletOptionTokenApprovedForMarket, setIsWalletOptionTokenApprovedForMarket] = useState(0);
-    const [isWalletOptionTokenApprovedForMarketController, setIsWalletOptionTokenApprovedForMarketController] = useState(0);
-
-    //Buy and sell
-    const pricesOfBuy = useGetMarketBuyPrices(accountContext.account, marketContractAddress, get(marketContractData, ['optionTokensPercentage']));
-
-    const loadWalletBalanceOfCollateralToken = async () => {
-        const result = await getWalletBalanceOfContract(accountContext.account, 'usdt');
-        setWalletBalanceOfCollateralToken(result);
-    };
-
-    const loadWalletAllowanceOfCollateralToken = async () => {
-        const balanceOfAllowanceToken = await getWalletAllowanceOfContractToSpender(accountContext.account, 'usdt', 'market_controller');
-        setWalletAllowanceOfCollateralToken(balanceOfAllowanceToken);
-    };
-
-    const loadWalletAllowanceOfOptionToken = async () => {
-        const marketApis = new MarketAPIs(marketVersion);
-        const isWalletOptionTokenApprovedForMarketRes = await marketApis.getIsWalletOptionTokenApprovedForMarket(accountContext.account, marketContractAddress);
-        const isWalletOptionTokenApprovedForMarketController = await marketApis.getIsWalletOptionTokenApprovedForMarketController(accountContext.account);
-        setIsWalletOptionTokenApprovedForMarket(isWalletOptionTokenApprovedForMarketRes);
-        setIsWalletOptionTokenApprovedForMarketController(isWalletOptionTokenApprovedForMarketController);
-    };
-
-    const loadWalletData = async () => {
-        loadWalletBalanceOfCollateralToken();
-        loadWalletAllowanceOfOptionToken();
-        loadWalletAllowanceOfCollateralToken();
-    };
-
-    const handleOnBuy = () => {
-        loadPageDetails();
-        loadWalletData();
-    };
-
-    const handleOnRedeem = () => {
-        loadPageDetails();
-    };
-
-    const handleOnDispute = () => {
-        loadPageDetails();
-    };
-
-    const loadPageDetails = () => {
-        loadMarketContractData();
-    };
-
-    const loadMarketContractData = async () => {
-        const wallet = accountContext.account;
-        const marketApis = new MarketAPIs(marketVersion);
-        const marketTotalSupply = await marketApis.getMarketTotalSupply(wallet, marketContractAddress);
-        const marketiquidity = await marketApis.getMarketiquidity(wallet, marketContractAddress);
-        const WalletOptionTokensBalance = await marketApis.getWalletOptionTokensBalance(wallet, marketContractAddress);
-        const MarketOptionTokensPercentage = await marketApis.getMarketOptionTokensPercentage(wallet, marketContractAddress);
-        const MarketOutcome = await marketApis.getMarketOutcome(wallet, marketContractAddress);
-        const WalletSharesOfMarket = await marketApis.getWalletSharesOfMarket(wallet, marketContractAddress);
-        const walletSharesPercentageOfMarket = await marketApis.getWalletSharesPercentageOfMarket(wallet, marketContractAddress);
-
-        setMarketContractData({
-            totalSupply: marketTotalSupply,
-            marketiquidity: marketiquidity,
-            optionTokensPercentage: MarketOptionTokensPercentage,
-            outcome: MarketOutcome,
-            walletSharesOfMarket: WalletSharesOfMarket,
-            walletSharesPercentageOfMarket: walletSharesPercentageOfMarket,
-            walletOptionTokensBalance: WalletOptionTokensBalance,
-        });
-    };
 
     useEffect(() => {
         const init = async () => {
             setIsLoading(true);
-
-            let marketInfoDetail = marketInfo;
-
-            if (!marketInfoDetail) {
-                const marketApis = new MarketAPIs();
-                marketInfoDetail = await marketApis.getMarketInfo(accountContext.account, marketContractAddress);
-                setMarketInfo(marketInfoDetail);
-            }
-
-            if (!marketDb) {
-                const result = await getMarketById(marketInfoDetail.metaDataID);
-                setMarketDb(result);
-                setMarketVersion(result.version);
-            }
-
+            await smartState.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_INFO, [accountContext.account, marketContractAddress]);
+            await smartState.executeFunction(SmartContractsContextFunctions.LOAD_MARKET_WALLET_DATA, [accountContext.account, marketContractAddress]);
             setIsLoading(false);
-
-            loadWalletData();
-            loadPageDetails();
         };
 
-        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && accountContext.account) {
+        if(isChainSupported && accountContext.account) {
             init();
         }
 
-    }, [accountContext.account, accountContext.chainId]);
-
-    //Liquidity stuff
-    const handleOnAddLiquidityComplete = () => {
-        loadWalletBalanceOfCollateralToken();
-        loadPageDetails();
-    };
-
-    const handleOnRemoveLiquidityComplete = () => {
-        loadWalletBalanceOfCollateralToken();
-        loadPageDetails();
-    };
-
-    //UI stuff
-    const showOutcomeSection = () => {
-        return ["3", "5", "6"].indexOf(marketState) > -1;
-    };
-
-    const showTradeVolumeSection = () => {
-        return ["3", "5", "6"].indexOf(marketState) > -1;
-    };
-    //Buy adn sell stuff
+    }, [accountContext.account, isChainSupported]);
 
     if(!accountContext.account) {
         return (
@@ -194,7 +78,7 @@ function Market() {
         )
     }
 
-    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+    if(!isChainSupported) {
         return (
             <ChainAlert/>
         )
@@ -209,30 +93,67 @@ function Market() {
         )
     }
 
-    if(!isWalletWhitelistedForBeta) {
-        return (
-            <NotWhitelisted/>
-        )
-    }
+    const handleOnTrade = () => {
+    };
+
+    const handleOnRedeem = () => {
+    };
+
+    const handleOnDispute = () => {
+    };
+
+    //Liquidity stuff
+    const handleOnAddLiquidityComplete = () => {
+    };
+
+    const handleOnRemoveLiquidityComplete = () => {
+    };
+
+    const getMarketState = () => {
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress), 'state']);
+    };
+
+    const getMarketInfo = () => {
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress)]);
+    };
+
+    const getMarketWalletData = () => {
+        return get(smartState.marketInfo, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
+    };
+
+    //UI stuff
+    const showOutcomeSection = () => {
+        return false;
+        return ["3", "5", "6"].indexOf(getMarketState()) > -1;
+    };
+
+    const showTradeVolumeSection = () => {
+        return ["3", "5", "6"].indexOf(getMarketState()) > -1;
+    };
 
     const showVoteWidget = () => {
         //return true;
-        return (["1", "5", "8"].indexOf(marketState) > -1);
+        return (["1", "5", "8"].indexOf(getMarketState()) > -1);
+    }
+
+    const showOptionsWidget = () => {
+        //return true;
+        return (["1"].indexOf(getMarketState()) > -1);
     }
 
     const showDisputeWidget = () => {
         //return true;
-        return (["7"].indexOf(marketState) > -1);
+        return (["7"].indexOf(getMarketState()) > -1);
     }
 
     const showRedeemMarketRewardsWidget = () => {
         //return true;
-        return (["6", "9"].indexOf(marketState) > -1);
+        return (["6", "9"].indexOf(getMarketState()) > -1);
     }
 
     const showBuySellWidget = () => {
         //return true;
-        return (["3"].indexOf(marketState) > -1);
+        return (["3"].indexOf(getMarketState()) > -1);
     }
 
     return (
@@ -242,10 +163,10 @@ function Market() {
                     <div className={classes.MarketsPage__Header2Container}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} md={8}>
-                                <div className={classes.Title}>{get(marketInfo, 'question')}</div>
-                                <div className={classes.Cat}>{get(marketDb, ['category', 'title'])}</div>
+                                <div className={classes.Title}>{get(getMarketInfo(), ['info', 'question'])}</div>
+                                <div className={classes.Cat}>{get(getMarketInfo(), ['categories'], []).join(', ')}</div>
                                 <div className={classes.Gallery}>
-                                    <img src={get(marketDb, ['image'])}
+                                    <img src={get(getMarketInfo(), ['info', 'imageURL'])}
                                          alt={'Market'}/>
                                 </div>
                             </Grid>
@@ -257,7 +178,7 @@ function Market() {
                                             <div className={classes.TradeVolume__Details}>
                                                 <TradeVolumeIcon/>
                                                 <div className={classes.TradeVolume__DetailsVal}>
-                                                    {numeral((get(marketDb, ['tradeVolume']) || 0)).format("$0,0.00")}
+                                                    {numeral(get(getMarketInfo(), ["volume", "totalVolume"], 0)).format("$0,0.00")}
                                                 </div>
                                             </div>
                                         </div>
@@ -272,7 +193,7 @@ function Market() {
                                                 Liquidity
                                             </div>
                                             <div className={classes.LiqEndBlock__DetailsVal}>
-                                                {numeral(fromWei(get(marketContractData, 'marketiquidity') || 0)).format("$0,0.00")}
+                                                {numeral(fromWei(get(getMarketInfo(), ['liquidity']) || 0)).format("$0,0.00")}
                                             </div>
                                         </div>
                                 </div>
@@ -285,182 +206,134 @@ function Market() {
                                             Market Ends
                                         </div>
                                         <div className={classes.LiqEndBlock__DetailsVal}>
-                                            {moment(get(marketInfo, 'participationEndTime') * 1000).format('MMMM Do YYYY, h:mm a')}
+                                            {moment(get(getMarketInfo(), ['info', 'participationEndTime']) * 1000).format('MMMM Do YYYY, h:mm a')}
                                         </div>
                                     </div>
                                 </div>
                             </Grid>
                         </Grid>
                     </div>
+                    <MarketStateWidget marketInfo={getMarketInfo()}
+                                       state={getMarketState()}/>
                 </div>
                 <div className={classes.MarketDetails}>
                     <div className={classes.MarketsPage__Header2Container}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={8}>
-                                <div className={classes.MarketDetails__Body}>
-                                    {
-                                        /**
-                                         <div className={classes.Graph}>
-                                        <div className={classes.Graph__Header}>
-                                        <div className={classes.Graph__HeaderTitle}>History</div>
-                                        <div className={classes.Graph__HeaderNav}>
-                                        <div className={classes.Graph__HeaderNavOption}>24h</div>
-                                        <div className={classes.Graph__HeaderNavOption}>7d</div>
-                                        <div className={classes.Graph__HeaderNavOption}>30d</div>
-                                        <div className={classes.Graph__HeaderNavOption}>all</div>
-                                        </div>
-                                        </div>
-                                        <div className={classes.Graph__Deatils}>
-
-                                        </div>
-                                        </div>
-                                        */
-                                    }
-                                    {
-                                        showOutcomeSection() && (
-                                            <MarketOutcome marketState={marketState}
-                                                           marketVersion={marketVersion}
-                                                           optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
-                                                           marketContractAddress={marketContractAddress}/>
-                                        )
-                                    }
-                                    <MarketWalletPosition marketState={marketState}
-                                                          marketVersion={marketVersion}
-                                                          optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
-                                                          walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                          marketContractAddress={marketContractAddress}/>
-                                    <div className={classes.About}>
-                                        <div className={classes.About__Header}>
-                                            About
-                                        </div>
-                                        <div
-                                            className={classes.About__Details}>{get(marketDb, 'description')}</div>
-                                    </div>
-                                    <div className={classes.Resolution}>
-                                        <div className={classes.Resolution__Header}>
-                                            Resolution Source
-                                        </div>
-                                        <div className={classes.Resolution__Details}>
-                                            {get(marketDb, 'sources') && get(marketDb, 'sources').map((entry) => {
-                                                return (
-                                                    <div className={classes.ResolutionLink}>
-                                                        <a href={entry}
-                                                        target={'_blank'}>{entry}</a>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <div className={classes.MarketDetails__Sidebar}>
-                                    {
-                                        (marketDb && marketDb.wallet == accountContext.account) && (
-                                            <div className={classes.CreatorWidegt}>
-                                                <Alert icon={<FlareIcon fontSize="inherit" />}
-                                                    style={{
-                                                        borderRadius: '16px',
-                                                        marginBottom: '15px'
-                                                    }}
-                                                    severity="info">You are the creator of this market</Alert>
-                                            </div>
-                                        )
-                                    }
+                        <div className={classes.MarketDetails__Body}>
+                            {
+                                showOutcomeSection() && (
+                                    <MarketOutcome marketState={getMarketState()}
+                                                   marketInfo={getMarketInfo()}
+                                                   marketContractAddress={marketContractAddress}
+                                                   marketWalletData={getMarketWalletData()}
+                                    />
+                                )
+                            }
+                            {
+                                showOptionsWidget() && (
                                     <div className={classes.MarketWidgetWrap}>
-                                        <MarketStateWidget marketInfo={marketInfo}
-                                                           state={marketState}/>
+                                        <OptionsWidget marketInfo={getMarketInfo()}></OptionsWidget>
                                     </div>
+                                )
+                            }
+                            {
+                                showVoteWidget() && (
                                     <div className={classes.MarketWidgetWrap}>
-                                        <MarketLiquidityWidget marketState={marketState}
-                                                               marketVersion={marketVersion}
-                                                            marketLiquidity={get(marketContractData, 'marketiquidity')}
-                                                            marketContractAddress={marketContractAddress}
-
-                                                            walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                            walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                            onApproveCollateralToken={(type) => {
-                                                                setWalletAllowanceOfCollateralToken(MaxUint256);
-                                                            }}
-                                                            onAddLiquidity={handleOnAddLiquidityComplete}
-                                                            isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-
-                                                            isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                            onApproveOptionToken={(type) => {
-                                                                if(type === 'market') {
-                                                                    setIsWalletOptionTokenApprovedForMarket(true);
-                                                                } else if(type=== 'market_controller') {
-                                                                    setIsWalletOptionTokenApprovedForMarketController(true);
-                                                                }
-                                                            }}
-                                                            walletSharesOfMarket={get(marketContractData, 'walletSharesOfMarket')}
-                                                            walletSharesPercentageOfMarket={get(marketContractData, 'walletSharesPercentageOfMarket')}
-                                                            onRemoveLiquidity={handleOnRemoveLiquidityComplete}
-
+                                        <VoteWidget
+                                            marketInfo={getMarketInfo()}
+                                            marketState={getMarketState()}
+                                            showDonutOnOptionBlock={true}
+                                            marketContractAddress={marketContractAddress}
+                                            marketWalletData={getMarketWalletData()}
                                         />
                                     </div>
-                                    {
-                                        showVoteWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <VoteWidget
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    showDonutOnOptionBlock={true}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showDisputeWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <DisputeWidget
-                                                    walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    onDispute={handleOnDispute}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showRedeemMarketRewardsWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <RedeemMarketRewardsWidget
-                                                    marketState={marketState}
-                                                    marketVersion={marketVersion}
-                                                    walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                    onRedeem={handleOnRedeem}
-                                                    marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
-                                    {
-                                        showBuySellWidget() && (
-                                            <div className={classes.MarketWidgetWrap}>
-                                                <BuySellWidget pricesOfBuy={pricesOfBuy}
-                                                               marketVersion={marketVersion}
-                                                               onTrade={handleOnBuy}
-                                                               onApprove={(type) => {
-                                                                   if (type == 'CollateralToken') {
-                                                                       setWalletAllowanceOfCollateralToken(MaxUint256);
-                                                                   } else if(type === 'OptionToken') {
-                                                                       setIsWalletOptionTokenApprovedForMarket(true);
-                                                                   } else {
-                                                                       setIsWalletOptionTokenApprovedForMarketController(true);
-                                                                   }
-                                                               }}
-                                                               walletBalanceOfCollateralToken={walletBalanceOfCollateralToken}
-                                                               walletAllowanceOfCollateralToken={walletAllowanceOfCollateralToken}
-                                                               isWalletOptionTokenApprovedForMarket={isWalletOptionTokenApprovedForMarket}
-                                                               isWalletOptionTokenApprovedForMarketController={isWalletOptionTokenApprovedForMarketController}
-                                                               walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
-                                                               marketContractAddress={marketContractAddress}/>
-                                            </div>
-                                        )
-                                    }
+                                )
+                            }
+                            {
+                                showDisputeWidget() && (
+                                    <div className={classes.MarketWidgetWrap}>
+                                        <DisputeWidget
+                                            info={getMarketInfo()}
+                                            marketState={getMarketState()}
+                                            onDispute={handleOnDispute}
+                                            marketContractAddress={marketContractAddress}
+                                            marketWalletData={getMarketWalletData()}
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
+                                showRedeemMarketRewardsWidget() && (
+                                    <div className={classes.MarketWidgetWrap}>
+                                        <RedeemMarketRewardsWidget
+                                            info={getMarketInfo()}
+                                            marketState={getMarketState()}
+                                            onRedeem={handleOnRedeem}
+                                            marketContractAddress={marketContractAddress}
+                                            marketWalletData={getMarketWalletData()}
+                                        />
+                                    </div>
+                                )
+                            }
+                            {
+                                showBuySellWidget() && (
+                                    <div className={`${classes.MarketWidgetWrap}`}>
+                                        <BuySellWidget2 marketInfo={getMarketInfo()}
+                                                        onTrade={handleOnTrade}
+                                                        marketContractAddress={marketContractAddress}
+                                        />
+                                    </div>
+                                )
+                            }
+{/*                            <MarketWalletPosition marketState={marketState}
+                                                  optionTokensPercentage={get(marketContractData, ['optionTokensPercentage'])}
+                                                  walletOptionTokensBalance={get(marketContractData, ['walletOptionTokensBalance'])}
+                                                  marketContractAddress={marketContractAddress}/>*/}
+
+                            {
+                                (get(getMarketInfo(), ['creator']) == accountContext.account) && (
+                                    <div className={classes.CreatorWidegt}>
+                                        <Alert icon={<FlareIcon fontSize="inherit" />}
+                                               style={{
+                                                   borderRadius: '16px',
+                                                   marginBottom: '15px'
+                                               }}
+                                               severity="info">You are the creator of this market</Alert>
+                                    </div>
+                                )
+                            }
+                            <div className={classes.MarketWidgetWrap}>
+                                <MarketLiquidityWidget marketState={getMarketState()}
+                                                       marketContractAddress={marketContractAddress}
+                                                       onAddLiquidity={handleOnAddLiquidityComplete}
+                                                       onRemoveLiquidity={handleOnRemoveLiquidityComplete}
+                                                       marketWalletData={getMarketWalletData()}
+
+                                />
+                            </div>
+                            <div className={classes.About}>
+                                <div className={classes.About__Header}>
+                                    About
                                 </div>
-                            </Grid>
-                        </Grid>
+                                <div
+                                    className={classes.About__Details}>{get(getMarketInfo(), ['info', 'description'])}</div>
+                            </div>
+                            <div className={classes.Resolution}>
+                                <div className={classes.Resolution__Header}>
+                                    Resolution Source
+                                </div>
+                                <div className={classes.Resolution__Details}>
+                                    {get(getMarketInfo(), ['info', 'resolveResources'], []).map((entry, index) => {
+                                        return (
+                                            <div key={`resolveResources-${index}`}
+                                                 className={classes.ResolutionLink}>
+                                                <a href={entry}
+                                                   target={'_blank'}>{entry}</a>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -468,4 +341,4 @@ function Market() {
     );
 }
 
-export default Market;
+export default observer(Market);

@@ -16,40 +16,19 @@ import {
 
 import { getDataRan } from './generate-data';
 
+const colors = ["#2E6AFA", "#EB5757", "#EB5751", "#EB5752", "#EB5753", "#EB5754", "#EB5755", "#EB5756", "#EB5757", "#EB5757"];
+
 function OutcomeBlock(props) {
     const classes = useStyles();
     return (
         <div className={classes.OutcomeBlock}>
-            <div className={classes.OutcomeBlock__Chart}>
-                <PieChart
-                    style={{ height: "35px", width: "35px" }}
-                    label={({ dataEntry, index }) => `${dataEntry.title}`}
-                    labelStyle={{
-                        fontSize: "30px",
-                        fontWeight: "700",
-                        fill: "#818B95",
-                        textTransform: "none",
-                    }}
-                    labelPosition={0}
-                    data={[
-                        {
-                            title: "",
-                            value: 100 - (props.value || 0) * 100,
-                            color: "#E9EEF3",
-                        },
-                        {
-                            title: `${props.label}`,
-                            value: (props.value || 0) * 100,
-                            color: `${props.color}`,
-                        },
-                    ]}
-                    lineWidth={25}
-                    rounded
-                />
-            </div>
-            <div className={classes.OutcomeBlock__Val}>
-                {numeral(props.value || 0).format("$0,0.00")}
-            </div>
+            <div className={classes.OutcomeBlock__Square}
+                 style={
+                     {
+                         backgroundColor: props.backgroundColor
+                     }
+                 }></div>
+            <div className={classes.OutcomeBlock__Title}>{props.label}</div>
         </div>
     );
 }
@@ -105,9 +84,6 @@ function MarketOutcome(props) {
     const [isProcessing, setIsProcessing] = useState(false);
 
     const loadMarketInfo = async () => {
-
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        //const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
     };
 
     useEffect(() => {
@@ -119,16 +95,17 @@ function MarketOutcome(props) {
             <div className={classes.MarketOutcomeHeader}>
                 <div className={classes.MarketOutcomeHeader__Val}>Outcome</div>
                 <div className={classes.MarketOutcomeHeader__Progress}>
-                    <OutcomeBlock
-                        label={"Yes"}
-                        value={pricesOfBuy[0]}
-                        color={"#2E6AFA"}
-                    />
-                    <OutcomeBlock
-                        label={"No"}
-                        value={pricesOfBuy[1]}
-                        color={"#EB5757"}
-                    />
+                    {
+                        get(props, ['marketInfo','choices'], []).map((entry, index) => {
+                            return (
+                                <OutcomeBlock
+                                    key={`OutcomeBlock-${index}`}
+                                    label={entry}
+                                    backgroundColor={colors[index]}
+                                />
+                            )
+                        })
+                    }
                 </div>
             </div>
             <div className={classes.MarketOutcomeBody}>

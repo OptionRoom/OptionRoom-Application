@@ -1,79 +1,103 @@
 import React, {useState, useContext, useEffect} from "react";
-import Grid from "@material-ui/core/Grid";
-import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from '@material-ui/icons/Delete';
-import {DateTimePicker, MuiPickersUtilsProvider} from "@material-ui/pickers";
+
+import {
+    DateTimePicker,
+    MuiPickersUtilsProvider
+} from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
-import {get, isEmpty} from "lodash";
-import {useHistory} from "react-router-dom";
+import {
+    get
+} from "lodash";
+import {
+    useHistory
+} from "react-router-dom";
 import swal from "sweetalert";
 import Joi from 'joi';
 import CircularProgress from "@material-ui/core/CircularProgress";
-import {useForm, useFieldArray} from "react-hook-form";
-import {joiResolver} from '@hookform/resolvers/joi';
+import {
+    useForm,
+    useFieldArray
+} from "react-hook-form";
+import {
+    joiResolver
+} from '@hookform/resolvers/joi';
 
 import ChainAlert from '../../components/ChainAlert';
-import {useStyles} from "./styles";
 import OrSelect from './../../components/OrSelect';
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
-import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
-
 import Button from "../../components/Button";
 import Navbar from "../../components/Navbar";
-import ButtonSteps from "../../components/ButtonSteps";
+import CropModal from "../../components/CropModal";
+import TradeInput from "../../components/TradeInput";
 
-import {walletHelper} from "../../shared/wallet.helper";
+import {
+    useStyles
+} from "./styles";
+import {
+    AccountContext
+} from "../../shared/AccountContextProvider";
+
 import {
     toWei,
     fromWei,
-    formatTradeValue
+    formatTradeValue,
+    convertBase64ToBlob
 } from "../../shared/helper";
 
 import {
-    uploadMarketImage,
-    createMarket,
-    createAuthOnFirebase,
-    signInUserWithToken,
-    signoutUser, getIfWalletIsWhitelistedForBeta
-} from "../../shared/firestore.service";
-import NotWhitelisted from "../../components/NotWhitelisted";
-import CropModal from "../../components/CropModal";
-import {useGetMarketCategories} from "../../shared/hooks";
-import TradeInput from "../../components/TradeInput";
-import {getContractAddress, getWalletBalanceOfContract} from '../../shared/contracts/contracts.helper';
-import ConfigHelper from "../../shared/config.helper";
-import {ChainNetworks, GovernanceTypes} from "../../shared/constants";
+    getMarketCreationConfig
+} from '../../methods/or-manager.methods';
 
-const walletHelperInsatnce = walletHelper();
+import {
+    createMarketProposal
+} from '../../methods/market-controller.methods';
+
+import {
+    uploadMarketImageToIpfs,
+} from "../../shared/ipfs.service";
+import {
+    useGetIsChainSupported,
+    useGetMarketCategories
+} from "../../shared/hooks";
+import {
+    getContractAddress
+} from '../../shared/contracts/contracts.helper';
+import {
+    ContractNames,
+    ChainNetworks,
+    GovernanceTypes
+} from "../../shared/constants";
+import RepeaterField from "../../components/RepeaterField";
+import {
+    formatAddress,
+    SmartContractsContext,
+    SmartContractsContextFunctions
+} from "../../shared/SmartContractsContextProvider";
+import {smartState} from "../../shared/SmartState";
+
+const sourcesFieldName = 'sources';
+const choicesFieldName = 'choices';
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function CreateMarket() {
     const classes = useStyles();
     const history = useHistory();
-
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
-
-    const [isCropModalOpen, setIsCropModalOpen] = useState(false);
-    const [isWalletWhitelistedForBeta, setIsWalletWhitelistedForBeta] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
     const accountContext = useContext(AccountContext);
+    const smartContractsContext = useContext(SmartContractsContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
+    const [isCropModalOpen, setIsCropModalOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [isCreatingMarket, setIsCreatingMarket] = useState(false);
-    const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET);
-
-    const [walletBalanceOfCollateralToken, setWalletBalanceOfCollateralToken] = useState(0);
-    const [walletAllowanceOfCollateralTokenForMarketRouter, setWalletAllowanceOfCollateralTokenForMarketRouter] = useState(0);
-    const [walletAllowanceOfRoomTokenForMarketRouter, setWalletAllowanceOfRoomTokenForMarketRouter] = useState(0);
-    const [walletRoomBalance, setWalletRoomBalance] = useState(0);
+    const marketCategories = useGetMarketCategories(GovernanceTypes.MARKET, accountContext.account);
     const [croppingImg, setCroppingImg] = useState(null);
     const [marketCreationFees, setMarketCreationFees] = useState(0);
     const [marketMinLiq, setMarketMinLiq] = useState(1000);
 
     const {control, isValid, register, setValue, getValues, handleSubmit, watch, formState: {isDirty, errors}} = useForm({
         defaultValues: {
-            sources: [{value: ''}],
+            [sourcesFieldName]: [{value: ''}],
+            [`${choicesFieldName}`]: [{value: 'Yes'}, {value: 'No'}],
             liquidity: 0
         },
         resolver: joiResolver(Joi.object({
@@ -89,17 +113,26 @@ function CreateMarket() {
                 .max(4000)
                 .required()
                 .label('Description'),
-            sources: Joi.array()
+            [sourcesFieldName]: Joi.array()
                 .min(1)
                 .items(
                     Joi.object().keys({
-                        name: Joi.string()
+                        value: Joi.string()
                             .pattern(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/)
                             .label('Source')
                             .required()
                             .messages({
                                 'string.pattern.base': `"Source" should be a valid URL`
                             })
+                    })
+                ),
+            [choicesFieldName]: Joi.array()
+                .min(2)
+                .items(
+                    Joi.object().keys({
+                        value: Joi.string()
+                            .label('Choice')
+                            .required()
                     })
                 ),
             category: Joi.any()
@@ -110,7 +143,7 @@ function CreateMarket() {
                 .label('End date'),
             liquidity: Joi.number()
                 .min(marketMinLiq)
-                .max(parseFloat(walletBalanceOfCollateralToken ? fromWei(walletBalanceOfCollateralToken) : 0))
+                .max(parseFloat(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))))
                 .required()
                 .label('Liquidity'),
             image: Joi.any()
@@ -119,66 +152,49 @@ function CreateMarket() {
         }))
     });
 
-    const {
-        fields: sourceFields,
-        append: appendSource,
-        remove: removeSource
-    } = useFieldArray({
+    const sourcesFieldArray = useFieldArray({
         control,
-        name: "sources",
+        name: sourcesFieldName,
     });
 
+    const choicesFieldArray = useFieldArray({
+        control,
+        name: choicesFieldName,
+    });
 
-    const loadWalletBalanceOfCollateralToken = async () => {
-        const marketApis = new MarketAPIs();
-        const balanceOfColletralToken = await marketApis.getWalletBalanceOfCollateralToken(accountContext.account);
-        setWalletBalanceOfCollateralToken(balanceOfColletralToken);
-
-        const walletAllowanceOfCollateralTokenForMarketRouter = await marketApis.getWalletAllowanceOfCollateralTokenForMarketRouter(accountContext.account);
-        setWalletAllowanceOfCollateralTokenForMarketRouter(walletAllowanceOfCollateralTokenForMarketRouter);
-
-        const walletAllowanceOfRoomTokenForMarketRouter = await marketApis.getWalletAllowanceOfRoomTokenForMarketRouter(accountContext.account);
-        setWalletAllowanceOfRoomTokenForMarketRouter(walletAllowanceOfRoomTokenForMarketRouter);
-
-        const walletRoomBalance = await getWalletBalanceOfContract(accountContext.account, 'room');
-        setWalletRoomBalance(walletRoomBalance);
-    };
-
-    const loadWalletData = async () => {
-        loadWalletBalanceOfCollateralToken();
-    };
-
-    const handleChangeSelectedFile = (event) => {
+    const handleChangeSelectedFile = async (event) => {
         setCroppingImg(event.target.files[0]);
         setIsCropModalOpen(true);
     };
 
     const handleOnCrop = async (src) => {
         setValue("image", src, { shouldValidate: true });
-        const imageUpload = await uploadMarketImage(src);
-
-    } ;
+    };
 
     const approveStableCoin = async () => {
         setIsCreatingMarket(true);
-        const marketApis = new MarketAPIs();
-        await marketApis.approveCollateralTokenForMarketRouter(accountContext.account);
-        loadWalletData();
-        setIsCreatingMarket(false);
-        return;
+        try {
+            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ContractNames.marketControllerV4]);
+        } catch (e) {
+
+        } finally {
+            setIsCreatingMarket(false);
+        }
     };
 
     const approveRoomToken = async () => {
         setIsCreatingMarket(true);
-        const marketApis = new MarketAPIs();
-        await marketApis.approveRoomTokenForMarketRouter(accountContext.account);
-        loadWalletData();
-        setIsCreatingMarket(false);
-        return;
+        try {
+            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.room, ContractNames.marketControllerV4]);
+        } catch (e) {
+
+        } finally {
+            setIsCreatingMarket(false);
+        }
     };
 
     const handleCreateMarket = async (data) => {
-        if(parseFloat(fromWei(walletRoomBalance)) < parseFloat(fromWei(marketCreationFees))) {
+        if(parseFloat(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0))) < parseFloat(fromWei(marketCreationFees))) {
             swal(
                 "Insufficient funds",
                 `You must hold at least ${fromWei(marketCreationFees)} ROOM Tokens to create the market`,
@@ -189,48 +205,30 @@ function CreateMarket() {
 
         try {
             setIsCreatingMarket(true);
-
-            await handleLogin();
-            const marketApis = new MarketAPIs();
-            const imageUpload = await uploadMarketImage(data.image);
-
+            const imgBlob = await convertBase64ToBlob(data.image);
+            const imageUpload = await uploadMarketImageToIpfs(imgBlob);
             const resolveTimestamp = data.endDate.clone().add(24, 'hours').unix();
-            const collateralTokenAddress = getContractAddress('usdt');
-            const sources = data.sources.map((entry) => entry.name);
+            const collateralTokenAddress = getContractAddress(ContractNames.busd);
+            const sources = data.sources.map((entry) => entry.value);
+            const categories = data.category.map((entry) => entry.value);
+            const choices = data.choices.map((entry) => entry.value);
 
-            //wallet, category, description, endTimestamp, resolveTimestamp, collateralTokenAddress, initialLiquidity, image, sources, title
-            const createdMarket = await createMarket(
+            const marketResult = await createMarketProposal(
                 accountContext.account,
-                {
-                    id: data.category.value,
-                    title: data.category.label,
-                },
-                data.description.trim(),
+                collateralTokenAddress,
                 data.endDate.unix(),
                 resolveTimestamp,
-                collateralTokenAddress,
-                data.liquidity,
-                imageUpload,
-                sources,
-                data.title.trim()
-            );
-
-            //wallet, question, marketMetadatasID, participationEndTime, resolvingEndTime, collateralTokenAddress, initialLiquidity, resolveResources
-            const newMarketContract = await marketApis.createMarket(
-                accountContext.account,
-                data.title.trim(),
-                createdMarket.id,
-                data.endDate.unix(),
-                resolveTimestamp,
-                collateralTokenAddress,
                 toWei(data.liquidity),
-                JSON.stringify(sources)
+                data.title.trim(),
+                choices,
+                imageUpload,
+                data.description.trim(),
+                sources,
+                categories
             );
-
-            const marketContractAddressVal = await marketApis.getMarketById(accountContext.account, createdMarket.id);
 
             //Redirect to market page after creation
-            history.push(`/markets/${marketContractAddressVal}`);
+            history.push(`/markets/${get(marketResult, ['events', 'MarketCreated', 'returnValues', 'marketAddress'])}`);
         } catch (e) {
             console.log("Something went wrong!", e);
         } finally {
@@ -238,37 +236,25 @@ function CreateMarket() {
         }
     };
 
-    const handleLogin = async () => {
-        const message = "OptionRoom login";
-        const sign = await walletHelperInsatnce.signWallet(message);
-        const token = await createAuthOnFirebase(accountContext.account, message, sign);
-        const userDetails = await signInUserWithToken(token);
-    };
-
-    const handleLogout = async () => {
-        signoutUser();
-    };
-
     useEffect(() => {
         const init = async () => {
             if (accountContext.account) {
-                const marketApis = new MarketAPIs();
-                const marketCreationFees = await marketApis.getMarketCreationFees(accountContext.account);
-                const getMarketMinShareLiq = await marketApis.getMarketMinShareLiq(accountContext.account);
-                setMarketMinLiq(parseFloat(fromWei(getMarketMinShareLiq)));
-                setMarketCreationFees(marketCreationFees);
-                loadWalletData();
+                const marketCreationConfig = await getMarketCreationConfig(accountContext.account);
+                setMarketMinLiq(parseFloat(fromWei(marketCreationConfig.minLiquidity)));
+                setMarketCreationFees(marketCreationConfig.marketCreationFees);
                 setIsLoading(false);
             }
         };
 
-        if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+        if(isChainSupported) {
             init();
         }
-    }, [accountContext.account, accountContext.chainId]);
+    }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     const renderCreateBtn = () => {
-        if (walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
+        //walletAllowanceOfCollateralTokenForMarketRouter
+
+        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.busd), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -279,7 +265,7 @@ function CreateMarket() {
             )
         }
 
-        if (walletAllowanceOfRoomTokenForMarketRouter <= 0) {
+        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.room), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -299,7 +285,7 @@ function CreateMarket() {
         )
     }
 
-    if(!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+    if(!isChainSupported) {
         return (
             <ChainAlert/>
         )
@@ -320,32 +306,6 @@ function CreateMarket() {
             </div>
         )
     }
-
-    if(!isWalletWhitelistedForBeta) {
-        return (
-            <NotWhitelisted/>
-        )
-    }
-
-/*    const formButtons = [];
-
-    if(walletAllowanceOfCollateralTokenForMarketRouter <= 0) {
-        formButtons.push((
-            <Button size={'large'}
-                    isProcessing={isCreatingMarket}
-                    color={'primary'}
-                    type={'submit'}
-                    fullWidth={true}>Approve</Button>
-        ));
-    }
-
-    formButtons.push((
-        <Button size={'large'}
-                isProcessing={isCreatingMarket}
-                color={'primary'}
-                type={'submit'}
-                fullWidth={true}>Create</Button>
-    ));*/
 
     return (
         <>
@@ -380,65 +340,79 @@ function CreateMarket() {
                                 </div>
                             </div>
                             <div className={classes.CreateMarket__Section}>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={6}>
-                                        <div className={classes.CreateMarket__Field}>
+
+                                <div className={classes.CreateMarket__Field}>
+                                    <div
+                                        className={classes.CreateMarket__FieldTitle}>
+                                        Category <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div
+                                        className={`${classes.CreateMarket__FieldBody} ${classes.CreateMarket__CategoryField}`}>
+                                        <OrSelect onChange={(e) => {
+                                            setValue("category", e, { shouldValidate: true });
+                                        }}
+                                                  isMulti={true}
+                                                  options={marketCategories.map((entry) => {
+                                                      return {
+                                                          value: entry.id,
+                                                          label: entry.title
+                                                      };
+                                                  })}/>
+                                        {errors.category?.message && (
                                             <div
-                                                className={classes.CreateMarket__FieldTitle}>
-                                                Category <span
-                                                className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                                className={classes.CreateMarket__FieldBodyFieldError}>
+                                                {errors.category?.message}
                                             </div>
-                                            <div
-                                                className={`${classes.CreateMarket__FieldBody} ${classes.CreateMarket__CategoryField}`}>
-                                                <OrSelect onChange={(e) => {
-                                                    setValue("category", e, { shouldValidate: true });
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className={classes.CreateMarket__Field}>
+                                    <div
+                                        className={classes.CreateMarket__FieldTitle}>End
+                                        Date <span
+                                            className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div
+                                        className={`${classes.CreateMarket__FieldBody} ${classes.DateTimePickerField}`}>
+                                        <MuiPickersUtilsProvider
+                                            utils={MomentUtils}>
+                                            <DateTimePicker
+                                                format="yyyy/MM/DD hh:mm a"
+                                                variant="inline"
+                                                value={getValues('endDate') || moment().add(1, 'days')}
+                                                onChange={(e) => {
+                                                    setValue("endDate", e, { shouldValidate: true });
                                                 }}
-                                                        options={marketCategories.map((entry) => {
-                                                            return {
-                                                                value: entry.id,
-                                                                label: entry.title
-                                                            };
-                                                        })}/>
-                                                {errors.category?.message && (
-                                                    <div
-                                                        className={classes.CreateMarket__FieldBodyFieldError}>
-                                                        {errors.category?.message}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <div className={classes.CreateMarket__Field}>
+                                                minDate={moment().add(1, 'days')}
+                                            />
+                                        </MuiPickersUtilsProvider>
+                                        {errors.endDate?.message && (
                                             <div
-                                                className={classes.CreateMarket__FieldTitle}>End
-                                                Date <span
-                                                    className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                                className={classes.CreateMarket__FieldBodyFieldError}>
+                                                {errors.endDate?.message}
                                             </div>
-                                            <div
-                                                className={`${classes.CreateMarket__FieldBody} ${classes.DateTimePickerField}`}>
-                                                <MuiPickersUtilsProvider
-                                                    utils={MomentUtils}>
-                                                    <DateTimePicker
-                                                        format="yyyy/MM/DD hh:mm a"
-                                                        variant="inline"
-                                                        value={getValues('endDate') || moment().add(1, 'days')}
-                                                        onChange={(e) => {
-                                                            setValue("endDate", e, { shouldValidate: true });
-                                                        }}
-                                                        minDate={moment().add(1, 'days')}
-                                                    />
-                                                </MuiPickersUtilsProvider>
-                                                {errors.endDate?.message && (
-                                                    <div
-                                                        className={classes.CreateMarket__FieldBodyFieldError}>
-                                                        {errors.endDate?.message}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Grid>
-                                </Grid>
+                                        )}
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className={classes.CreateMarket__Section}>
+                                <div
+                                    className={`${classes.CreateMarket__Field}`}>
+                                    <div className={classes.CreateMarket__FieldTitle}>
+                                        Choices <span
+                                        className={classes.CreateMarket__FieldTitleRequired}>*</span>
+                                    </div>
+                                    <div className={classes.CreateMarket__FieldBody}>
+                                        <RepeaterField fieldArray={choicesFieldArray}
+                                                       fieldName={choicesFieldName}
+                                                       errors={errors}
+                                                       minEntries={2}
+                                                       register={register}/>
+                                    </div>
+                                </div>
                             </div>
                             <div className={classes.CreateMarket__Section}>
                                 <div className={classes.CreateMarket__Field}>
@@ -459,63 +433,17 @@ function CreateMarket() {
                             </div>
                             <div className={classes.CreateMarket__Section}>
                                 <div
-                                    className={`${classes.CreateMarket__Field} ${classes.CreateMarket__FieldSources}`}>
+                                    className={`${classes.CreateMarket__Field}`}>
                                     <div className={classes.CreateMarket__FieldTitle}>
                                         References/Sources <span
                                         className={classes.CreateMarket__FieldTitleRequired}>*</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
-                                        <div className={classes.CreateMarket__Sources}>
-                                            {sourceFields.map((entry, index) => {
-                                                return (
-                                                    <>
-                                                        <div key={`Source-${index}`}>
-                                                            <input type={'text'}
-                                                                   key={entry.id}
-                                                                   {...register(`sources.${index}.name`)}/>
-                                                            {
-                                                                index === 0 ? (
-                                                                    <Button size={'medium'}
-                                                                            color={'black'}
-                                                                            onClick={() => {
-                                                                                appendSource({
-                                                                                    name: ""
-                                                                                });
-                                                                            }}>
-                                                                        <AddIcon
-                                                                            className={
-                                                                                classes.EarnCard__Action__Btn_Add__Icon
-                                                                            }
-                                                                        ></AddIcon>
-                                                                    </Button>
-                                                                ) : (
-                                                                    <Button size={'medium'}
-                                                                            color={'red'}
-                                                                            onClick={() => {
-                                                                                removeSource(index);
-                                                                            }}>
-                                                                        <DeleteIcon
-                                                                            className={
-                                                                                classes.RemoveSourceIcon
-                                                                            }
-                                                                        ></DeleteIcon>
-                                                                    </Button>
-                                                                )
-                                                            }
-                                                        </div>
-                                                        {
-                                                            get(errors, ['sources', index, 'name', 'message']) && (
-                                                                <div key={`Source2-${index}`}
-                                                                     className={classes.CreateMarket__FieldBodyFieldError}>
-                                                                    {get(errors, ['sources', index, 'name', 'message'])}
-
-                                                                </div>
-                                                            )
-                                                        }
-                                                    </>
-                                                );
-                                            })}
-                                        </div>
+                                        <RepeaterField fieldArray={sourcesFieldArray}
+                                                       fieldName={sourcesFieldName}
+                                                       errors={errors}
+                                                       minEntries={1}
+                                                       register={register}/>
                                     </div>
                                 </div>
                             </div>
@@ -526,10 +454,10 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(walletBalanceOfCollateralToken))})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
-                                        <TradeInput max={fromWei(walletBalanceOfCollateralToken)}
+                                        <TradeInput max={fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}
                                                     min={marketMinLiq}
                                                     value={getValues('liquidity') || 0}
                                                     onValidityUpdate={(valid) => {
@@ -603,18 +531,12 @@ function CreateMarket() {
                                 </div>
                             </div>
                         </div>
-                        {
-                            /**
-                             <div className={`${classes.CreateMarketBox} ${classes.CreateMarketBoxInfo}`}>
-                             <div>Info</div>
-                             <div></div>
-                             </div>
-                             */
-                        }
                         <div className={classes.CreateBtnWrap}>
                             {renderCreateBtn()}
                         </div>
-                        <div className={classes.CreateNote}>Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(walletRoomBalance, null, 2)}</div>
+                        <div className={classes.CreateNote}>
+                            Creating a market costs {fromWei(marketCreationFees)} ROOM, your ROOM balance is: {fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room))], 0), null, 2)}
+                        </div>
                     </form>
                     <CropModal isOpen={isCropModalOpen}
                                onCrop={handleOnCrop}

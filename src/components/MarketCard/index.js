@@ -111,7 +111,7 @@ function MarketCard(props) {
             style={
                 props.isFeatured
                     ? {
-                          backgroundImage: `url(${get(market, ["dbData", "image"])})`,
+                          backgroundImage: `url(${get(market, ["info", "imageURL"])})`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
                           backgroundRepeat: "no-repeat",
@@ -127,7 +127,7 @@ function MarketCard(props) {
                 <div className={classes.TitleWrap}>
                     <div className={classes.CatStateLine}>
                         <div className={classes.Cat}>
-                            {get(market, ["dbData", "category", "title"])}
+                            {get(market, ['categories'], []).join(', ')}
                         </div>
                         <div className={classes.State}
                              style={
@@ -145,7 +145,7 @@ function MarketCard(props) {
                 <div
                     className={classes.Avatar}
                 >
-                    <img src={get(market, ["dbData", "image"])}/>
+                    <img src={get(market, ["info", "imageURL"])}/>
                 </div>
             </div>
             <div className={classes.SubDetails}>
@@ -156,27 +156,12 @@ function MarketCard(props) {
                     <div>
                         <div className={classes.Volume__Title}>Volume</div>
                         <div className={classes.Volume__Val}>
-                            {numeral(get(market, ["dbData", "tradeVolume"], 0)).format("$0,0.00")}
+                            {numeral(get(market, ["volume", "totalVolume"], 0)).format("$0,0.00")}
                         </div>
                     </div>
                 </div>
                 <div className={classes.OptionsWrap}>
-                    <div className={classes.Option}>
-                        <div className={classes.Option__Title}>YES</div>
-                        <div className={classes.Option__Val}>
-                            {numeral(
-                                get(market, ["pricesOfBuy", "yes"], 0)
-                            ).format("$0,0.00")}
-                        </div>
-                    </div>
-                    <div className={classes.Option}>
-                        <div className={classes.Option__Title}>NO</div>
-                        <div className={classes.Option__Val}>
-                            {numeral(
-                                get(market, ["pricesOfBuy", "no"], 0)
-                            ).format("$0,0.00")}
-                        </div>
-                    </div>
+                    {`${get(market, ['info', 'choices'], []).length} options`}
                 </div>
             </div>
             {

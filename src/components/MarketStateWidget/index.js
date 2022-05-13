@@ -123,16 +123,14 @@ function MarketStateWidget(props) {
                  backgroundColor: getMarketStateColor(),
                  color: getMarketStateTxtColor()
              }}>
-            <div className={classes.MarketStateWidget__Header}>{getMarketStateText()}</div>
-            <div>{getVoeteHeadline()}</div>
-            {
+            <div className={classes.MarketStateWidget__Header}>{getMarketStateText()}: {getVoeteHeadline()} {
                 ["0", "2", "4", "6", "8"].indexOf(`${state}`) === -1 && (
                     <Countdown
                         date={getCountDownEndTime()}
                         renderer={renderer}
                     />
                 )
-            }
+            }</div>
         </div>
     );
 }

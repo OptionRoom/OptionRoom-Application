@@ -3,9 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles((theme) => ({
     MarketStateWidget: {
         background: theme.isDark ? "#252E39" : "#fff",
-        boxShadow: "0px 8px 80px rgba(95, 140, 182, 0.08)",
-        borderRadius: "15px",
-        padding: "29px 35px",
+        padding: "29px 15px",
     },
     MarketStateWidget__Header: {
         fontStyle: "normal",
@@ -14,7 +12,7 @@ export const useStyles = makeStyles((theme) => ({
         lineHeight: "18px",
         letterSpacing: "0.05em",
         textTransform: "uppercase",
-        marginBottom: '27px',
+       // marginBottom: '27px',
     },
     CounterWrapper: {
         marginTop: '15px',

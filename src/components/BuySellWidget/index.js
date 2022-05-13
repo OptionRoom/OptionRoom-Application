@@ -13,11 +13,13 @@ import {fromWei, toWei, formatTradeValue} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 
 import {
-    approveContractForSpender
+    approveContractForSpender, getContractAddress
 } from '../../shared/contracts/contracts.helper';
 
 import TradeInput from '../../components/TradeInput';
 import OrTab from "../OrTab";
+import {buyMarketOptions, calcSellAmount, getBuyAmount} from "../../methods/market-controller.methods";
+import {ContractNames} from "../../shared/constants";
 
 export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount, tradeType, option, marketVersion) => {
     const [buySellDetails, setBuySellDetails] = useState({
@@ -28,43 +30,26 @@ export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount
 
     useEffect(() => {
         const init = async () => {
-            const optionIndex = option.toLowerCase() === 'yes' ? 0 : 1;
-            const marketApis = new MarketAPIs(marketVersion);
-            if(tradeType === 'buy') {
-                const numberOfBoughtTokens = await marketApis.getOptionTokensCountOfBuy(
-                    wallet,
-                    marketContractAddress,
-                    toWei(tradeAmount),
-                    optionIndex
-                );
+            const numberOfBoughtTokens = await getBuyAmount(
+                wallet,
+                marketContractAddress,
+                getContractAddress(ContractNames.busd),
+                toWei(tradeAmount),
+                option
+            );
 
-                const averagePrice = parseFloat(tradeAmount)/fromWei(numberOfBoughtTokens);
-                const estShares = fromWei(numberOfBoughtTokens);
-                const maxRoi = (parseFloat(fromWei(numberOfBoughtTokens)) - parseFloat(tradeAmount)) / parseFloat(tradeAmount);
+            const averagePrice = parseFloat(tradeAmount)/fromWei(numberOfBoughtTokens);
+            const estShares = fromWei(numberOfBoughtTokens);
+            const maxRoi = (parseFloat(fromWei(numberOfBoughtTokens)) - parseFloat(tradeAmount)) / parseFloat(tradeAmount);
 
-                setBuySellDetails({
-                    averagePrice,
-                    estShares,
-                    maxRoi
-                });
-            } else if(tradeType === 'sell') {
-                const amountOfColletralTokenOutput = await marketApis.getCollateralTokensCountOfSell(
-                    wallet,
-                    marketContractAddress,
-                    toWei(tradeAmount),
-                    optionIndex
-                );
-
-                const averagePrice = parseFloat(fromWei(amountOfColletralTokenOutput))/parseFloat(tradeAmount);
-                const totalSellPrice = fromWei(amountOfColletralTokenOutput);
-                setBuySellDetails({
-                    averagePrice,
-                    totalSellPrice
-                });
-            }
+            setBuySellDetails({
+                averagePrice,
+                estShares,
+                maxRoi
+            });
         };
 
-        if (wallet && marketContractAddress && (tradeAmount && tradeAmount >= 0) && option) {
+        if (wallet && marketContractAddress && (tradeAmount && tradeAmount >= 0) && (option || option === 0)) {
             init();
         }
 
@@ -77,11 +62,26 @@ export const useGetMaxTradeSize = (wallet, marketContractAddress, tradeType, tra
     const [maxTradeSize, setMaxTradeSize] = useState(0);
 
     useEffect(() => {
-        if (tradeType === 'buy') {
-            setMaxTradeSize(parseFloat(fromWei(walletBalanceOfCollateralToken)));
-        } else {
-            setMaxTradeSize(parseFloat(fromWei(get(walletOptionTokensBalance, [tradeOption]) || 0)));
-        }
+        const init = async () => {
+            if (tradeType === 'buy') {
+                setMaxTradeSize(parseFloat(fromWei(walletBalanceOfCollateralToken)));
+            } else {
+/*                const firstCalcAmount = await calcSellAmount(
+                    wallet,
+                    marketContractAddress,
+                    getContractAddress(ContractNames.busd),
+                    toWei(1),
+                    tradeOption
+                );
+                console.log({firstCalcAmount});
+
+                const maxTrade = parseFloat(fromWei(get(walletOptionTokensBalance, [tradeOption]) || 0))/parseFloat(fromWei(firstCalcAmount.outcomeTokenSellAmount));
+                console.log({maxTrade});*/
+                setMaxTradeSize(parseFloat(fromWei(get(walletOptionTokensBalance, [tradeOption]) || 0)));
+            }
+        };
+
+        init();
 
     }, [wallet, marketContractAddress, tradeType, tradeOption, walletBalanceOfCollateralToken, walletOptionTokensBalance]);
 
@@ -98,11 +98,11 @@ function BuySellWidget(props) {
     //Buy & Sell
     const [selectedTradeType, setSelectedTradeType] = useState('buy');
     const [tradeInput, setTradeInput] = useState(0);
-    const [selectedTradeOption, setSelectedTradeOption] = useState('Yes');
+    const [selectedTradeOption, setSelectedTradeOption] = useState(0);
     const [isTradeInProgress, setIsTradeInProgress] = useState(false);
     const [isTradeDisabled, setIsTradeDisabled] = useState(true);
     const buySellDetails = useGetBuySellPosition(accountContext.account, props.marketContractAddress, tradeInput, selectedTradeType, selectedTradeOption, props.marketVersion);
-    const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeType, selectedTradeOption === 'Yes' ? 0 : 1 , props.walletBalanceOfCollateralToken, props.walletOptionTokensBalance);
+    const maxTradeSize = useGetMaxTradeSize(accountContext.account, props.marketContractAddress, selectedTradeType,  selectedTradeOption , props.walletBalanceOfCollateralToken, props.walletOptionTokensBalance);
 
     const handleChangeTradeType = (newType) => {
         setSelectedTradeType(newType);
@@ -110,19 +110,27 @@ function BuySellWidget(props) {
     };
 
     const startTrade = async () => {
-        const tradeOption = selectedTradeOption.toLowerCase() === 'yes' ? 0 : 1;
         setIsTradeInProgress(true);
         try {
             if (selectedTradeType === 'buy') {
                 if (props.walletAllowanceOfCollateralToken == 0) {
-                    await approveContractForSpender(accountContext.account, 'usdt', 'market_controller');
+                    await approveContractForSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
                     props.onApprove && props.onApprove('CollateralToken');
                 } else {
-                    const marketAPIs = new MarketAPIs(props.marketVersion);
-                    await marketAPIs.buy(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
+                    //wallet, marketAddress, tokenAddress, investmentAmount, outcomeIndex, minOutcomeTokensToBuy
+                    await buyMarketOptions(
+                        accountContext.account,
+                        props.marketContractAddress,
+                        getContractAddress(ContractNames.busd),
+                        toWei(tradeInput),
+                        selectedTradeOption,
+                        0
+                    );
                     props.onTrade && props.onTrade();
                 }
             } else {
+                const tradeOption = selectedTradeOption.toLowerCase() === 'yes' ? 0 : 1;
+
                 const marketAPIs = new MarketAPIs(props.marketVersion);
                 if (props.isWalletOptionTokenApprovedForMarketController) {
                     await marketAPIs.sell(accountContext.account, props.marketContractAddress, toWei(tradeInput), tradeOption);
@@ -166,15 +174,18 @@ function BuySellWidget(props) {
                 </div>
                 <div className={classes.Options__Options}>
                     {
-                        ['Yes', 'No'].map((entry, index) => {
+                        get(props.marketInfo, ['choices'], []).map((entry, index) => {
                             const averagePrice = numeral(get(props.pricesOfBuy, [index]) || 0).format("$0,0.00");
                             return (
                                 <OptionBlock key={`OptionBlock-${index}`}
-                                             isSelected={selectedTradeOption === entry}
-                                             onClick={(value) => setSelectedTradeOption(value)}
+                                             isSelected={selectedTradeOption === index}
+                                             onClick={(value) => {
+                                                 setSelectedTradeOption(value);
+                                             }}
                                              title={entry}
                                              showValueInChoice={true}
-                                             value={averagePrice}/>
+                                             value={averagePrice}
+                                             optionValue={index}/>
                             )
                         })
                     }

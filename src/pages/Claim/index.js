@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from "react";
-import {makeStyles, withStyles} from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
 import {
     sum
 } from 'lodash';
@@ -7,16 +7,13 @@ import {
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 import LinearProgress from "@material-ui/core/LinearProgress";
 import Button from "../../components/Button";
 
 import {useStyles} from "./styles";
-import {OptionroomThemeContext} from "../../shared/OptionroomThemeContextProvider";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import ConnectButton from "../../components/ConnectButton";
 import Navbar from "../../components/Navbar";
@@ -29,6 +26,7 @@ import {fromWei, getItemFromLocalStorage, storeItemInLocalStorage} from "../../s
 import ClaimAPIs from './../../shared/contracts/ClaimAPIs';
 import {ChainNetworks} from './../../shared/constants';
 import Alert from "@material-ui/lab/Alert";
+import {useGetIsChainSupported} from "../../shared/hooks";
 
 const BorderLinearProgress = withStyles((theme) => ({
     root: {
@@ -45,11 +43,11 @@ const BorderLinearProgress = withStyles((theme) => ({
 }))(LinearProgress);
 
 const SELECTED_POOL_NAME = "selectedClaimPool";
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.ROPSTEN, ChainNetworks.LOCAL_CHAIN];
 
 function Claim() {
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
     const accountContext = useContext(AccountContext);
+    const isChainSupported = useGetIsChainSupported(supportedChains);
 
     const classes = useStyles();
     const [selectedPool, setSelectedPool] = useState(getItemFromLocalStorage(SELECTED_POOL_NAME) || 'rewards');
@@ -182,7 +180,7 @@ function Claim() {
 
     useEffect(() => {
         if (accountContext.account) {
-            if(accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) {
+            if(isChainSupported) {
                 loadClaimData();
                 loadRewardsData();
             }
@@ -215,7 +213,7 @@ function Claim() {
                 }
             />
             {
-                (!accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN)) && (
+                (!isChainSupported) && (
                     <Alert
                         elevation={6}
                         variant="filled"
@@ -270,16 +268,6 @@ function Claim() {
                                             />
                                         </div>
                                     </div>
-                                    {/*                        <div
-                            className={classes.UnlockProgress__Warn}
-                        >
-                            Your locked $ROOM is worth $508,415.66
-                            <br/>
-                            <br/>
-                            When this unlocks it will earn you
-                            $464.29 per day for 3 years. The
-                            equivalent of $169,464.10 per year
-                        </div>*/}
                                     <div className={classes.ClaimDetails}>
                                         <div>
                                             <div>Already Claimed</div>

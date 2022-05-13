@@ -5,18 +5,16 @@ import { get } from "lodash";
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
 
 import { useStyles } from "./styles";
-import OracleApis from "../../../shared/contracts/OracleApis";
-import {useGetFilteredMarkets} from "../hooks";
+import {useGetFilteredMarkets} from '../../Markets/hooks';
 import {AccountContext} from "../../../shared/AccountContextProvider";
-import GovernanceCard from "../../../components/GovernanceCard";
 import {ChainNetworks} from "../../../shared/constants";
 import ChainAlert from "../../../components/ChainAlert";
 import OrLoader from "../../../components/OrLoader";
-import MarketAPIs from "../../../shared/contracts/MarketAPIs";
 import MarketCard from "../../../components/MarketCard";
 import {useGetIsChainSupported} from "../../../shared/hooks";
+import {getAllMarkets} from "../../../methods/market-controller.methods";
 
-const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN];
+const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.LOCAL_CHAIN];
 
 function GovernanceMarket(props) {
     const classes = useStyles();
@@ -26,28 +24,34 @@ function GovernanceMarket(props) {
     const [markets, setMarkets] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const accountContext = useContext(AccountContext);
-    //(marketsContracts , searchQuery, category, sortBy, state)
+    const tradedOnly = false;
+    const [tradedByWallet, setTradedByWallet] = useState([]);
+
     const filteredProposals = useGetFilteredMarkets(
         markets,
         filterDetails.name,
         filterDetails.category,
         filterDetails.sort,
+        tradedOnly,
         filterDetails.state.id,
+        tradedByWallet
     );
+
     const isChainSupported = useGetIsChainSupported(supportedChains);
 
     useEffect(() => {
         const init = async () => {
 
             setIsLoading(true);
-            const marketApis = new MarketAPIs();
-            const marketContracts = await marketApis.getAllMarkets(
+            const marketContracts = await getAllMarkets(
                 accountContext.account,
                 true,
                 true,
                 false,
+                true,
                 true
             );
+
             setMarkets(marketContracts);
             setIsLoading(false);
         };

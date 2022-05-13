@@ -1,10 +1,6 @@
 import React, {useMemo, useContext, useEffect, useState} from "react";
-import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
-import ABCWhyteMediumWoff2 from './assets/fonts/ABCWhyte-Medium.woff2';
-import ABCWhyteRegularWoff from './assets/fonts/ABCWhyte-Regular.woff';
-import ABCWhyteRegularWoff2 from './assets/fonts/ABCWhyte-Regular.woff2';
 
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
     Switch,
@@ -15,16 +11,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import clsx from "clsx";
 
 import './App.css';
+
 import MainSidebar from "./components/MainSidebar";
 import MainNavbar from "./components/MainNavbar";
 import CourtFarming from "./pages/CourtFarming";
-import CourtStaking from "./pages/CourtStaking";
-import Nft from "./pages/Nft";
 import NftStakePage from "./pages/NftStakePage";
 import CreateMarket from "./pages/CreateMarket";
 import FarminPoolPage from "./pages/FarminPoolPage";
 import Claim from "./pages/Claim";
-import MarketTest from "./pages/MarketTest";
 import Markets from "./pages/Markets";
 import MarketsV1 from "./pages/MarketsV1";
 import Status from "./pages/Status";
@@ -33,32 +27,12 @@ import Governance from "./pages/Governance";
 import GovernanceList from "./pages/GovernanceList";
 import NftBlue from "./assets/nftbgs/blue.svg";
 import GoldSvg from "./assets/nftbgs/gold.svg";
-import { OptionroomThemeContext } from "./shared/OptionroomThemeContextProvider";
-import { watchUserSignIn } from "./shared/firestore.service";
-import ConfigWallet from "./pages/ConfigWallet";
-import BalanceTest from "./pages/BalanceTest";
-
-/**
- import ABCWhyteMediumWoff from './assets/fonts/ABCWhyte-Medium.woff';
- import ABCWhyteMediumWoff2 from './assets/fonts/ABCWhyte-Medium.woff2';
- import ABCWhyteRegularWoff from './assets/fonts/ABCWhyte-Regular.woff';
- import ABCWhyteRegularWoff2 from './assets/fonts/ABCWhyte-Regular.woff2';
- * @type {{fontFamily: string, src: string, fontDisplay: string, fontStyle: string, fontWeight: number}}
- */
-const ABCWhyte = {
-    fontFamily: 'Whyte',
-/*    fontStyle: 'normal',
-    fontDisplay: 'swap',
-    fontWeight: 400,*/
-    src: `
-    url(${ABCWhyteMediumWoff}) format('woff'),
-    url(${ABCWhyteMediumWoff2}) format('woff2'),
-    url(${ABCWhyteRegularWoff}) format('woff'),
-    url(${ABCWhyteRegularWoff2}) format('woff2'),
-  `
-};
-
-const prefersDarkMode = false;
+import {OptionroomThemeContext} from "./shared/OptionroomThemeContextProvider";
+import {watchUserSignIn} from "./shared/firestore.service";
+import {smartState} from "./shared/SmartState";
+import {AccountContext} from "./shared/AccountContextProvider";
+import {getTokensList} from "./shared/contracts/contracts.helper";
+import {ContractNames} from "./shared/constants";
 
 const useStyles = makeStyles((theme) => ({
     Main: {
@@ -96,6 +70,7 @@ function App() {
     const [isMinHeader, setIsMinHeader] = useState(false);
     const [isSidebarExpand, setIsSidebarExpand] = useState(true);
     const [themeType, setThemeType] = useState(localStorage.getItem('optionroom_theme') || 'light');
+    const accountContext = useContext(AccountContext);
 
     const lightColors = {
         primary: '#004BFF',
@@ -138,16 +113,8 @@ function App() {
                 typography: {
                     fontFamily: [
                         'Open Sans',
-                        //'Kanit',
                         'sans-serif',
                     ].join(','),
-                },
-                overrides: {
-                    MuiCssBaseline: {
-                        '@global': {
-                            '@font-face': [ABCWhyte],
-                        },
-                    },
                 },
                 colors: themeType === 'dark' ? darkColors : lightColors,
                 isDark: themeType === 'dark'
@@ -164,7 +131,7 @@ function App() {
         watchUserSignIn();
 
         const handleScroll = () => {
-            if(window.scrollY > 30) {
+            if (window.scrollY > 30) {
                 setIsMinHeader(true);
             } else {
                 setIsMinHeader(false);
@@ -177,6 +144,18 @@ function App() {
         };
     }, []);
 
+    useEffect(() => {
+        if(accountContext.account && accountContext.chainId) {
+            smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
+
+            const tokens = getTokensList();
+            for(let token of tokens) {
+                smartState.loadWalletBalanceOfTokenWithAddress(accountContext.account, token.address);
+                smartState.loadWalletAllowance(accountContext.account, token.address, ContractNames.marketControllerV4);
+            }
+        }
+    }, [accountContext.account, accountContext.chainId]);
+
     const handleToggleSidebar = () => {
         setIsSidebarExpand(!isSidebarExpand);
     }
@@ -184,7 +163,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <div>
-                <CssBaseline />
+                <CssBaseline/>
                 <Router>
                     <div>
                         <MainNavbar isSidebarExpand={isSidebarExpand}
@@ -208,92 +187,50 @@ function App() {
                                 })}
                             >
                                 <Switch>
-                                <Route path="/liquidity-mining">
+                                    <Route path="/liquidity-mining">
                                         <FarminPoolPage
                                             isDepositEnabled={true}
                                             pool={"RoomFarming_RoomEthLpStake"}
                                             source={"room_eth_lp"}
                                         />
                                     </Route>
-                                    <Route path="/court-farming" exact={true}>
-                                        <CourtFarming />
-                                    </Route>
-{/*                                    <Route path="/governance" exact={true}>
-                                        <CourtStaking />
-                                    </Route>*/}
-                                    <Route path="/nft">
-                                        <Nft />
+                                    <Route path="/court-farming"
+                                           exact={true}>
+                                        <CourtFarming/>
                                     </Route>
                                     <Route path="/nft-stake">
-                                        <NftStakePage />
-                                    </Route>
-                                    <Route path="/court-farming/court-room">
-                                        <FarminPoolPage
-                                            isDepositEnabled={false}
-                                            pool={"CourtFarming_RoomStake"}
-                                            source={"room"}
-                                        />
-                                    </Route>
-                                    <Route path="/court-farming/court-roomethlp">
-                                        <FarminPoolPage
-                                            isDepositEnabled={false}
-                                            pool={"CourtFarming_RoomEthLpStake"}
-                                            source={"room_eth_lp"}
-                                        />
-                                    </Route>
-                                    <Route path="/court-farming/court-ht">
-                                        <FarminPoolPage
-                                            isDepositEnabled={false}
-                                            pool={"CourtFarming_HtStake"}
-                                            source={"ht"}
-                                        />
-                                    </Route>
-                                    <Route path="/court-farming/court-matter">
-                                        <FarminPoolPage
-                                            isDepositEnabled={false}
-                                            pool={"CourtFarming_MatterStake"}
-                                            source={"matter"}
-                                        />
+                                        <NftStakePage/>
                                     </Route>
                                     <Route path="/claim">
-                                        <Claim />
+                                        <Claim/>
                                     </Route>
-                                    <Route path="/BalanceTest">
-                                        <BalanceTest />
+                                    <Route path="/status"
+                                           exact={true}>
+                                        <Status/>
                                     </Route>
-                                    <Route path="/market-test">
-                                        <MarketTest />
+                                    <Route path="/markets"
+                                           exact={true}>
+                                        <Markets/>
                                     </Route>
-                                    <Route path="/status" exact={true}>
-                                        <Status />
-                                    </Route>
-                                    <Route path="/markets" exact={true}>
-                                        <Markets />
-                                    </Route>
-                                    <Route path="/markets/create" exact={true}>
-                                        <CreateMarket />
+                                    <Route path="/markets/create"
+                                           exact={true}>
+                                        <CreateMarket/>
                                     </Route>
                                     <Route path="/markets/:marketId">
-                                        <Market />
+                                        <Market/>
                                     </Route>
                                     <Route path="/markets-v1">
-                                        <MarketsV1 />
+                                        <MarketsV1/>
                                     </Route>
                                     <Route path="/governance/:governanceId">
-                                        <Governance />
+                                        <Governance/>
                                     </Route>
-                                    <Route path="/governance" exact={true}>
-                                        <GovernanceList />
+                                    <Route path="/governance"
+                                           exact={true}>
+                                        <GovernanceList/>
                                     </Route>
-{/*
-                                    <Route path="/governance/:governanceId">
-                                        <Governance />
-                                    </Route>
-                                    <Route path="/config-wallet">
-                                        <ConfigWallet />
-                                    </Route>*/}
                                     <Route exact path="/">
-                                        <Redirect to="/markets" />
+                                        <Redirect to="/markets"/>
                                     </Route>
                                 </Switch>
                             </div>

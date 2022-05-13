@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme) => ({
         borderRadius: "8px",
         backgroundColor: "#FFFFFF",
         display: "flex",
+        width: '49%',
         alignItems: "center",
         padding: "8px 16.5px",
         marginBottom: '7.5px',

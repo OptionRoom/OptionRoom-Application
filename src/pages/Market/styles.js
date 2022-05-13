@@ -152,10 +152,18 @@ export const useStyles = makeStyles((theme) => ({
     MarketWidgetWrap: {
         marginBottom: "18px",
     },
+    MarketBuySellWidget: {
+        display: 'flex',
+        alignItems: 'center',
+        '&>div': {
+            width: '50%',
+            padding: '0 10px'
+        }
+    },
     //New Design
     MarketsPage__Header2: {
         background: theme.isDark ? "#252E39" : "#fff",
-        padding: "25px 0 45px",
+        padding: "25px 0 0",
         boxShadow: "0px 4px 20px rgba(82, 104, 130, 0.05)",
     },
     MarketsPage__Header2Container: {

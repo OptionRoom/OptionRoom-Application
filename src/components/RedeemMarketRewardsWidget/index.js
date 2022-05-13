@@ -1,28 +1,43 @@
 import React, {useContext, useEffect, useState} from "react";
 
 import {useStyles} from "./styles";
-import OptionBlock from "../OptionBlock";
-import numeral from "numeral";
 import {get} from "lodash";
 import Button from "../Button";
-import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
-import OutcomeProgress from "../OutcomeProgress";
+import {redeemMarketRewards} from "../../methods/market-controller.methods";
+import {getResolvingOutcome} from "../../methods/or-market-governance.methods";
+import {useGetWalletBalanceOfMarketOptions} from "../MarketSellWidget";
+
+export const useGetMarketResolvingOutcome = (wallet, address, info) => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const init = async () => {
+            const data = await getResolvingOutcome(wallet, address, get(info, ['choices']).length);
+            setData(data);
+        }
+
+        init();
+    }, [wallet, address]);
+
+    return data;
+};
 
 function RedeemMarketRewardsWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
 
+    const resolvingOutcome = useGetMarketResolvingOutcome(accountContext.account, props.marketContractAddress, props.info);
+    const walletBalanceOfMarketOptions = useGetWalletBalanceOfMarketOptions(accountContext.account, props.marketContractAddress);
+
     //Vote
     const [isProcessing, setIsProcessing] = useState(false);
-    const [marketInfo, setMarketInfo] = useState(null);
 
     const handleRedeem = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs(props.marketVersion);
         try {
-            await marketApis.redeemMarketRewards(accountContext.account, props.marketContractAddress);
+            await redeemMarketRewards(accountContext.account, props.marketContractAddress);
             props.onRedeem && props.onRedeem();
         } catch (e) {
 
@@ -31,35 +46,21 @@ function RedeemMarketRewardsWidget(props) {
         }
     };
 
-    const loadMarketInfo = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
-        setMarketInfo(result);
-    };
-
     const getUserRewardsVal =  () => {
-        if(!marketInfo || !props.walletOptionTokensBalance) {
+        if(resolvingOutcome === null || !walletBalanceOfMarketOptions || walletBalanceOfMarketOptions.length == 0) {
             return;
         }
 
-        if(marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1]) {
-            return props.walletOptionTokensBalance[0];
-        }
-
-        return props.walletOptionTokensBalance[1];
+        return walletBalanceOfMarketOptions[resolvingOutcome];
     };
-
-    useEffect(() => {
-        loadMarketInfo();
-    }, []);
 
     return (
         <div className={classes.RedeemMarketRewardsWidget}>
             <div className={classes.RedeemMarketRewardsWidget__Header}>Redeem your rewards</div>
             <div className={classes.RedeemMarketRewardsWidget__Content}>
                 {
-                    marketInfo && (
-                        <div>The community resolved this market to {marketInfo.resolvingVotesCount[0] > marketInfo.resolvingVotesCount[1] ? (<span className={classes.Yes}>Yes</span>) : (<span className={classes.No}>No</span>) }</div>
+                    (resolvingOutcome || resolvingOutcome == 0) && (
+                        <div>The community resolved this market to <span>{props.info.choices[resolvingOutcome]}</span></div>
                     )
                 }
                 {

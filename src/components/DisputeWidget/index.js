@@ -11,6 +11,13 @@ import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
 import OutcomeProgress from "../OutcomeProgress";
 import FlareIcon from "@material-ui/icons/Flare";
+import {
+    disputeMarket,
+    getMarketDisputers,
+    getResolvingOutcome,
+    getWalletVotesOnMarket
+} from "../../methods/or-market-governance.methods";
+import {MarketVotingTypesPerMarketAddress} from "../../shared/constants";
 
 
 export const useGetCanDisputeMarket = (minHoldingsToDispute, userBalances, didDisputedMarket) => {
@@ -45,6 +52,21 @@ export const useGetDidDisputedMarket = (walletDisputeVotes) => {
     return didDisputedMarket;
 };
 
+export const useGetMarketResolvingOutcome = (wallet, address, info) => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const init = async () => {
+            const data = await getResolvingOutcome(wallet, address, get(info, ['choices']).length);
+            setData(data);
+        }
+
+        init();
+    }, [wallet, address]);
+
+    return data;
+};
+
 function DisputeWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
@@ -55,6 +77,7 @@ function DisputeWidget(props) {
     const [minHoldingsToDispute, setMinHoldingsToDispute] = useState(null);
     const [walletDisputeVotes, setWalletDisputeVotes] = useState(null);
     const didDisputedMarket = useGetDidDisputedMarket(walletDisputeVotes);
+    const resolvingOutcome = useGetMarketResolvingOutcome(accountContext.account, props.marketContractAddress, props.info);
     const canDisputeMarket = useGetCanDisputeMarket(minHoldingsToDispute, props.walletOptionTokensBalance, didDisputedMarket);
 
     const isWalletEligibleToDispute = () => {
@@ -63,10 +86,9 @@ function DisputeWidget(props) {
 
     const handleDispute = async () => {
         setIsProcessing(true);
-        const marketApis = new MarketAPIs(props.marketVersion);
 
         try {
-            await marketApis.disputeMarket(accountContext.account, props.marketContractAddress, "N/A");
+            await disputeMarket(accountContext.account, props.marketContractAddress, "N/A");
             loadWalletVotes();
             props.onDispute && props.onDispute();
         } catch (e) {
@@ -83,22 +105,13 @@ function DisputeWidget(props) {
     };
 
     const loadWalletVotes = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const result = await marketAPIs.getWalletVotesOnMarket(accountContext.account, props.marketContractAddress, props.marketState);
+        const result = await getMarketDisputers(accountContext.account, props.marketContractAddress);
         setWalletDisputeVotes(result);
-    };
-
-    const loadMarketInfo = async () => {
-        const marketAPIs = new MarketAPIs(props.marketVersion);
-        const result = await marketAPIs.getMarketInfo(accountContext.account, props.marketContractAddress);
-        setMarketInfo(result);
     };
 
     useEffect(() => {
         if(accountContext.account && props.marketContractAddress && props.marketState == 7) {
             loadWalletVotes();
-            loadMarketInfo();
-            //loadMarketMinHoldingsToDispute();
         }
     }, [accountContext.account, props.marketContractAddress, props.marketState]);
 
