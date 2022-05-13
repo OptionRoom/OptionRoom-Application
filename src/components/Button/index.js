@@ -17,11 +17,29 @@ function Button(props) {
     } = props;
     const classes = useStyles();
 
+    if(props.push) {
+        return (
+            <button className={classes.pushable}
+                    disabled={isProcessing || isDisabled}
+                    {...rest}>
+                {isProcessing && (
+                    <div className={classes.Progress_StateWrap}>
+                        <CircularProgress />
+                        Processing...
+                    </div>
+                )}
+                {!isProcessing && children}
+            </button>
+        )
+    };
+
     return (
         <MuiButton
             disabled={isProcessing || isDisabled}
             className={clsx(classes.root, className, {
                 [classes.Primary]: color === "primary",
+                [classes.Green]: color === "green",
+                [classes.Red]: color === "red",
                 [classes.Black]: color === "black",
                 [classes.Gray]: color === "gray",
                 [classes.White]: color === "white",
@@ -38,6 +56,7 @@ function Button(props) {
                 [classes.Size__Medium]: size === "medium",
                 [classes.Size__Large]: size === "large",
                 [classes.Size__Small]: size === "small",
+                [classes.Size__Xs]: size === "xs",
             })}
             variant={"contained"}
             {...rest}

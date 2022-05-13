@@ -1,16 +1,17 @@
 import { walletHelper } from "../wallet.helper";
-import {getRoomTokenContract} from './RoomTokenContract';
-import {getNftStakeContract} from './NftStakeContract';
-import {getNftTokenContract} from './NftTokenContract';
-import {MaxUint256, controlledNetworkId} from '../../shared/constants';
+
+import {
+    getContract
+} from "./contracts.helper";
+import {MaxUint256} from '../../shared/constants';
 
 const walletHelperInstance = walletHelper();
 
 class RoomLPFarmingAPIs {
     constructor() {
-        this.roomTokenContract = getRoomTokenContract(controlledNetworkId, walletHelperInstance.getWeb3());
-        this.nftStakeContract = getNftStakeContract(controlledNetworkId, walletHelperInstance.getWeb3());
-        this.nftTokenContract = getNftTokenContract(controlledNetworkId, walletHelperInstance.getWeb3());
+        this.roomTokenContract = getContract('room');
+        this.nftStakeContract = getContract('NftStakeContract');
+        this.nftTokenContract = getContract('NftTokenContract');
     }
 
     async getUserRoomTokenBalance(address) {
@@ -162,6 +163,18 @@ class RoomLPFarmingAPIs {
             .methods
             .balanceOf(tire, address)
             .call({
+                from: address
+            });
+
+
+        return result;
+    }
+
+    async exitNftStakePool(address, tire) {
+        const result = await this.nftStakeContract
+            .methods
+            .exit(tire)
+            .send({
                 from: address
             });
 

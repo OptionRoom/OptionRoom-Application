@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import clsx from "clsx";
 
-import Button from "../Button";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -9,23 +8,44 @@ import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
+import Slide from '@material-ui/core/Slide';
+
+import Button from "../Button";
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
 import RoomLPFarmingAPIs from "../../shared/contracts/RoomLPFarmingAPIs";
 import CourtAPIs from "../../shared/contracts/CourtAPIs";
 import {
-    convertAmountToTokens,
+    formatTradeValue,
     convertTokensToAmount,
+    fromWei,
 } from "../../shared/helper";
+import TradeInput from "../TradeInput";
+import ClaimCourtAPIs from "../../shared/contracts/ClaimCourtAPIs";
+import {
+    addFunding
+} from '../../methods/market-controller.methods';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const getModalText = (type, source, pool) => {
+    if (type === "Add_Market_Liquidity") {
+        return "Add liquidity to this market";
+    }
+
     if (type === "nftStake") {
         return "Deposit your ROOM tokens for staking";
     }
 
     if (source === "room" && pool === "CourtFarming_RoomStake") {
         return "Deposit your ROOM tokens for COURT staking";
+    }
+
+    if (pool === "court_power_stake") {
+        return "Deposit your COURT tokens to get more voting power";
     }
 
     if (source === "room_eth_lp" && pool === "RoomFarming_RoomEthLpStake") {
@@ -49,6 +69,14 @@ const getModalText = (type, source, pool) => {
     }
 };
 
+const getModalHeaderText = (type) => {
+    if (type === "Add_Market_Liquidity") {
+        return "Add liquidity";
+    }
+
+    return 'Deposit Tokens';
+};
+
 function DepositModal(props) {
     const { userRoomLPTokens, type, nftTire, source, pool } = props;
 
@@ -56,7 +84,7 @@ function DepositModal(props) {
     const roomLPFarmingAPIs = new RoomLPFarmingAPIs();
     const courtAPIs = new CourtAPIs();
     const [tokensCount, setTokensCount] = useState(0);
-    const [isInvalidAmountError, setIsInvalidAmountError] = useState(false);
+    const [canTrade, setCanTrade] = useState(false);
     const [isConfirmProcessing, setIsConfirmProcessing] = useState(false);
 
     const classes = useStyles();
@@ -66,10 +94,6 @@ function DepositModal(props) {
     };
 
     const handleConfirm = async () => {
-        if (!checkValidAmount()) {
-            return;
-        }
-
         setIsConfirmProcessing(true);
 
         try {
@@ -80,6 +104,14 @@ function DepositModal(props) {
                     nftTire,
                     tokensAmount
                 );
+            } else if(pool === 'court_power_stake') {
+                const claimCourtAPIs = new ClaimCourtAPIs();
+                await claimCourtAPIs.depositCourtInPowerStakeContract(
+                    accountContext.account,
+                    tokensAmount
+                );
+            } else if(type === 'Add_Market_Liquidity'){
+                await addFunding(accountContext.account, props.marketContractId, tokensAmount);
             } else {
                 await courtAPIs.stackeTokens(
                     accountContext.account,
@@ -96,29 +128,10 @@ function DepositModal(props) {
         }
     };
 
-    const checkValidAmount = () => {
-        const availableTokens = convertAmountToTokens(userRoomLPTokens);
-
-        if (
-            tokensCount == 0 ||
-            parseFloat(tokensCount) > parseFloat(availableTokens)
-        ) {
-            setIsInvalidAmountError(true);
-            return false;
-        }
-
-        setIsInvalidAmountError(false);
-
-        return true;
-    };
-
-    const handleSetMax = () => {
-        const availableTokens = convertAmountToTokens(userRoomLPTokens);
-        setTokensCount(availableTokens);
-    };
-
     return (
         <Dialog
+            TransitionComponent={Transition}
+            keepMounted
             classes={{
                 paper: classes.paper, // class name, e.g. `classes-nesting-root-x`
             }}
@@ -133,7 +146,7 @@ function DepositModal(props) {
                 className={classes.MuiDialogTitle}
             >
                 <Typography className={classes.DialogTitle} variant="h6">
-                    Deposit Tokens
+                    {getModalHeaderText(type)}
                 </Typography>
                 {handleClose && (
                     <IconButton
@@ -153,33 +166,26 @@ function DepositModal(props) {
                 <div className={classes.Modal__TokensLabel}>
                     Tokens Available{" "}
                     <span className={classes.Modal__TokensLabel_Balance}>
-                        {convertAmountToTokens(userRoomLPTokens)}
+                        {formatTradeValue(fromWei(userRoomLPTokens))}
                     </span>
                 </div>
                 <div className={classes.Modal__TokensInputWrap}>
-                    <input
-                        value={tokensCount}
-                        onChange={(e) => {
-                            setTokensCount(e.target.value);
-                        }}
-                        className={clsx(classes.Modal__TokensInput, {
-                            [classes.Modal__TokensInput__HasError]: isInvalidAmountError,
-                        })}
-                        type={"number"}
-                    />
-                    <div
-                        className={classes.Modal__TokensInputMaxBtn}
-                        onClick={handleSetMax}
-                    >
-                        Max
-                    </div>
+                    <TradeInput max={fromWei(userRoomLPTokens)}
+                                min={0}
+                                value={tokensCount}
+                                onValidityUpdate={(valid) => {
+                                    //setCanTrade(valid);
+                                }}
+                                onChange={(e)=> {
+                                    setTokensCount(e);
+
+                                    if(e == 0){
+                                        setCanTrade(false);
+                                    } else {
+                                        setCanTrade(true);
+                                    }
+                                }}/>
                 </div>
-                {isInvalidAmountError && (
-                    <div className={classes.Modal__TokensErrorHelp}>
-                        Invalid amount, it must be between 1 and{" "}
-                        {convertAmountToTokens(userRoomLPTokens)}
-                    </div>
-                )}
             </MuiDialogContent>
             <MuiDialogActions className={classes.MuiDialogActions}>
                 <Button
@@ -195,6 +201,7 @@ function DepositModal(props) {
                     onClick={handleConfirm}
                     className={classes.MuiDialogActions__ConfirmBtn}
                     isProcessing={isConfirmProcessing}
+                    isDisabled={!canTrade}
                     color={"primary"}
                     size={"small"}
                 >

@@ -2,7 +2,8 @@ import {makeStyles} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme) => ({
     paper: {
-        borderRadius: '12px'
+        borderRadius: '12px',
+        minWidth: "400px"
     },
     closeButton: {
         position: 'absolute',
@@ -15,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
         padding: '24px 24px'
     },
     DialogTitle: {
-        color: '#06293D',
+        color: theme.isDark ? '#fff' : "#06293D",
         fontSize: '18px',
         fontWeight: 500,
         letterSpacing: 0,
@@ -23,7 +24,8 @@ export const useStyles = makeStyles((theme) => ({
     },
     MuiDialogActions: {
         padding: '24px 24px',
-        display: 'flex'
+        display: 'flex',
+        background: theme.isDark ? '#000' : 'rgb(245, 248, 250)'
     },
     MuiDialogActions__CancelBtn: {
         marginRight: 'auto',
@@ -39,14 +41,14 @@ export const useStyles = makeStyles((theme) => ({
         color: 'rgba(0, 0, 0, 0.26)'
     },
     Modal__Text: {
-        color: '#6D8096',
+        color: theme.colors.secondaryTxt,
         fontSize: '16px',
         letterSpacing: 0,
         lineHeight: '24px',
         marginBottom: '24px'
     },
     Modal__TokensLabel: {
-        color: '#4E5D6D',
+        color: theme.isDark ? "#fff" : '#4E5D6D',
         fontSize: '14px',
         letterSpacing: 0,
         lineHeight: '24px',
@@ -55,39 +57,7 @@ export const useStyles = makeStyles((theme) => ({
     Modal__TokensLabel_Balance: {
         fontWeight: 700,
         float: 'right',
-        color: '#000'
-    },
-    Modal__TokensInputWrap: {
-        position: 'relative'
-    },
-    Modal__TokensInputMaxBtn: {
-        position: 'absolute',
-        right: '10px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        color: '#004BFF',
-        cursor: 'pointer',
-        textDecoration: 'underline',
-        fontWeight: 700,
-        letterSpacing: '1px',
-    },
-    Modal__TokensInput: {
-        border: '1px solid #D2D9E1',
-        borderRadius: '8px',
-        fontSize: '14px',
-        letterSpacing: 0,
-        lineHeight: '14px',
-        padding: '16.5px 50px 16.5px 16.5px',
-        display: 'block',
-        width: '100%',
-        outline: 'none',
-    },
-    Modal__TokensInput__HasError: {
-        border: '1px solid red',
-    },
-    Modal__TokensErrorHelp: {
-        color: 'red',
-        margin: '10px 0'
+        color: theme.isDark ? "#fff" : '#000',
     },
     MuiDialogContent: {
         padding: '32px 24px',

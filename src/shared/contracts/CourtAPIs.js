@@ -1,74 +1,34 @@
-import { walletHelper } from "../wallet.helper";
-import { getRoomTokenContract } from "./RoomTokenContract";
-import { getHtTokenContract } from "./HtTokenContract";
-import { getMatterTokenContract } from "./MatterTokenContract";
-import { getCourtTokenContract } from "./CourtTokenContract";
-import { getCourtFarming_RoomStakeContract } from "./CourtFarming_RoomStake";
-import { getCourtFarming_RoomEthLpStakeContract } from "./CourtFarming_RoomEthLpStakeContract";
-import { getCourtEthLpTokenContract } from "./CourtEthLpTokenContract";
-import { getCourtFarming_CourtEthLpStakeContract } from "./CourtFarming_CourtEthLpStake";
-import { getCourtFarming_HtStakeContract } from "./CourtFarming_HtStakeContract";
-import { getCourtFarming_MatterStakeContract } from "./CourtFarming_MatterStakeContract";
-import { getRoomLPStakingContract } from "./RoomLPStakingContract";
-import { getRoomLPTokenContract } from "./RoomLPTokenContract";
 import { getTokenPriceInUsd } from "./PoolsStatsAPIs";
 import {fromWei} from '../helper';
-import { MaxUint256, controlledNetworkId } from "../../shared/constants";
+import { MaxUint256 } from "../../shared/constants";
+import {getContract} from "./contracts.helper";
 
-const walletHelperInstance = walletHelper();
 
 class CourtAPIs {
     constructor() {
-        this.courtTokenContract = getCourtTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtFarming_MatterStakeContract = getCourtFarming_MatterStakeContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtFarming_HtStakeContract = getCourtFarming_HtStakeContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtFarming_RoomStakeContract = getCourtFarming_RoomStakeContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtFarming_RoomEthLpStakeContract = getCourtFarming_RoomEthLpStakeContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtFarming_CourtEthLpStakeContract = getCourtFarming_CourtEthLpStakeContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.roomFarming_RoomEthLpStakeContract = getRoomLPStakingContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.courtEthLpTokenContract = getCourtEthLpTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.roomTokenContract = getRoomTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
-        this.roomEthLpTokenContract = getRoomLPTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
+        this.courtTokenContract = getContract('court_token');
+        this.courtFarming_MatterStakeContract = getContract('CourtFarming_MatterStakeContract');
+        this.courtFarming_HtStakeContract = getContract('CourtFarming_HtStakeContract');
+        this.courtFarming_RoomStakeContract = getContract('CourtFarming_RoomStake');
+        this.courtFarming_RoomEthLpStakeContract = getContract('CourtFarming_RoomEthLpStakeContract');
+        this.courtFarming_CourtEthLpStakeContract = getContract('CourtFarming_CourtEthLpStake');
+        this.roomFarming_RoomEthLpStakeContract = getContract('RoomLPStakingContract');
+        this.courtEthLpTokenContract = getContract('CourtEthLpTokenContract');
+        this.roomTokenContract = getContract('room');
+        this.roomEthLpTokenContract = getContract('RoomLPTokenContract');
+        this.matterTokenContract = getContract('MatterTokenContract');
+        this.htTokenContract = getContract('HtTokenContract');
+        this.usdtTokenContract = getContract('usdt');
+    }
 
-        this.matterTokenContract = getMatterTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
 
-        this.htTokenContract = getHtTokenContract(
-            controlledNetworkId,
-            walletHelperInstance.getWeb3()
-        );
+    async getRoomPastEvents(address, token) {
+        const result = await this.roomTokenContract
+            .getPastEvents("allEvents", {
+
+                fromBlock: 1,
+            });
+        return result;
     }
 
     async getAddressTokenBalance(address, token) {
@@ -124,6 +84,16 @@ class CourtAPIs {
 
         if (token === "matter") {
             const result = await this.matterTokenContract.methods
+                .balanceOf(address)
+                .call({
+                    from: address,
+                });
+
+            return result;
+        }
+
+        if (token === "usdt") {
+            const result = await this.usdtTokenContract.methods
                 .balanceOf(address)
                 .call({
                     from: address,
@@ -576,7 +546,7 @@ class CourtAPIs {
     async claimIncvRewards(address, contract) {
         if (contract === "CourtFarming_RoomStake") {
             const result = await this.courtFarming_RoomStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -586,7 +556,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_RoomEthLpStake") {
             const result = await this.courtFarming_RoomEthLpStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -596,7 +566,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_CourtEthLpStake") {
             const result = await this.courtFarming_CourtEthLpStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -606,7 +576,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_HtStake") {
             const result = await this.courtFarming_HtStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -616,7 +586,7 @@ class CourtAPIs {
 
         if (contract === "CourtFarming_MatterStake") {
             const result = await this.courtFarming_MatterStakeContract.methods
-                .claimIncvReward()
+                .incvRewardClaim()
                 .send({
                     from: address,
                 });
@@ -684,6 +654,24 @@ class CourtAPIs {
                 });
 
             return result;
+        }
+    }
+
+    async payAndClaimRewards(address, contract, amount) {
+        if (contract === "CourtFarming_HtStake") {
+            return this.courtFarming_HtStakeContract.methods
+                .stakeIncvRewards(amount)
+                .send({
+                    from: address,
+                });
+        }
+
+        if (contract === "CourtFarming_MatterStake") {
+            return this.courtFarming_MatterStakeContract.methods
+                .stakeIncvRewards(amount)
+                .send({
+                    from: address,
+                });
         }
     }
 

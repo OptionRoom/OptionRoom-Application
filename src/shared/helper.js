@@ -3,19 +3,35 @@ import * as blockies from "blockies-ts";
 import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import moment from "moment";
 import { supportedChains } from "./chains";
+import {
+    marketDisputePeriod
+} from "./constants";
 
 export const toWei = (value, decimals) => {
     return Web3.utils.toWei(`${value}`, decimals);
 };
 
-export const fromWei = (value, decimals, precision) => {
-    if (!precision) {
-        return Web3.utils.fromWei(`${value}`, decimals);
+const toFixedNoRounding = function(number, decimals) {
+    const reg = new RegExp("^-?\\d+(?:\\.\\d{0," + decimals + "})?", "g")
+    const a = number.toString().match(reg)[0];
+    const dot = a.indexOf(".");
+    if (dot === -1) { // integer, insert decimal dot and pad up zeros
+        return a + "." + "0".repeat(decimals);
     }
+    const b = decimals - (a.length - dot) + 1;
+    return b > 0 ? (a + "0".repeat(b)) : a;
+};
 
-    return parseFloat(Web3.utils.fromWei(`${value}`, decimals)).toFixed(
-        precision
-    );
+export const fromWei = (value, decimals, precision) => {
+    try {
+        if (!precision) {
+            return Web3.utils.fromWei(`${value}`, decimals);
+        }
+
+        return toFixedNoRounding(parseFloat(Web3.utils.fromWei(`${value}`, decimals)), precision);
+    } catch (e) {
+        return 0;
+    }
 };
 
 export const isMobile = () => {
@@ -38,7 +54,7 @@ export const convertTokensToAmount = (amount) => {
     return parseFixed(`${amount}`, 18);
 };
 
-export const ellipseAddress = (address, width = 10) => {
+export const ellipseAddress = (address, width = 4) => {
     return `${address.slice(0, width)}...${address.slice(-width)}`;
 };
 
@@ -264,3 +280,64 @@ export const saveRoiOfCourt = (data) => {
         })
     );
 };
+
+export const isValidURL = (str) => {
+/*    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+
+    return !!pattern.test(str);*/
+    try {
+        new URL(str);
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+    return true;
+}
+
+export const truncateText = (str, length) => {
+    if(str && str.length > length) {
+        return `${str.substring(0,length)}...`;
+    }
+
+    return str;
+};
+
+export const storeItemInLocalStorage = (key, value) => {
+    localStorage.setItem(key, value);
+}
+
+export const getItemFromLocalStorage = (key) => {
+    return localStorage.getItem(key)
+}
+
+export const formatTradeValue = (value) => {
+    const numberOfDecimals = 2;
+    let num = `${value}`; //If it's not already a String
+    const positionOfDot = num.indexOf(".");
+
+    if (positionOfDot > -1) {
+        num = num.slice(0, positionOfDot + (numberOfDecimals + 1));
+    }
+
+    return Number(num);
+}
+
+export const getMarketDisputeEndTime = (resolvingEndTime, lastResolvingVoteTime) => {
+    if (resolvingEndTime > lastResolvingVoteTime) {
+        return resolvingEndTime + marketDisputePeriod;
+    }
+
+    return lastResolvingVoteTime + marketDisputePeriod;
+}
+
+export const convertBase64ToBlob = async (base64Data) => {
+    const fetchRes = await fetch(base64Data);
+    const blob = await fetchRes.blob();
+
+    return blob;
+}

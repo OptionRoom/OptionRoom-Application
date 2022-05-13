@@ -1,14 +1,13 @@
 import React, { useContext, useEffect, useState, createRef } from "react";
+import Alert from '@material-ui/lab/Alert';
 
 import Navbar from "../../components/Navbar";
-import Button from "../../components/Button";
 import ConnectButton from "../../components/ConnectButton";
 import RoomLpStake from "../../components/RoomLpStake";
-import NftStake from "../../components/NftStake";
 
 import { useStyles } from "./styles";
 import { AccountContext } from "../../shared/AccountContextProvider";
-import { OptionroomThemeContext } from "../../shared/OptionroomThemeContextProvider";
+import {ChainNetworks} from "../../shared/constants";
 
 const getPageConfig = (source, pool) => {
     if (source === "room" && pool === "CourtFarming_RoomStake") {
@@ -62,23 +61,34 @@ const getPageConfig = (source, pool) => {
 
 function FarminPoolPage(props) {
     const classes = useStyles();
-    const { source, pool } = props;
+    const { source, pool, isDepositEnabled } = props;
     const accountContext = useContext(AccountContext);
-    const optionroomThemeContext = useContext(OptionroomThemeContext);
-    optionroomThemeContext.changeTheme("primary");
 
     return (
         <>
-            <Navbar
-                title={getPageConfig(source, pool).title}
-                details={getPageConfig(source, pool).details}
-            />
-
             <div className={classes.LiquidityMiningPage}>
+                <Navbar
+                    title={getPageConfig(source, pool).title}
+                    details={getPageConfig(source, pool).details}
+                />
                 {accountContext.account && (
                     <>
+                        {
+                            !accountContext.isChain(ChainNetworks.BINANCE_SMART_CHAIN) && (
+                                <Alert
+                                    elevation={6}
+                                    variant="filled"
+                                    style={{
+                                        maxWidth: '500px',
+                                        margin: '0 auto 15px'
+                                    }}
+                                    severity="error">Unsupported chain, supported chains are: 56 (Smart Chain)</Alert>
+                            )
+                        }
                         <div className={classes.Pools}>
-                            <RoomLpStake source={source} pool={pool} />
+                            <RoomLpStake source={source}
+                            isDepositEnabled={isDepositEnabled}
+                            pool={pool} />
                         </div>
                     </>
                 )}

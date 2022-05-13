@@ -1,5 +1,8 @@
 import Web3Modal from "web3modal";
 import Web3 from "web3";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+
+import ConfigHelper from "./config.helper";
 
 class WalletHelper {
     constructor() {
@@ -12,15 +15,22 @@ class WalletHelper {
         this.networkId = null;
         this.mainnetWeb3 = new Web3(
             new Web3.providers.HttpProvider(
-                "https://mainnet.infura.io/v3/30d5a6bb69194a75afa085a8a3a4a584"
+                `https://mainnet.infura.io/v3/${ConfigHelper.getInfuraAppId()}`
             )
         );
 
         const init = async () => {
             this.web3Modal = new Web3Modal({
                 cacheProvider: true, // optional
-                providerOptions: {}, // required
-                disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
+                providerOptions: {
+                    walletconnect: {
+                        package: WalletConnectProvider,
+                        options: {
+                            infuraId: ConfigHelper.getInfuraAppId() // required
+                        }
+                    }
+                },
+                disableInjectedProvider: false,
             });
         }
 
@@ -91,16 +101,8 @@ class WalletHelper {
         this.web3 = null;
     }
 
-    async getAccounts() {
-        return this.web3.eth.getAccounts();
-    }
-
-    async getNetworkId() {
-        return this.web3.eth.net.getId();
-    }
-
-    async getChainId() {
-        return this.web3.eth.net.chainId();
+    getChainId() {
+        return this.chainId;
     }
 
     getWeb3(forceMainnet) {
@@ -113,6 +115,11 @@ class WalletHelper {
         }
 
         return this.web3;
+    }
+
+    async signWallet(message) {
+        const web3 = this.getWeb3();
+        return web3.eth.personal.sign(message, this.account, ConfigHelper.getAuthSignMessage());
     }
 
     on(name, listener) {

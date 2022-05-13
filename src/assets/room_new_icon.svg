@@ -1,0 +1,35 @@
+<svg width="270" height="312" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <rect id="svg_1" height="591.203" width="1000" fill="#051DA6" y="1679.791" x="1721.667"/>
+  <polygon id="svg_2" points="135.035,0.939 0.961,78.348 0.961,233.163 135.035,310.57 269.109,233.163 269.109,78.348 " fill="#0742F2"/>
+  <polygon id="svg_14" points="135.035,151.37 239.801,90.627 220.008,78.502 155.851,114.936 155.851,42.51 135.035,30.907 " fill="#FFFFFF"/>
+  <polygon id="svg_15" points="131.666,151.476 130.608,30.38 110.289,41.599 110.272,115.378 45.802,78.503 25.43,90.87 " fill="#051DA6"/>
+  <polygon stroke="null" id="svg_16" points="136.789,154.615 242.477,213.738 242.809,190.529 178.745,153.935 243.129,116.988 242.489,93.165  " fill="#051DA6"/>
+  <polygon id="svg_17" points="135.035,157.775 136.076,278.873 156.397,267.655 156.424,193.876 220.426,231.48 240.8,219.115 " fill="#FFFFFF"/>
+  <polygon id="svg_18" points="131.666,157.775 26.901,218.519 46.694,230.644 110.85,194.209 110.85,266.636 131.666,278.238 " fill="#051DA6"/>
+  <polygon id="svg_19" points="129.977,154.591 24.289,95.468 23.957,118.677 88.021,155.272 23.638,192.218 24.277,216.042 " fill="#FFFFFF"/>
+  <text id="svg_20" transform="matrix(1 0 0 1 2060.5698 2004.6045)">
+   <tspan id="svg_21" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="0">Op</tspan>
+   <tspan id="svg_22" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="96.422">t</tspan>
+   <tspan id="svg_23" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="120.201">io</tspan>
+   <tspan id="svg_24" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="177.809">n</tspan>
+   <tspan id="svg_25" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="219.891">R</tspan>
+   <tspan id="svg_26" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="260.667">oo</tspan>
+   <tspan id="svg_27" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#FFFFFF" y="0" x="343.852">m</tspan>
+  </text>
+  <path id="svg_28" d="m1978.66,1908.332l-59.212,34.186l0,68.372l59.212,34.187l59.213,-34.187l0,-68.372l-59.213,-34.186zm-49.197,84.475l28.435,-16.316l-28.293,-16.162l0.146,-10.249l46.676,26.11l-46.682,27.139l-0.282,-10.522zm47.71,37.99l-9.193,-5.124l0,-31.986l-28.334,16.091l-8.742,-5.354l46.269,-26.827l0,53.2zm-46.919,-82.749l8.998,-5.462l28.473,16.285l0.007,-32.582l8.973,-4.956l0.468,53.48l-46.919,-26.765zm48.406,-26.482l9.194,5.124l0,31.986l28.334,-16.091l8.741,5.354l-46.269,26.827l0,-53.2zm37.712,88.58l-28.265,-16.606l-0.012,32.584l-8.975,4.953l-0.46,-53.481l46.71,27.09l-8.998,5.46zm9.886,-18.084l-0.146,10.249l-46.676,-26.11l46.68,-27.139l0.283,10.521l-28.434,16.316l28.293,16.163z" fill="#FFFFFF"/>
+  <text id="svg_29" transform="matrix(1 0 0 1 3044.1558 2004.6045)">
+   <tspan id="svg_30" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="0">Op</tspan>
+   <tspan id="svg_31" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="96.422">t</tspan>
+   <tspan id="svg_32" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="120.2">i</tspan>
+   <tspan id="svg_33" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="136.135">o</tspan>
+   <tspan id="svg_34" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="177.727">nR</tspan>
+   <tspan id="svg_35" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="260.666">o</tspan>
+   <tspan id="svg_36" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="302.259">o</tspan>
+   <tspan id="svg_37" font-size="81.7149" font-family="'Montserrat-SemiBold'" fill="#1D1D1B" y="0" x="343.934">m</tspan>
+  </text>
+  <path id="svg_38" d="m2962.247,1908.332l-59.213,34.186l0,68.372l59.213,34.187l59.212,-34.187l0,-68.372l-59.212,-34.186zm-49.198,84.475l28.434,-16.316l-28.293,-16.162l0.146,-10.249l46.676,26.11l-46.681,27.139l-0.282,-10.522zm47.709,37.99l-9.193,-5.124l0,-31.986l-28.333,16.091l-8.741,-5.354l46.268,-26.827l0,53.2l-0.001,0zm-46.918,-82.749l8.997,-5.462l28.473,16.285l0.008,-32.582l8.974,-4.956l0.467,53.48l-46.919,-26.765zm48.407,-26.482l9.193,5.124l0,31.986l28.334,-16.091l8.741,5.354l-46.269,26.827l0,-53.2l0.001,0zm37.711,88.58l-28.266,-16.606l-0.012,32.584l-8.975,4.953l-0.46,-53.481l46.71,27.09l-8.997,5.46zm9.885,-18.084l-0.146,10.249l-46.676,-26.11l46.681,-27.139l0.283,10.521l-28.435,16.316l28.293,16.163z" fill="#1D1D1B"/>
+ </g>
+</svg>

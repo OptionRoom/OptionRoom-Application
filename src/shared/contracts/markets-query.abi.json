@@ -1,0 +1,570 @@
+[
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "oldGuardianAddress",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newGuardianAddress",
+                "type": "address"
+            }
+        ],
+        "name": "GovernorTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "oldGuardianAddress",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newGuardianAddress",
+                "type": "address"
+            }
+        ],
+        "name": "GuardianTransferred",
+        "type": "event"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "marketQuestionID",
+                "type": "string"
+            }
+        ],
+        "name": "getMarket",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket",
+                "name": "market",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            }
+        ],
+        "name": "getMarketCountByProposer",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketsByProposerCount",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            }
+        ],
+        "name": "getMarketCountByProposerNState",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketstByProposerNStateCount",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "trader",
+                "type": "address"
+            }
+        ],
+        "name": "getMarketCountByTrader",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketsCountByTrader",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "trader",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            }
+        ],
+        "name": "getMarketCountByTraderNState",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketCountByTraderNState",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarkets",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsByProposer",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsByProposerNState",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "trader",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsByTrader",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "trader",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsByTraderNState",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            }
+        ],
+        "name": "getMarketsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketsInStateCount",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsQuestionIDs",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "questionsIDs",
+                "type": "string[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsQuestionIDsByProposer",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "questionsIDs",
+                "type": "string[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsQuestionIDsByProposerNState",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "questionsIDs",
+                "type": "string[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "trader",
+                "type": "address"
+            },
+            {
+                "internalType": "enum ORMarketLib.MarketState",
+                "name": "marketState",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "int256",
+                "name": "length",
+                "type": "int256"
+            }
+        ],
+        "name": "getMarketsQuestionIDsByTraderNState",
+        "outputs": [
+            {
+                "internalType": "contract ORFPMarket[]",
+                "name": "markets",
+                "type": "address[]"
+            },
+            {
+                "internalType": "string[]",
+                "name": "questionsIDs",
+                "type": "string[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "governorAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "guardianAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "marketController",
+                "type": "address"
+            }
+        ],
+        "name": "setMarketsController",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newGovernorAddress",
+                "type": "address"
+            }
+        ],
+        "name": "transfeerGovernor",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newGuardianAddress",
+                "type": "address"
+            }
+        ],
+        "name": "transfeerGuardian",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
