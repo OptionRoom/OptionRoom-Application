@@ -174,7 +174,8 @@ function CreateMarket() {
     const approveStableCoin = async () => {
         setIsCreatingMarket(true);
         try {
-            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ContractNames.marketControllerV4]);
+            await smartState.callApproveContractForSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
+//            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ]);
         } catch (e) {
 
         } finally {
@@ -252,9 +253,9 @@ function CreateMarket() {
     }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     const renderCreateBtn = () => {
-        //walletAllowanceOfCollateralTokenForMarketRouter
 
-        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.busd), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
+
+        if (get(smartState.walletAllowanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd)), formatAddress(getContractAddress(ContractNames.marketControllerV4))], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}
@@ -265,7 +266,7 @@ function CreateMarket() {
             )
         }
 
-        if (get(smartState.walletAllowanceOfSomething, [accountContext.account, getContractAddress(ContractNames.room), getContractAddress(ContractNames.marketControllerV4)], 0) <= 0) {
+        if (get(smartState.walletAllowanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.room)), formatAddress(getContractAddress(ContractNames.marketControllerV4))], 0) <= 0) {
             return (
                 <Button size={'large'}
                         role={'button'}

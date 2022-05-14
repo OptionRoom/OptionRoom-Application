@@ -1,3 +1,4 @@
+import colors from 'colors';
 import React, {useMemo, useContext, useEffect, useState} from "react";
 
 import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
@@ -128,7 +129,11 @@ function App() {
     }
 
     useEffect(() => {
-        watchUserSignIn();
+        colors.enable();
+
+        console.log(`Welcome to ${colors.green.bold('OptionRoom')} application`);
+        console.log(`Version is: ${colors.green.bold(process.env.REACT_APP_VERSION)}`);
+        //watchUserSignIn();
 
         const handleScroll = () => {
             if (window.scrollY > 30) {
