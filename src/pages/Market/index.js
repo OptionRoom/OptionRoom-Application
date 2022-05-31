@@ -169,6 +169,8 @@ function Market() {
                                     <img src={get(getMarketInfo(), ['info', 'imageURL'])}
                                          alt={'Market'}/>
                                 </div>
+                                <MarketStateWidget marketInfo={getMarketInfo()}
+                                                   state={getMarketState()}/>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 {
@@ -213,8 +215,6 @@ function Market() {
                             </Grid>
                         </Grid>
                     </div>
-                    <MarketStateWidget marketInfo={getMarketInfo()}
-                                       state={getMarketState()}/>
                 </div>
                 <div className={classes.MarketDetails}>
                     <div className={classes.MarketsPage__Header2Container}>

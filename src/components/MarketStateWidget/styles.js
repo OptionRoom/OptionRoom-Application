@@ -2,21 +2,21 @@ import { makeStyles } from "@material-ui/core/styles";
 
 export const useStyles = makeStyles((theme) => ({
     MarketStateWidget: {
-        background: theme.isDark ? "#252E39" : "#fff",
-        padding: "29px 15px",
+        padding: "29px 0",
     },
     MarketStateWidget__Header: {
-        fontStyle: "normal",
-        fontWeight: 500,
+        fontWeight: 700,
         fontSize: "14px",
         lineHeight: "18px",
         letterSpacing: "0.05em",
-        textTransform: "uppercase",
+        //textTransform: "uppercase",
        // marginBottom: '27px',
+        display: 'flex',
+        alignItems: 'center',
     },
     CounterWrapper: {
-        marginTop: '15px',
         display: 'flex',
+        marginLeft: '5px',
         alignItems: 'center',
         '&>div': {
             marginRight: '10px'

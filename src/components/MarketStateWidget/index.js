@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import Countdown from 'react-countdown';
+import {get} from 'lodash';
 
 import { useStyles } from "./styles";
 import { marketStateColors, marketStates } from "../../shared/constants";
@@ -95,35 +96,35 @@ function MarketStateWidget(props) {
     };
 
     const getCountDownEndTime = () => {
-
         if (!state || ["0", "2", "4", "6", "8"].indexOf(`${state}`) > -1) {
             return Date.now();
         }
 
         if(state == 1) {
-            return parseInt(marketInfo.validatingEndTime) * 1000;
+            return parseInt(get(marketInfo, ['info', 'validatingEndTime'])) * 1000;
         }
 
         if(state == 3) {
-            return parseInt(marketInfo.participationEndTime) * 1000;
+            return parseInt(get(marketInfo, ['info', 'participationEndTime'])) * 1000;
         }
 
         if(state == 5) {
-            return parseInt(marketInfo.resolvingEndTime) * 1000;
+            return parseInt(get(marketInfo, ['info', 'resolvingEndTime'])) * 1000;
         }
 
         if(state == 7) {
-            return parseInt(getMarketDisputeEndTime(parseInt(marketInfo.resolvingEndTime), parseInt(marketInfo.lastResolvingVoteTime))) * 1000;
+            return parseInt(getMarketDisputeEndTime(parseInt(get(marketInfo, ['info', 'resolvingEndTime'])), parseInt(get(marketInfo, ['info', 'lastResolvingVoteTime'])))) * 1000;
         }
     }
 
     return (
         <div className={classes.MarketStateWidget}
              style={{
-                 backgroundColor: getMarketStateColor(),
-                 color: getMarketStateTxtColor()
+                 //backgroundColor: getMarketStateColor(),
+                 color: getMarketStateColor()
              }}>
-            <div className={classes.MarketStateWidget__Header}>{getMarketStateText()}: {getVoeteHeadline()} {
+            <div className={classes.MarketStateWidget__Header}>
+                {getVoeteHeadline()} {
                 ["0", "2", "4", "6", "8"].indexOf(`${state}`) === -1 && (
                     <Countdown
                         date={getCountDownEndTime()}
