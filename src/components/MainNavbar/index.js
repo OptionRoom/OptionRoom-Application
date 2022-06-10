@@ -9,6 +9,15 @@ import {
     ellipseAddress,
     getAddressImgUrl
 } from '../../shared/helper';
+import {
+    ClaimIcon,
+    CourtStakeIcon,
+    GovernanceIcon,
+    LiquiditySidebarIcon,
+    MarketsIcon,
+    NftStakeIcon
+} from "../../shared/icons";
+import {NavLink} from "react-router-dom";
 
 const getMenuCloseIcon = () => {
     return (
@@ -44,18 +53,84 @@ function MainNavbar(props) {
             <div className={classes.Logo}>
                 <div className={classes.LogoHolder}/>
                 <span className={classes.Beta}>beta</span>
-{/*                <img
-                    src={LogoSvg}
-                    className={classes.LogoImg}
-                    alt={"OptionRoom logo"}
-                    width={"150px"}
-                />
-                <img
-                    src={LogoMinSvg}
-                    className={classes.LogoImgMin}
-                    alt={"OptionRoom logo"}
-                    width={"40px"}
-                />*/}
+            </div>
+            <div className={classes.Menu}>
+                {[
+                    {
+                        title: 'Markets',
+                        link: '/markets',
+                        icon: MarketsIcon,
+                        isNew: true
+                    },
+                    {
+                        title: "Governance",
+                        link: "/governance",
+                        icon: GovernanceIcon,
+                    },
+                    {
+                        title: "Claim",
+                        link: "/claim",
+                        icon: ClaimIcon,
+                    },
+                    {
+                        title: "More",
+                        icon: ClaimIcon,
+                        subMenu: [
+                            {
+                                title: "COURT Farming",
+                                link: "/court-farming",
+                                icon: CourtStakeIcon,
+                            },
+                            {
+                                title: "Liquidity Farming",
+                                link: "/liquidity-mining",
+                                icon: LiquiditySidebarIcon,
+                            },
+                            {
+                                title: "NFT Staking",
+                                link: "/nft-stake",
+                                icon: NftStakeIcon,
+                            },
+
+                            {
+                                title: 'Markets (Archived)',
+                                link: '/markets-v1',
+                                icon: MarketsIcon,
+                            },
+                        ]
+                    }
+                ].map((item, index) => {
+                    const renderNavLink = (item) => {
+                        return (
+                            <NavLink
+                                to={item.link}
+                                activeClassName={"Active"}
+                                key={`menut-item${index}`}
+                                className={clsx(classes.NavLink)}
+                            >
+                                {item.icon()}
+                                <span className={classes.NavLink__Title}>
+                                    {item.title}
+                                </span>
+                            </NavLink>
+                        );
+                    }
+
+                    if(item.subMenu) {
+                        return (
+                            <div className={classes.SubMenuWrapper}>
+                                <div className={classes.SubMenuToggle}>{item.icon()} {item.title}</div>
+                                <div className={classes.SubMenu}>
+                                    {item.subMenu.map((e) => {
+                                        return renderNavLink(e);
+                                    })}
+                                </div>
+                            </div>
+                        )
+                    }
+
+                    return renderNavLink(item);
+                })}
             </div>
             <div className={classes.Actions}>
                 {

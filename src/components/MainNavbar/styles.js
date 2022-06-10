@@ -28,7 +28,7 @@ export const useStyles = makeStyles((theme) => ({
         top: '-64px'
     },
     Logo:{
-        marginRight: 'auto',
+        marginRight: '20px',
         userSelect: 'none',
         position: 'relative'
     },
@@ -58,18 +58,6 @@ export const useStyles = makeStyles((theme) => ({
             backgroundImage: `url(${theme.isDark ? LogoDarkSvg : LogoSvg})`
         },
     },
-/*    LogoImg: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'block'
-        },
-    },
-    LogoImgMin: {
-        display: 'block',
-        [theme.breakpoints.up('md')]: {
-            display: 'none'
-        },
-    },*/
     Title__Head: {
         fontSize: '28px',
         fontWeight: 600,
@@ -132,6 +120,56 @@ export const useStyles = makeStyles((theme) => ({
             lineHeight: '32px',
             border: 'none',
             outline: 'none',
+        }
+    },
+    Menu: {
+        display: 'flex',
+        alignItems: 'center',
+        marginRight: 'auto',
+    },
+    NavLink: {
+        display: 'flex',
+        alignItems: 'center',
+        marginRight: '15px',
+        color: "#8293A6",
+        fontSize: "14px",
+        textDecoration: "none",
+        "& svg": {
+            color: "#8293A6",
+            fill: "#8293A6",
+        },
+        "&:hover, &.Active": {
+            //borderRadius: "8px",
+            //background: "#004BFF",
+            color: "#004BFF",
+            "& svg": {
+                fill: "#004BFF",
+            },
+            "&::after,&::before": {
+                height: "100%",
+                top: "0"
+            }
+        },
+    },
+    NavLink__Title: {
+        marginLeft: '5px'
+    },
+    SubMenuWrapper: {
+        position: 'relative'
+    },
+    SubMenuToggle: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    SubMenu: {
+        position: 'absolute',
+        top: '100%',
+        width: '300px',
+        background: '#fff',
+        border: '2px solid rgba(133, 133, 133, 0.1)',
+        borderRadius: '5px',
+        '& $NavLink': {
+            padding: '15px 10px'
         }
     }
 }));

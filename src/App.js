@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '64px',
         transition: '0.2s all',
         [theme.breakpoints.up('md')]: {
-            marginLeft: '240px',
+            //marginLeft: '240px',
         },
     },
     Main__isSidebarExpand: {
@@ -174,14 +174,12 @@ function App() {
                         <MainNavbar isSidebarExpand={isSidebarExpand}
                                     onToggleSidebar={handleToggleSidebar}
                                     isMinHeader={isMinHeader}/>
-                        <div className={clsx(classes.Main, {
-                            [classes.Main__isSidebarExpand]: !isSidebarExpand,
-                        })}>
-                            <MainSidebar isSidebarExpand={isSidebarExpand}
+                        <div className={classes.Main}>
+{/*                            <MainSidebar isSidebarExpand={isSidebarExpand}
                                          onToggleSidebar={handleToggleSidebar}
                                          activeTheme={themeType}
                                          onChangeTheme={handleThemeTypeToggle}
-                                         isMinHeader={isMinHeader}></MainSidebar>
+                                         isMinHeader={isMinHeader}></MainSidebar>*/}
                             <div
                                 className={clsx(classes.Main__Content, {
                                     [classes.Main__Content___Black]:
