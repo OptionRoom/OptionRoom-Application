@@ -8,7 +8,7 @@ import {
 } from "./constants";
 
 export const toWei = (value, decimals) => {
-    return Web3.utils.toWei(`${value}`, decimals);
+    return Web3.utils.toWei(`${value ? value : 0}`, decimals);
 };
 
 const toFixedNoRounding = function(number, decimals) {
