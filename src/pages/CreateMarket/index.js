@@ -386,7 +386,7 @@ function CreateMarket() {
                                                 onChange={(e) => {
                                                     setValue("endDate", e, { shouldValidate: true });
                                                 }}
-                                                minDate={moment().add(1, 'days')}
+                                                minDate={moment().add(3, 'days')}
                                             />
                                         </MuiPickersUtilsProvider>
                                         {errors.endDate?.message && (
