@@ -188,6 +188,12 @@ function MainSidebar(props) {
                         isNew: true
                     },
                     {
+                        title: 'COURT-ROOM',
+                        link: '/court-room-swap',
+                        icon: MarketsIcon,
+                        isNew: true
+                    },
+                    {
                         title: "Governance",
                         link: "/governance",
                         icon: GovernanceIcon,

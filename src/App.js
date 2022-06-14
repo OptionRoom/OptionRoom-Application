@@ -18,6 +18,7 @@ import MainNavbar from "./components/MainNavbar";
 import CourtFarming from "./pages/CourtFarming";
 import NftStakePage from "./pages/NftStakePage";
 import CreateMarket from "./pages/CreateMarket";
+import CourtToRoomSwap from "./pages/CourtToRoomSwap";
 import FarminPoolPage from "./pages/FarminPoolPage";
 import Claim from "./pages/Claim";
 import Markets from "./pages/Markets";
@@ -233,6 +234,10 @@ function App() {
                                     <Route path="/governance"
                                            exact={true}>
                                         <GovernanceList/>
+                                    </Route>
+                                    <Route path="/court-room-swap"
+                                           exact={true}>
+                                        <CourtToRoomSwap/>
                                     </Route>
                                     <Route exact path="/">
                                         <Redirect to="/markets"/>

@@ -175,7 +175,6 @@ function CreateMarket() {
         setIsCreatingMarket(true);
         try {
             await smartState.callApproveContractForSpender(accountContext.account, ContractNames.busd, ContractNames.marketControllerV4);
-//            await smartState.executeFunction(SmartContractsContextFunctions.APPROVE_CONTRACT_TO_SPENDER, [accountContext.account, ContractNames.busd, ]);
         } catch (e) {
 
         } finally {
@@ -253,8 +252,6 @@ function CreateMarket() {
     }, [accountContext.account, accountContext.chainId, isChainSupported]);
 
     const renderCreateBtn = () => {
-
-
         if (get(smartState.walletAllowanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd)), formatAddress(getContractAddress(ContractNames.marketControllerV4))], 0) <= 0) {
             return (
                 <Button size={'large'}
@@ -386,7 +383,7 @@ function CreateMarket() {
                                                 onChange={(e) => {
                                                     setValue("endDate", e, { shouldValidate: true });
                                                 }}
-                                                minDate={moment().add(1, 'days')}
+                                                minDate={moment().add(3, 'days')}
                                             />
                                         </MuiPickersUtilsProvider>
                                         {errors.endDate?.message && (
