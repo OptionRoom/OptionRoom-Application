@@ -382,7 +382,7 @@ function CreateMarket() {
                                             <DateTimePicker
                                                 format="yyyy/MM/DD hh:mm a"
                                                 variant="inline"
-                                                value={getValues('endDate') || moment().add(1, 'days')}
+                                                value={getValues('endDate') || moment().add(3, 'days')}
                                                 onChange={(e) => {
                                                     setValue("endDate", e, { shouldValidate: true });
                                                 }}
