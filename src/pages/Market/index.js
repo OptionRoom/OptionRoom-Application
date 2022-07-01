@@ -118,7 +118,7 @@ function Market() {
     };
 
     const getMarketWalletData = () => {
-        return get(smartState.marketInfo, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
+        return get(smartState.marketWalletData, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
     };
 
     //UI stuff
@@ -132,17 +132,14 @@ function Market() {
     };
 
     const showVoteWidget = () => {
-        //return true;
         return (["1", "5", "8"].indexOf(getMarketState()) > -1);
     }
 
     const showOptionsWidget = () => {
-        //return true;
         return (["1"].indexOf(getMarketState()) > -1);
     }
 
     const showDisputeWidget = () => {
-        //return true;
         return (["7"].indexOf(getMarketState()) > -1);
     }
 
