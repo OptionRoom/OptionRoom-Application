@@ -30,7 +30,10 @@ export const useStyles = makeStyles((theme) => ({
     Logo:{
         marginRight: 'auto',
         userSelect: 'none',
-        position: 'relative'
+        position: 'relative',
+        [theme.breakpoints.up('md')]: {
+            marginRight: '20px',
+        },
     },
     Beta: {
         position: 'absolute',
@@ -58,18 +61,6 @@ export const useStyles = makeStyles((theme) => ({
             backgroundImage: `url(${theme.isDark ? LogoDarkSvg : LogoSvg})`
         },
     },
-/*    LogoImg: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'block'
-        },
-    },
-    LogoImgMin: {
-        display: 'block',
-        [theme.breakpoints.up('md')]: {
-            display: 'none'
-        },
-    },*/
     Title__Head: {
         fontSize: '28px',
         fontWeight: 600,
@@ -133,5 +124,97 @@ export const useStyles = makeStyles((theme) => ({
             border: 'none',
             outline: 'none',
         }
+    },
+    Menu: {
+        order: 3,
+        position: 'absolute',
+        top: '100%',
+        background: '#fff',
+        width: '100%',
+        left: '0',
+        borderTop: '1px solid #f2f2f2',
+        maxHeight: '100vh',
+        [theme.breakpoints.up('md')]: {
+            marginRight: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'static',
+            order: 0,
+            borderTop: 'none',
+            top: 'auto',
+            left: 'auto',
+            width: 'auto'
+        },
+    },
+    NavLink: {
+        display: "flex",
+        alignItems: "center",
+        textDecoration: "none",
+        color: "#8293A6",
+        fontSize: "14px",
+        padding: "10px 20px",
+        transition: "0.2s all",
+        position: 'relative',
+        "&:hover, &.Active": {
+            color: "#004BFF",
+            "& svg": {
+                fill: "#004BFF",
+            },
+            "&::after,&::before": {
+                height: "100%",
+                top: "0"
+            }
+        },
+        "& svg": {
+            color: "#8293A6",
+            fill: "#8293A6",
+            marginRight: '10px'
+        },
+        [theme.breakpoints.up('md')]: {
+            padding: "20px 30px",
+        },
+    },
+    SubMenuTitle: {
+        [theme.breakpoints.up('md')]: {
+            display: 'block'
+        },
+        display: 'none',
+        color: "#8293A6",
+        fontSize: "14px",
+        padding: "20px 30px",
+        transition: "0.2s all",
+        cursor: 'pointer',
+        "&:hover, &.Active": {
+            color: "#004BFF",
+        },
+    },
+    SubMenuWrap: {
+        [theme.breakpoints.up('md')]: {
+            position: 'relative',
+            "&:hover": {
+                '& $SubMenu': {
+                    display: 'block !important'
+                }
+            }
+        },
+    },
+    SubMenu: {
+        [theme.breakpoints.up('md')]: {
+            position: 'absolute',
+            top: '100%',
+            width: '300px',
+            background: '#fff',
+            borderRadius: '15px',
+            boxShadow: '0 0 20px 0 #e6edff',
+            padding: '10px 0',
+            display: 'none',
+            '& $NavLink': {
+                padding: "10px 15px",
+                borderBottom: '1px solid #f2f2f2',
+                '&:last-child': {
+                    borderBottom: 'none'
+                }
+            },
+        },
     }
 }));

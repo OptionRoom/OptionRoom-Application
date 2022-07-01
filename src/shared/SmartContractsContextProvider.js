@@ -17,7 +17,7 @@ import {
     getIsWalletOptionTokenApprovedForMarketController, getMarketBalanceOf, getMarketInfo
 } from "../methods/market-controller.methods";
 import {AccountContext} from "./AccountContextProvider";
-import {ContractNames} from "./constants";
+import {ChainNetworks, ContractNames} from "./constants";
 import {getContractAddress, getTokensList} from "./contracts/contracts.helper";
 
 export const SmartContractsContext = React.createContext({
@@ -189,7 +189,7 @@ const SmartContractsContextProvider = (props) => {
     };
 
     useEffect(() => {
-        if(accountContext.account && accountContext.chainId) {
+        if(accountContext.account && accountContext.chainId && [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET].includes(accountContext.chainId)) {
             loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
 
             const tokens = getTokensList();
