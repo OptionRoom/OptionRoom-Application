@@ -14,7 +14,7 @@ export const useGetMarketResolvingOutcome = (wallet, address, info) => {
 
     useEffect(() => {
         const init = async () => {
-            const data = await getResolvingOutcome(wallet, address, get(info, ['info', 'choices']).length);
+            const data = await getResolvingOutcome(wallet, address, get(info, ['info', 'choices'], []).length);
             setData(data);
         }
 
@@ -31,7 +31,6 @@ function RedeemMarketRewardsWidget(props) {
     const resolvingOutcome = useGetMarketResolvingOutcome(accountContext.account, props.marketContractAddress, props.info);
     const walletBalanceOfMarketOptions = useGetWalletBalanceOfMarketOptions(accountContext.account, props.marketContractAddress);
 
-    //Vote
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleRedeem = async () => {
@@ -47,11 +46,11 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     const getUserRewardsVal =  () => {
-        if(resolvingOutcome === null || !walletBalanceOfMarketOptions || walletBalanceOfMarketOptions.length == 0) {
+        if(resolvingOutcome === null || !walletBalanceOfMarketOptions || !walletBalanceOfMarketOptions.data || walletBalanceOfMarketOptions.data.length == 0) {
             return;
         }
 
-        return walletBalanceOfMarketOptions[resolvingOutcome];
+        return walletBalanceOfMarketOptions.data[resolvingOutcome['outComeIndex']];
     };
 
     return (
@@ -59,8 +58,8 @@ function RedeemMarketRewardsWidget(props) {
             <div className={classes.RedeemMarketRewardsWidget__Header}>Redeem your rewards</div>
             <div className={classes.RedeemMarketRewardsWidget__Content}>
                 {
-                    (resolvingOutcome || resolvingOutcome == 0) && (
-                        <div>The community resolved this market to <span>{props.info.choices[resolvingOutcome]}</span></div>
+                    (resolvingOutcome) && (
+                        <div>The community resolved this market to <strong>{get(props.info, ['info', 'choices', resolvingOutcome['outComeIndex']])}</strong></div>
                     )
                 }
                 {
