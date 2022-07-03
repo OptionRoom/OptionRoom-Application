@@ -14,7 +14,7 @@ export const useGetMarketResolvingOutcome = (wallet, address, info) => {
 
     useEffect(() => {
         const init = async () => {
-            const data = await getResolvingOutcome(wallet, address, get(info, ['choices']).length);
+            const data = await getResolvingOutcome(wallet, address, get(info, ['info', 'choices']).length);
             setData(data);
         }
 
