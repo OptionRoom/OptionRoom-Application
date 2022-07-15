@@ -475,7 +475,7 @@ export const redeemMarketRewards = async (wallet, marketAddress) => {
 
     return contract
         .methods
-        .redeem(marketAddress)
+        .redeem(getContractAddress(ContractNames.marketControllerV4), marketAddress)
         .send({
             from: wallet,
         });

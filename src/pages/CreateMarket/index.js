@@ -455,7 +455,7 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))}) BUSD</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
                                         <TradeInput max={fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}
