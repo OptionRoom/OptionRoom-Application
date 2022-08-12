@@ -71,7 +71,6 @@ import {
 import RepeaterField from "../../components/RepeaterField";
 import {
     formatAddress,
-    SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
 import {smartState} from "../../shared/SmartState";
@@ -84,7 +83,6 @@ function CreateMarket() {
     const classes = useStyles();
     const history = useHistory();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);

@@ -5,9 +5,14 @@ import {get} from "lodash";
 import Button from "../Button";
 import {fromWei, toWei} from "../../shared/helper";
 import {AccountContext} from "../../shared/AccountContextProvider";
-import {redeemMarketRewards} from "../../methods/market-controller.methods";
+import {redeemMarketRewards} from "../../methods/or-fix-redeem.methods";
 import {getResolvingOutcome} from "../../methods/or-market-governance.methods";
 import {useGetWalletBalanceOfMarketOptions} from "../MarketSellWidget";
+import {formatAddress, smartState} from "../../shared/SmartState";
+import {observer} from "mobx-react-lite";
+import {approveOptionTokenForSpender} from "../../methods/market-controller.methods";
+import {getContractAddress} from "../../shared/contracts/contracts.helper";
+import {ContractNames} from "../../shared/constants";
 
 export const useGetMarketResolvingOutcome = (wallet, address, info) => {
     const [data, setData] = useState(null);
@@ -30,14 +35,20 @@ function RedeemMarketRewardsWidget(props) {
 
     const resolvingOutcome = useGetMarketResolvingOutcome(accountContext.account, props.marketContractAddress, props.info);
     const walletBalanceOfMarketOptions = useGetWalletBalanceOfMarketOptions(accountContext.account, props.marketContractAddress);
+    const isWalletOptionTokenApprovedForFixRedeem = get(smartState, ['isWalletOptionTokenApprovedForFixRedeem', formatAddress(accountContext.account)]);
 
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleRedeem = async () => {
         setIsProcessing(true);
         try {
-            await redeemMarketRewards(accountContext.account, props.marketContractAddress);
-            props.onRedeem && props.onRedeem();
+            if(isWalletOptionTokenApprovedForFixRedeem) {
+                await redeemMarketRewards(accountContext.account, props.marketContractAddress);
+                props.onRedeem && props.onRedeem();
+            } else {
+                await approveOptionTokenForSpender(accountContext.account, getContractAddress(ContractNames.or_fix_redeem));
+                await smartState.loadIsWalletOptionTokenApprovedForFixRedeem(accountContext.account);
+            }
         } catch (e) {
 
         } finally {
@@ -46,11 +57,12 @@ function RedeemMarketRewardsWidget(props) {
     };
 
     const getUserRewardsVal =  () => {
+        return 10000000;
         if(resolvingOutcome === null || !walletBalanceOfMarketOptions || !walletBalanceOfMarketOptions.data || walletBalanceOfMarketOptions.data.length == 0) {
-            return;
+            //return;
         }
 
-        return walletBalanceOfMarketOptions.data[resolvingOutcome['outComeIndex']];
+        return get(walletBalanceOfMarketOptions, ['data', get(resolvingOutcome, 'outComeIndex', 0)], 0);
     };
 
     return (
@@ -72,11 +84,12 @@ function RedeemMarketRewardsWidget(props) {
                             size={"large"}
                             onClick={handleRedeem}
                             isProcessing={isProcessing}
-                            fullWidth={true}>Redeem</Button>
+                            fullWidth={true}>
+                        {isWalletOptionTokenApprovedForFixRedeem ? 'Redeem' : 'Approve'}
+                    </Button>
                 )
             }
         </div>
     );
 }
-
-export default RedeemMarketRewardsWidget;
+export default observer(RedeemMarketRewardsWidget);

@@ -37,17 +37,15 @@ import BuySellWidget2 from "../../components/BuySellWidget2";
 import OptionsWidget from "../../components/OptionsWidget";
 import {
     formatAddress,
-    SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
 import {smartState} from "../../shared/SmartState";
-import {getContractAddress} from "../../shared/contracts/contracts.helper";
+
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Market() {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
 
     const [isLoading, setIsLoading] = useState(true);
     const isChainSupported = useGetIsChainSupported(supportedChains);

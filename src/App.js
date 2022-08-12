@@ -152,6 +152,7 @@ function App() {
     useEffect(() => {
         if(accountContext.account && accountContext.chainId) {
             smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
+            smartState.loadIsWalletOptionTokenApprovedForFixRedeem(accountContext.account);
 
             const tokens = getTokensList();
             for(let token of tokens) {

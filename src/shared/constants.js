@@ -188,6 +188,7 @@ export const ContractNames = {
     matter_court_farming_claim: 'matter_court_farming_claim',
     court_vote_stake: 'court_vote_stake',
     reward_program: 'reward_program',
+    or_fix_redeem: 'or_fix_redeem',
 };
 
 export const MarketVotingTypes = {
