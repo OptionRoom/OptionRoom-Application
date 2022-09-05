@@ -22,9 +22,6 @@ import {
 import {
     ChainNetworks,
 } from "../../shared/constants";
-import {
-    SmartContractsContext,
-} from "../../shared/SmartContractsContextProvider";
 import TradeInput from "../../components/TradeInput";
 
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
@@ -33,7 +30,6 @@ function CourtToRoomSwap() {
     const classes = useStyles();
     const history = useHistory();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     let updateTradeInputInterval = null;
     const [tradeInput, setTradeInput] = useState(0);
