@@ -171,7 +171,7 @@ function VoteWidget(props) {
             }
 
             if(props.marketState == 5 || props.marketState == 8) {
-                return get(props.marketInfo, ['choices'], []);
+                return get(props.marketInfo, ['info', 'choices'], []);
             }
         }
     };
@@ -235,7 +235,7 @@ function VoteWidget(props) {
                                         return (
                                             <OptionBlock value={get(marketVotes, [index]) || 0}
                                                          isSelected={voteInput === index}
-                                                         onClick={(value) => {
+                                                         onClick={() => {
                                                              setVoteInput(index);
                                                          }}
                                                          showDonut={props.showDonutOnOptionBlock}

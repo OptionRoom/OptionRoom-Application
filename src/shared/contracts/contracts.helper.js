@@ -37,6 +37,7 @@ import orManagerAbi from '../../methods/abis/or-manager.abi.json';
 import marketQueryV4Abi from '../../methods/abis/market-query-v4.abi.json';
 import marketEntityAbi from '../../methods/abis/market-entity.abi.json';
 import marketGovernanceAbi from '../../methods/abis/or-market-governance.abi.json';
+import orFixRedeemAbi from '../../methods/abis/or-fix-redeem.abi.json';
 
 
 import {walletHelper} from "../wallet.helper";
@@ -53,6 +54,7 @@ export const contractsAbis = {
         [ContractNames.marketQueryV4]: marketQueryV4Abi,
         [ContractNames.marketGovernance]: marketGovernanceAbi,
         [ContractNames.optionTokenV4]: optionTokenAbi,
+        [ContractNames.or_fix_redeem]: orFixRedeemAbi,
 
         claim_contract: claimContractAbi,
         market: marketAbi,
@@ -202,6 +204,7 @@ export const contractsAddresses = {
         [ContractNames.marketGovernance]: "0x4de4c3d1130366080D29bB050cb2D756dd017812",
         [ContractNames.optionTokenV4]: "0x400315400188C3F1e2F476776414569617b9a6b8",
         [ContractNames.reward_program]: "0xD6b20EE5fBc7ea90fbC45Bd60CAb02DDEAB25180",
+        [ContractNames.or_fix_redeem]: "0x8f68C04dCcB80DB5688977870027bF8C692d0254",
     },
     [ChainNetworks.LOCAL_CHAIN]: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',
@@ -236,13 +239,13 @@ export const contractsAddresses = {
         [ContractNames.busd]: "0xa63D0eb5Fc01D8AC386a5E395838C8efCE4168ce",//DummyToken1
         [ContractNames.marketGovernance]: "0xb90903e346137E6dB42660B7F70B0E77Db7b79A3",//ORMarketGovernance
         [ContractNames.optionTokenV4]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.court_token]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.MatterTokenContract]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.HtTokenContract]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.ht_court_farming_claim]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.matter_court_farming_claim]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//ORConditionalTokens
-        [ContractNames.court_vote_stake]: "0xF4de9e6B978dc6fbBc1E1935Bb748B86c8d8032F",//ORConditionalTokens
-        [ContractNames.reward_program]: "0x0DD89c11A3EDdB05f9ea629A28D6c9C0b735016D",//ORConditionalTokens
+        [ContractNames.court_token]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//
+        [ContractNames.MatterTokenContract]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//
+        [ContractNames.HtTokenContract]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//
+        [ContractNames.ht_court_farming_claim]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//
+        [ContractNames.matter_court_farming_claim]: "0xBAbCB12Aca6EEf82b1a7C701b0293Fe6af0Ff8a9",//
+        [ContractNames.court_vote_stake]: "0xF4de9e6B978dc6fbBc1E1935Bb748B86c8d8032F",
+        [ContractNames.reward_program]: "0x0DD89c11A3EDdB05f9ea629A28D6c9C0b735016D",
     },
     [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET]: {
         market: '0xE3D765778D5498a8979D94A48b038FE3d062b08c',

@@ -37,17 +37,15 @@ import BuySellWidget2 from "../../components/BuySellWidget2";
 import OptionsWidget from "../../components/OptionsWidget";
 import {
     formatAddress,
-    SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
 import {smartState} from "../../shared/SmartState";
-import {getContractAddress} from "../../shared/contracts/contracts.helper";
+
 const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetworks.LOCAL_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN];
 
 function Market() {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
 
     const [isLoading, setIsLoading] = useState(true);
     const isChainSupported = useGetIsChainSupported(supportedChains);
@@ -118,7 +116,7 @@ function Market() {
     };
 
     const getMarketWalletData = () => {
-        return get(smartState.marketInfo, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
+        return get(smartState.marketWalletData, [formatAddress(marketContractAddress), formatAddress(accountContext.account)]);
     };
 
     //UI stuff
@@ -132,17 +130,14 @@ function Market() {
     };
 
     const showVoteWidget = () => {
-        //return true;
         return (["1", "5", "8"].indexOf(getMarketState()) > -1);
     }
 
     const showOptionsWidget = () => {
-        //return true;
         return (["1"].indexOf(getMarketState()) > -1);
     }
 
     const showDisputeWidget = () => {
-        //return true;
         return (["7"].indexOf(getMarketState()) > -1);
     }
 

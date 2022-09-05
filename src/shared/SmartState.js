@@ -10,7 +10,7 @@ import {
 } from "../methods/shared.methods";
 import {
     approveOptionTokenForMarket,
-    getAccountBalances,
+    getAccountBalances, getIsWalletOptionTokenApprovedForFixRedeem,
     getIsWalletOptionTokenApprovedForMarket,
     getIsWalletOptionTokenApprovedForMarketController, getMarketBalanceOf, getMarketInfo
 } from "../methods/market-controller.methods";
@@ -36,6 +36,7 @@ class SmartState {
     walletAllowanceOfSomething = {};
     isWalletOptionTokenApprovedForMarket = {};
     isWalletOptionTokenApprovedForMarketController = {};
+    isWalletOptionTokenApprovedForFixRedeem = {};
     marketInfo = {};
     marketWalletData = {};
 
@@ -68,6 +69,11 @@ class SmartState {
     async loadIsWalletOptionTokenApprovedForMarketController(wallet) {
         const result = await getIsWalletOptionTokenApprovedForMarketController(wallet);
         this.isWalletOptionTokenApprovedForMarketController = set({...this.isWalletOptionTokenApprovedForMarketController}, [formatAddress(wallet)], result);
+    }
+
+    async loadIsWalletOptionTokenApprovedForFixRedeem(wallet) {
+        const result = await getIsWalletOptionTokenApprovedForFixRedeem(wallet);
+        this.isWalletOptionTokenApprovedForFixRedeem = set({...this.isWalletOptionTokenApprovedForFixRedeem}, [formatAddress(wallet)], result);
     }
 
     async loadMarketInfo(wallet, market) {

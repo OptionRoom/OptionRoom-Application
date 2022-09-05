@@ -1,0 +1,27 @@
+[
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "conditionalTokensAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "controllerAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "marketAddress",
+                "type": "address"
+            }
+        ],
+        "name": "redeemFix",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

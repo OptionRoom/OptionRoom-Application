@@ -459,6 +459,17 @@ export const getIsWalletOptionTokenApprovedForMarketController = async (wallet) 
         });
 }
 
+export const getIsWalletOptionTokenApprovedForFixRedeem = async (wallet) => {
+    const contract = getContract(ContractNames.optionTokenV4);
+
+    return contract
+        .methods
+        .isApprovedForAll(wallet, getContractAddress(ContractNames.or_fix_redeem))
+        .call({
+            from: wallet,
+        });
+}
+
 export const getIsWalletOptionTokenApprovedForMarket = async (wallet, marketAddress) => {
     const contract = getContract(ContractNames.optionTokenV4);
 
@@ -470,16 +481,16 @@ export const getIsWalletOptionTokenApprovedForMarket = async (wallet, marketAddr
         });
 }
 
-export const redeemMarketRewards = async (wallet, marketAddress) => {
+/*export const redeemMarketRewards = async (wallet, marketAddress) => {
     const contract = getContract(ContractNames.optionTokenV4);
 
     return contract
         .methods
-        .redeem(marketAddress)
+        .redeem(getContractAddress(ContractNames.marketControllerV4), marketAddress)
         .send({
             from: wallet,
         });
-}
+}*/
 
 export const approveOptionTokenForMarketController = async (wallet) => {
     const contract = getContract(ContractNames.optionTokenV4);
@@ -487,6 +498,17 @@ export const approveOptionTokenForMarketController = async (wallet) => {
     return contract
         .methods
         .setApprovalForAll(getContractAddress(ContractNames.marketControllerV4), true)
+        .send({
+            from: wallet,
+        });
+}
+
+export const approveOptionTokenForSpender = async (wallet, spender) => {
+    const contract = getContract(ContractNames.optionTokenV4);
+
+    return contract
+        .methods
+        .setApprovalForAll(spender, true)
         .send({
             from: wallet,
         });

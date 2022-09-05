@@ -71,7 +71,6 @@ import {
 import RepeaterField from "../../components/RepeaterField";
 import {
     formatAddress,
-    SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
 import {smartState} from "../../shared/SmartState";
@@ -84,7 +83,6 @@ function CreateMarket() {
     const classes = useStyles();
     const history = useHistory();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -379,7 +377,7 @@ function CreateMarket() {
                                             <DateTimePicker
                                                 format="yyyy/MM/DD hh:mm a"
                                                 variant="inline"
-                                                value={getValues('endDate') || moment().add(1, 'days')}
+                                                value={getValues('endDate') || moment().add(3, 'days')}
                                                 onChange={(e) => {
                                                     setValue("endDate", e, { shouldValidate: true });
                                                 }}
@@ -452,7 +450,7 @@ function CreateMarket() {
                                                                     <span>Liquidity <span
                                                                         className={classes.CreateMarket__FieldTitleRequired}>*</span></span>
                                         <span
-                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))})</span>
+                                            className={classes.CreateMarket__FieldTitle__helper}>(available {formatTradeValue(fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0)))}) BUSD</span>
                                     </div>
                                     <div className={classes.CreateMarket__FieldBody}>
                                         <TradeInput max={fromWei(get(smartState.walletBalanceOfSomething, [formatAddress(accountContext.account), formatAddress(getContractAddress(ContractNames.busd))], 0))}

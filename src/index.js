@@ -10,7 +10,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AccountContextProvider from './shared/AccountContextProvider';
 import OptionroomThemeContextProvider from './shared/OptionroomThemeContextProvider';
-import SmartContractsContext from './shared/SmartContractsContextProvider';
 
 const queryClient = new QueryClient();
 
@@ -19,9 +18,7 @@ ReactDOM.render(
         <QueryClientProvider client={queryClient}>
             <OptionroomThemeContextProvider>
                 <AccountContextProvider>
-                    <SmartContractsContext>
-                        <App/>
-                    </SmartContractsContext>
+                    <App/>
                 </AccountContextProvider>
             </OptionroomThemeContextProvider>
         </QueryClientProvider>

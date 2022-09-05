@@ -14,7 +14,6 @@ import ClaimAPIs from '../../shared/contracts/ClaimAPIs';
 import MarketAPIs from "../../shared/contracts/MarketAPIs";
 import {
     formatAddress,
-    SmartContractsContext,
     SmartContractsContextFunctions
 } from "../../shared/SmartContractsContextProvider";
 import {getContractAddress} from "../../shared/contracts/contracts.helper";
@@ -24,7 +23,6 @@ import {smartState} from "../../shared/SmartState";
 function MarketLiquidityWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
     const {
         marketContractAddress
     } = props;

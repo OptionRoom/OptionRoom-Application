@@ -142,6 +142,7 @@ function App() {
         if(accountContext.account && accountContext.chainId && [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET].includes(accountContext.chainId)) {
             console.log("ddd");
             smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
+            smartState.loadIsWalletOptionTokenApprovedForFixRedeem(accountContext.account);
 
             const tokens = getTokensList();
             for(let token of tokens) {

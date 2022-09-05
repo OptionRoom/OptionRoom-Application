@@ -30,7 +30,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import Slide from "@material-ui/core/Slide";
-import {formatAddress, SmartContractsContext} from "../../shared/SmartContractsContextProvider";
+import {formatAddress} from "../../shared/SmartContractsContextProvider";
 import {smartState} from "../../shared/SmartState";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -98,7 +98,6 @@ export const useGetBuySellPosition = (wallet, marketContractAddress, tradeAmount
 
 export const useGetMaxTradeSize = (selectedInToken) => {
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
 
     const [maxTradeSize, setMaxTradeSize] = useState(0);
 
@@ -118,7 +117,6 @@ export const useGetMaxTradeSize = (selectedInToken) => {
 
 export const useIsTokenApprovedForMarketController = (selectedInToken) => {
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
 
     const [isApproved, setIsApproved] = useState(false);
 
@@ -144,7 +142,6 @@ export const useIsTokenApprovedForMarketController = (selectedInToken) => {
 function MarketBuyWidget(props) {
     const classes = useStyles();
     const accountContext = useContext(AccountContext);
-    const smartContractsContext = useContext(SmartContractsContext);
 
     let updateTradeInputInterval = null;
 
