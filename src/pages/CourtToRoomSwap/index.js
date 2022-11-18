@@ -1,8 +1,4 @@
-import React, {useState, useContext, useEffect} from "react";
-
-import {
-    useHistory
-} from "react-router-dom";
+import React, {useState, useContext} from "react";
 
 import ChainAlert from '../../components/ChainAlert';
 import ConnectButton from "../../components/ConnectButton";
@@ -28,7 +24,6 @@ const supportedChains = [ChainNetworks.BINANCE_SMART_CHAIN_TESTNET, ChainNetwork
 
 function CourtToRoomSwap() {
     const classes = useStyles();
-    const history = useHistory();
     const accountContext = useContext(AccountContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     let updateTradeInputInterval = null;

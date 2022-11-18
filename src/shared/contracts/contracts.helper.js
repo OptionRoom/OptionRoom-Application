@@ -292,8 +292,6 @@ export const contractsAddresses = {
 
 const walletHelperInstance = walletHelper();
 
-const contractsInstances = {};
-
 export const getContractAddress = (contractName) => {
     const chainId = walletHelperInstance.getChainId();
     if(!chainId) {

@@ -34,6 +34,8 @@ import {smartState} from "./shared/SmartState";
 import {AccountContext} from "./shared/AccountContextProvider";
 import {getTokensList} from "./shared/contracts/contracts.helper";
 import {ChainNetworks, ContractNames} from "./shared/constants";
+import CreateBet from './bets/CreateBet';
+import Bets from './bets/Bets';
 
 const useStyles = makeStyles((theme) => ({
     Main: {
@@ -215,6 +217,14 @@ function App() {
                                     <Route path="/court-room-swap"
                                            exact={true}>
                                         <CourtToRoomSwap/>
+                                    </Route>
+                                    <Route path="/bets/"
+                                           exact={true}>
+                                        <Bets/>
+                                    </Route>
+                                    <Route path="/bets/create"
+                                           exact={true}>
+                                        <CreateBet/>
                                     </Route>
                                     <Route exact path="/">
                                         <Redirect to="/markets"/>
