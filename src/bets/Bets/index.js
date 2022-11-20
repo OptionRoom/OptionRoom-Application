@@ -11,7 +11,6 @@ import BetCard from "./BetCard";
 import { useStyles } from "./styles";
 
 import Button from "../../components/Button";
-import OrLoader from "../../components/OrLoader";
 import {ChainNetworks} from "../../shared/constants";
 import { marketStatesDisplay } from "../constants";
 import {useGetIsChainSupported} from "../../shared/hooks";
@@ -32,6 +31,7 @@ function Bets() {
     const accountContext = useContext(AccountContext);
     const isChainSupported = useGetIsChainSupported(supportedChains);
     const {data: bets, isLoading: isLoadingBets, isError: isErrorLoadingBets, refetch: refetchBets, error: errorLoadingBets} = useGetBets();
+    console.log({bets});
     const filteredMarkets = useFilteredBets(bets);
     useEffect(() => {
         if(accountContext.account && accountContext.chainId) {
@@ -39,26 +39,12 @@ function Bets() {
         }
     }, [accountContext.account, accountContext.chainId]);
 
-    const getStateOptions = ()=> {
-        return marketStatesDisplay.filter(entry => entry.showInMarketsQuickFilter);
-    }
     const [filterDetails, setFilterDetails] = useState({
-        name: "",
-        category: {
-            title: 'All',
-            id: "all"
-        },
         state: {
-            id: "all",
-            title: "All",
+            title: 'All',
+            id: "ALL"
         },
-        sort: {
-            by: "volume",
-            direction: "down",
-        },
-        view: "grid",
     });
-
 
     if (!accountContext.account) {
         return (
@@ -92,7 +78,7 @@ function Bets() {
                 </div>
                 <div className={classes.QuickFilters}>
                     {
-                        getStateOptions().map((entry) => {
+                        marketStatesDisplay.map((entry) => {
                             return (
                                 <div className={clsx({
                                     [classes.QuickFilters__IsActive]: filterDetails.state.id == entry.id

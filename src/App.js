@@ -1,7 +1,7 @@
 import colors from 'colors';
 import React, {useMemo, useContext, useEffect, useState} from "react";
 
-import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import {createTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
     Switch,
@@ -36,6 +36,7 @@ import {getTokensList} from "./shared/contracts/contracts.helper";
 import {ChainNetworks, ContractNames} from "./shared/constants";
 import CreateBet from './bets/CreateBet';
 import Bets from './bets/Bets';
+import SingleBet from './bets/SingleBet';
 
 const useStyles = makeStyles((theme) => ({
     Main: {
@@ -87,7 +88,7 @@ function App() {
 
     const theme = useMemo(
         () =>
-            createMuiTheme({
+            createTheme({
                 palette: {
                     background: {
                         default: themeType === 'dark' ? "#141A22" : "#F7FAFF"
@@ -142,7 +143,6 @@ function App() {
 
     useEffect(() => {
         if(accountContext.account && accountContext.chainId && [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET].includes(accountContext.chainId)) {
-            console.log("ddd");
             smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
             smartState.loadIsWalletOptionTokenApprovedForFixRedeem(accountContext.account);
 
@@ -225,6 +225,10 @@ function App() {
                                     <Route path="/bets/create"
                                            exact={true}>
                                         <CreateBet/>
+                                    </Route>
+                                    <Route path="/bets/:marketId"
+                                           exact={true}>
+                                        <SingleBet/>
                                     </Route>
                                     <Route exact path="/">
                                         <Redirect to="/markets"/>

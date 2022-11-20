@@ -7,84 +7,43 @@ export const betStates = {
     Canceled: '5',
 };
 
+export const betsStateColors = {
+    [betStates.Invalid]: "#c0392b",
+    [betStates.ActiveNotStarted]: "#bdc3c7",
+    [betStates.ActiveBetting]: "#2ecc71",
+    [betStates.ActiveNoBetting]: "#f39c12",
+    [betStates.Finished]: "#34495e",
+    [betStates.Canceled]: "#c0392b",
+};
+
 export const marketStatesDisplay = [
     {
-        id: 'all',
-        title: 'All',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        id: 'ALL',
+        title: 'All'
     },
     {
-        id: '3',
-        title: 'Active',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
+        id: betStates.Invalid,
+        title: 'Invalid'
     },
     {
-        id: '0',
-        title: 'Invalid',
-        showInMarketsQuickFilter: false,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
+        id: betStates.ActiveNotStarted,
+        title: 'Active not started yet'
     },
     {
-        id: '1',
-        title: 'Validating',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
+        id: betStates.ActiveBetting,
+        title: 'Active'
     },
     {
-        id: '2',
-        title: 'Rejected',
-        showInMarketsQuickFilter: false,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
+        id: betStates.ActiveNoBetting,
+        title: 'Active No Betting'
+    },
+    {
+        id: betStates.Finished,
+        title: 'Finished'
     },
 
     {
-        id: '4',
-        title: 'Inactive',
-        showInMarketsQuickFilter: false,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
+        id: betStates.Canceled,
+        title: 'Canceled'
     },
-    {
-        id: '5',
-        title: 'Resolving',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
-    },
-    {
-        id: '7',
-        title: 'Dispute',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: true
-    },
-    {
-        id: '8',
-        title: 'Resolve Again',
-        showInMarketsQuickFilter: false,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
-    },
-    {
-        id: '6',
-        title: 'Resolved',
-        showInMarketsQuickFilter: true,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
-    },
-    {
-        id: '9',
-        title: 'Force Resolved',
-        hide: false,
-        showInMarketsQuickFilter: false,
-        showInMarketsFilterWidget: true,
-        showInGovernanceFilterWidget: false
-    }
 ];

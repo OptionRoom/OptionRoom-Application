@@ -105,7 +105,8 @@ function MainNavbar(props) {
                         }
 
                         return (
-                            <div className={classes.SubMenuWrap}>
+                            <div className={classes.SubMenuWrap}
+                                 key={`menu-${index}`}>
                                 <div className={classes.SubMenuTitle}>More</div>
                                 <div className={classes.SubMenu}>
                                     {

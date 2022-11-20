@@ -1,6 +1,17 @@
 import {MaxUint256} from "../shared/constants";
 import {getContract, getContractAddress, getTokenContract} from "../shared/contracts/contracts.helper";
 
+export const getWalletAllowanceOfContractWithAddress = (wallet, source, spender) => {
+    const contract = getTokenContract(source);
+
+    return contract
+        .methods
+        .allowance(wallet, spender)
+        .call({
+            from: wallet,
+        });
+};
+
 export const getWalletBalanceOfContractWithAddress = (wallet, contractAddress) => {
     const contract = getTokenContract(contractAddress);
 
@@ -54,6 +65,17 @@ export const approveContractForSpender = (wallet, source, spender, amount) => {
     return sourceContract
         .methods
         .approve(spenderContractAddress, amount ? amount : MaxUint256)
+        .send({
+            from: wallet,
+        });
+};
+
+export const approveTokenForSpenderWithAddress = (wallet, source, spender, amount) => {
+    const contract = getTokenContract(source);
+
+    return contract
+        .methods
+        .approve(spender, amount ? amount : MaxUint256)
         .send({
             from: wallet,
         });

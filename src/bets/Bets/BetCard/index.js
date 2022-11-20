@@ -10,23 +10,13 @@ import { VolumeIcon } from "../../../shared/icons";
 
 import {
     fromWei,
-    getMarketDisputeEndTime,
     truncateText,
 } from "./../../../shared/helper";
-import { marketStateColors, marketStates } from "../../../shared/constants";
-import {betStates} from "../../constants";
+import {betStates, betsStateColors} from "../../constants";
 
 function BetCard(props) {
     const classes = useStyles();
     const { betData } = props;
-
-    const betCategories = useMemo(() => {
-        return betData.categories;
-    }, [betData.categories]);
-
-    const betChoices = useMemo(() => {
-        return betData.choices.slice(0, betData.choicesCount);
-    }, [betData.choices]);
 
     const voteHeadline = useMemo(() => {
         const marketStates = {
@@ -53,48 +43,9 @@ function BetCard(props) {
     }, [betData.state]);
 
     const betStateColor = useMemo(() => {
-        return marketStateColors[betData.state] || '#000';
+        return betsStateColors[betData.state] || '#000';
     }, [betData.state]);
 
-    /**
-     baskToken
-     :
-     "0x51A4B023681Ac5D2C346efB2b8Eb4D250729c329"
-     canceled
-     :
-     false
-     categories
-     :
-     (8) ['0', '0', '0', '0', '0', '0', '0', '0']
-     choices
-     :
-     (8) ['Choice 1', 'Choice 2', '', '', '', '', '', '']
-     choicesCount
-     :
-     "2"
-     description
-     :
-     "Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1Test 1"
-     endBetTime
-     :
-     "1669260180"
-     finished
-     :
-     false
-     resolveIndex
-     :
-     "0"
-     resolveTime
-     :
-     "1669346580"
-     starBetTime
-     :
-     "1669012740"
-     title
-     :
-     "Test 1Test 1Test 1Test 1Test 1Test 1Test 1"
-     * @returns {null|*}
-     */
     const renderer = ({ days, hours, minutes, seconds, completed }) => {
         switch (betData.state) {
             case betStates.ActiveBetting:
@@ -152,7 +103,7 @@ function BetCard(props) {
             <div className={classes.MainDetails}>
                 <div className={classes.CatStateLine}>
                     <div className={classes.Cat}>
-                        {betCategories.join(", ")}
+                        {betData.categories.join(", ")}
                     </div>
                     <div
                         className={classes.State}
@@ -175,7 +126,7 @@ function BetCard(props) {
                     <div>
                         <div className={classes.Volume__Title}>Volume</div>
                         <div className={classes.Volume__Val}>
-                            {numeral(sum(betData.amounts)).format("$0,0.00")}
+                            {numeral(fromWei(sum(betData.amounts.map(e => parseInt(e))))).format("0,0.00")}
                         </div>
                     </div>
                 </div>
