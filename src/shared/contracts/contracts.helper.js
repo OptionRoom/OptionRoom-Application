@@ -292,8 +292,6 @@ export const contractsAddresses = {
 
 const walletHelperInstance = walletHelper();
 
-const contractsInstances = {};
-
 export const getContractAddress = (contractName) => {
     const chainId = walletHelperInstance.getChainId();
     if(!chainId) {
@@ -469,15 +467,15 @@ export const tokensListPerChain = {
             "logoURI": "https://tokens.pancakeswap.finance/images/0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c.png"
         },
     ],
-    [ChainNetworks.LOCAL_CHAIN]: {},
-    [ChainNetworks.MAIN]: {},
+    [ChainNetworks.LOCAL_CHAIN]: [],
+    [ChainNetworks.MAIN]: [],
     [ChainNetworks.BINANCE_SMART_CHAIN]: tokensList.tokens.filter((entry) => entry.allowed),
 };
 
 export const getTokensList = () => {
     const chainId = walletHelperInstance.getChainId();
 
-    return tokensListPerChain[chainId];
+    return tokensListPerChain[chainId] || [];
 };
 
 export const getDefaultCollateralToken = () => {

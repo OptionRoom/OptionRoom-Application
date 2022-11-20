@@ -1,5 +1,4 @@
 import React from "react";
-import clsx from "clsx";
 
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";

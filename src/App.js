@@ -1,7 +1,7 @@
 import colors from 'colors';
 import React, {useMemo, useContext, useEffect, useState} from "react";
 
-import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import {createTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
     BrowserRouter as Router,
     Switch,
@@ -13,11 +13,11 @@ import clsx from "clsx";
 
 import './App.css';
 
-import MainSidebar from "./components/MainSidebar";
 import MainNavbar from "./components/MainNavbar";
 import CourtFarming from "./pages/CourtFarming";
 import NftStakePage from "./pages/NftStakePage";
 import CreateMarket from "./pages/CreateMarket";
+import CourtToRoomSwap from "./pages/CourtToRoomSwap";
 import FarminPoolPage from "./pages/FarminPoolPage";
 import Claim from "./pages/Claim";
 import Markets from "./pages/Markets";
@@ -33,23 +33,17 @@ import {watchUserSignIn} from "./shared/firestore.service";
 import {smartState} from "./shared/SmartState";
 import {AccountContext} from "./shared/AccountContextProvider";
 import {getTokensList} from "./shared/contracts/contracts.helper";
-import {ContractNames} from "./shared/constants";
+import {ChainNetworks, ContractNames} from "./shared/constants";
+import CreateBet from './bets/CreateBet';
+import Bets from './bets/Bets';
+import SingleBet from './bets/SingleBet';
 
 const useStyles = makeStyles((theme) => ({
     Main: {
         paddingTop: '64px',
         transition: '0.2s all',
-        [theme.breakpoints.up('md')]: {
-            marginLeft: '240px',
-        },
-    },
-    Main__isSidebarExpand: {
-        [theme.breakpoints.up('md')]: {
-            marginLeft: '50px'
-        },
     },
     Main__Content: {
-        //'padding': '24px',
         minHeight: 'calc(100vh - 64px)',
         [theme.breakpoints.up('md')]: {
             flexGrow: 1,
@@ -69,7 +63,6 @@ function App() {
     const classes = useStyles();
     const optionroomThemeContext = useContext(OptionroomThemeContext);
     const [isMinHeader, setIsMinHeader] = useState(false);
-    const [isSidebarExpand, setIsSidebarExpand] = useState(true);
     const [themeType, setThemeType] = useState(localStorage.getItem('optionroom_theme') || 'light');
     const accountContext = useContext(AccountContext);
 
@@ -95,7 +88,7 @@ function App() {
 
     const theme = useMemo(
         () =>
-            createMuiTheme({
+            createTheme({
                 palette: {
                     background: {
                         default: themeType === 'dark' ? "#141A22" : "#F7FAFF"
@@ -133,7 +126,6 @@ function App() {
 
         console.log(`Welcome to ${colors.green.bold('OptionRoom')} application`);
         console.log(`Version is: ${colors.green.bold(process.env.REACT_APP_VERSION)}`);
-        //watchUserSignIn();
 
         const handleScroll = () => {
             if (window.scrollY > 30) {
@@ -150,7 +142,7 @@ function App() {
     }, []);
 
     useEffect(() => {
-        if(accountContext.account && accountContext.chainId) {
+        if(accountContext.account && accountContext.chainId && [ChainNetworks.BINANCE_SMART_CHAIN, ChainNetworks.BINANCE_SMART_CHAIN_TESTNET].includes(accountContext.chainId)) {
             smartState.loadIsWalletOptionTokenApprovedForMarketController(accountContext.account);
             smartState.loadIsWalletOptionTokenApprovedForFixRedeem(accountContext.account);
 
@@ -162,27 +154,14 @@ function App() {
         }
     }, [accountContext.account, accountContext.chainId]);
 
-    const handleToggleSidebar = () => {
-        setIsSidebarExpand(!isSidebarExpand);
-    }
-
     return (
         <ThemeProvider theme={theme}>
             <div>
                 <CssBaseline/>
                 <Router>
                     <div>
-                        <MainNavbar isSidebarExpand={isSidebarExpand}
-                                    onToggleSidebar={handleToggleSidebar}
-                                    isMinHeader={isMinHeader}/>
-                        <div className={clsx(classes.Main, {
-                            [classes.Main__isSidebarExpand]: !isSidebarExpand,
-                        })}>
-                            <MainSidebar isSidebarExpand={isSidebarExpand}
-                                         onToggleSidebar={handleToggleSidebar}
-                                         activeTheme={themeType}
-                                         onChangeTheme={handleThemeTypeToggle}
-                                         isMinHeader={isMinHeader}></MainSidebar>
+                        <MainNavbar isMinHeader={isMinHeader}/>
+                        <div className={classes.Main}>
                             <div
                                 className={clsx(classes.Main__Content, {
                                     [classes.Main__Content___Black]:
@@ -234,6 +213,22 @@ function App() {
                                     <Route path="/governance"
                                            exact={true}>
                                         <GovernanceList/>
+                                    </Route>
+                                    <Route path="/court-room-swap"
+                                           exact={true}>
+                                        <CourtToRoomSwap/>
+                                    </Route>
+                                    <Route path="/bets/"
+                                           exact={true}>
+                                        <Bets/>
+                                    </Route>
+                                    <Route path="/bets/create"
+                                           exact={true}>
+                                        <CreateBet/>
+                                    </Route>
+                                    <Route path="/bets/:marketId"
+                                           exact={true}>
+                                        <SingleBet/>
                                     </Route>
                                     <Route exact path="/">
                                         <Redirect to="/markets"/>
